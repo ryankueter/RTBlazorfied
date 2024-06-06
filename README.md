@@ -25,6 +25,8 @@ Add the following reference to the end of your index.html file:
 In this example, the @Html is the html string.
 
 ```html
+@using RichTextBlazorfied
+
 <RTBlazorfied @ref="box" Html="@Html" />
 ```
 
