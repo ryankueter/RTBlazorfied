@@ -82,18 +82,21 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.BorderRadius = "0px";
         o.BorderWidth = "1px";
     });
-    o.Style(o =>
+    o.Editor(o =>
     {
         o.Width = "500px";
         o.Height = "700px";
         o.BorderRadius = "10px";
-        o.ContentBoxShadow = "inset 0 0 7px #eee";
         o.BoxShadow = "3px 3px 5px 6px #ccc";
-        o.BackgroundColor = "#FFFF99";
-        o.TextColor = "#333";
         o.BorderStyle = "dotted";
         o.BorderWidth = "10px";
         o.BorderColor = "#FF0000";
+    });
+    o.Content(o =>
+    {
+        o.ContentBoxShadow = "inset 0 0 7px #eee";
+        o.BackgroundColor = "#FFFF99";
+        o.TextColor = "#333";
     });
     o.Scrollbar(o =>
     {

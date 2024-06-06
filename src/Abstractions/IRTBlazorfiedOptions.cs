@@ -9,11 +9,13 @@ public interface IRTBlazorfiedOptions
 {
     public void Toolbar(Action<RichTextboxToolbarOptions> style);
     public void Button(Action<RichTextboxButtonOptions> style);
-    public void Style(Action<RichTextboxStyleOptions> style);
+    public void Editor(Action<RichTextboxEditorOptions> style);
     public void Scrollbar(Action<RichTextboxScrollOptions> style);
+    public void Content(Action<RichTextboxContentOptions> style);
     public RichTextboxToolbarOptions? GetToolbarOptions();
     public RichTextboxButtonOptions? GetButtonOptions();
-    public RichTextboxStyleOptions? GetStyleOptions();
+    public RichTextboxEditorOptions? GetEditorOptions();
+    public RichTextboxContentOptions? GetContentOptions();
     public RichTextboxScrollOptions? GetScrollOptions();
     public List<RTBlazorfiedButton> Buttons { get; set; }
 }

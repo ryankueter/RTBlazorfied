@@ -5,16 +5,9 @@
  */
 namespace RichTextBlazorfied;
 
-public class RichTextboxStyleOptions
+public class RichTextboxContentOptions
 {
-    public string? Width { get; set; }
-    public string? Height { get; set; }
     public string? BackgroundColor { get; set; }
     public string? TextColor { get; set; }
-    public string? BorderStyle { get; set; }
-    public string? BorderWidth { get; set; }
-    public string? BorderColor { get; set; }
-    public string? BorderRadius { get; set; }
     public string? ContentBoxShadow { get; set; }
-    public string? BoxShadow { get; set; }
 }

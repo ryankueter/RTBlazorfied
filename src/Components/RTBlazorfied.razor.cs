@@ -68,13 +68,13 @@ public partial class RTBlazorfied
         .rich-text-box-container {
             resize: both;
             overflow: hidden;
-            border-style: {{_borderStyle}} !important;
-            border-width: {{_borderWidth}} !important;
-            border-color: {{_borderColor}} !important;
-            border-radius: {{_borderRadius}} !important;
-            box-shadow: {{_boxShadow}};
-            width: {{_width}};
-            height: {{_height}};
+            border-style: {{_editorBorderStyle}} !important;
+            border-width: {{_editorBorderWidth}} !important;
+            border-color: {{_editorBorderColor}} !important;
+            border-radius: {{_editorBorderRadius}} !important;
+            box-shadow: {{_editorBoxShadow}};
+            width: {{_editorWidth}};
+            height: {{_editorHeight}};
             display: flex;
             flex-direction: column;
         }
@@ -89,8 +89,8 @@ public partial class RTBlazorfied
             padding: 10px;
             width: 100%;
             min-height: 25px;
-            background-color: {{_backgroundColor}} !important;
-            color: {{_textColor}} !important;
+            background-color: {{_contentBackgroundColor}} !important;
+            color: {{_contentTextColor}} !important;
             box-shadow: {{_contentBoxShadow}};
         }
 
@@ -169,18 +169,19 @@ public partial class RTBlazorfied
     private string? _buttonBorderColor { get; set; } = "inherit";
     private string? _buttonBorderColorHover { get; set; } = "inherit";
     private string? _buttonBorderColorSelected { get; set; } = "inherit";
-
-    // Styles
-    private string? _width { get; set; } = "100%";
-    private string? _height { get; set; } = "100%";
-    private string? _borderRadius { get; set; } = "0px";
-    private string? _backgroundColor { get; set; } = "#FFFFFF";
-    private string? _textColor { get; set; } = "#000000";
-    private string? _borderStyle { get; set; } = "solid";
-    private string? _borderWidth { get; set; } = "1px";
-    private string? _borderColor { get; set; } = "#EEEEEE";
+    // Content
+    private string? _contentBackgroundColor { get; set; } = "#FFFFFF";
+    private string? _contentTextColor { get; set; } = "#000000";
     private string? _contentBoxShadow { get; set; } = "none";
-    private string? _boxShadow { get; set; } = "none";
+
+    // Editor
+    private string? _editorWidth { get; set; } = "100%";
+    private string? _editorHeight { get; set; } = "100%";
+    private string? _editorBorderRadius { get; set; } = "0px";
+    private string? _editorBorderStyle { get; set; } = "solid";
+    private string? _editorBorderWidth { get; set; } = "1px";
+    private string? _editorBorderColor { get; set; } = "#EEEEEE";
+    private string? _editorBoxShadow { get; set; } = "none";
 
     // Scroll
     private string? _scrollWidth { get; set; } = "12px";
@@ -234,7 +235,8 @@ public partial class RTBlazorfied
     {
         GetToolbarOptions();
         GetButtonOptions();
-        GetStyleOptions();
+        GetEditorOptions();
+        GetContentOptions();
         GetScrollOptions();
         GetCustomButtons();
     }
@@ -314,50 +316,58 @@ public partial class RTBlazorfied
         }
     }
 
-    private void GetStyleOptions()
+    private void GetContentOptions()
     {
-        var styleOptions = _options.GetStyleOptions();
+        var styleOptions = _options.GetContentOptions();
         if (styleOptions is not null)
         {
-            if (styleOptions.Width is not null)
-            {
-                _width = styleOptions.Width;
-            }
-            if (styleOptions.Height is not null)
-            {
-                _height = styleOptions.Height;
-            }
-            if (styleOptions.BorderRadius is not null)
-            {
-                _borderRadius = styleOptions.BorderRadius;
-            }
             if (styleOptions.BackgroundColor is not null)
             {
-                _backgroundColor = styleOptions.BackgroundColor;
+                _contentBackgroundColor = styleOptions.BackgroundColor;
             }
             if (styleOptions.TextColor is not null)
             {
-                _textColor = styleOptions.TextColor;
-            }
-            if (styleOptions.BorderStyle is not null)
-            {
-                _borderStyle = styleOptions.BorderStyle;
-            }
-            if (styleOptions.BorderWidth is not null)
-            {
-                _borderWidth = styleOptions.BorderWidth;
-            }
-            if (styleOptions.BorderColor is not null)
-            {
-                _borderColor = styleOptions.BorderColor;
+                _contentTextColor = styleOptions.TextColor;
             }
             if (styleOptions.ContentBoxShadow is not null)
             {
                 _contentBoxShadow = styleOptions.ContentBoxShadow;
             }
+        }
+    }
+
+    private void GetEditorOptions()
+    {
+        var styleOptions = _options.GetEditorOptions();
+        if (styleOptions is not null)
+        {
+            if (styleOptions.Width is not null)
+            {
+                _editorWidth = styleOptions.Width;
+            }
+            if (styleOptions.Height is not null)
+            {
+                _editorHeight = styleOptions.Height;
+            }
+            if (styleOptions.BorderRadius is not null)
+            {
+                _editorBorderRadius = styleOptions.BorderRadius;
+            }
+            if (styleOptions.BorderStyle is not null)
+            {
+                _editorBorderStyle = styleOptions.BorderStyle;
+            }
+            if (styleOptions.BorderWidth is not null)
+            {
+                _editorBorderWidth = styleOptions.BorderWidth;
+            }
+            if (styleOptions.BorderColor is not null)
+            {
+                _editorBorderColor = styleOptions.BorderColor;
+            }
             if (styleOptions.BoxShadow is not null)
             {
-                _boxShadow = styleOptions.BoxShadow;
+                _editorBoxShadow = styleOptions.BoxShadow;
             }
         }
     }
