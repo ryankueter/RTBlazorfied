@@ -1,223 +1,203 @@
 ﻿@namespace RichTextBlazorfied
 
 <div id="@toolbar_id" class="rich-text-box-tool-bar">
-    @if (_textStyle is not null && _textStyle.Count > 0)
+    @if (_bold == true)
     {
-        foreach (var button in _textStyle)
-        {
-            if (button is RTBlazorfiedButton.Bold)
-            {
-                <button id="blazing-rich-text-bold-button" title="Bold" class="rich-text-box-menu-item" @onclick="Bold" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="@_buttonTextSize" height="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Bold" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Italic)
-            {
-                <button id="blazing-rich-text-italic-button" title="Italic" class="rich-text-box-menu-item" @onclick="Italic" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Italic" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Underline)
-            {
-                <button id="blazing-rich-text-underline-button" title="Underline" class="rich-text-box-menu-item" @onclick="Underline" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Underline" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Strikethrough)
-            {
-                <button id="blazing-rich-text-strike-button" title="Strikethrough" class="rich-text-box-menu-item" @onclick="Strikethrough" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Strikethrough" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Subscript)
-            {
-                <button id="blazing-rich-text-sub-button" title="Subscript" class="rich-text-box-menu-item" @onclick="Subscript" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Subscript" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Superscript)
-            {
-                <button id="blazing-rich-text-super-button" title="Superscript" class="rich-text-box-menu-item" @onclick="Superscript" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Superscript" />
-                    </svg>
-                </button>
-            }
-        }
+        <button id="blazing-rich-text-bold-button" title="Bold" class="rich-text-box-menu-item" @onclick="Bold" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" width="@_buttonTextSize" height="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Bold" />
+            </svg>
+        </button>
+    }
+    @if (_italic == true)
+    {
+        <button id="blazing-rich-text-italic-button" title="Italic" class="rich-text-box-menu-item" @onclick="Italic" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Italic" />
+            </svg>
+        </button>
+    }
+    @if (_underline == true)
+    {
+        <button id="blazing-rich-text-underline-button" title="Underline" class="rich-text-box-menu-item" @onclick="Underline" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Underline" />
+            </svg>
+        </button>
+    }
+    @if (_strikethrough == true)
+    {
+        <button id="blazing-rich-text-strike-button" title="Strikethrough" class="rich-text-box-menu-item" @onclick="Strikethrough" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Strikethrough" />
+            </svg>
+        </button>
+    }
+    @if (_subscript == true)
+    {
+        <button id="blazing-rich-text-sub-button" title="Subscript" class="rich-text-box-menu-item" @onclick="Subscript" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Subscript" />
+            </svg>
+        </button>
+    }
+    @if (_superscript == true)
+    {
+        <button id="blazing-rich-text-super-button" title="Superscript" class="rich-text-box-menu-item" @onclick="Superscript" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Superscript" />
+            </svg>
+        </button>
+    }
 
+    @if (_formatdivider == true)
+    {
         <button class="rich-text-box-divider-btn" disabled>
             <div class="rich-text-box-divider"></div>
         </button>
     }
 
-    @if (_textAlign is not null && _textAlign.Count > 0)
+    @if (_alignleft == true)
     {
-        foreach (var button in _textAlign)
-        {
-            if (button is RTBlazorfiedButton.Alignleft)
-            {
-                <button id="blazing-rich-text-alignleft-button" title="Align Left" class="rich-text-box-menu-item" @onclick="Alignleft" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Alignleft" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Aligncenter)
-            {
-                <button id="blazing-rich-text-aligncenter-button" title="Align Center" class="rich-text-box-menu-item" @onclick="Aligncenter" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Aligncenter" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Alignright)
-            {
-                <button id="blazing-rich-text-alignright-button" title="Align Right" class="rich-text-box-menu-item" @onclick="Alignright" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Alignright" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Alignjustify)
-            {
-                <button id="blazing-rich-text-alignjustify-button" title="Align Justify" class="rich-text-box-menu-item" @onclick="Alignjustify" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Alignjustify" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Indent)
-            {
-                <button id="blazing-rich-text-indent-button" title="Indent" class="rich-text-box-menu-item" @onclick="Indent" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" viewBox="0 -960 960 960" width="@_buttonTextSize" fill="@_buttonTextColor">
-                        <path d="@Icons.Indent" />
-                    </svg>
-                </button>
-            }
-        }
+        <button id="blazing-rich-text-alignleft-button" title="Align Left" class="rich-text-box-menu-item" @onclick="Alignleft" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Alignleft" />
+            </svg>
+        </button>
+    }
+    @if (_aligncenter == true)
+    {
+        <button id="blazing-rich-text-aligncenter-button" title="Align Center" class="rich-text-box-menu-item" @onclick="Aligncenter" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Aligncenter" />
+            </svg>
+        </button>
+    }
+    @if (_alignright == true)
+    {
+        <button id="blazing-rich-text-alignright-button" title="Align Right" class="rich-text-box-menu-item" @onclick="Alignright" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Alignright" />
+            </svg>
+        </button>
+    }
+    @if (_alignjustify == true)
+    {
+        <button id="blazing-rich-text-alignjustify-button" title="Align Justify" class="rich-text-box-menu-item" @onclick="Alignjustify" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Alignjustify" />
+            </svg>
+        </button>
+    }
+    @if (_indent == true)
+    {
+        <button id="blazing-rich-text-indent-button" title="Indent" class="rich-text-box-menu-item" @onclick="Indent" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" viewBox="0 -960 960 960" width="@_buttonTextSize" fill="@_buttonTextColor">
+                <path d="@Icons.Indent" />
+            </svg>
+        </button>
+    }
+    @if (_aligndivider == true)
+    {
         <button class="rich-text-box-divider-btn" disabled>
             <div class="rich-text-box-divider"></div>
         </button>
     }
-    @if (_textAction is not null && _textAction.Count > 0)
-    {
-        foreach (var button in _textAction)
-        {
-            if (button is RTBlazorfiedButton.Copy)
-            {
-                <button id="blazing-rich-text-copy-button" title="Copy" class="rich-text-box-menu-item" @onclick="Copy" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Copy" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Cut)
-            {
-                <button id="blazing-rich-text-cut-button" title="Cut" class="rich-text-box-menu-item" @onclick="Cut" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Cut" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Delete)
-            {
-                <button id="blazing-rich-text-delete-button" title="Delete" class="rich-text-box-menu-item" @onclick="Delete" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Delete" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Selectall)
-            {
-                <button id="blazing-rich-text-selectall-button" title="Select All" class="rich-text-box-menu-item" @onclick="Selectall" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Selectall" />
-                    </svg>
-                </button>
-            }
-        }
-        <button class="rich-text-box-divider-btn" disabled>
-            <div class="rich-text-box-divider"></div>
-        </button>
-    }
-    @if (_textList is not null && _textList.Count > 0)
-    {
-        foreach (var button in _textList)
-        {
-            @* if (button is RichTextboxButton.Orderedlist)
-            {
-                <button id="blazing-rich-text-orderedlist-button" title="Ordered List" class="rich-text-box-menu-item" @onclick="OrderedList" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.OrderedList" />
-                    </svg>
-                </button>
-            }
-            if (button is RichTextboxButton.Unorderedlist)
-            {
-                <button id="blazing-rich-text-unorderedlist-button" title="Unordered List" class="rich-text-box-menu-item" @onclick="UnorderedList" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" viewBox="0 -960 960 960" width="@_buttonTextSize" fill="@_buttonTextColor">
-                        <path d="@Icons.UnorderedList" />
-                    </svg>
-                </button>
-            } *@
-        }
-        <button class="rich-text-box-divider-btn" disabled>
-            <div class="rich-text-box-divider"></div>
-        </button>
-    }
-    @if (_textLink is not null && _textLink.Count > 0)
-    {
-        foreach (var button in _textLink)
-        {
-            @* if (button is RichTextboxButton.Link)
-            {
-                <button id="blazing-rich-text-link-button" title="Create Link" class="rich-text-box-menu-item" @onclick="CreateLink" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.CreateLink" />
-                    </svg>
-                </button>
-            } *@
-        }
-        <button class="rich-text-box-divider-btn" disabled>
-            <div class="rich-text-box-divider"></div>
-        </button>
-    }
-    @if (_textHistory is not null && _textHistory.Count > 0)
-    {
-        foreach (var button in _textHistory)
-        {
-            if (button is RTBlazorfiedButton.Undo)
-            {
-                <button id="blazing-rich-text-undo-button" title="Undo" class="rich-text-box-menu-item" @onclick="Undo" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Undo" />
-                    </svg>
-                </button>
-            }
-            if (button is RTBlazorfiedButton.Redo)
-            {
-                <button id="blazing-rich-text-redo-button" title="Redo" class="rich-text-box-menu-item" @onclick="Redo" disabled="@IsDisabled">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                        <path d="@Icons.Redo" />
-                    </svg>
-                </button>
-            }
-        }
 
+    @if (_copy == true)
+    {
+        <button id="blazing-rich-text-copy-button" title="Copy" class="rich-text-box-menu-item" @onclick="Copy" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Copy" />
+            </svg>
+        </button>
+    }
+    @if (_cut == true)
+    {
+        <button id="blazing-rich-text-cut-button" title="Cut" class="rich-text-box-menu-item" @onclick="Cut" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Cut" />
+            </svg>
+        </button>
+    }
+    @if (_delete == true)
+    {
+        <button id="blazing-rich-text-delete-button" title="Delete" class="rich-text-box-menu-item" @onclick="Delete" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Delete" />
+            </svg>
+        </button>
+    }
+    @if (_selectall == true)
+    {
+        <button id="blazing-rich-text-selectall-button" title="Select All" class="rich-text-box-menu-item" @onclick="Selectall" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Selectall" />
+            </svg>
+        </button>
+    }
+    @if (_actiondivider == true)
+    {
         <button class="rich-text-box-divider-btn" disabled>
             <div class="rich-text-box-divider"></div>
         </button>
     }
+
+    @* if (button is RichTextboxButton.Orderedlist)
+    {
+    <button id="blazing-rich-text-orderedlist-button" title="Ordered List" class="rich-text-box-menu-item" @onclick="OrderedList" disabled="@IsDisabled">
+    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+    <path d="@Icons.OrderedList" />
+    </svg>
+    </button>
+    }
+    if (button is RichTextboxButton.Unorderedlist)
+    {
+    <button id="blazing-rich-text-unorderedlist-button" title="Unordered List" class="rich-text-box-menu-item" @onclick="UnorderedList" disabled="@IsDisabled">
+    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" viewBox="0 -960 960 960" width="@_buttonTextSize" fill="@_buttonTextColor">
+    <path d="@Icons.UnorderedList" />
+    </svg>
+    </button>
+    } *@
+    @* <button class="rich-text-box-divider-btn" disabled>
+    <div class="rich-text-box-divider"></div>
+    </button> *@
+
+    @* if (button is RichTextboxButton.Link)
+    {
+    <button id="blazing-rich-text-link-button" title="Create Link" class="rich-text-box-menu-item" @onclick="CreateLink" disabled="@IsDisabled">
+    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+    <path d="@Icons.CreateLink" />
+    </svg>
+    </button>
+    } *@
+    @* <button class="rich-text-box-divider-btn" disabled>
+    <div class="rich-text-box-divider"></div>
+    </button> *@
+
+    @if (_undo == true)
+    {
+        <button id="blazing-rich-text-undo-button" title="Undo" class="rich-text-box-menu-item" @onclick="Undo" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Undo" />
+            </svg>
+        </button>
+    }
+    @if (_redo == true)
+    {
+        <button id="blazing-rich-text-redo-button" title="Redo" class="rich-text-box-menu-item" @onclick="Redo" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Redo" />
+            </svg>
+        </button>
+    }
+    @if (_historydivider == true)
+    {
+        <button class="rich-text-box-divider-btn" disabled>
+            <div class="rich-text-box-divider"></div>
+        </button>
+    }
+    
     <button id="blazing-rich-text-source" title="Html Code" class="@OpenCodeStyles" @onclick="OpenCode">
         <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
             <path d="@Icons.Code" />

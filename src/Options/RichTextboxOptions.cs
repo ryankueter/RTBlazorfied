@@ -14,6 +14,7 @@ public class RichTextboxOptions : IRTBlazorfiedOptions
     private RichTextboxEditorOptions? _editor;
     private RichTextboxContentOptions? _content;
     private RichTextboxScrollOptions? _scroll;
+    private RichTextboxButtonVisibilityOptions? _visibility;
     public void Toolbar(Action<RichTextboxToolbarOptions> style)
     {
         var options = new RichTextboxToolbarOptions();
@@ -42,17 +43,24 @@ public class RichTextboxOptions : IRTBlazorfiedOptions
             style(options);
         _content = options;
     }
-    public void Scrollbar(Action<RichTextboxScrollOptions> scroll)
+    public void Scrollbar(Action<RichTextboxScrollOptions> style)
     {
         var options = new RichTextboxScrollOptions();
-        if (scroll is not null)
-            scroll(options);
+        if (style is not null)
+            style(options);
         _scroll = options;
     }
-    public List<RTBlazorfiedButton> Buttons { get; set; } = new List<RTBlazorfiedButton>();
+    public void ButtonVisibility(Action<RichTextboxButtonVisibilityOptions> style)
+    {
+        var options = new RichTextboxButtonVisibilityOptions();
+        if (style is not null)
+            style(options);
+        _visibility = options;
+    }
     public RichTextboxToolbarOptions? GetToolbarOptions() => _toolbar;
     public RichTextboxButtonOptions? GetButtonOptions() => _button;
     public RichTextboxEditorOptions? GetEditorOptions() => _editor;
     public RichTextboxContentOptions? GetContentOptions() => _content;
     public RichTextboxScrollOptions? GetScrollOptions() => _scroll;
+    public RichTextboxButtonVisibilityOptions? GetButtonVisibilityOptions() => _visibility;
 }

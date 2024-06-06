@@ -141,15 +141,6 @@ public partial class RTBlazorfied
         }
         """;
 
-    #region Separators
-    private List<RTBlazorfiedButton>? _textStyle;
-    private List<RTBlazorfiedButton>? _textAlign;
-    private List<RTBlazorfiedButton>? _textAction;
-    private List<RTBlazorfiedButton>? _textList;
-    private List<RTBlazorfiedButton>? _textLink;
-    private List<RTBlazorfiedButton>? _textHistory;
-    #endregion
-
     #region Styles
     // Toolbar
     private string? _toolbarBackgroundColor { get; set; } = "#f1f1f1";
@@ -210,18 +201,6 @@ public partial class RTBlazorfied
         if (Options is not null)
         {
             Options(_options!);
-
-            if (_options.Buttons is null || _options.Buttons.Count == 0)
-            {
-                _options.Buttons = DefaultButtons();
-            }
-        }
-        else
-        {
-            _options = new RichTextboxOptions
-            {
-                Buttons = DefaultButtons()
-            };
         }
         LoadOptions();
         _ = OpenCode();
@@ -239,50 +218,171 @@ public partial class RTBlazorfied
         GetEditorOptions();
         GetContentOptions();
         GetScrollOptions();
-        GetCustomButtons();
+        GetButtons();
     }
 
-    private void GetCustomButtons()
+    #region ButtonVisibility
+    private bool? _bold = true;
+    private bool? _italic = true;
+    private bool? _underline = true;
+    private bool? _strikethrough = true;
+    private bool? _subscript = true;
+    private bool? _superscript = true;
+    private bool? _formatdivider = false;
+    private bool? _alignleft = true;
+    private bool? _aligncenter = true;
+    private bool? _alignright = true;
+    private bool? _alignjustify = true;
+    private bool? _indent = true;
+    private bool? _aligndivider = false;
+    private bool? _copy = true;
+    private bool? _cut = true;
+    private bool? _delete = true;
+    private bool? _selectall = true;
+    private bool? _actiondivider = false;
+    private bool? _undo = true;
+    private bool? _redo = true;
+    private bool? _historydivider = false;
+    #endregion
+    private void GetButtons()
     {
-        _textStyle = _options!.Buttons.Where(b =>
-            b == RTBlazorfiedButton.Bold ||
-            b == RTBlazorfiedButton.Italic ||
-            b == RTBlazorfiedButton.Underline ||
-            b == RTBlazorfiedButton.Strikethrough ||
-            b == RTBlazorfiedButton.Subscript ||
-            b == RTBlazorfiedButton.Superscript)
-            .OrderBy(b => b)
-            .ToList();
+        var buttons = _options.GetButtonVisibilityOptions();
 
-        _textAlign = _options!.Buttons.Where(b =>
-            b == RTBlazorfiedButton.Alignleft ||
-            b == RTBlazorfiedButton.Aligncenter ||
-            b == RTBlazorfiedButton.Alignright ||
-            b == RTBlazorfiedButton.Alignjustify ||
-            b == RTBlazorfiedButton.Indent)
-            .OrderBy(b => b)
-            .ToList();
+        if (buttons is null)
+        {
+            _formatdivider = true;
+            _aligndivider = true;
+            _actiondivider = true;
+            _historydivider = true;
+        }
+        else
+        {
+            if (buttons.Bold is not null)
+            {
+                _bold = buttons.Bold;
+            }
+            if (buttons.Italic is not null)
+            {
+                _italic = buttons.Italic;
+            }
+            if (buttons.Underline is not null)
+            {
+                _underline = buttons.Underline;
+            }
+            if (buttons.Strikethrough is not null)
+            {
+                _strikethrough = buttons.Strikethrough;
+            }
+            if (buttons.Subscript is not null)
+            {
+                _subscript = buttons.Subscript;
+            }
+            if (buttons.Superscript is not null)
+            {
+                _superscript = buttons.Superscript;
+            }
 
-        _textAction = _options!.Buttons.Where(b =>
-           b == RTBlazorfiedButton.Cut ||
-           b == RTBlazorfiedButton.Copy ||
-           b == RTBlazorfiedButton.Delete ||
-           b == RTBlazorfiedButton.Selectall)
-            .OrderBy(b => b)
-            .ToList();
+            // If the user did not specify false, keep the button
+            if (buttons.Bold is null 
+                || buttons.Bold == true
+                || buttons.Italic is null 
+                || buttons.Italic == true
+                || buttons.Underline is null 
+                || buttons.Underline == true
+                || buttons.Strikethrough is null 
+                || buttons.Strikethrough == true
+                || buttons.Subscript is null 
+                || buttons.Subscript == true
+                || buttons.Superscript is null 
+                || buttons.Superscript == true)
+            {
+                _formatdivider = true;
+            }
 
-        //_textList = _options!.Buttons.Where(b =>
-        //    b == RichTextboxButton.Orderedlist ||
-        //    b == RichTextboxButton.Unorderedlist).ToList();
+            if (buttons.Alignleft is not null)
+            {
+                _alignleft = buttons.Alignleft;
+            }
+            if (buttons.Aligncenter is not null)
+            {
+                _aligncenter = buttons.Aligncenter;
+            }
+            if (buttons.Alignright is not null)
+            {
+                _alignright = buttons.Alignright;
+            }
+            if (buttons.Alignjustify is not null)
+            {
+                _alignjustify = buttons.Alignjustify;
+            }
+            if (buttons.Indent is not null)
+            {
+                _indent = buttons.Indent;
+            }
 
-        //_textLink = _options!.Buttons.Where(b =>
-        //    b == RichTextboxButton.Link).ToList();
+            // If the user did not specify false, keep the button
+            if (buttons.Alignleft is null 
+                || buttons.Alignleft == true
+                || buttons.Aligncenter is null 
+                || buttons.Aligncenter == true
+                || buttons.Alignright is null 
+                || buttons.Alignright == true
+                || buttons.Alignjustify is null 
+                || buttons.Alignjustify == true
+                || buttons.Indent is null 
+                || buttons.Indent == true)
+            {
+                _aligndivider = true;
+            }
 
-        _textHistory = _options!.Buttons.Where(b =>
-            b == RTBlazorfiedButton.Undo ||
-            b == RTBlazorfiedButton.Redo)
-            .OrderBy(b => b)
-            .ToList();
+            if (buttons.Copy is not null)
+            {
+                _copy = buttons.Copy;
+            }
+            if (buttons.Cut is not null)
+            {
+                _cut = buttons.Cut;
+            }
+            if (buttons.Delete is not null)
+            {
+                _delete = buttons.Delete;
+            }
+            if (buttons.Selectall is not null)
+            {
+                _selectall = buttons.Selectall;
+            }
+
+            // If the user did not specify false, keep the button
+            if (buttons.Copy is null 
+                || buttons.Copy == true
+                || buttons.Cut is null 
+                || buttons.Cut == true
+                || buttons.Delete is null 
+                || buttons.Delete == true
+                || buttons.Selectall is null 
+                || buttons.Selectall == true)
+            {
+                _actiondivider = true;
+            }
+
+            if (buttons.Undo is not null)
+            {
+                _undo = buttons.Undo;
+            }
+            if (buttons.Redo is not null)
+            {
+                _redo = buttons.Redo;
+            }
+
+            // If the user did not specify false, keep the button
+            if (buttons.Undo is null 
+                || buttons.Undo == true
+                || buttons.Redo is null 
+                || buttons.Redo == true)
+            {
+                _historydivider = true;
+            }
+        }
     }
 
     private void GetScrollOptions()
@@ -527,29 +627,4 @@ public partial class RTBlazorfied
         }
     }
     #endregion
-
-    private List<RTBlazorfiedButton> DefaultButtons() =>
-        new List<RTBlazorfiedButton>
-            {
-            RTBlazorfiedButton.Bold,
-            RTBlazorfiedButton.Italic,
-            RTBlazorfiedButton.Strikethrough,
-            RTBlazorfiedButton.Subscript,
-            RTBlazorfiedButton.Superscript,
-            RTBlazorfiedButton.Indent,
-            RTBlazorfiedButton.Underline,
-            RTBlazorfiedButton.Aligncenter,
-            RTBlazorfiedButton.Alignjustify,
-            RTBlazorfiedButton.Alignleft,
-            RTBlazorfiedButton.Alignright,
-            RTBlazorfiedButton.Selectall,
-            RTBlazorfiedButton.Cut,
-            RTBlazorfiedButton.Copy,
-            RTBlazorfiedButton.Delete,
-            //RichTextboxButton.Orderedlist,
-            //RichTextboxButton.Unorderedlist,
-            //RichTextboxButton.Link,
-            RTBlazorfiedButton.Undo,
-            RTBlazorfiedButton.Redo
-            };
 }

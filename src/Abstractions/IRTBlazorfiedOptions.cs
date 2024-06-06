@@ -12,10 +12,11 @@ public interface IRTBlazorfiedOptions
     public void Editor(Action<RichTextboxEditorOptions> style);
     public void Scrollbar(Action<RichTextboxScrollOptions> style);
     public void Content(Action<RichTextboxContentOptions> style);
-    public RichTextboxToolbarOptions? GetToolbarOptions();
-    public RichTextboxButtonOptions? GetButtonOptions();
-    public RichTextboxEditorOptions? GetEditorOptions();
-    public RichTextboxContentOptions? GetContentOptions();
-    public RichTextboxScrollOptions? GetScrollOptions();
-    public List<RTBlazorfiedButton> Buttons { get; set; }
+    public void ButtonVisibility(Action<RichTextboxButtonVisibilityOptions> style);
+    internal RichTextboxToolbarOptions? GetToolbarOptions();
+    internal RichTextboxButtonOptions? GetButtonOptions();
+    internal RichTextboxButtonVisibilityOptions? GetButtonVisibilityOptions();
+    internal RichTextboxEditorOptions? GetEditorOptions();
+    internal RichTextboxContentOptions? GetContentOptions();
+    internal RichTextboxScrollOptions? GetScrollOptions();
 }

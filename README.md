@@ -110,33 +110,26 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.BackgroundColor = "transparent";
         o.ThumbBorderRadius = "10px";
     });
-});
-```
-
-### Configure Buttons
-
-RTBlazorfied also provides the ability to specify what buttons should be included:
-
-```csharp
-public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
-{
-    o.Buttons.Add(RTBlazorfiedButton.Bold);
-    o.Buttons.Add(RTBlazorfiedButton.Italic);
-    o.Buttons.Add(RTBlazorfiedButton.Underline);
-    o.Buttons.Add(RTBlazorfiedButton.Strikethrough);
-    o.Buttons.Add(RTBlazorfiedButton.Subscript);
-    o.Buttons.Add(RTBlazorfiedButton.Superscript);
-    o.Buttons.Add(RTBlazorfiedButton.Alignleft);
-    o.Buttons.Add(RTBlazorfiedButton.Aligncenter);
-    o.Buttons.Add(RTBlazorfiedButton.Alignright);
-    o.Buttons.Add(RTBlazorfiedButton.Alignjustify);
-    o.Buttons.Add(RTBlazorfiedButton.Indent);
-    o.Buttons.Add(RTBlazorfiedButton.Cut);
-    o.Buttons.Add(RTBlazorfiedButton.Copy);
-    o.Buttons.Add(RTBlazorfiedButton.Delete);
-    o.Buttons.Add(RTBlazorfiedButton.Selectall);
-    o.Buttons.Add(RTBlazorfiedButton.Undo);
-    o.Buttons.Add(RTBlazorfiedButton.Redo);
+    o.ButtonVisibility(o =>
+    {
+        o.Bold = false;
+        o.Italic = false;
+        o.Underline = false;
+        o.Strikethrough = false;
+        o.Subscript = false;
+        o.Superscript = false;
+        o.Alignleft = false;
+        o.Aligncenter = false;
+        o.Alignright = false;
+        o.Alignjustify = false;
+        o.Indent = false;
+        o.Copy = false;
+        o.Cut = false;
+        o.Delete = false;
+        o.Selectall = false;
+        o.Undo = false;
+        o.Redo = false;
+    });
 });
 ```
 
