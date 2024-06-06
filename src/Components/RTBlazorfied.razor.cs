@@ -85,13 +85,14 @@ public partial class RTBlazorfied
             display: flex;
             flex-direction: row;
             background-color: {{_contentBackgroundColor}} !important;
+            box-shadow: {{_contentBoxShadow}};
         }
         .rich-text-box-content {
             padding: 10px;
             width: 100%;
             min-height: 25px;
             color: {{_contentTextColor}} !important;
-            box-shadow: {{_contentBoxShadow}};
+            
         }
 
         [contenteditable="true"] {
