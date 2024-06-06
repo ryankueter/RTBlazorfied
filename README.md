@@ -44,7 +44,7 @@ private async Task GetPlainText() =>
     plaintext = await box.GetPlainTextAsync();
 ```
 
-The element reference also provides a method for restoring the text to the begining:
+The element reference also provides a method for restoring the text to the beginning:
 ```csharp
 box.Reinitialize();
 ```
