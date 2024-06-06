@@ -84,12 +84,12 @@ public partial class RTBlazorfied
             overflow: auto;
             display: flex;
             flex-direction: row;
+            background-color: {{_contentBackgroundColor}} !important;
         }
         .rich-text-box-content {
             padding: 10px;
             width: 100%;
             min-height: 25px;
-            background-color: {{_contentBackgroundColor}} !important;
             color: {{_contentTextColor}} !important;
             box-shadow: {{_contentBoxShadow}};
         }
