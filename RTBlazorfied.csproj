@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added the ability to format paragraphs and headers. Fixed minor bug.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.15</Version>
-	  <AssemblyVersion>1.0.15</AssemblyVersion>
-	  <FileVersion>1.0.15</FileVersion>
+	  <Version>1.0.16</Version>
+	  <AssemblyVersion>1.0.16</AssemblyVersion>
+	  <FileVersion>1.0.16</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>
