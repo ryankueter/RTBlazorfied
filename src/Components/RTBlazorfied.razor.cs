@@ -159,12 +159,12 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-format-button {
-          min-width: 140px;
+          min-width: 180px;
           padding: 4px;
           margin: 4px;
         }
         .rich-text-box-format-content {
-          min-width: 170px;
+          min-width: 180px;
         }
         .rich-text-box-dropdown-content a {
           color: {{_toolbarDropdownTextColor}};
