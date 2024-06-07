@@ -1,20 +1,23 @@
 ﻿@namespace RichTextBlazorfied
 
 <div id="@toolbar_id" class="rich-text-box-tool-bar">
-    <div class="dropdown">
-        <button id="blazing-rich-text-format-button" title="Format" @onclick='() => Format("blazing-rich-text-format-button-dropdown")' class="rich-text-box-menu-item format-button" disabled="@IsDisabled">
-            Format
-        </button>
-        <div id="blazing-rich-text-format-button-dropdown" class="dropdown-content format-content rich-text-box-scroll">
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("none")'>None</a>
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("p")'>Paragraph</a>
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("h1")'>Header 1</a>
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("h2")'>Header 2</a>
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("h3")'>Header 3</a>
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("h4")'>Header 4</a>
-            <a class="menu-item" style="cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
+    @if (_format == true)
+    {
+        <div class="rich-text-box-dropdown">
+            <button id="blazing-rich-text-format-button" title="Format" @onclick='() => Format("blazing-rich-text-format-button-dropdown")' class="rich-text-box-menu-item rich-text-box-format-button" disabled="@IsDisabled">
+                Format
+            </button>
+            <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("none")'>None</a>
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("p")'>Paragraph</a>
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("h1")'>Header 1</a>
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("h2")'>Header 2</a>
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("h3")'>Header 3</a>
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("h4")'>Header 4</a>
+                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
+            </div>
         </div>
-    </div>
+    }
     @if (_bold == true)
     {
         <button id="blazing-rich-text-bold-button" title="Bold" class="rich-text-box-menu-item" @onclick="Bold" disabled="@IsDisabled">

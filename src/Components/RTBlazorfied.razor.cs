@@ -141,15 +141,15 @@ public partial class RTBlazorfied
             background: {{_scrollThumbBackgroundHover}} !important;
         }
 
-        .dropdown {
+        .rich-text-box-dropdown {
           position: relative;
           display: inline-block;
         }
 
-        .dropdown-content {
+        .rich-text-box-dropdown-content {
           display: none;
           position: absolute;
-          background-color: #f1f1f1;
+          background-color: {{_toolbarDropdownBackgroundColor}};
           border-style: {{_buttonBorderStyle}};
           border-width: {{_buttonBorderWidth}};
           border-color: {{_buttonBorderColor}};
@@ -159,23 +159,25 @@ public partial class RTBlazorfied
           z-index: 1;
         }
 
-        .format-button {
-          min-width: 160px;
+        .rich-text-box-format-button {
+          min-width: 140px;
         }
-        format-content {
-          min-width: 160px;
+        .rich-text-box-format-content {
+          min-width: 170px;
         }
-
-        .dropdown-content a {
-          color: black;
+        .rich-text-box-dropdown-content a {
+          color: {{_toolbarDropdownTextColor}};
           padding: 12px 16px;
           text-decoration: none;
           display: block;
         }
 
-        .dropdown a:hover {background-color: #ddd;}
+        .rich-text-box-dropdown a:hover {
+          background-color: {{_toolbarDropdownBackgroundColorHover}};
+          color: {{_toolbarDropdownTextColorHover}};
+         }
 
-        .show {display: block;}
+        .rich-text-box-show {display: block;}
         """;
 
     #region Styles
@@ -185,6 +187,10 @@ public partial class RTBlazorfied
     private string? _toolbarBorderWidth { get; set; } = "0px";
     private string? _toolbarBorderColor { get; set; } = "#000000";
     private string? _toolbarBorderRadius { get; set; } = "0px";
+    private string? _toolbarDropdownBackgroundColor { get; set; } = "#f1f1f1";
+    private string? _toolbarDropdownTextColor { get; set; } = "#000000";
+    private string? _toolbarDropdownBackgroundColorHover { get; set; } = "#ddd";
+    private string? _toolbarDropdownTextColorHover { get; set; } = "#000000";
 
     // Buttons
     private string? _buttonTextColor { get; set; } = "#000";
@@ -259,6 +265,7 @@ public partial class RTBlazorfied
     }
 
     #region ButtonVisibility
+    private bool? _format = true;
     private bool? _bold = true;
     private bool? _italic = true;
     private bool? _underline = true;
@@ -294,6 +301,11 @@ public partial class RTBlazorfied
         }
         else
         {
+            if (buttons.Format is not null)
+            {
+                _format = buttons.Format;
+            }
+
             if (buttons.Bold is not null)
             {
                 _bold = buttons.Bold;
@@ -586,6 +598,23 @@ public partial class RTBlazorfied
             if (toolbarOptions.BorderRadius is not null)
             {
                 _toolbarBorderRadius = toolbarOptions.BorderRadius;
+            }
+            if (toolbarOptions.DropdownBackgroundColor is not null)
+            {
+                _toolbarDropdownBackgroundColor = toolbarOptions.DropdownBackgroundColor;
+            }
+            if (toolbarOptions.DropdownTextColor is not null)
+            {
+                _toolbarDropdownTextColor = toolbarOptions.DropdownTextColor;
+            }
+
+            if (toolbarOptions.DropdownBackgroundColorHover is not null)
+            {
+                _toolbarDropdownBackgroundColorHover = toolbarOptions.DropdownBackgroundColorHover;
+            }
+            if (toolbarOptions.DropdownTextColorHover is not null)
+            {
+                _toolbarDropdownTextColorHover = toolbarOptions.DropdownTextColorHover;
             }
         }
     }

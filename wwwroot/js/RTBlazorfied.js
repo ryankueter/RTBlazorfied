@@ -59,22 +59,23 @@ class RTBlazorfied {
 
         /* Prevent the dropdowns from causing the text box from
         losing focus. */
-        var dropdown = this.shadowRoot.querySelector('.dropdown-content');
-        dropdown.addEventListener('mousedown', function (event) {
-            event.preventDefault();
-        });
-
+        var dropdown = this.shadowRoot.querySelector('.rich-text-box-dropdown-content');
+        if (dropdown != null) {
+            dropdown.addEventListener('mousedown', function (event) {
+                event.preventDefault();
+            });
+        }      
     }
     format(format) {
         this.formatNode(format);
     }
     dropdown(id) {
         var el = this.shadowRoot.getElementById(id);
-        if (el != null && el.classList.contains("show")) {
-            el.classList.remove("show")
+        if (el != null && el.classList.contains("rich-text-box-show")) {
+            el.classList.remove("rich-text-box-show")
         }
         else {
-            el.classList.add("show")
+            el.classList.add("rich-text-box-show")
         }
     }
     bold() {
@@ -318,7 +319,6 @@ class RTBlazorfied {
                             range.selectNodeContents(sel.anchorNode);
                             sel.removeAllRanges();
                             sel.addRange(range);
-                            this.selectButtons(sel.anchorNode);
                         }
                     }
                     else {
@@ -341,9 +341,9 @@ class RTBlazorfied {
                             range.selectNodeContents(newElement);
                             sel.removeAllRanges();
                             sel.addRange(range);
-                            this.selectButtons(sel.anchorNode);
                         }
                     }
+                    this.selectButtons(sel.anchorNode);
                     this.closeDropdowns();
                     this.restorestate();
                     return;
@@ -399,9 +399,9 @@ class RTBlazorfied {
     }
     closeDropdowns() {
         /* Close the Dropdowns */
-        var dropdown = this.shadowRoot.querySelector('.dropdown-content');
-        if (dropdown != null && dropdown.classList.contains("show")) {
-            dropdown.classList.remove("show")
+        var dropdown = this.shadowRoot.querySelector('.rich-text-box-dropdown-content');
+        if (dropdown != null && dropdown.classList.contains("rich-text-box-show")) {
+            dropdown.classList.remove("rich-text-box-show")
         }
     }
     updateNode(type) {
@@ -411,6 +411,8 @@ class RTBlazorfied {
 
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
+
+            console.log(sel.anchorNode);
 
             // Check if the node has a style applied and remove it
             var el = this.getElementByStyle(sel.anchorNode, type);
@@ -450,12 +452,12 @@ class RTBlazorfied {
                         this.removeProperty(el, "text-indent", "40px");
                         break;
                 }
-                if (sel.anchorNode != null && sel.rangeCount != 0) {
-                    var range = document.createRange();
-                    range.selectNodeContents(sel.anchorNode);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
+                //if (sel.anchorNode != null && sel.rangeCount != 0) {
+                //    var range = document.createRange();
+                //    range.selectNodeContents(sel.anchorNode);
+                //    sel.removeAllRanges();
+                //    sel.addRange(range);
+                //}
                 this.selectButtons(el);
                 this.restorestate();
                 return;
@@ -556,12 +558,12 @@ class RTBlazorfied {
                         break;
                     default:
                 }
-                if (sel.anchorNode != null && sel.rangeCount != 0) {
-                    var range = document.createRange();
-                    range.selectNodeContents(sel.anchorNode);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
+                //if (sel.anchorNode != null && sel.rangeCount != 0) {
+                //    var range = document.createRange();
+                //    range.selectNodeContents(sel.anchorNode);
+                //    sel.removeAllRanges();
+                //    sel.addRange(range);
+                //}
                 this.selectButtons(sel.anchorNode);
                 this.restorestate();
                 return;
@@ -645,17 +647,16 @@ class RTBlazorfied {
                     element.replaceWith(element.textContent);
                 }
                 else {
-                    //element.insertAdjacentHTML("afterend", element.innerHTML);
-                    //element.remove();
+                    element.insertAdjacentHTML("afterend", element.innerHTML);
+                    element.remove();
 
-                    var fragment = document.createDocumentFragment();
+                    //var fragment = document.createDocumentFragment();
 
-                    while (element.firstChild) {
-                        fragment.appendChild(element.firstChild);
-                    }
-                    element.parentNode.insertBefore(fragment, element);
-                    element.parentNode.removeChild(element);
-
+                    //while (element.firstChild) {
+                    //    fragment.appendChild(element.firstChild);
+                    //}
+                    //element.parentNode.insertBefore(fragment, element);
+                    //element.parentNode.removeChild(element);
                 }
             }
             else {
@@ -688,15 +689,15 @@ class RTBlazorfied {
                 element.replaceWith(element.textContent);
             }
             else if (element.nodeName == "SPAN") {
-                //element.insertAdjacentHTML("afterend", element.innerHTML);
-                //element.remove();
-                var fragment = document.createDocumentFragment();
+                element.insertAdjacentHTML("afterend", element.innerHTML);
+                element.remove();
+                //var fragment = document.createDocumentFragment();
 
-                while (element.firstChild) {
-                    fragment.appendChild(element.firstChild);
-                }
-                element.parentNode.insertBefore(fragment, element);
-                element.parentNode.removeChild(element);
+                //while (element.firstChild) {
+                //    fragment.appendChild(element.firstChild);
+                //}
+                //element.parentNode.insertBefore(fragment, element);
+                //element.parentNode.removeChild(element);
             }
             else {
                 // No more styles. Since, this element may be required
@@ -960,7 +961,7 @@ class RTBlazorfied {
 
         while (el.parentNode) {
             /* Prevent selecting unwanted elements */
-            if (el.parentNode.nodeName == "A" && el.parentNode.classList.contains("menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
+            if (el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
             }
 

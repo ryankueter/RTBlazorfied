@@ -70,6 +70,10 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.BorderWidth = "1px";
         o.BorderStyle = "solid";
         o.BorderRadius = "10px 0px";
+        o.DropdownBackgroundColor = "#333333";
+        o.DropdownTextColor = "#FFFFFF";
+        o.DropdownBackgroundColorHover = "#777777";
+        o.DropdownTextColorHover = "#FFFFAA";
     });
     o.ButtonStyles(o =>
     {
