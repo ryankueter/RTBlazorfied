@@ -7,11 +7,11 @@ namespace RichTextBlazorfied;
 
 public interface IRTBlazorfiedOptions
 {
-    public void Toolbar(Action<RichTextboxToolbarOptions> style);
-    public void Button(Action<RichTextboxButtonOptions> style);
-    public void Editor(Action<RichTextboxEditorOptions> style);
-    public void Scrollbar(Action<RichTextboxScrollOptions> style);
-    public void Content(Action<RichTextboxContentOptions> style);
+    public void ToolbarStyles(Action<RichTextboxToolbarOptions> style);
+    public void ButtonStyles(Action<RichTextboxButtonOptions> style);
+    public void EditorStyles(Action<RichTextboxEditorOptions> style);
+    public void ScrollbarStyles(Action<RichTextboxScrollOptions> style);
+    public void ContentStyles(Action<RichTextboxContentOptions> style);
     public void ButtonVisibility(Action<RichTextboxButtonVisibilityOptions> style);
     internal RichTextboxToolbarOptions? GetToolbarOptions();
     internal RichTextboxButtonOptions? GetButtonOptions();

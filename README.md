@@ -63,7 +63,7 @@ Then add the options:
 ```csharp
 public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
 {
-    o.Toolbar(o =>
+    o.ToolbarStyles(o =>
     {
         o.BackgroundColor = "#00FF00";
         o.BorderColor = "#FF0000";
@@ -71,7 +71,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.BorderStyle = "solid";
         o.BorderRadius = "10px 0px";
     });
-    o.Button(o =>
+    o.ButtonStyles(o =>
     {
         o.TextColor = "#ff0000";
         o.TextSize = "30px";
@@ -85,7 +85,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.BorderRadius = "0px";
         o.BorderWidth = "1px";
     });
-    o.Editor(o =>
+    o.EditorStyles(o =>
     {
         o.Width = "500px";
         o.Height = "700px";
@@ -95,13 +95,13 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.BorderWidth = "10px";
         o.BorderColor = "#FF0000";
     });
-    o.Content(o =>
+    o.ContentStyles(o =>
     {
         o.ContentBoxShadow = "inset 0 0 7px #eee";
         o.BackgroundColor = "#FFFF99";
         o.TextColor = "#333";
     });
-    o.Scrollbar(o =>
+    o.ScrollbarStyles(o =>
     {
         o.Width = "5px";
         o.Opacity = "0.5";
