@@ -93,7 +93,6 @@ public partial class RTBlazorfied
             width: 100%;
             min-height: 25px;
             color: {{_contentTextColor}} !important;
-            
         }
 
         [contenteditable="true"] {
@@ -161,6 +160,8 @@ public partial class RTBlazorfied
 
         .rich-text-box-format-button {
           min-width: 140px;
+          padding: 4px;
+          margin: 4px;
         }
         .rich-text-box-format-content {
           min-width: 170px;
