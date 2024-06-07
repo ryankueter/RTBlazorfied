@@ -56,8 +56,27 @@ class RTBlazorfied {
         document.addEventListener('selectionchange', (e) => {
             this.selectButtons(this.shadowRoot.getSelection().anchorNode);
         });
-    }
 
+        /* Prevent the dropdowns from causing the text box from
+        losing focus. */
+        var dropdown = this.shadowRoot.querySelector('.dropdown-content');
+        dropdown.addEventListener('mousedown', function (event) {
+            event.preventDefault();
+        });
+
+    }
+    format(format) {
+        this.formatNode(format);
+    }
+    dropdown(id) {
+        var el = this.shadowRoot.getElementById(id);
+        if (el != null && el.classList.contains("show")) {
+            el.classList.remove("show")
+        }
+        else {
+            el.classList.add("show")
+        }
+    }
     bold() {
         this.updateNode("bold");
     }
@@ -271,15 +290,127 @@ class RTBlazorfied {
         selection.removeAllRanges();
         selection.addRange(range);
     }
+    formatNode(type) {
+        var sel, range;
+
+        this.backupstate();       
+
+        if (this.shadowRoot.getSelection()) {
+            sel = this.shadowRoot.getSelection();
+
+            // See if an element with matching content exists
+            // if it does, change or remove it
+            var element = this.getElementByContent(sel.anchorNode);
+            if (element != null) {
+                
+                if (this.isFormatElement(element)) {
+                    if (type == "none") {
+                        var fragment = document.createDocumentFragment();
+
+                        while (element.firstChild) {
+                            fragment.appendChild(element.firstChild);
+                        }
+                        element.parentNode.insertBefore(fragment, element);
+                        element.parentNode.removeChild(element);
+
+                        if (sel.anchorNode != null && sel.rangeCount != 0) {
+                            var range = document.createRange();
+                            range.selectNodeContents(sel.anchorNode);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                            this.selectButtons(sel.anchorNode);
+                        }
+                    }
+                    else {
+                        var newElement = document.createElement(type);
+                        newElement.innerHTML = element.innerHTML;
+
+                        // Copy styles
+                        var computedStyles = window.getComputedStyle(element);
+                        for (var i = 0; i < computedStyles.length; i++) {
+                            var styleName = computedStyles[i];
+                            var inlineStyleValue = element.style.getPropertyValue(styleName);
+                            if (inlineStyleValue !== "") {
+                                newElement.style[styleName] = inlineStyleValue;
+                            }
+                        }
+                        element.parentNode.replaceChild(newElement, element);
+
+                        if (newElement != null && sel.rangeCount != 0) {
+                            var range = document.createRange();
+                            range.selectNodeContents(newElement);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                            this.selectButtons(sel.anchorNode);
+                        }
+                    }
+                    this.closeDropdowns();
+                    this.restorestate();
+                    return;
+                }
+            }
+
+            if (sel.toString().length > 0) {                
+                var newElement;
+                switch (type) {
+                    case "p":
+                        newElement = document.createElement("p");
+                        break;
+                    case "h1":
+                        newElement = document.createElement("h1");
+                        break;
+                    case "h2":
+                        newElement = document.createElement("h2");
+                        break;
+                    case "h3":
+                        newElement = document.createElement("h3");
+                        break;
+                    case "h4":
+                        newElement = document.createElement("h4");
+                        break;
+                    case "h5":
+                        newElement = document.createElement("h5");
+                        break;
+                }
+                if (newElement != null && sel.rangeCount != 0) {
+                    range = sel.getRangeAt(0);
+                    newElement.appendChild(range.cloneContents());
+                    range.deleteContents();
+                    range.insertNode(newElement);
+                    range.selectNodeContents(newElement);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    this.selectButtons(sel.anchorNode);
+                }
+            }
+        }
+        this.closeDropdowns();
+        this.restorestate();
+    }
+    isFormatElement(element) {
+        if (element.nodeName == "P"
+            || element.nodeName == "H1"
+            || element.nodeName == "H2"
+            || element.nodeName == "H3"
+            || element.nodeName == "H4"
+            || element.nodeName == "H5") {
+            return true;
+        }
+    }
+    closeDropdowns() {
+        /* Close the Dropdowns */
+        var dropdown = this.shadowRoot.querySelector('.dropdown-content');
+        if (dropdown != null && dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show")
+        }
+    }
     updateNode(type) {
         var sel, range;
 
         this.backupstate();
 
-        if (this.shadowRoot.getSelection) {
+        if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
-
-            var savedSelection = this.saveSelection();
 
             // Check if the node has a style applied and remove it
             var el = this.getElementByStyle(sel.anchorNode, type);
@@ -319,7 +450,12 @@ class RTBlazorfied {
                         this.removeProperty(el, "text-indent", "40px");
                         break;
                 }
-                this.restoreSelection(savedSelection);
+                if (sel.anchorNode != null && sel.rangeCount != 0) {
+                    var range = document.createRange();
+                    range.selectNodeContents(sel.anchorNode);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
                 this.selectButtons(el);
                 this.restorestate();
                 return;
@@ -420,7 +556,12 @@ class RTBlazorfied {
                         break;
                     default:
                 }
-                this.restoreSelection(savedSelection);
+                if (sel.anchorNode != null && sel.rangeCount != 0) {
+                    var range = document.createRange();
+                    range.selectNodeContents(sel.anchorNode);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
                 this.selectButtons(sel.anchorNode);
                 this.restorestate();
                 return;
@@ -477,7 +618,7 @@ class RTBlazorfied {
                         break;
                     default:
                 }
-                if (sel.rangeCount != 0) {
+                if (newElement != null && sel.rangeCount != 0) {
                     range = sel.getRangeAt(0);
                     newElement.appendChild(range.cloneContents());
                     range.deleteContents();
@@ -494,8 +635,6 @@ class RTBlazorfied {
         this.restorestate();
     }
     removeProperty(element, property, value) {
-       
-
         // This should more generally consider all the styles
         if (this.styleCount(element) > 1) {
             element.style.removeProperty(property, value);
@@ -506,19 +645,23 @@ class RTBlazorfied {
                     element.replaceWith(element.textContent);
                 }
                 else {
-                    element.insertAdjacentHTML("afterend", element.innerHTML);
-                    element.remove();
+                    //element.insertAdjacentHTML("afterend", element.innerHTML);
+                    //element.remove();
+
+                    var fragment = document.createDocumentFragment();
+
+                    while (element.firstChild) {
+                        fragment.appendChild(element.firstChild);
+                    }
+                    element.parentNode.insertBefore(fragment, element);
+                    element.parentNode.removeChild(element);
+
                 }
             }
             else {
                 element.removeAttribute("style");
             }
-        }        
-
-        // Refresh the element
-        //var range = document.createRange();
-        //this.shadowRoot.getSelection().removeAllRanges();
-        //this.shadowRoot.getSelection().addRange(range);
+        }
     }
     addTextDecoration(element, decoration) {
         var currentDecorations = element.style.textDecoration;
@@ -545,8 +688,15 @@ class RTBlazorfied {
                 element.replaceWith(element.textContent);
             }
             else if (element.nodeName == "SPAN") {
-                element.insertAdjacentHTML("afterend", element.innerHTML);
-                element.remove();
+                //element.insertAdjacentHTML("afterend", element.innerHTML);
+                //element.remove();
+                var fragment = document.createDocumentFragment();
+
+                while (element.firstChild) {
+                    fragment.appendChild(element.firstChild);
+                }
+                element.parentNode.insertBefore(fragment, element);
+                element.parentNode.removeChild(element);
             }
             else {
                 // No more styles. Since, this element may be required
@@ -554,11 +704,6 @@ class RTBlazorfied {
                 element.removeAttribute("style");
             }
         }
-
-        // Refresh the element
-        var range = document.createRange();
-        this.shadowRoot.getSelection().removeAllRanges();
-        this.shadowRoot.getSelection().addRange(range);
     }
 
     // Gets the number of styles existing in an element
@@ -598,7 +743,7 @@ class RTBlazorfied {
 
             // Recurse into the closest node and return it
             if (el.nodeName != "#text" && el.nodeName != "#document") {
-                if (el.nodeName === "OL") {
+                if (el.nodeName === type) {
                     return el;
                 }
             }
@@ -807,9 +952,15 @@ class RTBlazorfied {
             link.classList.remove("selected");
         }
 
+        /* Menus */
+        var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
+        formatButton.innerText = "Format";
+
+        this.closeDropdowns();
+
         while (el.parentNode) {
-            /* Prevent recursion outside the editor */
-            if (el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
+            /* Prevent selecting unwanted elements */
+            if (el.parentNode.nodeName == "A" && el.parentNode.classList.contains("menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
             }
 
@@ -849,6 +1000,24 @@ class RTBlazorfied {
             }
             if (compStyles.getPropertyValue("text-indent") == "40px") {
                 indent.classList.add("selected");
+            }
+            if (el.parentNode.nodeName == "P") {
+                formatButton.innerText = 'Paragraph';
+            }
+            if (el.parentNode.nodeName == "H1") {
+                formatButton.innerText = 'Header 1';
+            }
+            if (el.parentNode.nodeName == "H2") {
+                formatButton.innerText = 'Header 2';
+            }
+            if (el.parentNode.nodeName == "H3") {
+                formatButton.innerText = 'Header 3';
+            }
+            if (el.parentNode.nodeName == "H4") {
+                formatButton.innerText = 'Header 4';
+            }
+            if (el.parentNode.nodeName == "H5") {
+                formatButton.innerText = 'Header 5';
             }
             if (el.parentNode.nodeName == "A") {
                 link.classList.add("selected");

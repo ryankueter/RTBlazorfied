@@ -34,9 +34,10 @@ public partial class RTBlazorfied
             border-width: {{_buttonBorderWidth}};
             border-color: {{_buttonBorderColor}};
             border-radius: {{_buttonBorderRadius}};
+            color: {{_buttonTextColor}};
+            font-size: {{_buttonTextSize}};
             outline: none;
             cursor: pointer;
-            padding: 3px 8px;
             transition: 0.3s;
             margin: 4px;
         }
@@ -139,6 +140,42 @@ public partial class RTBlazorfied
         .rich-text-box-scroll::-webkit-scrollbar-thumb:hover {
             background: {{_scrollThumbBackgroundHover}} !important;
         }
+
+        .dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f1f1f1;
+          border-style: {{_buttonBorderStyle}};
+          border-width: {{_buttonBorderWidth}};
+          border-color: {{_buttonBorderColor}};
+          max-height: 200px;
+          overflow: auto;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+
+        .format-button {
+          min-width: 160px;
+        }
+        format-content {
+          min-width: 160px;
+        }
+
+        .dropdown-content a {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+        }
+
+        .dropdown a:hover {background-color: #ddd;}
+
+        .show {display: block;}
         """;
 
     #region Styles
@@ -604,6 +641,15 @@ public partial class RTBlazorfied
     private async Task CreateLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "createLink", content_id);
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", content_id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", content_id);
+
+    private async Task Format(string id)
+    {
+        await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", content_id, id);
+    }
+    private async Task FormatText(string format)
+    {
+        await js.InvokeVoidAsync("RTBlazorfied_Method", "format", content_id, format);
+    }
     private async Task OpenCode()
     {
         if (Mode == "html")
