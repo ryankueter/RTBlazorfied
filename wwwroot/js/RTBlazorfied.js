@@ -301,53 +301,52 @@ class RTBlazorfied {
 
             // See if an element with matching content exists
             // if it does, change or remove it
-            var element = this.getElementByContent(sel.anchorNode);
+            var element = this.getElementByType(sel.anchorNode.parentNode, "Format");
             if (element != null) {
                 
-                if (this.isFormatElement(element)) {
-                    if (type == "none") {
-                        var fragment = document.createDocumentFragment();
+                //if (this.isFormatElement(element)) {
+                if (type == "none") {
+                    var fragment = document.createDocumentFragment();
 
-                        while (element.firstChild) {
-                            fragment.appendChild(element.firstChild);
-                        }
-                        element.parentNode.insertBefore(fragment, element);
-                        element.parentNode.removeChild(element);
-
-                        if (sel.anchorNode != null && sel.rangeCount != 0) {
-                            var range = document.createRange();
-                            range.selectNodeContents(sel.anchorNode);
-                            sel.removeAllRanges();
-                            sel.addRange(range);
-                        }
+                    while (element.firstChild) {
+                        fragment.appendChild(element.firstChild);
                     }
-                    else {
-                        var newElement = document.createElement(type);
-                        newElement.innerHTML = element.innerHTML;
+                    element.parentNode.insertBefore(fragment, element);
+                    element.parentNode.removeChild(element);
 
-                        // Copy styles
-                        var computedStyles = window.getComputedStyle(element);
-                        for (var i = 0; i < computedStyles.length; i++) {
-                            var styleName = computedStyles[i];
-                            var inlineStyleValue = element.style.getPropertyValue(styleName);
-                            if (inlineStyleValue !== "") {
-                                newElement.style[styleName] = inlineStyleValue;
-                            }
-                        }
-                        element.parentNode.replaceChild(newElement, element);
-
-                        if (newElement != null && sel.rangeCount != 0) {
-                            var range = document.createRange();
-                            range.selectNodeContents(newElement);
-                            sel.removeAllRanges();
-                            sel.addRange(range);
-                        }
+                    if (sel.anchorNode != null && sel.rangeCount != 0) {
+                        var range = document.createRange();
+                        range.selectNodeContents(sel.anchorNode);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
                     }
-                    this.selectButtons(sel.anchorNode);
-                    this.closeDropdowns();
-                    this.restorestate();
-                    return;
                 }
+                else {
+                    var newElement = document.createElement(type);
+                    newElement.innerHTML = element.innerHTML;
+
+                    // Copy styles
+                    var computedStyles = window.getComputedStyle(element);
+                    for (var i = 0; i < computedStyles.length; i++) {
+                        var styleName = computedStyles[i];
+                        var inlineStyleValue = element.style.getPropertyValue(styleName);
+                        if (inlineStyleValue !== "") {
+                            newElement.style[styleName] = inlineStyleValue;
+                        }
+                    }
+                    element.parentNode.replaceChild(newElement, element);
+
+                    if (newElement != null && sel.rangeCount != 0) {
+                        var range = document.createRange();
+                        range.selectNodeContents(newElement);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                }
+                this.selectButtons(sel.anchorNode);
+                this.closeDropdowns();
+                this.restorestate();
+                return;
             }
 
             if (sel.toString().length > 0) {                
@@ -411,8 +410,6 @@ class RTBlazorfied {
 
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
-
-            console.log(sel.anchorNode);
 
             // Check if the node has a style applied and remove it
             var el = this.getElementByStyle(sel.anchorNode, type);
@@ -744,8 +741,17 @@ class RTBlazorfied {
 
             // Recurse into the closest node and return it
             if (el.nodeName != "#text" && el.nodeName != "#document") {
-                if (el.nodeName === type) {
-                    return el;
+                switch (type) {
+                    case "Format":
+                        if (this.isFormatElement(el)) {
+                            return el;
+                        }
+                        break;
+                    case "Element":
+                        if (el.nodeName === type) {
+                            return el;
+                        }
+                        break;
                 }
             }
             el = el.parentNode;

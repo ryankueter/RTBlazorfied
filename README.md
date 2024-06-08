@@ -20,7 +20,7 @@ The editor also uses [Google's Font Icons](https://fonts.google.com/icons). It d
 Add the following reference to the end of your index.html file:
 
 ```html
-<script src="_content/RTBlazorfied/js/RTBlazorfied.js"></script>
+<script rel="prefetch" src="_content/RTBlazorfied/js/RTBlazorfied.js"></script>
 ```
 
 ### Add the Element
