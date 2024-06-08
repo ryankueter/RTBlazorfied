@@ -301,7 +301,13 @@ class RTBlazorfied {
 
             // See if an element with matching content exists
             // if it does, change or remove it
-            var element = this.getElementByType(sel.anchorNode.parentNode, "Format");
+            var element;
+            if (sel.anchorNode && sel.anchorNode.parentNode) {
+                element = this.getElementByType(sel.anchorNode.parentNode, "Format");
+            }
+            else {
+                element = this.getElementByContent(sel.anchorNode);
+            }
             if (element != null) {
                 
                 //if (this.isFormatElement(element)) {
