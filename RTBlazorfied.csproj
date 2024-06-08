@@ -11,11 +11,11 @@
 	  <Description>RTBlazorfied is a fast and easy way for developers to add a rich text box / html editor to their Blazor applications using C# and razor.</Description>
 	  <RepositoryUrl>https://github.com/ryankueter/RTBlazorfied</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
-	  <PackageReleaseNotes>Added the ability to format paragraphs and headers. Fixed minor bug.</PackageReleaseNotes>
+	  <PackageReleaseNotes>Added the ability to format paragraphs and headers. Small optimizations.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.19</Version>
-	  <AssemblyVersion>1.0.19</AssemblyVersion>
-	  <FileVersion>1.0.19</FileVersion>
+	  <Version>1.0.20</Version>
+	  <AssemblyVersion>1.0.20</AssemblyVersion>
+	  <FileVersion>1.0.20</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

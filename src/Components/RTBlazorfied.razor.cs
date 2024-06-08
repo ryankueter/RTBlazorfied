@@ -641,11 +641,10 @@ public partial class RTBlazorfied
         OpenEditorStyles = "rich-text-box-menu-item-special selected";
         OpenCodeStyles = "rich-text-box-menu-item-special";
 
-        await js.InvokeVoidAsync("RTBlazorfied_Initialize", content_id, shadow_id, toolbar_id, GetStyles());
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", content_id, Html);
+        await js.InvokeVoidAsync("RTBlazorfied_Initialize", content_id, shadow_id, toolbar_id, GetStyles(), Html);
     }
 
-    public async Task Reinitialize()
+    public async Task Reinitialize() 
     {
         if (Mode == "html")
         {
@@ -679,14 +678,10 @@ public partial class RTBlazorfied
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", content_id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", content_id);
 
-    private async Task Format(string id)
-    {
+    private async Task Format(string id) =>
         await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", content_id, id);
-    }
-    private async Task FormatText(string format)
-    {
+    private async Task FormatText(string format) =>
         await js.InvokeVoidAsync("RTBlazorfied_Method", "format", content_id, format);
-    }
     private async Task OpenCode()
     {
         if (Mode == "html")
@@ -695,8 +690,7 @@ public partial class RTBlazorfied
             IsDisabled = true;
             OpenEditorStyles = "rich-text-box-menu-item-special";
             OpenCodeStyles = "rich-text-box-menu-item-special selected";
-            var web = await js.InvokeAsync<string>("RTBlazorfied_Method", "html", content_id);
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", content_id, web);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", content_id);
         }
         else
         {
@@ -704,9 +698,7 @@ public partial class RTBlazorfied
             IsDisabled = false;
             OpenEditorStyles = "rich-text-box-menu-item-special selected";
             OpenCodeStyles = "rich-text-box-menu-item-special";
-            var plaintext = await js.InvokeAsync<string>("RTBlazorfied_Method", "plaintext", content_id);
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", content_id, plaintext);
-
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", content_id);
         }
     }
     #endregion

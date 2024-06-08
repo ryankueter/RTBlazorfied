@@ -1,8 +1,9 @@
 ﻿
 let editorInstances = {};
 
-function RTBlazorfied_Initialize(id, shadow_id, toolbar_id, styles) {
+function RTBlazorfied_Initialize(id, shadow_id, toolbar_id, styles, html) {
     editorInstances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles);
+    editorInstances[id].loadHtml(html);
 }
 
 function RTBlazorfied_Method(methodName, id, param) {
@@ -869,6 +870,14 @@ class RTBlazorfied {
 
         return null;
     }
+    getHtml() {
+        var html = this.html();
+        this.loadInnerText(html);
+    };
+    getCode() {
+        var plaintext = this.plaintext();
+        this.loadHtml(plaintext);
+    };
     html() {
         return this.content.innerHTML;
     };
