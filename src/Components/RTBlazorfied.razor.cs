@@ -160,7 +160,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-format-button {
           min-width: 180px;
-          padding: 3px;
+          padding: 4px;
           margin: 4px;
         }
         .rich-text-box-format-content {
