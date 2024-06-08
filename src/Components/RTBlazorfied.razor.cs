@@ -647,7 +647,14 @@ public partial class RTBlazorfied
 
     public async Task Reinitialize()
     {
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", content_id, Html);
+        if (Mode == "html")
+        {
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", content_id, Html);
+        }
+        else
+        {
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", content_id, Html);
+        }
     }
 
     #region Buttons

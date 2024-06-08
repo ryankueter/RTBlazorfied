@@ -116,6 +116,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
     });
     o.ButtonVisibility(o =>
     {
+        o.Format = false;
         o.Bold = false;
         o.Italic = false;
         o.Underline = false;
