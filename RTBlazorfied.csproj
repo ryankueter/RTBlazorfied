@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added font and font-size dropdowns. Small minor bug fixes.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.25</Version>
-	  <AssemblyVersion>1.0.25</AssemblyVersion>
-	  <FileVersion>1.0.25</FileVersion>
+	  <Version>1.0.26</Version>
+	  <AssemblyVersion>1.0.26</AssemblyVersion>
+	  <FileVersion>1.0.26</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

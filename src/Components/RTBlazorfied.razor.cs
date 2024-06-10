@@ -674,25 +674,52 @@ public partial class RTBlazorfied
     {
         "None",
         "Arial",
+        "Arial Narrow",
+        "Baskerville",
+        "Brush Script",
+        "Calibri",
+        "Cambria",
+        "Candara",
+        "Century Gothic",
+        "Claude Garamond",
+        "Comic Sans MS",
+        "Copperplate",
+        "Courier",
+        "Didot",
         "Georgia",
+        "Gill Sans",
         "Helvetica",
+        "Impact",
+        "Lucida Bright",
         "Monospace",
+        "Optima",
+        "Palatino",
         "Segoe UI",
         "Tahoma",
         "Times New Roman",
+        "Trebuchet MS",
         "Verdana"
     };
     private async Task Font(string fontName) => await js.InvokeVoidAsync("RTBlazorfied_Method", "font", content_id, fontName);
     private List<string> Sizes { get; set; } = new List<string>
     {
         "None",
+        "8",
+        "9",
         "10",
-        "13",
+        "11",
+        "12",
+        "14",
         "16",
         "18",
+        "20",
+        "22",
         "24",
-        "32",
-        "48"
+        "26",
+        "28",
+        "36",
+        "48",
+        "72"
     };
     private async Task Size(string size) => await js.InvokeVoidAsync("RTBlazorfied_Method", "size", content_id, size == "None" ? size : $"{size}px");
     #endregion

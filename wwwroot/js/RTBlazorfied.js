@@ -54,6 +54,7 @@ class RTBlazorfied {
     }
     format(format) {
         this.formatNode(format);
+        this.closeDropdown("blazing-rich-text-format-button-dropdown");
     }
     dropdown(id) {
         var el = this.shadowRoot.getElementById(id);
@@ -67,9 +68,11 @@ class RTBlazorfied {
     }
     font(style) {
         this.updateNode("font", style);
+        this.closeDropdown("blazing-rich-text-font-button-dropdown");
     }
     size(size) {
         this.updateNode("size", size);
+        this.closeDropdown("blazing-rich-text-size-button-dropdown");
     }
     bold() {
         this.updateNode("bold");
@@ -132,6 +135,11 @@ class RTBlazorfied {
 
         this.restorestate();
     };
+
+    closeDropdown(id) {
+        var e = this.shadowRoot.getElementById(id);
+        e.classList.remove("rich-text-box-show")
+    }
 
     removeEmptyNodes() {
         var div = this.shadowRoot.getElementById(this.id);
@@ -674,12 +682,10 @@ class RTBlazorfied {
                     range.selectNodeContents(newElement);
                     sel.removeAllRanges();
                     sel.addRange(range);
-
-                    this.selectButtons(sel.anchorNode);
                 }
             }
         }
-
+        this.selectButtons(sel.anchorNode);
         this.restorestate();
     }
     removeProperty(element, property, value) {
@@ -1086,7 +1092,7 @@ class RTBlazorfied {
                 indent.classList.add("selected");
             }
             if (el != null && el.style != null && el.style.fontFamily) {
-                fontButton.innerText = el.style.fontFamily;
+                fontButton.innerText = el.style.fontFamily.replace(/^"(.*)"$/, '$1');
             }
             if (el != null && el.style != null && el.style.fontSize) {
                 sizeButton.innerText = el.style.fontSize;
