@@ -39,7 +39,7 @@ public partial class RTBlazorfied
             outline: none;
             cursor: pointer;
             transition: 0.3s;
-            margin: 4px;
+            margin: 4px 1px;
         }
         .rich-text-box-tool-bar button:hover {
             background-color: {{_buttonBackgroundColorHover}};
@@ -116,9 +116,9 @@ public partial class RTBlazorfied
             border: none !important;
             outline: none;
             cursor: pointer;
-            padding: 3px 8px;
+            padding: 3px 4px;
             transition: 0.3s;
-            margin: 4px;
+            margin: 4px 1px;
         }
         .rich-text-box-divider-btn[disabled], .rich-text-box-divider-btn[disabled]:hover, .rich-text-box-divider-btn[disabled]:focus, .rich-text-box-divider-btn[disabled]:active {
             background: unset;
@@ -128,10 +128,10 @@ public partial class RTBlazorfied
         .rich-text-box-divider {
             min-height: 25px;
             height: {{_buttonTextSize}};
-            width: 1px;
+            width: .5px;
             background-color: {{_buttonTextColor}};
             display: block;
-            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: .5px solid rgba(255, 255, 255, 0.6);
             opacity: .5;
         }
         .rich-text-box-scroll::-webkit-scrollbar {
@@ -169,27 +169,27 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-format-button {
-          min-width: 180px;
-          padding: 4px;
-          margin: 4px;
+          min-width: 80px;
+          padding: 6px 10px;
+          margin: 6px;
         }
         .rich-text-box-format-content {
           min-width: 180px;
         }
 
         .rich-text-box-font-button {
-          min-width: 180px;
-          padding: 4px;
-          margin: 4px;
+          min-width: 80px;
+          padding: 6px 10px;
+          margin: 6px;
         }
         .rich-text-box-font-content {
           min-width: 180px;
         }
 
         .rich-text-box-size-button {
-          min-width: 80px;
-          padding: 4px;
-          margin: 4px;
+          min-width: 50px;
+          padding: 6px 10px;
+          margin: 6px;
         }
         .rich-text-box-size-content {
           min-width: 80px;
@@ -224,19 +224,19 @@ public partial class RTBlazorfied
 
     // Buttons
     private string? _buttonTextColor { get; set; } = "#000";
-    private string? _buttonTextSize { get; set; } = "20px";
+    private string? _buttonTextSize { get; set; } = "15px";
     private string? _buttonBackgroundColor { get; set; } = "inherit";
-    private string? _buttonBackgroundColorHover { get; set; } = "#DDDDDD";
-    private string? _buttonBackgroundColorSelected { get; set; } = "#CCCCCC";
-    private string? _buttonBorderRadius { get; set; } = "10px";
+    private string? _buttonBackgroundColorHover { get; set; } = "#DDD";
+    private string? _buttonBackgroundColorSelected { get; set; } = "#CCC";
+    private string? _buttonBorderRadius { get; set; } = "5px";
     private string? _buttonBorderStyle { get; set; } = "none";
     private string? _buttonBorderWidth { get; set; } = "0px";
-    private string? _buttonBorderColor { get; set; } = "inherit";
+    private string? _buttonBorderColor { get; set; } = "#AAA";
     private string? _buttonBorderColorHover { get; set; } = "inherit";
     private string? _buttonBorderColorSelected { get; set; } = "inherit";
     // Content
-    private string? _contentBackgroundColor { get; set; } = "#FFFFFF";
-    private string? _contentTextColor { get; set; } = "#000000";
+    private string? _contentBackgroundColor { get; set; } = "#FFF";
+    private string? _contentTextColor { get; set; } = "#000";
     private string? _contentBoxShadow { get; set; } = "none";
 
     // Editor
