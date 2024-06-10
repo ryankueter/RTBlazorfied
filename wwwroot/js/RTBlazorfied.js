@@ -944,6 +944,7 @@ class RTBlazorfied {
         else {
             element.innerHTML = "";
         }
+        this.selectButtons(element);
     };
     loadInnerText(text) {
         var element = this.content;
@@ -954,6 +955,7 @@ class RTBlazorfied {
         else {
             element.innerText = "";
         }
+        this.selectButtons(element);
     };
     plaintext() {
         var element = this.content;
