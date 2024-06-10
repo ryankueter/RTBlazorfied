@@ -19,11 +19,11 @@ public partial class RTBlazorfied
     private string GetStyles() =>
         $$"""
         .rich-text-box-tool-bar {
-            background-color: {{_toolbarBackgroundColor}} !important;
-            border-style: {{_toolbarBorderStyle}} !important;
-            border-width: {{_toolbarBorderWidth}} !important;
+            background-color: {{_toolbarBackgroundColor}};
+            border-style: {{_toolbarBorderStyle}};
+            border-width: {{_toolbarBorderWidth}};
             border-color: {{_toolbarBorderColor}};
-            border-radius: {{_toolbarBorderRadius}} !important;
+            border-radius: {{_toolbarBorderRadius}};
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
@@ -78,10 +78,10 @@ public partial class RTBlazorfied
         .rich-text-box-container {
             resize: both;
             overflow: hidden;
-            border-style: {{_editorBorderStyle}} !important;
-            border-width: {{_editorBorderWidth}} !important;
-            border-color: {{_editorBorderColor}} !important;
-            border-radius: {{_editorBorderRadius}} !important;
+            border-style: {{_editorBorderStyle}};
+            border-width: {{_editorBorderWidth}};
+            border-color: {{_editorBorderColor}};
+            border-radius: {{_editorBorderRadius}};
             box-shadow: {{_editorBoxShadow}};
             width: {{_editorWidth}};
             height: {{_editorHeight}};
@@ -94,14 +94,14 @@ public partial class RTBlazorfied
             overflow: auto;
             display: flex;
             flex-direction: row;
-            background-color: {{_contentBackgroundColor}} !important;
+            background-color: {{_contentBackgroundColor}};
             box-shadow: {{_contentBoxShadow}};
         }
         .rich-text-box-content {
             padding: 10px;
             width: 100%;
             min-height: 25px;
-            color: {{_contentTextColor}} !important;
+            color: {{_contentTextColor}};
         }
 
         [contenteditable="true"] {
@@ -127,26 +127,26 @@ public partial class RTBlazorfied
         }
         .rich-text-box-divider {
             min-height: 25px;
-            height: {{_buttonTextSize}} !important;
+            height: {{_buttonTextSize}};
             width: 1px;
-            background-color: {{_buttonTextColor}} !important;
+            background-color: {{_buttonTextColor}};
             display: block;
             border-left: 1px solid rgba(255, 255, 255, 0.6);
             opacity: .5;
         }
         .rich-text-box-scroll::-webkit-scrollbar {
-            width: {{_scrollWidth}} !important;
-            opacity: {{_scrollOpacity}} !important;
+            width: {{_scrollWidth}};
+            opacity: {{_scrollOpacity}};
         }
         .rich-text-box-scroll::-webkit-scrollbar-track {
-            background-color: {{_scrollBackgroundColor}} !important;
+            background-color: {{_scrollBackgroundColor}};
         }
         .rich-text-box-scroll::-webkit-scrollbar-thumb {
-            background: {{_scrollThumbBackgroundHover}} !important;
-            border-radius: {{_scrollThumbBorderRadius}} !important;
+            background: {{_scrollThumbBackgroundHover}};
+            border-radius: {{_scrollThumbBorderRadius}};
         }
         .rich-text-box-scroll::-webkit-scrollbar-thumb:hover {
-            background: {{_scrollThumbBackgroundHover}} !important;
+            background: {{_scrollThumbBackgroundHover}};
         }
 
         .rich-text-box-dropdown {
@@ -161,6 +161,7 @@ public partial class RTBlazorfied
           border-style: {{_buttonBorderStyle}};
           border-width: {{_buttonBorderWidth}};
           border-color: {{_buttonBorderColor}};
+          border-radius: 5px;
           max-height: 200px;
           overflow: auto;
           box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
