@@ -1,23 +1,8 @@
-﻿
-let editorInstances = {};
-
-function RTBlazorfied_Initialize(id, shadow_id, toolbar_id, styles, html) {
-    editorInstances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles);
-    editorInstances[id].loadHtml(html);
-}
-
-function RTBlazorfied_Method(methodName, id, param) {
-    var editorInstance = editorInstances[id];
-    if (editorInstance && typeof editorInstance[methodName] === 'function') {
-        if (param != null) {
-            return editorInstance[methodName](param);
-        }
-        else {
-            return editorInstance[methodName]();
-        }
-    }
-}
-
+﻿/**
+ * Author: Ryan A. Kueter
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 class RTBlazorfied {
     constructor(id, shadow_id, toolbar_id, styles) {
         this.id = id;
@@ -60,12 +45,12 @@ class RTBlazorfied {
 
         /* Prevent the dropdowns from causing the text box from
         losing focus. */
-        var dropdown = this.shadowRoot.querySelector('.rich-text-box-dropdown-content');
-        if (dropdown != null) {
+        var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
+        dropdowns.forEach(function (dropdown) {
             dropdown.addEventListener('mousedown', function (event) {
                 event.preventDefault();
             });
-        }      
+        });
     }
     format(format) {
         this.formatNode(format);
@@ -76,8 +61,15 @@ class RTBlazorfied {
             el.classList.remove("rich-text-box-show")
         }
         else {
+            this.closeDropdowns();
             el.classList.add("rich-text-box-show")
         }
+    }
+    font(style) {
+        this.updateNode("font", style);
+    }
+    size(size) {
+        this.updateNode("size", size);
     }
     bold() {
         this.updateNode("bold");
@@ -405,12 +397,14 @@ class RTBlazorfied {
     }
     closeDropdowns() {
         /* Close the Dropdowns */
-        var dropdown = this.shadowRoot.querySelector('.rich-text-box-dropdown-content');
-        if (dropdown != null && dropdown.classList.contains("rich-text-box-show")) {
-            dropdown.classList.remove("rich-text-box-show")
-        }
+        var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
+        dropdowns.forEach(function (dropdown) {
+            if (dropdown.classList.contains("rich-text-box-show")) {
+                dropdown.classList.remove('rich-text-box-show');
+            }
+        });
     }
-    updateNode(type) {
+    updateNode(type, value) {
         var sel, range;
 
         this.backupstate();
@@ -419,59 +413,99 @@ class RTBlazorfied {
             sel = this.shadowRoot.getSelection();
 
             // Check if the node has a style applied and remove it
-            var el = this.getElementByStyle(sel.anchorNode, type);
-            if (el != null) {
-                switch (type) {
-                    case "bold":
-                        this.removeProperty(el, "font-weight", "bold");
-                        break;
-                    case "italic":
-                        this.removeProperty(el, "font-style", "italic");
-                        break;
-                    case "underline":
-                        this.removeTextDecoration(el, "underline");
-                        break;
-                    case "line-through":
-                        this.removeTextDecoration(el, "line-through");
-                        break;
-                    case "subscript":
-                        this.removeProperty(el, "vertical-align", "sub");
-                        break;
-                    case "superscript":
-                        this.removeProperty(el, "vertical-align", "super");
-                        break;
-                    case "alignleft":
-                        this.removeProperty(el, "text-align", "left");
-                        break;
-                    case "aligncenter":
-                        this.removeProperty(el, "text-align", "center");
-                        break;
-                    case "alignright":
-                        this.removeProperty(el, "text-align", "right");
-                        break;
-                    case "alignjustify":
-                        this.removeProperty(el, "text-align", "justify");
-                        break;
-                    case "indent":
-                        this.removeProperty(el, "text-indent", "40px");
-                        break;
+            if (sel.toString().length == 0) {
+                var el = this.getElementByStyle(sel.anchorNode, type, value);
+                if (el != null) {
+                    switch (type) {
+                        case "font":
+                            if (value == "None") {
+                                this.removeProperty(el, "font-family");
+                            }
+                            else {
+                                el.style.setProperty("font-family", value);
+                            }
+                            break;
+                        case "size":
+                            if (value == "None") {
+                                this.removeProperty(el, "font-size");
+                            }
+                            else {
+                                el.style.setProperty("font-size", value);
+                            }
+                            break;
+                        case "bold":
+                            //this.removeProperty(el, "font-weight", "bold");
+                            if (el.style.fontWeight == "bold") {
+                                this.removeProperty(el, "font-weight", "bold");
+                            }
+                            else {
+                                el.style.setProperty("font-weight", "bold");
+                            }
+                            break;
+                        case "italic":
+                            this.removeProperty(el, "font-style", "italic");
+                            break;
+                        case "underline":
+                            this.removeTextDecoration(el, "underline");
+                            break;
+                        case "line-through":
+                            this.removeTextDecoration(el, "line-through");
+                            break;
+                        case "subscript":
+                            this.removeProperty(el, "vertical-align", "sub");
+                            break;
+                        case "superscript":
+                            this.removeProperty(el, "vertical-align", "super");
+                            break;
+                        case "alignleft":
+                            this.removeProperty(el, "text-align", "left");
+                            break;
+                        case "aligncenter":
+                            this.removeProperty(el, "text-align", "center");
+                            break;
+                        case "alignright":
+                            this.removeProperty(el, "text-align", "right");
+                            break;
+                        case "alignjustify":
+                            this.removeProperty(el, "text-align", "justify");
+                            break;
+                        case "indent":
+                            this.removeProperty(el, "text-indent", "40px");
+                            break;
+                    }
+                    //if (sel.anchorNode != null && sel.rangeCount != 0) {
+                    //    var range = document.createRange();
+                    //    range.selectNodeContents(sel.anchorNode);
+                    //    sel.removeAllRanges();
+                    //    sel.addRange(range);
+                    //}
+                    this.selectButtons(el);
+                    this.restorestate();
+                    return;
                 }
-                //if (sel.anchorNode != null && sel.rangeCount != 0) {
-                //    var range = document.createRange();
-                //    range.selectNodeContents(sel.anchorNode);
-                //    sel.removeAllRanges();
-                //    sel.addRange(range);
-                //}
-                this.selectButtons(el);
-                this.restorestate();
-                return;
             }
-
+            
             // See if an element with matching content exists
             // if it does, change or remove it
             var element = this.getElementByContent(sel.anchorNode);
             if (element != null) {
                 switch (type) {
+                    case "font":
+                        if (value == "None") {
+                            this.removeProperty(element, "font-family", value);
+                        }
+                        else {
+                            element.style.setProperty("font-family", value);
+                        }
+                        break;
+                    case "size":
+                        if (value == "None") {
+                            this.removeProperty(element, "font-size");
+                        }
+                        else {
+                            element.style.setProperty("font-size", value);
+                        }
+                        break;
                     case "bold":
                         if (element.style.fontWeight == "bold") {
                             this.removeProperty(element, "font-weight", "bold");
@@ -575,9 +609,17 @@ class RTBlazorfied {
 
             // Insert a new node
             // Make certain the element has content
-            if (sel.toString().length > 0) {
+            if (sel.toString().length > 0 && value != "None") {
                 var newElement;
                 switch (type) {
+                    case "font":
+                        newElement = document.createElement("span");
+                        newElement.style.fontFamily = value;
+                        break;
+                    case "size":
+                        newElement = document.createElement("span");
+                        newElement.style.fontSize = value;
+                        break;
                     case "bold":
                         newElement = document.createElement("span");
                         newElement.style.fontWeight = "bold";
@@ -730,6 +772,8 @@ class RTBlazorfied {
             if (el.style.textAlign == "right") { n++; }
             if (el.style.textAlign == "justify") { n++; }
             if (el.style.textIndent == "40px") { n++; }
+            if (el.style.fontFamily != null) { n++; }
+            if (el.style.fontSize != null) { n++; }
         }
         return n;
     }
@@ -792,7 +836,7 @@ class RTBlazorfied {
         return null;
     }
     /* Get an element by style */
-    getElementByStyle(el, type) {
+    getElementByStyle(el, type, value) {
         if (el == null) {
             return null;
         }
@@ -858,6 +902,16 @@ class RTBlazorfied {
                         break;
                     case "indent":
                         if (el.style.textIndent != null && el.style.textIndent == "40px") {
+                            return el;
+                        }
+                        break;
+                    case "font":
+                        if (el.style.fontFamily != null) {
+                            return el;
+                        }
+                        break;
+                    case "size":
+                        if (el.style.fontSize != null) {
                             return el;
                         }
                         break;
@@ -978,6 +1032,12 @@ class RTBlazorfied {
         var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
         formatButton.innerText = "Format";
 
+        var fontButton = this.shadowRoot.getElementById("blazing-rich-text-font-button");
+        fontButton.innerText = "Font";
+
+        var sizeButton = this.shadowRoot.getElementById("blazing-rich-text-size-button");
+        sizeButton.innerText = "Size";
+
         this.closeDropdowns();
 
         while (el.parentNode) {
@@ -1023,6 +1083,12 @@ class RTBlazorfied {
             if (compStyles.getPropertyValue("text-indent") == "40px") {
                 indent.classList.add("selected");
             }
+            if (el != null && el.style != null && el.style.fontFamily) {
+                fontButton.innerText = el.style.fontFamily;
+            }
+            if (el != null && el.style != null && el.style.fontSize) {
+                sizeButton.innerText = el.style.fontSize;
+            }
             if (el.parentNode.nodeName == "P") {
                 formatButton.innerText = 'Paragraph';
             }
@@ -1050,5 +1116,24 @@ class RTBlazorfied {
         }
 
         return null;
+    }
+}
+
+let RTBlazorfied_Instances = {};
+
+function RTBlazorfied_Initialize(id, shadow_id, toolbar_id, styles, html) {
+    RTBlazorfied_Instances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles);
+    RTBlazorfied_Instances[id].loadHtml(html);
+}
+
+function RTBlazorfied_Method(methodName, id, param) {
+    var editorInstance = RTBlazorfied_Instances[id];
+    if (editorInstance && typeof editorInstance[methodName] === 'function') {
+        if (param != null) {
+            return editorInstance[methodName](param);
+        }
+        else {
+            return editorInstance[methodName]();
+        }
     }
 }

@@ -62,8 +62,17 @@ public partial class RTBlazorfied
         .rich-text-box-menu-item {
 
         }
+
         .rich-text-box-menu-item-special {
 
+        }
+
+        .rich-text-box-menu-item svg, .rich-text-box-menu-item-special svg {
+          display: block;
+          height: auto;
+          width: auto;
+          max-height: 100%;
+          max-width: 100%;
         }
 
         .rich-text-box-container {
@@ -166,6 +175,25 @@ public partial class RTBlazorfied
         .rich-text-box-format-content {
           min-width: 180px;
         }
+
+        .rich-text-box-font-button {
+          min-width: 180px;
+          padding: 4px;
+          margin: 4px;
+        }
+        .rich-text-box-font-content {
+          min-width: 180px;
+        }
+
+        .rich-text-box-size-button {
+          min-width: 80px;
+          padding: 4px;
+          margin: 4px;
+        }
+        .rich-text-box-size-content {
+          min-width: 80px;
+        }
+
         .rich-text-box-dropdown-content a {
           color: {{_toolbarDropdownTextColor}};
           padding: 12px 16px;
@@ -253,7 +281,7 @@ public partial class RTBlazorfied
     [Parameter]
     public Action<IRTBlazorfiedOptions>? Options { get; set; }
     private RichTextboxOptions _options { get; set; } = new();
-
+    
     #region Options
     private void LoadOptions()
     {
@@ -266,7 +294,10 @@ public partial class RTBlazorfied
     }
 
     #region ButtonVisibility
+    private bool? _font = true;
+    private bool? _size = true;
     private bool? _format = true;
+    private bool? _textstylesdivider = false;
     private bool? _bold = true;
     private bool? _italic = true;
     private bool? _underline = true;
@@ -295,6 +326,7 @@ public partial class RTBlazorfied
 
         if (buttons is null)
         {
+            _textstylesdivider = true;
             _formatdivider = true;
             _aligndivider = true;
             _actiondivider = true;
@@ -302,9 +334,27 @@ public partial class RTBlazorfied
         }
         else
         {
+            if (buttons.Font is not null)
+            {
+                _font = buttons.Font;
+            }
+            if (buttons.Size is not null)
+            {
+                _size = buttons.Size;
+            }
             if (buttons.Format is not null)
             {
                 _format = buttons.Format;
+            }
+
+            if (buttons.Font is null
+                || buttons.Font == true
+                || buttons.Size is null
+                || buttons.Size == true
+                || buttons.Format is null
+                || buttons.Format == true)
+            {
+                _textstylesdivider = true;
             }
 
             if (buttons.Bold is not null)
@@ -621,6 +671,34 @@ public partial class RTBlazorfied
     }
     #endregion
 
+    #region Fonts
+    private List<string> Fonts { get; set; } = new List<string>
+    {
+        "None",
+        "Arial",
+        "Georgia",
+        "Helvetica",
+        "Monospace",
+        "Segoe UI",
+        "Tahoma",
+        "Times New Roman",
+        "Verdana"
+    };
+    private async Task Font(string fontName) => await js.InvokeVoidAsync("RTBlazorfied_Method", "font", content_id, fontName);
+    private List<string> Sizes { get; set; } = new List<string>
+    {
+        "None",
+        "10",
+        "13",
+        "16",
+        "18",
+        "24",
+        "32",
+        "48"
+    };
+    private async Task Size(string size) => await js.InvokeVoidAsync("RTBlazorfied_Method", "size", content_id, size == "None" ? size : $"{size}px");
+    #endregion
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -678,7 +756,7 @@ public partial class RTBlazorfied
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", content_id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", content_id);
 
-    private async Task Format(string id) =>
+    private async Task OpenDropdown(string id) =>
         await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", content_id, id);
     private async Task FormatText(string format) =>
         await js.InvokeVoidAsync("RTBlazorfied_Method", "format", content_id, format);

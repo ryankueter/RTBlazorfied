@@ -1,10 +1,38 @@
 ﻿@namespace RichTextBlazorfied
 
 <div id="@toolbar_id" class="rich-text-box-tool-bar">
+    @if (_font == true)
+    {
+        <div class="rich-text-box-dropdown">
+            <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-menu-item rich-text-box-font-button" disabled="@IsDisabled">
+                Font
+            </button>
+            <div id="blazing-rich-text-font-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-font-content rich-text-box-scroll">
+                @foreach (var font in Fonts)
+                {
+                    <a class="rich-text-box-menu-item" style="font-family: @font; cursor: pointer" @onclick='() => Font(font)'>@font</a>
+                }
+            </div>
+        </div>
+    }
+    @if (_size == true)
+    {
+        <div class="rich-text-box-dropdown">
+            <button id="blazing-rich-text-size-button" title="Size" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-menu-item rich-text-box-size-button" disabled="@IsDisabled">
+                Size
+            </button>
+            <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
+                @foreach (var size in Sizes)
+                {
+                    <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => Size(size)'>@size</a>
+                }
+            </div>
+        </div>
+    }    
     @if (_format == true)
     {
         <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-format-button" title="Format" @onclick='() => Format("blazing-rich-text-format-button-dropdown")' class="rich-text-box-menu-item rich-text-box-format-button" disabled="@IsDisabled">
+            <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-menu-item rich-text-box-format-button" disabled="@IsDisabled">
                 Format
             </button>
             <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
@@ -17,6 +45,12 @@
                 <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
             </div>
         </div>
+    }
+    @if (_textstylesdivider == true)
+    {
+        <button class="rich-text-box-divider-btn" disabled>
+            <div class="rich-text-box-divider"></div>
+        </button>
     }
     @if (_bold == true)
     {

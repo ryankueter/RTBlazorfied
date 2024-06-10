@@ -7,6 +7,8 @@ namespace RichTextBlazorfied;
 
 public class RichTextboxButtonVisibilityOptions
 {
+    public bool? Font { get; set; }
+    public bool? Size { get; set; }
     public bool? Format { get; set; }
     public bool? Bold { get; set; }
     public bool? Italic { get; set; }
