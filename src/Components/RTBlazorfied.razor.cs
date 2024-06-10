@@ -128,7 +128,6 @@ public partial class RTBlazorfied
         .rich-text-box-divider {
             min-height: 25px;
             height: {{_buttonTextSize}};
-            width: .5px;
             background-color: {{_buttonTextColor}};
             display: block;
             border-left: .5px solid rgba(255, 255, 255, 0.6);
@@ -169,7 +168,6 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-format-button {
-          min-width: 80px;
           padding: 6px 10px;
           margin: 6px;
         }
@@ -178,7 +176,6 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-font-button {
-          min-width: 80px;
           padding: 6px 10px;
           margin: 6px;
         }
@@ -187,7 +184,6 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-size-button {
-          min-width: 50px;
           padding: 6px 10px;
           margin: 6px;
         }
@@ -197,7 +193,8 @@ public partial class RTBlazorfied
 
         .rich-text-box-dropdown-content a {
           color: {{_toolbarDropdownTextColor}};
-          padding: 12px 16px;
+          font-size: 15px;
+          padding: 10px 14px;
           text-decoration: none;
           display: block;
         }
@@ -224,7 +221,7 @@ public partial class RTBlazorfied
 
     // Buttons
     private string? _buttonTextColor { get; set; } = "#000";
-    private string? _buttonTextSize { get; set; } = "15px";
+    private string? _buttonTextSize { get; set; } = "16px";
     private string? _buttonBackgroundColor { get; set; } = "inherit";
     private string? _buttonBackgroundColorHover { get; set; } = "#DDD";
     private string? _buttonBackgroundColorSelected { get; set; } = "#CCC";
