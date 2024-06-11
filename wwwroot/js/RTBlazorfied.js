@@ -420,82 +420,13 @@ class RTBlazorfied {
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
 
-            // Check if the node has a style applied and remove it
+            var element;
             if (sel.toString().length == 0) {
-                var el = this.getElementByStyle(sel.anchorNode, type, value);
-                if (el != null) {
-                    switch (type) {
-                        case "font":
-                            if (value == "None") {
-                                this.removeProperty(el, "font-family");
-                            }
-                            else {
-                                el.style.setProperty("font-family", value);
-                            }
-                            break;
-                        case "size":
-                            if (value == "None") {
-                                this.removeProperty(el, "font-size");
-                            }
-                            else {
-                                el.style.setProperty("font-size", value);
-                            }
-                            break;
-                        case "bold":
-                            //this.removeProperty(el, "font-weight", "bold");
-                            if (el.style.fontWeight == "bold") {
-                                this.removeProperty(el, "font-weight", "bold");
-                            }
-                            else {
-                                el.style.setProperty("font-weight", "bold");
-                            }
-                            break;
-                        case "italic":
-                            this.removeProperty(el, "font-style", "italic");
-                            break;
-                        case "underline":
-                            this.removeTextDecoration(el, "underline");
-                            break;
-                        case "line-through":
-                            this.removeTextDecoration(el, "line-through");
-                            break;
-                        case "subscript":
-                            this.removeProperty(el, "vertical-align", "sub");
-                            break;
-                        case "superscript":
-                            this.removeProperty(el, "vertical-align", "super");
-                            break;
-                        case "alignleft":
-                            this.removeProperty(el, "text-align", "left");
-                            break;
-                        case "aligncenter":
-                            this.removeProperty(el, "text-align", "center");
-                            break;
-                        case "alignright":
-                            this.removeProperty(el, "text-align", "right");
-                            break;
-                        case "alignjustify":
-                            this.removeProperty(el, "text-align", "justify");
-                            break;
-                        case "indent":
-                            this.removeProperty(el, "text-indent", "40px");
-                            break;
-                    }
-                    //if (sel.anchorNode != null && sel.rangeCount != 0) {
-                    //    var range = document.createRange();
-                    //    range.selectNodeContents(sel.anchorNode);
-                    //    sel.removeAllRanges();
-                    //    sel.addRange(range);
-                    //}
-                    this.selectButtons(el);
-                    this.restorestate();
-                    return;
-                }
+                element =  this.getElement(sel.anchorNode);
             }
-            
-            // See if an element with matching content exists
-            // if it does, change or remove it
-            var element = this.getElementByContent(sel.anchorNode);
+            else {
+                element = this.getElementByContent(sel.anchorNode);
+            }
             if (element != null) {
                 switch (type) {
                     case "font":
@@ -532,7 +463,7 @@ class RTBlazorfied {
                         break;
                     case "underline":
                         if (element.style.textDecoration.includes("underline")) {
-                            this.removeProperty(element, "text-decoration", "underline");
+                            this.removeTextDecoration(element, "underline");
                         }
                         else {
                             this.addTextDecoration(element, "underline");
@@ -540,7 +471,7 @@ class RTBlazorfied {
                         break;
                     case "line-through":
                         if (element.style.textDecoration.includes("line-through")) {
-                            this.removeProperty(element, "text-decoration", "line-through");
+                            this.removeTextDecoration(element, "line-through");
                         }
                         else {
                             this.addTextDecoration(element, "line-through");
@@ -842,7 +773,7 @@ class RTBlazorfied {
         return null;
     }
     /* Get an element by style */
-    getElementByStyle(el, type, value) {
+    getElement(el) {
         if (el == null) {
             return null;
         }
@@ -854,75 +785,7 @@ class RTBlazorfied {
             }
             if (el.nodeName != "#text" && el.nodeName != "#document") {
 
-                /* Get the node */
-                switch (type) {
-                    case "bold":
-                        if (el.style.fontWeight != null && el.style.fontWeight == "bold") {
-                            return el;
-                        }
-                        break;
-                    case "italic":
-                        if (el.style.fontStyle != null && el.style.fontStyle == "italic") {
-                            return el;
-                        }
-                        break;
-                    case "underline":
-                        if (el.style.textDecoration != null && el.style.textDecoration.includes("underline")) {
-                            return el;
-                        }
-                        break;
-                    case "line-through":
-                        if (el.style.textDecoration != null && el.style.textDecoration.includes("line-through")) {
-                            return el;
-                        }
-                        break;
-                    case "subscript":
-                        if (el.style.verticalAlign != null && el.style.verticalAlign == "sub") {
-                            return el;
-                        }
-                        break;
-                    case "superscript":
-                        if (el.style.verticalAlign != null && el.style.verticalAlign == "super") {
-                            return el;
-                        }
-                        break;
-                    case "alignleft":
-                        if (el.style.textAlign != null && el.style.textAlign == "left") {
-                            return el;
-                        }
-                        break;
-                    case "aligncenter":
-                        if (el.style.textAlign != null && el.style.textAlign == "center") {
-                            return el;
-                        }
-                        break;
-                    case "alignright":
-                        if (el.style.textAlign != null && el.style.textAlign == "right") {
-                            return el;
-                        }
-                        break;
-                    case "alignjustify":
-                        if (el.style.textAlign != null && el.style.textAlign == "justify") {
-                            return el;
-                        }
-                        break;
-                    case "indent":
-                        if (el.style.textIndent != null && el.style.textIndent == "40px") {
-                            return el;
-                        }
-                        break;
-                    case "font":
-                        if (el.style.fontFamily != null) {
-                            return el;
-                        }
-                        break;
-                    case "size":
-                        if (el.style.fontSize != null) {
-                            return el;
-                        }
-                        break;
-                    default:
-                }
+                return el;
             }
 
             el = el.parentNode;
