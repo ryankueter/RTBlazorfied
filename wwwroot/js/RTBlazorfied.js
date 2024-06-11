@@ -303,7 +303,7 @@ class RTBlazorfied {
             // See if an element with matching content exists
             // if it does, change or remove it
             var element;
-            if (sel.anchorNode && sel.anchorNode.parentNode) {
+            if (sel.toString().length == 0) {
                 element = this.getElementByType(sel.anchorNode.parentNode, "Format");
             }
             else {
