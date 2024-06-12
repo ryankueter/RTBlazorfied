@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added a link dialog box and a link remove button. Small minor bug fixes.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.29</Version>
-	  <AssemblyVersion>1.0.29</AssemblyVersion>
-	  <FileVersion>1.0.29</FileVersion>
+	  <Version>1.0.30</Version>
+	  <AssemblyVersion>1.0.30</AssemblyVersion>
+	  <FileVersion>1.0.30</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

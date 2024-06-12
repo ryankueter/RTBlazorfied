@@ -306,7 +306,7 @@ class RTBlazorfied {
         newtab.checked = false;
     }
     insertLink() {
-
+        this.backupstate();
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
         var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
@@ -340,9 +340,12 @@ class RTBlazorfied {
             range.deleteContents();
             range.insertNode(anchor);
         }
+        this.restorestate();
         this.closeLinkDialog();
     }
     removeLink() {
+        this.backupstate();
+
         var selection = this.shadowRoot.getSelection();
 
         if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "A") {
@@ -362,7 +365,7 @@ class RTBlazorfied {
                 selection.addRange(range);
             }
         }
-        
+        this.restorestate();
     }
     closeLinkDialog() {
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
@@ -542,6 +545,8 @@ class RTBlazorfied {
 
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
+
+            console.log(value);
 
             var element;
             if (sel.toString().length == 0) {
