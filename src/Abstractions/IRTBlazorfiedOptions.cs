@@ -7,6 +7,7 @@ namespace RichTextBlazorfied;
 
 public interface IRTBlazorfiedOptions
 {
+    public void ModalStyles(Action<RichTextboxModalOptions> modal);
     public void ToolbarStyles(Action<RichTextboxToolbarOptions> style);
     public void ButtonStyles(Action<RichTextboxButtonOptions> style);
     public void EditorStyles(Action<RichTextboxEditorOptions> style);
@@ -19,4 +20,5 @@ public interface IRTBlazorfiedOptions
     internal RichTextboxEditorOptions? GetEditorOptions();
     internal RichTextboxContentOptions? GetContentOptions();
     internal RichTextboxScrollOptions? GetScrollOptions();
+    internal RichTextboxModalOptions? GetModalOptions();
 }

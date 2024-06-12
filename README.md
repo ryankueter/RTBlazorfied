@@ -75,6 +75,15 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.DropdownBackgroundColorHover = "#777777";
         o.DropdownTextColorHover = "#FFFFAA";
     });
+    o.ModalStyles(o =>
+    {
+        o.BackgroundColor = "#333333";
+        o.TextColor = "#FFFFAA";
+        o.TextboxBackgroundColor = "#333333";
+        o.TextboxTextColor = "#FFFFAA";
+        o.TextboxBorderColor = "#FFFFAA";
+        o.CheckboxAccentColor = "#FFFFAA";
+    });
     o.ButtonStyles(o =>
     {
         o.TextColor = "#ff0000";
@@ -136,6 +145,8 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Selectall = false;
         o.Undo = false;
         o.Redo = false;
+        o.Link = false;
+        o.LinkRemove = false;
     });
 });
 ```

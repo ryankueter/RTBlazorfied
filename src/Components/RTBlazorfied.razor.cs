@@ -24,6 +24,7 @@ public partial class RTBlazorfied
             border-width: {{_toolbarBorderWidth}};
             border-color: {{_toolbarBorderColor}};
             border-radius: {{_toolbarBorderRadius}};
+            padding-left: 3px;
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
@@ -205,6 +206,91 @@ public partial class RTBlazorfied
          }
 
         .rich-text-box-show {display: block;}
+
+        .rich-text-box-modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          padding-top: 90px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgb(0,0,0);
+          background-color: rgba(0,0,0,0.2);
+        }
+
+        .rich-text-box-modal-content {
+          position: relative;
+          background-color: {{_modalBackgroundColor}};
+          color: {{_modalTextColor}};
+          margin: auto;
+          border: 1px solid #888;
+          width: 600px;
+          box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+          -webkit-animation-name: animatezoom;
+          -webkit-animation-duration: 0.1s;
+          animation-name: animatezoom;
+          animation-duration: 0.1s;
+          border-radius: 5px;
+        }
+
+        @-webkit-keyframes animatezoom {
+            from {-webkit-transform: scale(0); opacity:0} 
+            to {-webkit-transform: scale(1)}
+        }
+
+        @keyframes animatezoom {
+            from {transform: scale(0); opacity:0} 
+            to {transform: scale(1)}
+        }
+        
+        .rich-text-box-modal-close {
+          color: {{_modalTextColor}};
+          font-size: 24px;
+          cursor: pointer;
+        }
+
+        .rich-text-box-modal-close:hover,
+        .rich-text-box-modal-close:focus {
+          color: {{_modalTextColor}};
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .rich-text-box-modal-body {
+          padding: 2px 16px;
+        }
+        input[type=text], select, textarea {
+          width: 100%;
+          padding: 12px;
+          font-size: 14px;
+          background-color: {{_modalTextboxBackgroundColor}};
+          color: {{_modalTextboxTextColor}};
+          border-width: 1px;
+          border-style: solid;
+          border-color: {{_modalTextboxBorderColor}};
+          outline: 0;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-top: 6px;
+          margin-bottom: 16px;
+          resize: vertical;
+        }
+
+        input[type="checkbox"] {
+          outline: 0;
+          width: 20px;
+          height: 20px;
+          margin-right: 8px;
+          accent-color: {{_modalCheckboxAccentColor}}; 
+        }
+        
+        .rich-text-box-form-button {
+          padding: 10px 20px;
+          font-size: 16px !important;
+        }
         """;
 
     #region Styles
@@ -252,13 +338,21 @@ public partial class RTBlazorfied
     private string? _scrollThumbBackgroundHover { get; set; } = "#999";
     private string? _scrollThumbBackground { get; set; } = "#d1d1d1";
     private string? _scrollThumbBorderRadius { get; set; } = "0px";
+
+    // Modal
+    private string? _modalBackgroundColor { get; set; } = "#fefefe";
+    private string? _modalTextColor { get; set; } = "#000";
+    private string? _modalTextboxBackgroundColor { get; set; } = "#fff";
+    private string? _modalTextboxTextColor { get; set; } = "#000";
+    private string? _modalCheckboxAccentColor { get; set; } = "#007bff";
+    private string? _modalTextboxBorderColor { get; set; } = "#CCC";
     #endregion
 
     public async Task<string?> GetPlainTextAsync() =>
-        await js.InvokeAsync<string>("RTBlazorfied_Method", "plaintext", content_id);
+        await js.InvokeAsync<string>("RTBlazorfied_Method", "plaintext", id);
 
     public async Task<string?> GetHtmlAsync() =>
-        await js.InvokeAsync<string>("RTBlazorfied_Method", "html", content_id);
+        await js.InvokeAsync<string>("RTBlazorfied_Method", "html", id);
 
     private string? Mode { get; set; }
     private bool IsDisabled { get; set; }
@@ -288,6 +382,7 @@ public partial class RTBlazorfied
         GetEditorOptions();
         GetContentOptions();
         GetScrollOptions();
+        GetModalOptions();
         GetButtons();
     }
 
@@ -317,6 +412,9 @@ public partial class RTBlazorfied
     private bool? _undo = true;
     private bool? _redo = true;
     private bool? _historydivider = false;
+    private bool? _link = true;
+    private bool? _linkremove = true;
+    private bool? _linkdivider = false;
     #endregion
     private void GetButtons()
     {
@@ -329,6 +427,7 @@ public partial class RTBlazorfied
             _aligndivider = true;
             _actiondivider = true;
             _historydivider = true;
+            _linkdivider = true;
         }
         else
         {
@@ -479,6 +578,24 @@ public partial class RTBlazorfied
                 || buttons.Redo == true)
             {
                 _historydivider = true;
+            }
+
+            if (buttons.Link is not null)
+            {
+                _link = buttons.Link;
+            }
+            if (buttons.LinkRemove is not null)
+            {
+                _linkremove = buttons.LinkRemove;
+            }
+
+            // If the user did not specify false, keep the button
+            if (buttons.Link is null
+                || buttons.Link == true
+                || buttons.LinkRemove is null
+                || buttons.LinkRemove == true)
+            {
+                _linkdivider = true;
             }
         }
     }
@@ -667,6 +784,37 @@ public partial class RTBlazorfied
             }
         }
     }
+    private void GetModalOptions()
+    {
+        var modalOptions = _options.GetModalOptions();
+        if (modalOptions is not null)
+        {
+            if (modalOptions.BackgroundColor is not null)
+            {
+                _modalBackgroundColor = modalOptions.BackgroundColor;
+            }
+            if (modalOptions.TextColor is not null)
+            {
+                _modalTextColor = modalOptions.TextColor;
+            }
+            if (modalOptions.TextboxBackgroundColor is not null)
+            {
+                _modalTextboxBackgroundColor = modalOptions.TextboxBackgroundColor;
+            }
+            if (modalOptions.TextboxTextColor is not null)
+            {
+                _modalTextboxTextColor = modalOptions.TextboxTextColor;
+            }
+            if (modalOptions.CheckboxAccentColor is not null)
+            { 
+                _modalCheckboxAccentColor = modalOptions.CheckboxAccentColor;
+            }
+            if (modalOptions.TextboxBorderColor is not null)
+            {
+                _modalTextboxBorderColor = modalOptions.TextboxBorderColor;
+            }
+        }
+    }
     #endregion
 
     #region Fonts
@@ -700,7 +848,7 @@ public partial class RTBlazorfied
         "Trebuchet MS",
         "Verdana"
     };
-    private async Task Font(string fontName) => await js.InvokeVoidAsync("RTBlazorfied_Method", "font", content_id, fontName);
+    private async Task Font(string fontName) => await js.InvokeVoidAsync("RTBlazorfied_Method", "font", id, fontName);
     private List<string> Sizes { get; set; } = new List<string>
     {
         "None",
@@ -721,7 +869,7 @@ public partial class RTBlazorfied
         "48",
         "72"
     };
-    private async Task Size(string size) => await js.InvokeVoidAsync("RTBlazorfied_Method", "size", content_id, size == "None" ? size : $"{size}px");
+    private async Task Size(string size) => await js.InvokeVoidAsync("RTBlazorfied_Method", "size", id, size == "None" ? size : $"{size}px");
     #endregion
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -732,11 +880,7 @@ public partial class RTBlazorfied
         }
     }
 
-    #region Element Ids
-    private string content_id = Guid.NewGuid().ToString();
-    private string shadow_id = Guid.NewGuid().ToString();
-    private string toolbar_id = Guid.NewGuid().ToString();
-    #endregion
+    private string id = Guid.NewGuid().ToString();
     private async Task Initialize()
     {
         Mode = "html";
@@ -744,47 +888,50 @@ public partial class RTBlazorfied
         OpenEditorStyles = "rich-text-box-menu-item-special selected";
         OpenCodeStyles = "rich-text-box-menu-item-special";
 
-        await js.InvokeVoidAsync("RTBlazorfied_Initialize", content_id, shadow_id, toolbar_id, GetStyles(), Html);
+        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Html);
     }
 
     public async Task Reinitialize() 
     {
         if (Mode == "html")
         {
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", content_id, Html);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Html);
         }
         else
         {
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", content_id, Html);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Html);
         }
     }
 
     #region Buttons
-    private async Task Bold() => await js.InvokeVoidAsync("RTBlazorfied_Method", "bold", content_id);
-    private async Task Italic() => await js.InvokeVoidAsync("RTBlazorfied_Method", "italic", content_id);
-    private async Task Underline() => await js.InvokeVoidAsync("RTBlazorfied_Method", "underline", content_id);
-    private async Task Strikethrough() => await js.InvokeVoidAsync("RTBlazorfied_Method", "strikethrough", content_id);
-    private async Task Subscript() => await js.InvokeVoidAsync("RTBlazorfied_Method", "subscript", content_id);
-    private async Task Superscript() => await js.InvokeVoidAsync("RTBlazorfied_Method", "superscript", content_id);
-    private async Task Alignleft() => await js.InvokeVoidAsync("RTBlazorfied_Method", "alignleft", content_id);
-    private async Task Aligncenter() => await js.InvokeVoidAsync("RTBlazorfied_Method", "aligncenter", content_id);
-    private async Task Alignright() => await js.InvokeVoidAsync("RTBlazorfied_Method", "alignright", content_id);
-    private async Task Alignjustify() => await js.InvokeVoidAsync("RTBlazorfied_Method", "alignjustify", content_id);
-    private async Task Indent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "indent", content_id);
-    private async Task Copy() => await js.InvokeVoidAsync("RTBlazorfied_Method", "copy", content_id);
-    private async Task Cut() => await js.InvokeVoidAsync("RTBlazorfied_Method", "cut", content_id);
-    private async Task Delete() => await js.InvokeVoidAsync("RTBlazorfied_Method", "delete", content_id);
-    private async Task Selectall() => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectall", content_id);
-    private async Task OrderedList() => await js.InvokeVoidAsync("RTBlazorfied_Method", "orderedlist", content_id);
-    private async Task UnorderedList() => await js.InvokeVoidAsync("RTBlazorfied_Method", "unorderedlist", content_id);
-    private async Task CreateLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "createLink", content_id);
-    private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", content_id);
-    private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", content_id);
+    private async Task Bold() => await js.InvokeVoidAsync("RTBlazorfied_Method", "bold", id);
+    private async Task Italic() => await js.InvokeVoidAsync("RTBlazorfied_Method", "italic", id);
+    private async Task Underline() => await js.InvokeVoidAsync("RTBlazorfied_Method", "underline", id);
+    private async Task Strikethrough() => await js.InvokeVoidAsync("RTBlazorfied_Method", "strikethrough", id);
+    private async Task Subscript() => await js.InvokeVoidAsync("RTBlazorfied_Method", "subscript", id);
+    private async Task Superscript() => await js.InvokeVoidAsync("RTBlazorfied_Method", "superscript", id);
+    private async Task Alignleft() => await js.InvokeVoidAsync("RTBlazorfied_Method", "alignleft", id);
+    private async Task Aligncenter() => await js.InvokeVoidAsync("RTBlazorfied_Method", "aligncenter", id);
+    private async Task Alignright() => await js.InvokeVoidAsync("RTBlazorfied_Method", "alignright", id);
+    private async Task Alignjustify() => await js.InvokeVoidAsync("RTBlazorfied_Method", "alignjustify", id);
+    private async Task Indent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "indent", id);
+    private async Task Copy() => await js.InvokeVoidAsync("RTBlazorfied_Method", "copy", id);
+    private async Task Cut() => await js.InvokeVoidAsync("RTBlazorfied_Method", "cut", id);
+    private async Task Delete() => await js.InvokeVoidAsync("RTBlazorfied_Method", "delete", id);
+    private async Task Selectall() => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectall", id);
+    private async Task OrderedList() => await js.InvokeVoidAsync("RTBlazorfied_Method", "orderedlist", id);
+    private async Task UnorderedList() => await js.InvokeVoidAsync("RTBlazorfied_Method", "unorderedlist", id);
+    private async Task OpenLinkDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openLinkDialog", id);
+    private async Task RemoveLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeLink", id);
+    private async Task InsertLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertLink", id);
+    private async Task CloseLinkDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeLinkDialog", id);
+    private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", id);
+    private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", id);
 
     private async Task OpenDropdown(string id) =>
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", content_id, id);
+        await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", this.id, id);
     private async Task FormatText(string format) =>
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "format", content_id, format);
+        await js.InvokeVoidAsync("RTBlazorfied_Method", "format", id, format);
     private async Task OpenCode()
     {
         if (Mode == "html")
@@ -793,7 +940,7 @@ public partial class RTBlazorfied
             IsDisabled = true;
             OpenEditorStyles = "rich-text-box-menu-item-special";
             OpenCodeStyles = "rich-text-box-menu-item-special selected";
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", content_id);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", id);
         }
         else
         {
@@ -801,7 +948,7 @@ public partial class RTBlazorfied
             IsDisabled = false;
             OpenEditorStyles = "rich-text-box-menu-item-special selected";
             OpenCodeStyles = "rich-text-box-menu-item-special";
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", content_id);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", id);
         }
     }
     #endregion

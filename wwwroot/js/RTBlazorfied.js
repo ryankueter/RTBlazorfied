@@ -43,6 +43,14 @@ class RTBlazorfied {
             this.selectButtons(this.shadowRoot.getSelection().anchorNode);
         });
 
+        this.content.addEventListener('click', function (event) {
+            /* Prevent the default link click */
+            if (event.target.tagName === 'A') {
+                event.preventDefault(); 
+                event.stopPropagation();
+            }
+        });
+
         /* Prevent the dropdowns from causing the text box from
         losing focus. */
         var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
@@ -230,41 +238,157 @@ class RTBlazorfied {
         // Remove the ordered list element
         list.parentNode.removeChild(list);
     }
-    createLink() {
-        var selection = this.getSelection();
-        var range = selection.getRangeAt(0);
-        var link = prompt("Enter URL:");
-        if (link) {
+    openLinkDialog() {
+        this.resetLinkDialog();
+
+        var selection = this.shadowRoot.getSelection();
+
+        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "A") {
+
+            var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+            linktext.value = selection.anchorNode.parentNode.textContent;
+
+            var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
+            link.value = selection.anchorNode.parentNode.getAttribute("href");
+
+            var target = selection.anchorNode.parentNode.getAttribute('target');
+            if (target === '_blank') {
+                var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+                newtab.checked = true;
+            }
+
+            this.linkSelection = selection.anchorNode.parentNode;
+        }
+        else {
+            var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+            if (selection != null && selection.toString().length > 0) {
+                this.linkSelection = selection.getRangeAt(0).cloneRange();
+                linktext.value = this.linkSelection.toString();
+            }
+        }
+
+        if (linktext.value.trim().length === 0) {
+            var el = this.shadowRoot.getElementById(this.id);
+            var range = document.createRange();
+            var selection = window.getSelection();
+            
+            /* Create a new range at the beginning of the contenteditable div */
+            range.setStart(el, 0);
+            range.collapse(true);
+
+            /* Remove all existing selections and add the new range */
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            /* Optionally, set the focus to the contenteditable div */
+            el.focus();
+
+            var selection = this.shadowRoot.getSelection();
+            this.linkSelection = selection.getRangeAt(0).cloneRange();
+        }
+
+        var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
+        e.style.display = "block";
+
+        var address = this.shadowRoot.getElementById("rich-text-box-webaddress");
+        if (address) {
+            address.focus();
+        }
+    }
+    resetLinkDialog() {
+        var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+        linktext.value = null;
+
+        var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
+        link.value = null;
+
+        var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+        newtab.checked = false;
+    }
+    insertLink() {
+
+        var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+        var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
+        var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+
+        /* Get the link selection or element */
+        var selection = this.shadowRoot.getSelection();
+        if (this.linkSelection instanceof HTMLElement) {
+            var element = this.linkSelection;
+            element.href = link.value;
+            element.textContent = linktext.value;
+            if (newtab.checked) {
+                element.target = "_blank";
+            }
+            else {
+                element.removeAttribute('target');
+            }
+        }
+        else {
+            if (selection && this.linkSelection) {
+                selection.removeAllRanges();
+                selection.addRange(this.linkSelection);
+            }
+
+            var range = selection.getRangeAt(0);
             var anchor = document.createElement("a");
-            anchor.href = link;
-            anchor.textContent = selection.toString();
+            anchor.href = link.value;
+            anchor.textContent = linktext.value;
+            if (newtab.checked) {
+                anchor.target = "_blank";
+            }
             range.deleteContents();
             range.insertNode(anchor);
         }
+        this.closeLinkDialog();
+    }
+    removeLink() {
+        var selection = this.shadowRoot.getSelection();
+
+        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "A") {
+            var element = selection.anchorNode.parentNode;
+            var fragment = document.createDocumentFragment();
+
+            while (element.firstChild) {
+                fragment.appendChild(element.firstChild);
+            }
+            element.parentNode.insertBefore(fragment, element);
+            element.parentNode.removeChild(element);
+
+            if (selection.anchorNode != null && selection.rangeCount != 0) {
+                var range = document.createRange();
+                range.selectNodeContents(selection.anchorNode);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+        
+    }
+    closeLinkDialog() {
+        var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
+        e.style.display = "none";
     }
 
-    UndoContent = null;
-    RedoContent = null;
     undo() {
-        if (this.UndoContent != null) {
-            this.content.innerHTML = this.UndoContent;
+        if (this.undoContent != null) {
+            this.content.innerHTML = this.undoContent;
         }
     }
     redo() {
-        if (this.RedoContent != null) {
-            this.content.innerHTML = this.RedoContent;
+        if (this.redoContent != null) {
+            this.content.innerHTML = this.redoContent;
         }
     }
     restorestate() {
         var html = this.content?.innerHTML;
         if (html != null) {
-            this.RedoContent = html;
+            this.redoContent = html;
         }
     }
     backupstate() {
         var html = this.content?.innerHTML;
         if (html != null) {
-            this.UndoContent = html;
+            this.undoContent = html;
         }
     }
     saveSelection() {
@@ -311,7 +435,6 @@ class RTBlazorfied {
             }
             if (element != null) {
                 
-                //if (this.isFormatElement(element)) {
                 if (type == "none") {
                     var fragment = document.createDocumentFragment();
 
@@ -735,6 +858,11 @@ class RTBlazorfied {
                             return el;
                         }
                         break;
+                    case "A":
+                        if (el.nodeName === type) {
+                            return el;
+                        }
+                        break;
                     case "Element":
                         if (el.nodeName === type) {
                             return el;
@@ -913,7 +1041,7 @@ class RTBlazorfied {
 
         while (el.parentNode) {
             /* Prevent selecting unwanted elements */
-            if (el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
+            if (el.parentNode.nodeType != 1 || el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
             }
 

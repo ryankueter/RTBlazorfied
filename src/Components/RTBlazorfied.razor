@@ -1,6 +1,6 @@
 ﻿@namespace RichTextBlazorfied
 
-<div id="@toolbar_id" class="rich-text-box-tool-bar">
+<div id="@($"{id}_Toolbar")" class="rich-text-box-tool-bar">
     @if (_font == true)
     {
         <div class="rich-text-box-dropdown">
@@ -214,17 +214,28 @@
     <div class="rich-text-box-divider"></div>
     </button> *@
 
-    @* if (button is RichTextboxButton.Link)
+    @if (_link == true)
     {
-    <button id="blazing-rich-text-link-button" title="Create Link" class="rich-text-box-menu-item" @onclick="CreateLink" disabled="@IsDisabled">
-    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-    <path d="@Icons.CreateLink" />
-    </svg>
-    </button>
-    } *@
-    @* <button class="rich-text-box-divider-btn" disabled>
-    <div class="rich-text-box-divider"></div>
-    </button> *@
+        <button id="blazing-rich-text-link-button" title="Create Link" class="rich-text-box-menu-item" @onclick="OpenLinkDialog" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.CreateLink" />
+            </svg>
+        </button>
+    }
+    @if (_linkremove == true)
+    {
+        <button id="blazing-rich-text-remove-link-button" title="Remove Link" class="rich-text-box-menu-item" @onclick="RemoveLink" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.RemoveLink" />
+            </svg>
+        </button>
+    }
+    @if (_linkdivider == true)
+    {
+        <button class="rich-text-box-divider-btn" disabled>
+            <div class="rich-text-box-divider"></div>
+        </button>
+    }
 
     @if (_undo == true)
     {
@@ -254,9 +265,35 @@
             <path d="@Icons.Code" />
         </svg>
     </button>
-</div>
-<div id="@shadow_id"></div>
 
-<script>
-    
-</script>
+    <!-- Modals -->
+    <div id="rich-text-box-link-modal" class="rich-text-box-modal">
+        <div class="rich-text-box-modal-content">
+            <div class="rich-text-box-modal-body">
+                <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <div style="align-self: flex-start; margin-left: 10px;">
+                        <h2>Link</h2>
+                    </div>
+                    <div style="align-self: flex-start; margin: 15px 10px 0 0;">
+                        <span @onclick="CloseLinkDialog" class="rich-text-box-modal-close">&times;</span>
+                    </div>
+                </div>
+                <div style="padding: 10px;">
+                    <label for="webaddress">Web Address</label>
+                    <input type="text" id="rich-text-box-webaddress" name="webaddress" placeholder="https://www...">
+                    <label for="linktext">Link Text</label>
+                    <input type="text" id="rich-text-box-linktext" name="linktext">
+                    <label style="display: flex; align-items: center;">
+                        <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" />
+                        Open in New Tab
+                    </label>
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button @onclick="CloseLinkDialog" class="rich-text-box-form-button">Close</button>
+                        <button @onclick="InsertLink" class="rich-text-box-form-button">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="@($"{id}_Shadow")"></div>

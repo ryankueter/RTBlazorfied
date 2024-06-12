@@ -27,4 +27,6 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Selectall { get; set; }
     public bool? Undo { get; set; }
     public bool? Redo { get; set; }
+    public bool? Link { get; set; }
+    public bool? LinkRemove { get; set; }
 }
