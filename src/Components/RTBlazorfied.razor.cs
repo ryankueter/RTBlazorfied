@@ -211,18 +211,18 @@ public partial class RTBlazorfied
           display: none;
           position: fixed;
           z-index: 1;
-          padding-top: 90px;
           left: 0;
           top: 0;
           width: 100%;
           height: 100%;
           overflow: auto;
           background-color: rgb(0,0,0);
-          background-color: rgba(0,0,0,0.2);
+          background-color: rgba(0,0,0,0.1);
         }
 
         .rich-text-box-modal-content {
           position: relative;
+          top: 20%;
           background-color: {{_modalBackgroundColor}};
           color: {{_modalTextColor}};
           margin: auto;
@@ -413,8 +413,11 @@ public partial class RTBlazorfied
     private bool? _redo = true;
     private bool? _historydivider = false;
     private bool? _link = true;
-    private bool? _linkremove = true;
+    private bool? _image = true;
     private bool? _linkdivider = false;
+    private bool? _orderedlist = true;
+    private bool? _unorderedlist = true;
+    private bool? _listdivider = false;
     #endregion
     private void GetButtons()
     {
@@ -428,6 +431,7 @@ public partial class RTBlazorfied
             _actiondivider = true;
             _historydivider = true;
             _linkdivider = true;
+            _listdivider = true;
         }
         else
         {
@@ -584,18 +588,32 @@ public partial class RTBlazorfied
             {
                 _link = buttons.Link;
             }
-            if (buttons.LinkRemove is not null)
+            if (buttons.Image is not null)
             {
-                _linkremove = buttons.LinkRemove;
+                _image = buttons.Image;
             }
-
             // If the user did not specify false, keep the button
             if (buttons.Link is null
-                || buttons.Link == true
-                || buttons.LinkRemove is null
-                || buttons.LinkRemove == true)
+                || buttons.Link == true)
             {
                 _linkdivider = true;
+            }
+
+            if (buttons.Orderedlist is not null)
+            {
+                _orderedlist = buttons.Orderedlist;
+            }
+            if (buttons.Unorderedlist is not null)
+            {
+                _unorderedlist = buttons.Unorderedlist;
+            }
+            // If the user did not specify false, keep the button
+            if (buttons.Orderedlist is null
+                || buttons.Orderedlist == true
+                || buttons.Unorderedlist is null
+                || buttons.Unorderedlist == true)
+            {
+                _listdivider = true;
             }
         }
     }
@@ -925,6 +943,9 @@ public partial class RTBlazorfied
     private async Task RemoveLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeLink", id);
     private async Task InsertLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertLink", id);
     private async Task CloseLinkDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeLinkDialog", id);
+    private async Task OpenImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openImageDialog", id);
+    private async Task InsertImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertImage", id);
+    private async Task CloseImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeImageDialog", id);
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", id);
 

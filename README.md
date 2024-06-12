@@ -146,7 +146,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Undo = false;
         o.Redo = false;
         o.Link = false;
-        o.LinkRemove = false;
+        o.Image = false;
     });
 });
 ```

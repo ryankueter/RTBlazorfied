@@ -28,5 +28,7 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Undo { get; set; }
     public bool? Redo { get; set; }
     public bool? Link { get; set; }
-    public bool? LinkRemove { get; set; }
+    public bool? Image { get; set; }
+    public bool? Orderedlist { get; set; }
+    public bool? Unorderedlist { get; set; }
 }

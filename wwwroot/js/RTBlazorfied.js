@@ -204,39 +204,68 @@ class RTBlazorfied {
             return;
         }
 
-        // Get the items
-        var items = selectedText.split('\n').filter(item => item != null);
-
-        // Create the <ol> element
-        var ol = document.createElement(type);
-        items.forEach(function (item) {
-            var li = document.createElement("li");
-            li.textContent = item;
-            ol.appendChild(li);
-        });
-
-        if (selection.rangeCount != 0) {
-            range = selection.getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(ol);
-            range.selectNodeContents(ol);
-            selection.removeAllRanges();
-            selection.addRange(range);
+        var list = this.getElementByType(selection.anchorNode, type);
+        if (list != null) {
+            this.removelist(list);
         }
+        else {
+            var ulElement = document.createElement(type);
+
+            if (selection.rangeCount > 0) {
+                var range = selection.getRangeAt(0); // Assuming a single range selection
+                var selectedNodes = range.cloneContents().childNodes;
+
+                // Convert NodeList to Array for easier iteration
+                var selectedElements = Array.from(selectedNodes);
+
+                // Iterate over selected elements
+                selectedElements.forEach(function (node) {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        var liElement = document.createElement('li');
+
+                        var clonedContent = node.cloneNode(true); 
+                        liElement.appendChild(clonedContent);
+
+                        ulElement.appendChild(liElement);
+
+                        node.remove();
+                        //node.parentNode.removeChild(node);
+                    }
+                });
+
+                range.deleteContents();
+                range.insertNode(ulElement);
+                range.selectNodeContents(ulElement);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }        
         this.restorestate();
     }
     removelist(list) {
+
         while (list.firstChild) {
-            // list.parentNode.insertBefore(list.firstChild, list);
             var listItem = list.firstChild;
-            var div = document.createElement("DIV");
-            div.innerHTML = listItem.innerHTML;
-            list.parentNode.insertBefore(div, list);
+
+            // Move each child node of listItem to before list
+            while (listItem.firstChild) {
+                list.parentNode.insertBefore(listItem.firstChild, list);
+            }
+
+            // Remove the now empty listItem
             list.removeChild(listItem);
         }
 
         // Remove the ordered list element
         list.parentNode.removeChild(list);
+
+        var selection = this.shadowRoot.getSelection();
+        if (selection.rangeCount != 0) {
+            var range = selection.getRangeAt(0);
+            range.deleteContents();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
     openLinkDialog() {
         this.resetLinkDialog();
@@ -248,7 +277,7 @@ class RTBlazorfied {
             var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             linktext.value = selection.anchorNode.parentNode.textContent;
 
-            var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
+            var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
             link.value = selection.anchorNode.parentNode.getAttribute("href");
 
             var target = selection.anchorNode.parentNode.getAttribute('target');
@@ -290,7 +319,7 @@ class RTBlazorfied {
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
         e.style.display = "block";
 
-        var address = this.shadowRoot.getElementById("rich-text-box-webaddress");
+        var address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         if (address) {
             address.focus();
         }
@@ -299,7 +328,7 @@ class RTBlazorfied {
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
         linktext.value = null;
 
-        var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
+        var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         link.value = null;
 
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
@@ -308,7 +337,7 @@ class RTBlazorfied {
     insertLink() {
         this.backupstate();
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
-        var link = this.shadowRoot.getElementById("rich-text-box-webaddress");
+        var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
 
         /* Get the link selection or element */
@@ -369,6 +398,77 @@ class RTBlazorfied {
     }
     closeLinkDialog() {
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
+        e.style.display = "none";
+    }
+    openImageDialog() {
+        this.resetImageDialog();
+
+        var selection = this.shadowRoot.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            this.imageSelection = selection.getRangeAt(0).cloneRange();
+        }
+        
+        var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
+        e.style.display = "block";
+
+        var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+        if (address) {
+            address.focus();
+        }
+    }
+    resetImageDialog() {
+        this.imageSelection = null;
+
+        var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+        address.value = null;
+
+        var width = this.shadowRoot.getElementById("rich-text-box-image-width");
+        width.value = null;
+
+        var height = this.shadowRoot.getElementById("rich-text-box-image-height");
+        height.value = null;
+
+        var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
+        alt.value = null;
+    }
+    insertImage() {
+        this.backupstate();
+        var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+        var width = this.shadowRoot.getElementById("rich-text-box-image-width");
+        var height = this.shadowRoot.getElementById("rich-text-box-image-height");
+        var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
+
+        if (this.imageSelection) {
+
+            var range = this.imageSelection.cloneRange();
+
+            var img = document.createElement("img");
+            img.src = address.value;
+            img.width = width.value;
+            img.height = height.value;
+            img.alt = alt.value;
+
+            range.deleteContents();
+            range.insertNode(img);
+
+            // Move the cursor after the inserted image
+            range.setStartAfter(img);
+            range.setEndAfter(img);
+
+            // Get the selection from the shadowRoot
+            var selection = this.shadowRoot.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            // Update the stored cursor position to the new position
+            this.imageSelection = range.cloneRange();
+        }
+
+        this.restorestate();
+        this.closeImageDialog();
+    }
+    closeImageDialog() {
+        var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
         e.style.display = "none";
     }
 
@@ -545,8 +645,6 @@ class RTBlazorfied {
 
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
-
-            console.log(value);
 
             var element;
             if (sel.toString().length == 0) {
@@ -863,7 +961,12 @@ class RTBlazorfied {
                             return el;
                         }
                         break;
-                    case "A":
+                    case "UL":
+                        if (el.nodeName === type) {
+                            return el;
+                        }
+                        break;
+                    case "OL":
                         if (el.nodeName === type) {
                             return el;
                         }

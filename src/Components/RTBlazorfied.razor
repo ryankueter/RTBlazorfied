@@ -194,39 +194,51 @@
         </button>
     }
 
-    @* if (button is RichTextboxButton.Orderedlist)
+    @if (_orderedlist == true)
     {
-    <button id="blazing-rich-text-orderedlist-button" title="Ordered List" class="rich-text-box-menu-item" @onclick="OrderedList" disabled="@IsDisabled">
-    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-    <path d="@Icons.OrderedList" />
-    </svg>
-    </button>
+        <button id="blazing-rich-text-orderedlist-button" title="Ordered List" class="rich-text-box-menu-item" @onclick="OrderedList" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.OrderedList" />
+            </svg>
+        </button>
     }
-    if (button is RichTextboxButton.Unorderedlist)
+    @if (_unorderedlist == true)
     {
-    <button id="blazing-rich-text-unorderedlist-button" title="Unordered List" class="rich-text-box-menu-item" @onclick="UnorderedList" disabled="@IsDisabled">
-    <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" viewBox="0 -960 960 960" width="@_buttonTextSize" fill="@_buttonTextColor">
-    <path d="@Icons.UnorderedList" />
-    </svg>
-    </button>
-    } *@
-    @* <button class="rich-text-box-divider-btn" disabled>
-    <div class="rich-text-box-divider"></div>
-    </button> *@
+        <button id="blazing-rich-text-unorderedlist-button" title="Unordered List" class="rich-text-box-menu-item" @onclick="UnorderedList" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" viewBox="0 -960 960 960" width="@_buttonTextSize" fill="@_buttonTextColor">
+                <path d="@Icons.UnorderedList" />
+            </svg>
+        </button>
+    }
+    @if (_listdivider == true)
+    {
+        <button class="rich-text-box-divider-btn" disabled>
+            <div class="rich-text-box-divider"></div>
+        </button>
+    }
+    
 
     @if (_link == true)
     {
-        <button id="blazing-rich-text-link-button" title="Create Link" class="rich-text-box-menu-item" @onclick="OpenLinkDialog" disabled="@IsDisabled">
+        <button id="blazing-rich-text-link-button" title="Insert Link" class="rich-text-box-menu-item" @onclick="OpenLinkDialog" disabled="@IsDisabled">
             <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
                 <path d="@Icons.CreateLink" />
             </svg>
         </button>
     }
-    @if (_linkremove == true)
+    @if (_link == true)
     {
         <button id="blazing-rich-text-remove-link-button" title="Remove Link" class="rich-text-box-menu-item" @onclick="RemoveLink" disabled="@IsDisabled">
             <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
                 <path d="@Icons.RemoveLink" />
+            </svg>
+        </button>
+    }
+    @if (_image == true)
+    {
+        <button id="blazing-rich-text-link-button" title="Insert Image" class="rich-text-box-menu-item" @onclick="OpenImageDialog" disabled="@IsDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Image" />
             </svg>
         </button>
     }
@@ -236,7 +248,6 @@
             <div class="rich-text-box-divider"></div>
         </button>
     }
-
     @if (_undo == true)
     {
         <button id="blazing-rich-text-undo-button" title="Undo" class="rich-text-box-menu-item" @onclick="Undo" disabled="@IsDisabled">
@@ -267,6 +278,35 @@
     </button>
 
     <!-- Modals -->
+    <div id="rich-text-box-image-modal" class="rich-text-box-modal">
+        <div class="rich-text-box-modal-content">
+            <div class="rich-text-box-modal-body">
+                <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <div style="align-self: flex-start; margin-left: 10px;">
+                        <h2>Image</h2>
+                    </div>
+                    <div style="align-self: flex-start; margin: 15px 10px 0 0;">
+                        <span @onclick="CloseImageDialog" class="rich-text-box-modal-close">&times;</span>
+                    </div>
+                </div>
+                <div style="padding: 10px;">
+                    <label for="webaddress">Web Address</label>
+                    <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www...">
+                    <label for="imagewidth">Image Width</label>
+                    <input type="text" id="rich-text-box-image-width" name="imagewidth">
+                    <label for="imageheight">Image Height</label>
+                    <input type="text" id="rich-text-box-image-height" name="imageheight">
+                    <label for="alttext">Alternative Text</label>
+                    <input type="text" id="rich-text-box-image-alt-text" name="alttext">
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button @onclick="CloseImageDialog" class="rich-text-box-form-button">Close</button>
+                        <button @onclick="InsertImage" class="rich-text-box-form-button">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="rich-text-box-link-modal" class="rich-text-box-modal">
         <div class="rich-text-box-modal-content">
             <div class="rich-text-box-modal-body">
@@ -280,7 +320,7 @@
                 </div>
                 <div style="padding: 10px;">
                     <label for="webaddress">Web Address</label>
-                    <input type="text" id="rich-text-box-webaddress" name="webaddress" placeholder="https://www...">
+                    <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www...">
                     <label for="linktext">Link Text</label>
                     <input type="text" id="rich-text-box-linktext" name="linktext">
                     <label style="display: flex; align-items: center;">
