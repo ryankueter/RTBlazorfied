@@ -156,7 +156,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-dropdown-content {
           display: none;
-          position: fixed;
+          position: absolute;
           background-color: {{_toolbarDropdownBackgroundColor}};
           border-style: {{_buttonBorderStyle}};
           border-width: {{_buttonBorderWidth}};
