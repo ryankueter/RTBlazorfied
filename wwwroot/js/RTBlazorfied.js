@@ -297,23 +297,7 @@ class RTBlazorfied {
         }
 
         if (linktext.value.trim().length === 0) {
-            var el = this.shadowRoot.getElementById(this.id);
-            var range = document.createRange();
-            var selection = window.getSelection();
-            
-            /* Create a new range at the beginning of the contenteditable div */
-            range.setStart(el, 0);
-            range.collapse(true);
-
-            /* Remove all existing selections and add the new range */
-            selection.removeAllRanges();
-            selection.addRange(range);
-
-            /* Optionally, set the focus to the contenteditable div */
-            el.focus();
-
-            var selection = this.shadowRoot.getSelection();
-            this.linkSelection = selection.getRangeAt(0).cloneRange();
+            this.linkSelection = this.moveCursorToStart();
         }
 
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
@@ -323,6 +307,25 @@ class RTBlazorfied {
         if (address) {
             address.focus();
         }
+    }
+    moveCursorToStart() {
+        var el = this.shadowRoot.getElementById(this.id);
+        var range = document.createRange();
+        var selection = window.getSelection();
+
+        /* Create a new range at the beginning of the contenteditable div */
+        range.setStart(el, 0);
+        range.collapse(true);
+
+        /* Remove all existing selections and add the new range */
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        /* Optionally, set the focus to the contenteditable div */
+        el.focus();
+
+        var selection = this.shadowRoot.getSelection();
+        return selection.getRangeAt(0).cloneRange();
     }
     resetLinkDialog() {
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
@@ -406,6 +409,9 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
         if (selection && selection.rangeCount > 0) {
             this.imageSelection = selection.getRangeAt(0).cloneRange();
+        }
+        else {
+            this.imageSelection = this.moveCursorToStart();
         }
         
         var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
@@ -531,7 +537,9 @@ class RTBlazorfied {
             // if it does, change or remove it
             var element;
             if (sel.toString().length == 0) {
-                element = this.getElementByType(sel.anchorNode.parentNode, "Format");
+                if (sel.anchorNode != null && sel.anchorNode.parentNode != null) {
+                    element = this.getElementByType(sel.anchorNode.parentNode, "Format");
+                }
             }
             else {
                 element = this.getElementByContent(sel.anchorNode);
