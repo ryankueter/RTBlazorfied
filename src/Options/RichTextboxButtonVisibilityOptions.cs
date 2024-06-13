@@ -20,7 +20,7 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Aligncenter { get; set; }
     public bool? Alignright { get; set; }
     public bool? Alignjustify { get; set; }
-    public bool? Indent { get; set; }
+    //public bool? Indent { get; set; }
     public bool? Copy { get; set; }
     public bool? Cut { get; set; }
     public bool? Delete { get; set; }

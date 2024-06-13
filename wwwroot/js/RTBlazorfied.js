@@ -74,6 +74,24 @@ class RTBlazorfied {
             el.classList.add("rich-text-box-show")
         }
     }
+    openTextColorPicker() {
+        this.lockToolbar = true;
+        var selection = this.shadowRoot.getSelection();
+        if (selection != null && selection.toString().length > 0) {
+            this.colorSelection = selection.getRangeAt(0).cloneRange();
+        }
+
+        var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
+        colorPickerDropdown.style.display = colorPickerDropdown.style.display === 'block' ? 'none' : 'block';
+        
+    }
+    selectTextColor(color) {
+        this.updateNode("textcolor", color);
+
+        var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
+        colorPickerDropdown.style.display = 'none';
+        this.lockToolbar = false;
+    }
     font(style) {
         this.updateNode("font", style);
         this.closeDropdown("blazing-rich-text-font-button-dropdown");
@@ -146,7 +164,8 @@ class RTBlazorfied {
 
     closeDropdown(id) {
         var e = this.shadowRoot.getElementById(id);
-        e.classList.remove("rich-text-box-show")
+        e.classList.remove("rich-text-box-show");
+        this.lockToolbar = false;
     }
 
     removeEmptyNodes() {
@@ -638,6 +657,8 @@ class RTBlazorfied {
         }
     }
     closeDropdowns() {
+        this.lockToolbar = false;
+
         /* Close the Dropdowns */
         var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach(function (dropdown) {
@@ -652,8 +673,15 @@ class RTBlazorfied {
         this.backupstate();
 
         if (this.shadowRoot.getSelection()) {
+
             sel = this.shadowRoot.getSelection();
 
+            /* Get the color selection */
+            if (this.colorSelection != null) {
+                sel.removeAllRanges();
+                sel.addRange(this.colorSelection);
+            }
+            
             var element;
             if (sel.toString().length == 0) {
                 element =  this.getElement(sel.anchorNode);
@@ -663,6 +691,14 @@ class RTBlazorfied {
             }
             if (element != null) {
                 switch (type) {
+                    case "textcolor":
+                        if (value == "None") {
+                            this.removeProperty(element, "color", value);
+                        }
+                        else {
+                            element.style.setProperty("color", value);
+                        }
+                        break;
                     case "font":
                         if (value == "None") {
                             this.removeProperty(element, "font-family", value);
@@ -785,6 +821,10 @@ class RTBlazorfied {
             if (sel.toString().length > 0 && value != "None") {
                 var newElement;
                 switch (type) {
+                    case "textcolor":
+                        newElement = document.createElement("span");
+                        newElement.style.color = value;
+                        break;
                     case "font":
                         newElement = document.createElement("span");
                         newElement.style.fontFamily = value;
@@ -1078,7 +1118,7 @@ class RTBlazorfied {
 
     /* Search up the elements */
     selectButtons(el) {
-        if (el == null) {
+        if (el == null || this.lockToolbar == true) {
             return null;
         }
 

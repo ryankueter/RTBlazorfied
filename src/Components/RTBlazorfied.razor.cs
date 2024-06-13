@@ -156,7 +156,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-dropdown-content {
           display: none;
-          position: absolute;
+          position: fixed;
           background-color: {{_toolbarDropdownBackgroundColor}};
           border-style: {{_buttonBorderStyle}};
           border-width: {{_buttonBorderWidth}};
@@ -290,6 +290,44 @@ public partial class RTBlazorfied
         .rich-text-box-form-button {
           padding: 10px 20px;
           font-size: 16px !important;
+        }
+
+        .blazing-rich-text-color-picker-container {
+            position: relative;
+        }
+
+        .blazing-rich-text-color-picker-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .blazing-rich-text-color-picker-dropdown {
+            position: absolute;
+            top: 40px;
+            width: 170px;
+            left: 0;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1;
+        }
+
+        .blazing-rich-text-color-option {
+            width: 15px;
+            height: 15px;
+            margin: 2px;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid transparent;
+        }
+
+        .blazing-rich-text-color-option:hover {
+            border-color: #000;
         }
         """;
 
@@ -516,10 +554,10 @@ public partial class RTBlazorfied
             {
                 _alignjustify = buttons.Alignjustify;
             }
-            if (buttons.Indent is not null)
-            {
-                _indent = buttons.Indent;
-            }
+            //if (buttons.Indent is not null)
+            //{
+            //    _indent = buttons.Indent;
+            //}
 
             // If the user did not specify false, keep the button
             if (buttons.Alignleft is null 
@@ -529,9 +567,7 @@ public partial class RTBlazorfied
                 || buttons.Alignright is null 
                 || buttons.Alignright == true
                 || buttons.Alignjustify is null 
-                || buttons.Alignjustify == true
-                || buttons.Indent is null 
-                || buttons.Indent == true)
+                || buttons.Alignjustify == true)
             {
                 _aligndivider = true;
             }
@@ -948,6 +984,8 @@ public partial class RTBlazorfied
     private async Task CloseImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeImageDialog", id);
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", id);
+    private async Task OpenTextColorPicker() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorPicker", id);
+    private async Task SelectTextColor(string color) => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectTextColor", id, color);
 
     private async Task OpenDropdown(string id) =>
         await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", this.id, id);
