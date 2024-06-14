@@ -92,6 +92,13 @@ class RTBlazorfied {
         colorPickerDropdown.style.display = 'none';
         this.lockToolbar = false;
     }
+    removeTextColor() {
+        this.updateNode("textcolor", "None");
+
+        var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
+        colorPickerDropdown.style.display = 'none';
+        this.lockToolbar = false;
+    }
     font(style) {
         this.updateNode("font", style);
         this.closeDropdown("blazing-rich-text-font-button-dropdown");
@@ -218,9 +225,23 @@ class RTBlazorfied {
 
         // Get the selected text
         var selection = this.shadowRoot.getSelection();
-        var selectedText = selection.toString().trim();
-        if (!selectedText) {
-            return;
+       
+        /* Check if the element is already an OL and replace it */
+        if (type == "UL") {
+            var list = this.getElementByType(selection.anchorNode, "OL");
+            if (list != null) {
+                this.replaceList(list, "UL");
+                this.restorestate();
+                return;
+            }
+        }
+        else {
+            var list = this.getElementByType(selection.anchorNode, "UL");
+            if (list != null) {
+                this.replaceList(list, "OL");
+                this.restorestate();
+                return;
+            }
         }
 
         var list = this.getElementByType(selection.anchorNode, type);
@@ -228,38 +249,59 @@ class RTBlazorfied {
             this.removelist(list);
         }
         else {
-            var ulElement = document.createElement(type);
+            var selectedText = selection.toString().trim();
+            if (selectedText) {
+                var ulElement = document.createElement(type);
 
-            if (selection.rangeCount > 0) {
-                var range = selection.getRangeAt(0); // Assuming a single range selection
-                var selectedNodes = range.cloneContents().childNodes;
+                if (selection.rangeCount > 0) {
+                    var range = selection.getRangeAt(0); // Assuming a single range selection
+                    var selectedNodes = range.cloneContents().childNodes;
 
-                // Convert NodeList to Array for easier iteration
-                var selectedElements = Array.from(selectedNodes);
+                    // Convert NodeList to Array for easier iteration
+                    var selectedElements = Array.from(selectedNodes);
 
-                // Iterate over selected elements
-                selectedElements.forEach(function (node) {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        var liElement = document.createElement('li');
+                    // Iterate over selected elements
+                    selectedElements.forEach(function (node) {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            var liElement = document.createElement('li');
 
-                        var clonedContent = node.cloneNode(true); 
-                        liElement.appendChild(clonedContent);
+                            var clonedContent = node.cloneNode(true);
+                            liElement.appendChild(clonedContent);
 
-                        ulElement.appendChild(liElement);
+                            ulElement.appendChild(liElement);
 
-                        node.remove();
-                        //node.parentNode.removeChild(node);
-                    }
-                });
+                            node.remove();
+                            //node.parentNode.removeChild(node);
+                        }
+                    });
 
-                range.deleteContents();
-                range.insertNode(ulElement);
-                range.selectNodeContents(ulElement);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+                    range.deleteContents();
+                    range.insertNode(ulElement);
+                    range.selectNodeContents(ulElement);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }            
         }        
         this.restorestate();
+    }
+    replaceList(list, type) {
+        var olElement = document.createElement(type);
+
+        while (list.firstChild) {
+            olElement.appendChild(list.firstChild);
+        }
+        list.parentNode.replaceChild(olElement, list);
+
+        this.removeEmptyNodes();
+
+        var selection = this.shadowRoot.getSelection();
+        if (selection.rangeCount != 0) {
+            var range = selection.getRangeAt(0);
+            range.deleteContents();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
     removelist(list) {
 
@@ -277,6 +319,8 @@ class RTBlazorfied {
 
         // Remove the ordered list element
         list.parentNode.removeChild(list);
+
+        this.removeEmptyNodes();
 
         var selection = this.shadowRoot.getSelection();
         if (selection.rangeCount != 0) {
@@ -676,7 +720,7 @@ class RTBlazorfied {
 
             sel = this.shadowRoot.getSelection();
 
-            /* Get the color selection */
+            /* Get the color selection if one exists */
             if (this.colorSelection != null) {
                 sel.removeAllRanges();
                 sel.addRange(this.colorSelection);
@@ -693,7 +737,9 @@ class RTBlazorfied {
                 switch (type) {
                     case "textcolor":
                         if (value == "None") {
-                            this.removeProperty(element, "color", value);
+                            if (element.style.getPropertyValue("color") != null) {
+                                this.removeProperty(element, "color", element.style.getPropertyValue("color"));
+                            }
                         }
                         else {
                             element.style.setProperty("color", value);
@@ -985,6 +1031,7 @@ class RTBlazorfied {
             if (el.style.textIndent == "40px") { n++; }
             if (el.style.fontFamily != null) { n++; }
             if (el.style.fontSize != null) { n++; }
+            if (el.style.color != null) { n++; }
         }
         return n;
     }

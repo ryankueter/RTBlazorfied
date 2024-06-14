@@ -164,7 +164,7 @@ public partial class RTBlazorfied
           border-radius: 5px;
           max-height: 200px;
           overflow: auto;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
           z-index: 1;
         }
 
@@ -245,6 +245,12 @@ public partial class RTBlazorfied
             from {transform: scale(0); opacity:0} 
             to {transform: scale(1)}
         }
+
+        @media screen and (max-width: 768px) {
+            .rich-text-box-modal-content {
+                width: 100%;
+            }
+        }
         
         .rich-text-box-modal-close {
           color: {{_modalTextColor}};
@@ -264,7 +270,7 @@ public partial class RTBlazorfied
         }
         input[type=text], select, textarea {
           width: 100%;
-          padding: 12px;
+          padding: 10px;
           font-size: 14px;
           background-color: {{_modalTextboxBackgroundColor}};
           color: {{_modalTextboxTextColor}};
@@ -272,9 +278,9 @@ public partial class RTBlazorfied
           border-style: solid;
           border-color: {{_modalTextboxBorderColor}};
           outline: 0;
-          border-radius: 4px;
+          border-radius: 0px;
           box-sizing: border-box;
-          margin-top: 6px;
+          margin-top: 0px;
           margin-bottom: 16px;
           resize: vertical;
         }
@@ -328,6 +334,28 @@ public partial class RTBlazorfied
 
         .blazing-rich-text-color-option:hover {
             border-color: #000;
+        }
+
+        .blazing-rich-text-color-option-empty {
+            width: 15px;
+            height: 15px;
+            margin: 2px;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid black;
+            background-color: white;
+            position: relative;
+        }
+
+        .blazing-rich-text-color-option-empty::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: black;
+            transform: translateY(-50%) rotate(-45deg);
         }
         """;
 
@@ -986,6 +1014,7 @@ public partial class RTBlazorfied
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", id);
     private async Task OpenTextColorPicker() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorPicker", id);
     private async Task SelectTextColor(string color) => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectTextColor", id, color);
+    private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);
 
     private async Task OpenDropdown(string id) =>
         await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", this.id, id);

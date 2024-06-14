@@ -249,17 +249,18 @@
             </svg>
         </button>
         <div class="blazing-rich-text-color-picker-dropdown" id="blazing-rich-text-textcolor-dropdown">
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#000000")' style="background-color: #000000;" data-color="#000000"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#757070")' style="background-color: #757070;" data-color="#757070"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FF0000")' style="background-color: #FF0000;" data-color="#FF0000"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#C00000")' style="background-color: #C00000;" data-color="#C00000"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#ffc000")' style="background-color: #ffc000;" data-color="#ffc000"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#92d050")' style="background-color: #92d050;" data-color="#92d050"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00b050")' style="background-color: #00b050;" data-color="#00b050"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00b0f0")' style="background-color: #00b0f0;" data-color="#00b0f0"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#0070c0")' style="background-color: #0070c0;" data-color="#0070c0"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#002060")' style="background-color: #002060;" data-color="#002060"></div>
-            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#7030a0")' style="background-color: #7030a0;" data-color="#7030a0"></div>
+            <div class="blazing-rich-text-color-option-empty" @onclick='RemoveTextColor'></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#000000")' style="background-color: #000000;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#757070")' style="background-color: #757070;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FF0000")' style="background-color: #FF0000;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#C00000")' style="background-color: #C00000;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#ffc000")' style="background-color: #ffc000;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#92d050")' style="background-color: #92d050;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00b050")' style="background-color: #00b050;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00b0f0")' style="background-color: #00b0f0;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#0070c0")' style="background-color: #0070c0;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#002060")' style="background-color: #002060;"></div>
+            <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#7030a0")' style="background-color: #7030a0;"></div>
         </div>
     </div> *@
     @if (_linkdivider == true)
