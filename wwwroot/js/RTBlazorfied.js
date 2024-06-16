@@ -1030,14 +1030,20 @@ class RTBlazorfied {
         return styles;
     }
 
-    /* Get the number of styles on an individual element */
     getUserDefinedStyleCount(element) {
-        let n = 0;
+        let c = 0;
 
         for (let i = 0; i < element.style.length; i++) {
-            n++;
+            let property = element.style[i];
+            let value = element.style.getPropertyValue(property);
+
+            /* Filter out the initual values, e.g., <h1> */
+            if (value != "initial") {
+                c++;
+            }
         }
-        return n;
+
+        return c;
     }
 
     /* Get an element by type */
@@ -1098,7 +1104,13 @@ class RTBlazorfied {
             /* Recurse into the closest node and return it */
             if (el.nodeName != "#text" && el.nodeName != "#document") {
 
-                /* See if the selection contains a list item and return the list */
+                /* Check if a style element exists  */
+                var e = this.getElementByStyle(el, type);
+                if (e != null) {
+                    return e;
+                }
+
+                /* Check if the selection contains a list item and return the list */
                 if (el.nodeName === 'LI') {
                     return el.parentNode;
                 }
@@ -1106,11 +1118,6 @@ class RTBlazorfied {
                 /* Match the text, or get the element by the style */
                 if (this.shadowRoot.getSelection().toString() == el.textContent) {
                     return el;
-                }
-
-                var e = this.getElementByStyle(el, type);
-                if (e != null) {
-                    return e;
                 }
             }
 
