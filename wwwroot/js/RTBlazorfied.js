@@ -739,7 +739,7 @@ class RTBlazorfied {
                 element = this.getElementByStyle(sel.anchorNode, type);
 
                 /* If that node does not exist, style the parent node */
-                if (element == null) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null) {
                     element = sel.anchorNode.parentNode;
                 }
             }
