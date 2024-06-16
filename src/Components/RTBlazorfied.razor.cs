@@ -77,6 +77,7 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-container {
+            z-index: 10000;
             resize: both;
             overflow: hidden;
             border-style: {{_editorBorderStyle}};
@@ -165,7 +166,7 @@ public partial class RTBlazorfied
           max-height: 200px;
           overflow: auto;
           box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
-          z-index: 1;
+          z-index: 10001;
         }
 
         .rich-text-box-format-button {
@@ -210,7 +211,7 @@ public partial class RTBlazorfied
         .rich-text-box-modal {
           display: none;
           position: fixed;
-          z-index: 1;
+          z-index: 10001;
           left: 0;
           top: 0;
           width: 100%;
@@ -249,7 +250,6 @@ public partial class RTBlazorfied
         @media screen and (max-width: 768px) {
             .rich-text-box-modal-content {
                 width: 100%;
-                top: 0;
             }
         }
         
@@ -321,7 +321,7 @@ public partial class RTBlazorfied
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: none;
-            z-index: 1;
+            z-index: 10001;
         }
 
         .blazing-rich-text-color-option {
