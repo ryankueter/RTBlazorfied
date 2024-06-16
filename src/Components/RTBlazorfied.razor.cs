@@ -249,6 +249,7 @@ public partial class RTBlazorfied
         @media screen and (max-width: 768px) {
             .rich-text-box-modal-content {
                 width: 100%;
+                top: 0;
             }
         }
         
