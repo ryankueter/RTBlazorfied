@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Small bug fixes to improve the usability of the editor.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.45</Version>
-	  <AssemblyVersion>1.0.45</AssemblyVersion>
-	  <FileVersion>1.0.45</FileVersion>
+	  <Version>1.0.46</Version>
+	  <AssemblyVersion>1.0.46</AssemblyVersion>
+	  <FileVersion>1.0.46</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

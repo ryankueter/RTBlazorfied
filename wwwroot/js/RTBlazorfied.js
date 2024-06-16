@@ -1039,7 +1039,15 @@ class RTBlazorfied {
 
             /* Filter out the initual values, e.g., <h1> */
             if (value != "initial") {
-                c++;
+                var words = value.split(' ');
+                if (words.length > 1) {
+                    for (let i = 0; i < words.length; i++) {
+                        c++;
+                    }
+                }
+                else {
+                    c++;
+                }
             }
         }
 
