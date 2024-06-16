@@ -203,6 +203,10 @@ class RTBlazorfied {
         window.getSelection().deleteFromDocument();
         this.removeEmptyNodes();
 
+        /* Return focus to editor */
+        var div = this.shadowRoot.getElementById(this.id);
+        div.focus();
+
         this.restorestate();
     };
     selectall() {
@@ -262,7 +266,9 @@ class RTBlazorfied {
 
                     /* Iterate over selected elements */
                     selectedElements.forEach(function (node) {
-                        if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (node.nodeType === Node.ELEMENT_NODE
+                            || node.nodeType === Node.TEXT_NODE) {
+
                             var liElement = document.createElement('li');
 
                             var clonedContent = node.cloneNode(true);
@@ -280,7 +286,7 @@ class RTBlazorfied {
                     selection.removeAllRanges();
                     selection.addRange(range);
                 }
-            }            
+            }
         }        
         this.restorestate();
     }
@@ -527,16 +533,16 @@ class RTBlazorfied {
             range.deleteContents();
             range.insertNode(img);
 
-            // Move the cursor after the inserted image
+            /* Move the cursor after the inserted image */
             range.setStartAfter(img);
             range.setEndAfter(img);
 
-            // Get the selection from the shadowRoot
+            /* Get the selection from the shadowRoot */
             var selection = this.shadowRoot.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
 
-            // Update the stored cursor position to the new position
+            /* Update the stored cursor position to the new position */
             this.imageSelection = range.cloneRange();
         }
 
@@ -603,8 +609,8 @@ class RTBlazorfied {
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
 
-            // See if an element with matching content exists
-            // if it does, change or remove it
+            /* See if an element with matching content exists
+            if it does, change or remove it */
             var element;
             if (sel.toString().length == 0) {
                 if (sel.anchorNode != null && sel.anchorNode.parentNode != null) {
@@ -636,7 +642,7 @@ class RTBlazorfied {
                     var newElement = document.createElement(type);
                     newElement.innerHTML = element.innerHTML;
 
-                    // Copy styles
+                    /* Copy styles */
                     var computedStyles = window.getComputedStyle(element);
                     for (var i = 0; i < computedStyles.length; i++) {
                         var styleName = computedStyles[i];
@@ -865,20 +871,20 @@ class RTBlazorfied {
                         break;
                     default:
                 }
-                //if (sel.anchorNode != null && sel.rangeCount != 0) {
-                //    var range = document.createRange();
-                //    range.selectNodeContents(sel.anchorNode);
-                //    sel.removeAllRanges();
-                //    sel.addRange(range);
-                //}
+                /*if (sel.anchorNode != null && sel.rangeCount != 0) {
+                    var range = document.createRange();
+                    range.selectNodeContents(sel.anchorNode);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } */
                 this.removeEmptyNodes();
                 this.selectButtons(sel.anchorNode);
                 this.restorestate();
                 return;
             }
 
-            // Insert a new node
-            // Make certain the element has content
+            /* Insert a new node */
+            /* Make certain the element has content */
             if (sel.toString().length > 0 && value != "None") {
                 var newElement;
                 switch (type) {
@@ -956,7 +962,7 @@ class RTBlazorfied {
         this.restorestate();
     }
     removeProperty(element, property, value) {
-        // This should more generally consider all the styles
+        /* This should more generally consider all the styles */
         if (this.getUserDefinedStyleCount(element) > 1) {
             element.style.removeProperty(property, value);
         }
@@ -978,9 +984,9 @@ class RTBlazorfied {
     addTextDecoration(element, decoration) {
         var currentDecorations = element.style.textDecoration;
 
-        // Check if the decoration is already applied
+        /* Check if the decoration is already applied */
         if (currentDecorations != null && !currentDecorations.includes(decoration)) {
-            // Add the new decoration
+            /* Add the new decoration */
             var newDecorations = currentDecorations ? currentDecorations + ' ' + decoration : decoration;
             element.style.textDecoration = newDecorations;
         }
@@ -989,10 +995,10 @@ class RTBlazorfied {
         if (this.getUserDefinedStyleCount(element) > 1) {
             var currentDecorations = element.style.textDecoration.split(' ');
 
-            // Remove the specified decoration
+            /* Remove the specified decoration */
             var newDecorations = currentDecorations.filter(decor => decor !== decoration);
 
-            // Update the element's text-decoration style
+            /* Update the element's text-decoration style */
             element.style.textDecoration = newDecorations.join(' ');
         }
         else {
@@ -1004,8 +1010,8 @@ class RTBlazorfied {
                 element.remove();
             }
             else {
-                // No more styles. Since, this element may be required
-                // for formating, remove the styles
+                /* No more styles. Since, this element may be required */
+                /* for formating, remove the styles */
                 element.removeAttribute("style");
             }
         }
@@ -1324,7 +1330,6 @@ class RTBlazorfied {
 
             var compStyles = window.getComputedStyle(el.parentNode);
 
-            // Bold
             if (el.parentNode.style.fontWeight == "bold") {
                 bold.classList.add("selected");
             }
@@ -1385,8 +1390,7 @@ class RTBlazorfied {
             }
             if (el.parentNode.nodeName == "A") {
                 link.classList.add("selected");
-
-                // var href = element.getAttribute("href");
+                /* var href = element.getAttribute("href"); */
             }
             el = el.parentNode;
         }
