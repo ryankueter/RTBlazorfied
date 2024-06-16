@@ -967,7 +967,7 @@ class RTBlazorfied {
             element.style.removeProperty(property, value);
         }
         else {
-            if (element.nodeName == "SPAN" || element.nodeName == "DIV") {
+            if (element.nodeName == "SPAN") {
                 if (element.childElementCount == 0) {
                     element.replaceWith(element.textContent);
                 }
