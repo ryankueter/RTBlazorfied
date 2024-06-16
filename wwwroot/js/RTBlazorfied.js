@@ -223,7 +223,7 @@ class RTBlazorfied {
     addlist(type) {
         this.backupstate();
 
-        // Get the selected text
+        /* Get the selected text */
         var selection = this.shadowRoot.getSelection();
        
         /* Check if the element is already an OL and replace it */
@@ -254,13 +254,13 @@ class RTBlazorfied {
                 var ulElement = document.createElement(type);
 
                 if (selection.rangeCount > 0) {
-                    var range = selection.getRangeAt(0); // Assuming a single range selection
+                    var range = selection.getRangeAt(0);
                     var selectedNodes = range.cloneContents().childNodes;
 
-                    // Convert NodeList to Array for easier iteration
+                    /* Convert NodeList to Array for easier iteration */
                     var selectedElements = Array.from(selectedNodes);
 
-                    // Iterate over selected elements
+                    /* Iterate over selected elements */
                     selectedElements.forEach(function (node) {
                         if (node.nodeType === Node.ELEMENT_NODE) {
                             var liElement = document.createElement('li');
@@ -271,7 +271,6 @@ class RTBlazorfied {
                             ulElement.appendChild(liElement);
 
                             node.remove();
-                            //node.parentNode.removeChild(node);
                         }
                     });
 
@@ -305,27 +304,35 @@ class RTBlazorfied {
     }
     removelist(list) {
 
+        /* Get the current selection */
+        var range = document.createRange();
+        var selection = this.shadowRoot.getSelection();
+        if (list != null) {
+            range.setStartBefore(list);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        /* Remove the list */
         while (list.firstChild) {
             var listItem = list.firstChild;
 
-            // Move each child node of listItem to before list
+            /* Move each child node of listItem to before list */
             while (listItem.firstChild) {
                 list.parentNode.insertBefore(listItem.firstChild, list);
             }
 
-            // Remove the now empty listItem
+            /* Remove the now empty listItem */
             list.removeChild(listItem);
         }
 
-        // Remove the ordered list element
+        /* Remove the ordered list element */
         list.parentNode.removeChild(list);
 
         this.removeEmptyNodes();
 
-        var selection = this.shadowRoot.getSelection();
-        if (selection.rangeCount != 0) {
-            var range = selection.getRangeAt(0);
-            range.deleteContents();
+        if (range != null) {
             selection.removeAllRanges();
             selection.addRange(range);
         }
@@ -1085,15 +1092,19 @@ class RTBlazorfied {
             /* Recurse into the closest node and return it */
             if (el.nodeName != "#text" && el.nodeName != "#document") {
 
+                /* See if the selection contains a list item and return the list */
+                if (el.nodeName === 'LI') {
+                    return el.parentNode;
+                }
+
                 /* Match the text, or get the element by the style */
                 if (this.shadowRoot.getSelection().toString() == el.textContent) {
                     return el;
                 }
-                else {
-                    var e = this.getElementByStyle(el, type);
-                    if (e != null) {
-                        return e;
-                    }
+
+                var e = this.getElementByStyle(el, type);
+                if (e != null) {
+                    return e;
                 }
             }
 
