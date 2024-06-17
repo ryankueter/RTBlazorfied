@@ -73,6 +73,7 @@ class RTBlazorfied {
             this.closeDropdowns();
             el.classList.add("rich-text-box-show")
         }
+        this.focusEditor();
     }
     openTextColorPicker() {
         this.lockToolbar = true;
@@ -151,6 +152,7 @@ class RTBlazorfied {
         }
 
         this.restorestate();
+        this.focusEditor();
     };
     cut() {
         this.backupstate();
@@ -167,12 +169,14 @@ class RTBlazorfied {
         }
 
         this.restorestate();
+        this.focusEditor();
     };
 
     closeDropdown(id) {
         var e = this.shadowRoot.getElementById(id);
         e.classList.remove("rich-text-box-show");
         this.lockToolbar = false;
+        this.focusEditor();
     }
 
     removeEmptyNodes() {
@@ -203,18 +207,21 @@ class RTBlazorfied {
         window.getSelection().deleteFromDocument();
         this.removeEmptyNodes();
 
+        this.restorestate();
+        this.focusEditor();
+    };
+    focusEditor() {
         /* Return focus to editor */
         var div = this.shadowRoot.getElementById(this.id);
         div.focus();
-
-        this.restorestate();
-    };
+    }
     selectall() {
         var range = document.createRange();
         range.selectNodeContents(this.content)
         var sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
+        this.focusEditor();
     };
 
     orderedlist() {
@@ -287,8 +294,9 @@ class RTBlazorfied {
                     selection.addRange(range);
                 }
             }
-        }        
+        }
         this.restorestate();
+        this.focusEditor();
     }
     replaceList(list, type) {
         var olElement = document.createElement(type);
@@ -450,6 +458,7 @@ class RTBlazorfied {
         }
         this.restorestate();
         this.closeLinkDialog();
+        this.focusEditor();
     }
     removeLink() {
         this.backupstate();
@@ -474,6 +483,7 @@ class RTBlazorfied {
             }
         }
         this.restorestate();
+        this.focusEditor();
     }
     closeLinkDialog() {
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
@@ -554,6 +564,7 @@ class RTBlazorfied {
 
         this.restorestate();
         this.closeImageDialog();
+        this.focusEditor();
     }
     closeImageDialog() {
         var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
@@ -564,11 +575,13 @@ class RTBlazorfied {
         if (this.undoContent != null) {
             this.content.innerHTML = this.undoContent;
         }
+        this.focusEditor();
     }
     redo() {
         if (this.redoContent != null) {
             this.content.innerHTML = this.redoContent;
         }
+        this.focusEditor();
     }
     restorestate() {
         var html = this.content?.innerHTML;
@@ -708,6 +721,7 @@ class RTBlazorfied {
         }
         this.closeDropdowns();
         this.restorestate();
+        this.focusEditor();
     }
     isFormatElement(element) {
         if (element.nodeName == "P"
@@ -894,6 +908,7 @@ class RTBlazorfied {
                 this.removeEmptyNodes();
                 this.selectButtons(sel.anchorNode);
                 this.restorestate();
+                this.focusEditor();
                 return;
             }
 
@@ -974,6 +989,7 @@ class RTBlazorfied {
         this.removeEmptyNodes();
         this.selectButtons(sel.anchorNode);
         this.restorestate();
+        this.focusEditor();
     }
     removeProperty(element, property, value) {
         /* This should more generally consider all the styles */
@@ -1236,6 +1252,7 @@ class RTBlazorfied {
     getHtml() {
         var html = this.html();
         this.loadInnerText(html);
+        this.focusEditor();
     };
     getCode() {
         var plaintext = this.plaintext();
@@ -1254,6 +1271,7 @@ class RTBlazorfied {
             element.innerHTML = "";
         }
         this.selectButtons(element);
+        this.focusEditor();
     };
     loadInnerText(text) {
         var element = this.content;
@@ -1265,6 +1283,7 @@ class RTBlazorfied {
             element.innerText = "";
         }
         this.selectButtons(element);
+        this.focusEditor();
     };
     plaintext() {
         var element = this.content;
@@ -1424,7 +1443,7 @@ class RTBlazorfied {
             el = el.parentNode;
         }
 
-        return null;
+        this.focusEditor();
     }
 }
 
