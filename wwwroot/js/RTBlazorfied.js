@@ -753,8 +753,16 @@ class RTBlazorfied {
                 /* Check if a node exists with this style and get it */
                 element = this.getElementByStyle(sel.anchorNode, type);
 
+                /* See if it's an image */
+                if (element == null && sel.anchorNode != null) {
+                    var image = sel.anchorNode.querySelector('img');
+                    if (image != null) {
+                        element = sel.anchorNode;
+                    }
+                }
+                
                 /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
                     element = sel.anchorNode.parentNode;
                 }
             }
