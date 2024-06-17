@@ -187,7 +187,7 @@ class RTBlazorfied {
                         element.childNodes[0].nodeType === 3 &&
                         !/\S/.test(element.textContent))) {
 
-                    if (element.parentElement && element.nodeType != 1) {
+                    if (element.parentElement && element.nodeName != "IMG" && element.nodeName != "BR") {
                         element.parentElement.removeChild(element);
                     }
                 }
@@ -524,6 +524,7 @@ class RTBlazorfied {
 
             var range = this.imageSelection.cloneRange();
 
+            var span = document.createElement("span");
             var img = document.createElement("img");
             img.src = address.value;
             if (width.value.length > 0) {
@@ -535,13 +536,15 @@ class RTBlazorfied {
             if (alt.value.length > 0) {
                 img.alt = alt.value;
             }
+
+            span.appendChild(img);
             
             range.deleteContents();
-            range.insertNode(img);
+            range.insertNode(span);
 
             /* Move the cursor after the inserted image */
-            range.setStartAfter(img);
-            range.setEndAfter(img);
+            range.setStartAfter(span);
+            range.setEndAfter(span);
 
             /* Get the selection from the shadowRoot */
             var selection = this.shadowRoot.getSelection();
