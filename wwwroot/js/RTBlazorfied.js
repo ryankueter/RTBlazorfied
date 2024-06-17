@@ -1271,7 +1271,10 @@ class RTBlazorfied {
         else {
             element.innerHTML = "";
         }
-        //this.selectButtons(element);
+        if (this.IsLoaded) {
+            this.selectButtons(element);
+        }
+        this.IsLoaded = true;
     };
     loadInnerText = (text) => {
         var element = this.content;
@@ -1282,7 +1285,7 @@ class RTBlazorfied {
         else {
             element.innerText = "";
         }
-        //this.selectButtons(element);
+        this.selectButtons(element);
     };
     plaintext = () => {
         var element = this.content;
