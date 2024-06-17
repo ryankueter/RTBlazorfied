@@ -751,7 +751,7 @@ class RTBlazorfied {
                 element = this.getElementByStyle(sel.anchorNode, type);
 
                 /* See if it's an image */
-                if (element == null && sel.anchorNode != null) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
                     var image = sel.anchorNode.querySelector('img');
                     if (image != null) {
                         element = sel.anchorNode;
