@@ -524,7 +524,6 @@ class RTBlazorfied {
 
             var range = this.imageSelection.cloneRange();
 
-            var span = document.createElement("span");
             var img = document.createElement("img");
             img.src = address.value;
             if (width.value.length > 0) {
@@ -536,15 +535,13 @@ class RTBlazorfied {
             if (alt.value.length > 0) {
                 img.alt = alt.value;
             }
-
-            span.appendChild(img);
             
             range.deleteContents();
-            range.insertNode(span);
+            range.insertNode(img);
 
             /* Move the cursor after the inserted image */
-            range.setStartAfter(span);
-            range.setEndAfter(span);
+            range.setStartAfter(img);
+            range.setEndAfter(img);
 
             /* Get the selection from the shadowRoot */
             var selection = this.shadowRoot.getSelection();
