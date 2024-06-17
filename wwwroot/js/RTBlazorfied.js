@@ -187,7 +187,7 @@ class RTBlazorfied {
                         element.childNodes[0].nodeType === 3 &&
                         !/\S/.test(element.textContent))) {
 
-                    if (element.parentElement) {
+                    if (element.parentElement && element.nodeType != 1) {
                         element.parentElement.removeChild(element);
                     }
                 }
