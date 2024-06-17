@@ -520,16 +520,22 @@ class RTBlazorfied {
         var height = this.shadowRoot.getElementById("rich-text-box-image-height");
         var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
 
-        if (this.imageSelection) {
+        if (this.imageSelection != null && address.value.length > 0) {
 
             var range = this.imageSelection.cloneRange();
 
             var img = document.createElement("img");
             img.src = address.value;
-            img.width = width.value;
-            img.height = height.value;
-            img.alt = alt.value;
-
+            if (width.value.length > 0) {
+                img.width = width.value;
+            }
+            if (height.value.length > 0) {
+                img.height = height.value;
+            }
+            if (alt.value.length > 0) {
+                img.alt = alt.value;
+            }
+            
             range.deleteContents();
             range.insertNode(img);
 
