@@ -780,7 +780,6 @@ class RTBlazorfied {
             else {
                 element = this.getElementByContent(sel.anchorNode, type);
             }
-            
             if (element != null) {
                 switch (type) {
                     case "textcolor":
@@ -1144,7 +1143,7 @@ class RTBlazorfied {
 
                 /* Check if a style element exists  */
                 var e = this.getElementByStyle(el, type);
-                if (e != null) {
+                if (e != null && this.shadowRoot.getSelection().toString() == el.textContent) {
                     return e;
                 }
 
@@ -1171,8 +1170,6 @@ class RTBlazorfied {
         }
 
         while (el) {
-            
-
             /* Prevent recursion outside the editor */
             if (el.nodeName == 'DIV' && el.id == this.id) {
                 break;
@@ -1181,11 +1178,20 @@ class RTBlazorfied {
 
                 switch (type) {
                     case "textcolor":
-                        return el;
+                        if (el.style.color != null) {
+                            return el;
+                        }
+                        break;
                     case "font":
-                        return el;
+                        if (el.style.fontFamily != null) {
+                            return el;
+                        }
+                        break;
                     case "size":
-                        return el;
+                        if (el.style.fontSize != null) {
+                            return el;
+                        }
+                        break;
                     case "bold":
                         if (el.style.fontWeight != null && el.style.fontWeight == "bold") {
                             return el;
