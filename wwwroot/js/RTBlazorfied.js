@@ -1443,8 +1443,6 @@ class RTBlazorfied {
             }
             el = el.parentNode;
         }
-
-        this.focusEditor();
     }
 }
 
