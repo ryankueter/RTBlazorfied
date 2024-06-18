@@ -477,7 +477,6 @@ class RTBlazorfied {
 
             if (selection.anchorNode != null && selection.rangeCount != 0) {
                 var range = document.createRange();
-                range.selectNodeContents(selection.anchorNode);
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
@@ -682,6 +681,7 @@ class RTBlazorfied {
                 this.selectButtons(sel.anchorNode);
                 this.closeDropdowns();
                 this.restorestate();
+                this.focusEditor();
                 return;
             }
 
@@ -715,7 +715,7 @@ class RTBlazorfied {
                     range.selectNodeContents(newElement);
                     sel.removeAllRanges();
                     sel.addRange(range);
-                    this.selectButtons(sel.anchorNode);
+                    this.selectButtons(newElement);
                 }
             }
         }
@@ -1143,7 +1143,7 @@ class RTBlazorfied {
 
                 /* Check if a style element exists  */
                 var e = this.getElementByStyle(el, type);
-                if (e != null && this.shadowRoot.getSelection().toString() == el.textContent) {
+                if (e != null) {
                     return e;
                 }
 
