@@ -923,12 +923,6 @@ class RTBlazorfied {
                         break;
                     default:
                 }
-                /*if (sel.anchorNode != null && sel.rangeCount != 0) {
-                    var range = document.createRange();
-                    range.selectNodeContents(sel.anchorNode);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                } */
                 this.removeEmptyNodes();
                 this.selectButtons(sel.anchorNode);
                 this.restorestate();
@@ -942,39 +936,39 @@ class RTBlazorfied {
                 var newElement;
                 switch (type) {
                     case "textcolor":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.color = value;
                         break;
                     case "font":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.fontFamily = value;
                         break;
                     case "size":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.fontSize = value;
                         break;
                     case "bold":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.fontWeight = "bold";
                         break;
                     case "italic":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.fontStyle = "italic";
                         break;
                     case "underline":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         this.addTextDecoration(newElement, "underline");
                         break;
                     case "line-through":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         this.addTextDecoration(newElement, "line-through");
                         break;
                     case "subscript":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.verticalAlign = "sub";
                         break;
                     case "superscript":
-                        newElement = document.createElement("span");
+                        newElement = this.createElement(sel);
                         newElement.style.verticalAlign = "super";
                         break;
                     case "alignleft":
@@ -1014,6 +1008,26 @@ class RTBlazorfied {
         this.selectButtons(sel.anchorNode);
         this.restorestate();
         this.focusEditor();
+    }
+    createElement(selection) {
+        if (selection.rangeCount > 0) {
+            var range = selection.getRangeAt(0);
+
+            /* Clone the contents to a document fragment */
+            var fragment = range.cloneContents();
+
+            /* Check for child elements */
+            for (let node of fragment.childNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+
+                    /* If it contains an element, return a div */
+                    return document.createElement("div"); 
+                }
+            }
+        }
+
+        /* If it does not contain an element, return a span */
+        return document.createElement("span");
     }
     removeProperty = (element, property, value) => {
         /* This should more generally consider all the styles */
