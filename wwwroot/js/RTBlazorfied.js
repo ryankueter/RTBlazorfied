@@ -709,7 +709,22 @@ class RTBlazorfied {
                 }
                 if (newElement != null && sel.rangeCount != 0) {
                     range = sel.getRangeAt(0);
-                    newElement.appendChild(range.cloneContents());
+
+                    /* See if this is an outer element */
+                    if (this.isFormatElement(range.commonAncestorContainer)) {
+                        var commonAncestor = range.commonAncestorContainer;
+
+                        /* Move all children of the common ancestor to the new element */
+                        while (commonAncestor.firstChild) {
+                            newElement.appendChild(commonAncestor.firstChild);
+                        }
+
+                        /* Replace the common ancestor with the new element */
+                        commonAncestor.parentNode.replaceChild(newElement, commonAncestor);
+                    }
+                    else {
+                        newElement.appendChild(range.cloneContents());
+                    }
                     range.deleteContents();
                     range.insertNode(newElement);
                     range.selectNodeContents(newElement);
@@ -720,6 +735,7 @@ class RTBlazorfied {
             }
         }
         this.closeDropdowns();
+        this.removeEmptyNodes();
         this.restorestate();
         this.focusEditor();
     }
@@ -776,10 +792,19 @@ class RTBlazorfied {
                 if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
                     element = sel.anchorNode.parentNode;
                 }
+                
             }
             else {
-                element = this.getElementByContent(sel.anchorNode, type);
+                var range = sel.getRangeAt(0);
+                var commonAncestor = range.commonAncestorContainer;
+                if (this.content != commonAncestor && commonAncestor.nodeType !== Node.TEXT_NODE) {
+                    element = range.commonAncestorContainer;
+                }
+                else {
+                    element = this.getElementByContent(sel.anchorNode, type);
+                }
             }
+            
             if (element != null) {
                 switch (type) {
                     case "textcolor":
@@ -1178,17 +1203,17 @@ class RTBlazorfied {
 
                 switch (type) {
                     case "textcolor":
-                        if (el.style.color != null) {
+                        if (el.style.color != null && !this.isFormatElement(el)) {
                             return el;
                         }
                         break;
                     case "font":
-                        if (el.style.fontFamily != null) {
+                        if (el.style.fontFamily != null && !this.isFormatElement(el)) {
                             return el;
                         }
                         break;
                     case "size":
-                        if (el.style.fontSize != null) {
+                        if (el.style.fontSize != null && !this.isFormatElement(el)) {
                             return el;
                         }
                         break;
