@@ -84,7 +84,6 @@ class RTBlazorfied {
 
         var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
         colorPickerDropdown.style.display = colorPickerDropdown.style.display === 'block' ? 'none' : 'block';
-        
     }
     selectTextColor = (color) => {
         this.updateNode("textcolor", color);
@@ -180,7 +179,7 @@ class RTBlazorfied {
     }
 
     removeEmptyNodes = () => {
-        var div = this.shadowRoot.getElementById(this.id);
+        var div = this.content;
 
         if (div) {
             var elements = div.querySelectorAll('*');
@@ -212,8 +211,7 @@ class RTBlazorfied {
     };
     focusEditor = () => {
         /* Return focus to editor */
-        var div = this.shadowRoot.getElementById(this.id);
-        div.focus();
+        this.content.focus();
     }
     selectall = () => {
         var range = document.createRange();
@@ -393,7 +391,7 @@ class RTBlazorfied {
         }
     }
     moveCursorToStart = () => {
-        var el = this.shadowRoot.getElementById(this.id);
+        var el = this.content;
         var range = document.createRange();
         var selection = window.getSelection();
 
@@ -670,13 +668,6 @@ class RTBlazorfied {
                         }
                     }
                     element.parentNode.replaceChild(newElement, element);
-
-                    if (newElement != null && sel.rangeCount != 0) {
-                        var range = document.createRange();
-                        range.selectNodeContents(newElement);
-                        sel.removeAllRanges();
-                        sel.addRange(range);
-                    }
                 }
                 this.selectButtons(sel.anchorNode);
                 this.closeDropdowns();
@@ -1010,6 +1001,14 @@ class RTBlazorfied {
         this.focusEditor();
     }
     createElement(selection) {
+        if (this.containsElements(selection)) {
+            return document.createElement("div");
+        }
+        else {
+            return document.createElement("span");
+        }
+    }
+    containsElements(selection) {
         if (selection.rangeCount > 0) {
             var range = selection.getRangeAt(0);
 
@@ -1020,14 +1019,13 @@ class RTBlazorfied {
             for (let node of fragment.childNodes) {
                 if (node.nodeType === Node.ELEMENT_NODE) {
 
-                    /* If it contains an element, return a div */
-                    return document.createElement("div"); 
+                    /* If it contains an element */
+                    return true;
                 }
             }
         }
-
-        /* If it does not contain an element, return a span */
-        return document.createElement("span");
+        /* If it does not contain an element */
+        return false;
     }
     removeProperty = (element, property, value) => {
         /* This should more generally consider all the styles */
@@ -1308,33 +1306,30 @@ class RTBlazorfied {
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
-        var element = this.content;
-        element.style.fontFamily = 'Arial, sans-serif';
+        this.content.style.fontFamily = 'Arial, sans-serif';
         if (html != null) {
-            element.innerHTML = html;
+            this.content.innerHTML = html;
         }
         else {
-            element.innerHTML = "";
+            this.content.innerHTML = "";
         }
         if (this.IsLoaded) {
-            this.selectButtons(element);
+            this.selectButtons(this.content);
+            this.IsLoaded = true;
         }
-        this.IsLoaded = true;
     };
     loadInnerText = (text) => {
-        var element = this.content;
-        element.style.fontFamily = 'Consolas';
+        this.content.style.fontFamily = 'Consolas';
         if (text != null) {
-            element.innerText = text;
+            this.content.innerText = text;
         }
         else {
-            element.innerText = "";
+            this.content.innerText = "";
         }
-        this.selectButtons(element);
+        this.selectButtons(this.content);
     };
     plaintext = () => {
-        var element = this.content;
-        return element.innerText || element.textContent;
+        return this.content.innerText || this.content.textContent;
     };
 
     /* Search up the elements */
