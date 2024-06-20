@@ -190,15 +190,71 @@ class RTBlazorfied {
                         element.childNodes[0].nodeType === 3 &&
                         !/\S/.test(element.textContent))) {
 
-                    if (element.parentElement && element.nodeName != "IMG" && element.nodeName != "BR") {
+                    if (element.parentElement && !this.isSelfClosingTag(element.nodeName)) {
                         element.parentElement.removeChild(element);
                     }
                 }
             });
         }
-
         this.selectButtons(div);
     };
+
+    isSelfClosingTag(nodeName) {
+        switch (nodeName.toLowerCase()) {
+            case "img":
+                return true;
+                break;
+            case "i":
+                return true;
+                break;
+            case "br":
+                return true;
+                break;
+            case "area":
+                return true;
+                break;
+            case "base":
+                return true;
+                break;
+            case "col":
+                return true;
+                break;
+            case "embed":
+                return true;
+                break;
+            case "hr":
+                return true;
+                break;
+            case "input":
+                return true;
+                break;
+            case "link":
+                return true;
+                break;
+            case "meta":
+                return true;
+                break;
+            case "param":
+                return true;
+                break;
+            case "source":
+                return true;
+                break;
+            case "track":
+                return true;
+                break;
+            case "wbr":
+                return true;
+                break;
+            case "keygen":
+                return true;
+                break;
+            default:
+                return false;
+                break;
+        }
+        return false;
+    }
 
     delete = () => {
         this.backupstate();
@@ -634,7 +690,7 @@ class RTBlazorfied {
                 }
             }
             else {
-                element = this.getElementByContent(sel.anchorNode, type);
+                element = this.getElementByContent(sel.anchorNode, type, sel);
             }
             if (element != null) {
                 
@@ -790,9 +846,10 @@ class RTBlazorfied {
                 var commonAncestor = range.commonAncestorContainer;
                 if (this.content != commonAncestor && commonAncestor.nodeType !== Node.TEXT_NODE) {
                     element = range.commonAncestorContainer;
+                   
                 }
                 else {
-                    element = this.getElementByContent(sel.anchorNode, type);
+                    element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
             }
             
@@ -1164,7 +1221,7 @@ class RTBlazorfied {
     }
 
     /* Get an element by matching content */
-    getElementByContent = (el, type) => {
+    getElementByContent = (el, type, selection) => {
         if (el == null) {
             return null;
         }
@@ -1180,7 +1237,7 @@ class RTBlazorfied {
 
                 /* Check if a style element exists  */
                 var e = this.getElementByStyle(el, type);
-                if (e != null) {
+                if (e != null && this.selectionContainsNode(selection, e)) {
                     return e;
                 }
 
@@ -1194,12 +1251,34 @@ class RTBlazorfied {
                     return el;
                 }
             }
-
             el = el.parentNode;
         }
 
         return null;
     }
+
+    selectionContainsNode(selection, node) {
+        if (selection.rangeCount > 0) {
+            for (let i = 0; i < selection.rangeCount; i++) {
+                let range = selection.getRangeAt(i);
+                if (this.isNodeInRange(node, range)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    isNodeInRange(node, range) {
+        /* Check if the node is contained within the range */
+        let nodeRange = node.ownerDocument.createRange();
+        nodeRange.selectNode(node);
+
+        /* Compare ranges to check for intersection */
+        return range.compareBoundaryPoints(Range.START_TO_END, nodeRange) <= 0 &&
+            range.compareBoundaryPoints(Range.END_TO_START, nodeRange) >= 0;
+    }
+
     /* Get an element by style */
     getElementByStyle = (el, type) => {
         if (el == null) {
@@ -1212,7 +1291,6 @@ class RTBlazorfied {
                 break;
             }
             if (el.style != null) {
-
                 switch (type) {
                     case "textcolor":
                         if (el.style.color != null && !this.isFormatElement(el)) {
@@ -1388,6 +1466,7 @@ class RTBlazorfied {
         if (alignjustify != null && alignjustify.classList.contains("selected")) {
             alignjustify.classList.remove("selected");
         }
+        this.textAlign = false;
 
         var indent = this.shadowRoot.getElementById("blazing-rich-text-indent-button");
         if (indent != null && indent.classList.contains("selected")) {
@@ -1402,12 +1481,15 @@ class RTBlazorfied {
         /* Menus */
         var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
         formatButton.innerText = "Format";
+        this.formatSelected = false;
 
         var fontButton = this.shadowRoot.getElementById("blazing-rich-text-font-button");
         fontButton.innerText = "Font";
+        this.fontSelected = false;
 
         var sizeButton = this.shadowRoot.getElementById("blazing-rich-text-size-button");
         sizeButton.innerText = "Size";
+        this.fontSizeSelected = false;
 
         this.closeDropdowns();
 
@@ -1438,48 +1520,59 @@ class RTBlazorfied {
                 superscript.classList.add("selected");
             }
 
-            if (compStyles.getPropertyValue("text-align") == "left") {
+            if (compStyles.getPropertyValue("text-align") == "left" && !this.textAlign) {
                 alignleft.classList.add("selected");
+                this.textAlign = true;
             }
-            if (compStyles.getPropertyValue("text-align") == "center") {
+            if (compStyles.getPropertyValue("text-align") == "center" && !this.textAlign) {
                 aligncenter.classList.add("selected");
+                this.textAlign = true;
             }
-            if (compStyles.getPropertyValue("text-align") == "right") {
+            if (compStyles.getPropertyValue("text-align") == "right" && !this.textAlign) {
                 alignright.classList.add("selected");
+                this.textAlign = true;
             }
-            if (compStyles.getPropertyValue("text-align") == "justify") {
+            if (compStyles.getPropertyValue("text-align") == "justify" && !this.textAlign) {
                 alignjustify.classList.add("selected");
+                this.textAlign = true;
             }
             if (compStyles.getPropertyValue("text-indent") == "40px") {
                 indent.classList.add("selected");
             }
-            if (el != null && el.style != null && el.style.fontFamily) {
+            if (el != null && el.style != null && el.style.fontFamily && !this.fontSelected) {
                 fontButton.innerText = el.style.fontFamily.replace(/^"(.*)"$/, '$1');
+                this.fontSelected = true;
             }
-            if (el != null && el.style != null && el.style.fontSize) {
+            if (el != null && el.style != null && el.style.fontSize && !this.fontSizeSelected) {
                 sizeButton.innerText = el.style.fontSize;
+                this.fontSizeSelected = true;
             }
-            if (el.parentNode.nodeName == "P") {
+            if (el.parentNode.nodeName == "P" && !this.formatSelected) {
                 formatButton.innerText = 'Paragraph';
+                this.formatSelected = true;
             }
-            if (el.parentNode.nodeName == "H1") {
+            if (el.parentNode.nodeName == "H1" && !this.formatSelected) {
                 formatButton.innerText = 'Header 1';
+                this.formatSelected = true;
             }
-            if (el.parentNode.nodeName == "H2") {
+            if (el.parentNode.nodeName == "H2" && !this.formatSelected) {
                 formatButton.innerText = 'Header 2';
+                this.formatSelected = true;
             }
-            if (el.parentNode.nodeName == "H3") {
+            if (el.parentNode.nodeName == "H3" && !this.formatSelected) {
                 formatButton.innerText = 'Header 3';
+                this.formatSelected = true;
             }
-            if (el.parentNode.nodeName == "H4") {
+            if (el.parentNode.nodeName == "H4" && !this.formatSelected) {
                 formatButton.innerText = 'Header 4';
+                this.formatSelected = true;
             }
-            if (el.parentNode.nodeName == "H5") {
+            if (el.parentNode.nodeName == "H5" && !this.formatSelected) {
                 formatButton.innerText = 'Header 5';
+                this.formatSelected = true;
             }
             if (el.parentNode.nodeName == "A") {
                 link.classList.add("selected");
-                /* var href = element.getAttribute("href"); */
             }
             el = el.parentNode;
         }
