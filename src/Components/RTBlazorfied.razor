@@ -4,7 +4,7 @@
     @if (_font == true)
     {
         <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-menu-item rich-text-box-font-button" disabled="@IsDisabled">
+            <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-font-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
                 Font
             </button>
             <div id="blazing-rich-text-font-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-font-content rich-text-box-scroll">
@@ -18,7 +18,7 @@
     @if (_size == true)
     {
         <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-size-button" title="Size" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-menu-item rich-text-box-size-button" disabled="@IsDisabled">
+            <button id="blazing-rich-text-size-button" title="Size" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
                 Size
             </button>
             <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
@@ -32,7 +32,7 @@
     @if (_format == true)
     {
         <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-menu-item rich-text-box-format-button" disabled="@IsDisabled">
+            <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
                 Format
             </button>
             <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">

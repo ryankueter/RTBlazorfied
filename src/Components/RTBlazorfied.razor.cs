@@ -36,10 +36,10 @@ public partial class RTBlazorfied
             border-color: {{_buttonBorderColor}};
             border-radius: {{_buttonBorderRadius}};
             color: {{_buttonTextColor}};
-            font-size: {{_buttonTextSize}};
             outline: none;
             cursor: pointer;
             transition: 0.3s;
+            padding: 3px 8px;
             margin: 4px 1px;
         }
         .rich-text-box-tool-bar button:hover {
@@ -176,25 +176,27 @@ public partial class RTBlazorfied
           z-index: 10001;
         }
 
+        .rich-text-box-dropdown-btn {
+            padding: 7px 12px !important;
+            font-size: 108%;
+        }
+
         .rich-text-box-format-button {
-          padding: 6px 10px;
-          margin: 6px;
+            
         }
         .rich-text-box-format-content {
-          min-width: 180px;
+            min-width: 180px;
         }
 
         .rich-text-box-font-button {
-          padding: 6px 10px;
-          margin: 6px;
+            
         }
         .rich-text-box-font-content {
           min-width: 180px;
         }
 
         .rich-text-box-size-button {
-          padding: 6px 10px;
-          margin: 6px;
+            
         }
         .rich-text-box-size-content {
           min-width: 80px;

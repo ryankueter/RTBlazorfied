@@ -73,7 +73,6 @@ class RTBlazorfied {
             this.closeDropdowns();
             el.classList.add("rich-text-box-show")
         }
-        this.focusEditor();
     }
     openTextColorPicker = () => {
         this.lockToolbar = true;
