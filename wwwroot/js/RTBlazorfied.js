@@ -822,6 +822,7 @@ class RTBlazorfied {
             }
             
             var element;
+            this.isCommonAncestor = false;
             if (sel.toString().length == 0) {
                 /* Check if a node exists with this style and get it */
                 element = this.getElementByStyle(sel.anchorNode, type);
@@ -842,14 +843,22 @@ class RTBlazorfied {
             }
             else {
                 var range = sel.getRangeAt(0);
+
+                /* This is used to compare the html contents
+                to ensure they are the same element */
+                var fragment = range.cloneContents();
+                var temp = document.createElement('div');
+                temp.appendChild(fragment);
+
                 var commonAncestor = range.commonAncestorContainer;
-                if (this.content != commonAncestor && commonAncestor.nodeType !== Node.TEXT_NODE) {
+                if (this.content != commonAncestor && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
                     element = range.commonAncestorContainer;
-                   
+                    this.isCommonAncestor = true;
                 }
                 else {
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
+                temp.remove();
             }
             
             if (element != null) {
@@ -1099,7 +1108,13 @@ class RTBlazorfied {
                 }
             }
             else {
-                element.removeAttribute("style");
+                if (element.nodeName == "DIV" && this.isCommonAncestor === true) {
+                    element.insertAdjacentHTML("afterend", element.innerHTML);
+                    element.remove();
+                }
+                else {
+                    element.removeAttribute("style");
+                }
             }
         }
     }
@@ -1145,7 +1160,6 @@ class RTBlazorfied {
         for (let i = 0; i < element.style.length; i++) {
             let property = element.style[i];
             let value = element.style.getPropertyValue(property);
-
             styles[property] = value;
         }
 
@@ -1160,19 +1174,24 @@ class RTBlazorfied {
             let value = element.style.getPropertyValue(property);
 
             /* Filter out the initual values, e.g., <h1> */
-            if (value != "initial") {
-                var words = value.split(' ');
-                if (words.length > 1) {
-                    for (let i = 0; i < words.length; i++) {
+            if (this.isFormatElement(element)) {
+                if (value != "initial") {
+                    var words = value.split(' ');
+                    if (words.length > 1) {
+                        for (let i = 0; i < words.length; i++) {
+                            c++;
+                        }
+                    }
+                    else {
                         c++;
                     }
                 }
-                else {
-                    c++;
-                }
+            }
+            else {
+                /* If it's not a formating node... */
+                c++;
             }
         }
-
         return c;
     }
 
