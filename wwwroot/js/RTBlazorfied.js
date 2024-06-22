@@ -826,7 +826,7 @@ class RTBlazorfied {
             if (sel.toString().length == 0) {
                 /* Check if a node exists with this style and get it */
                 element = this.getElementByStyle(sel.anchorNode, type);
-
+               
                 /* See if it's an image */
                 if (element == null && sel.anchorNode != null && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
                     var image = sel.anchorNode.querySelector('img');
@@ -837,28 +837,18 @@ class RTBlazorfied {
                 
                 /* If that node does not exist, style the parent node */
                 if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
-                    element = sel.anchorNode.parentNode;
+                    element = sel.anchorNode.parentNode;   
                 }
-                
             }
             else {
-                var range = sel.getRangeAt(0);
-
-                /* This is used to compare the html contents
-                to ensure they are the same element */
-                var fragment = range.cloneContents();
-                var temp = document.createElement('div');
-                temp.appendChild(fragment);
-
-                var commonAncestor = range.commonAncestorContainer;
-                if (this.content != commonAncestor && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
+                if (this.hasCommonAncestor(sel) == true) {
+                    var range = sel.getRangeAt(0);
                     element = range.commonAncestorContainer;
                     this.isCommonAncestor = true;
                 }
                 else {
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
-                temp.remove();
             }
             
             if (element != null) {
@@ -1064,6 +1054,23 @@ class RTBlazorfied {
         this.selectButtons(sel.anchorNode);
         this.restorestate();
         this.focusEditor();
+    }
+    hasCommonAncestor(selection) {
+        var range = selection.getRangeAt(0);
+
+        /* This is used to compare the html contents
+        to ensure they are the same element */
+        var fragment = range.cloneContents();
+        var temp = document.createElement('div');
+        temp.appendChild(fragment);
+
+        var commonAncestor = range.commonAncestorContainer;
+        if (this.content != commonAncestor && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
+            temp.remove();
+            return true;
+        }
+        temp.remove();
+        return false;
     }
     createElement(selection) {
         if (this.containsElements(selection)) {

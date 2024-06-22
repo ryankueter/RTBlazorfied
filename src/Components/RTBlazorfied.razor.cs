@@ -304,7 +304,7 @@ public partial class RTBlazorfied
         }
         
         .rich-text-box-form-button {
-          padding: 10px 20px;
+          padding: 10px 20px !important;
           font-size: 16px !important;
         }
 
