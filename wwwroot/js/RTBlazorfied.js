@@ -75,28 +75,36 @@ class RTBlazorfied {
         }
     }
     openTextColorPicker = () => {
+        /* Lock the toolbar */
         this.lockToolbar = true;
+
+        /* Get the selection */
         var selection = this.shadowRoot.getSelection();
-        if (selection != null && selection.toString().length > 0) {
-            this.colorSelection = selection.getRangeAt(0).cloneRange();
+        if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
+            this.selection = selection.getRangeAt(0).cloneRange();
         }
 
-        var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
-        colorPickerDropdown.style.display = colorPickerDropdown.style.display === 'block' ? 'none' : 'block';
+        /* Display or hide dropdown */
+        var el = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
+        if (el != null && el.classList.contains("rich-text-box-show")) {
+            el.classList.remove("rich-text-box-show")
+        }
+        else {
+            this.closeDropdowns();
+            el.classList.add("rich-text-box-show")
+        }
     }
     selectTextColor = (color) => {
         this.updateNode("textcolor", color);
 
-        var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
-        colorPickerDropdown.style.display = 'none';
-        this.lockToolbar = false;
+        var el = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
+        el.classList.remove("rich-text-box-show")
     }
     removeTextColor = () => {
         this.updateNode("textcolor", "None");
 
-        var colorPickerDropdown = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
-        colorPickerDropdown.style.display = 'none';
-        this.lockToolbar = false;
+        var el = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
+        el.classList.remove("rich-text-box-show")
     }
     font = (style) => {
         this.updateNode("font", style);
@@ -423,18 +431,18 @@ class RTBlazorfied {
                 newtab.checked = true;
             }
 
-            this.linkSelection = selection.anchorNode.parentNode;
+            this.selection = selection.anchorNode.parentNode;
         }
         else {
             var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             if (selection != null && selection.toString().length > 0) {
-                this.linkSelection = selection.getRangeAt(0).cloneRange();
-                linktext.value = this.linkSelection.toString();
+                this.selection = selection.getRangeAt(0).cloneRange();
+                linktext.value = this.selection.toString();
             }
         }
 
         if (linktext.value.trim().length === 0) {
-            this.linkSelection = this.moveCursorToStart();
+            this.selection = this.moveCursorToStart();
         }
 
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
@@ -482,8 +490,8 @@ class RTBlazorfied {
 
         /* Get the link selection or element */
         var selection = this.shadowRoot.getSelection();
-        if (this.linkSelection instanceof HTMLElement) {
-            var element = this.linkSelection;
+        if (this.selection instanceof HTMLElement) {
+            var element = this.selection;
             element.href = link.value;
             element.textContent = linktext.value;
             if (newtab.checked) {
@@ -494,9 +502,9 @@ class RTBlazorfied {
             }
         }
         else {
-            if (selection && this.linkSelection) {
+            if (selection && this.selection) {
                 selection.removeAllRanges();
-                selection.addRange(this.linkSelection);
+                selection.addRange(this.selection);
             }
 
             var range = selection.getRangeAt(0);
@@ -509,6 +517,7 @@ class RTBlazorfied {
             range.deleteContents();
             range.insertNode(anchor);
         }
+        this.selection = null;
         this.restorestate();
         this.closeLinkDialog();
         this.focusEditor();
@@ -816,9 +825,9 @@ class RTBlazorfied {
             sel = this.shadowRoot.getSelection();
 
             /* Get the color selection if one exists */
-            if (this.colorSelection != null) {
+            if (this.selection != null) {
                 sel.removeAllRanges();
-                sel.addRange(this.colorSelection);
+                sel.addRange(this.selection);
             }
             
             var element;
@@ -969,6 +978,7 @@ class RTBlazorfied {
                         break;
                     default:
                 }
+                this.selection = null;
                 this.removeEmptyNodes();
                 this.selectButtons(sel.anchorNode);
                 this.restorestate();
@@ -1047,6 +1057,7 @@ class RTBlazorfied {
                     range.selectNodeContents(newElement);
                     sel.removeAllRanges();
                     sel.addRange(range);
+                    this.selection = null;
                 }
             }
         }
@@ -1505,17 +1516,23 @@ class RTBlazorfied {
 
         /* Menus */
         var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
-        formatButton.innerText = "Format";
-        this.formatSelected = false;
-
+        if (formatButton != null) {
+            formatButton.innerText = "Format";
+            this.formatSelected = false;
+        }
+       
         var fontButton = this.shadowRoot.getElementById("blazing-rich-text-font-button");
-        fontButton.innerText = "Font";
-        this.fontSelected = false;
-
+        if (fontButton != null) {
+            fontButton.innerText = "Font";
+            this.fontSelected = false;
+        }
+        
         var sizeButton = this.shadowRoot.getElementById("blazing-rich-text-size-button");
-        sizeButton.innerText = "Size";
-        this.fontSizeSelected = false;
-
+        if (sizeButton != null) {
+            sizeButton.innerText = "Size";
+            this.fontSizeSelected = false;
+        }
+        
         this.closeDropdowns();
 
         while (el.parentNode) {

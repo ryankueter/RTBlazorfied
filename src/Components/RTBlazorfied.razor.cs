@@ -39,7 +39,7 @@ public partial class RTBlazorfied
             outline: none;
             cursor: pointer;
             transition: 0.3s;
-            padding: 3px 8px;
+            min-height: calc({{_buttonTextSize}} + 14px);
             margin: 4px 1px;
         }
         .rich-text-box-tool-bar button:hover {
@@ -177,8 +177,8 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-dropdown-btn {
-            padding: 7px 12px !important;
-            font-size: 108%;
+            font-size: {{_buttonTextSize}};
+            min-height: calc({{_buttonTextSize}} + 14px);
         }
 
         .rich-text-box-format-button {
@@ -313,24 +313,12 @@ public partial class RTBlazorfied
         }
 
         .blazing-rich-text-color-picker-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            min-height: calc({{_buttonTextSize}} + 14px);
         }
 
         .blazing-rich-text-color-picker-dropdown {
-            position: absolute;
-            top: 40px;
-            width: 170px;
-            left: 0;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            z-index: 10001;
+            width: 80px;
+            padding: 10px 10px 6px 10px;
         }
 
         .blazing-rich-text-color-option {
@@ -463,54 +451,61 @@ public partial class RTBlazorfied
     }
 
     #region ButtonVisibility
-    private bool? _font = true;
-    private bool? _size = true;
-    private bool? _format = true;
-    private bool? _textstylesdivider = false;
-    private bool? _bold = true;
-    private bool? _italic = true;
-    private bool? _underline = true;
-    private bool? _strikethrough = true;
-    private bool? _subscript = true;
-    private bool? _superscript = true;
-    private bool? _formatdivider = false;
-    private bool? _alignleft = true;
-    private bool? _aligncenter = true;
-    private bool? _alignright = true;
-    private bool? _alignjustify = true;
-    private bool? _indent = true;
-    private bool? _aligndivider = false;
-    private bool? _copy = true;
-    private bool? _cut = true;
-    private bool? _delete = true;
-    private bool? _selectall = true;
-    private bool? _actiondivider = false;
-    private bool? _undo = true;
-    private bool? _redo = true;
-    private bool? _historydivider = false;
-    private bool? _link = true;
-    private bool? _image = true;
-    private bool? _linkdivider = false;
-    private bool? _orderedlist = true;
-    private bool? _unorderedlist = true;
-    private bool? _listdivider = false;
+    private bool? _font;
+    private bool? _size;
+    private bool? _format;
+    private bool? _textstylesdivider;
+    private bool? _bold;
+    private bool? _italic;
+    private bool? _underline;
+    private bool? _strikethrough;
+    private bool? _subscript;
+    private bool? _superscript;
+    private bool? _formatdivider;
+    private bool? _textcolor;
+    private bool? _textcolordivider;
+    private bool? _alignleft;
+    private bool? _aligncenter;
+    private bool? _alignright;
+    private bool? _alignjustify;
+    private bool? _indent;
+    private bool? _aligndivider;
+    private bool? _copy;
+    private bool? _cut;
+    private bool? _delete;
+    private bool? _selectall;
+    private bool? _actiondivider;
+    private bool? _undo;
+    private bool? _redo;
+    private bool? _historydivider;
+    private bool? _link;
+    private bool? _image;
+    private bool? _linkdivider;
+    private bool? _orderedlist;
+    private bool? _unorderedlist;
+    private bool? _listdivider;
     #endregion
     private void GetButtons()
     {
         var buttons = _options.GetButtonVisibilityOptions();
-
         if (buttons is null)
         {
-            _textstylesdivider = true;
-            _formatdivider = true;
-            _aligndivider = true;
-            _actiondivider = true;
-            _historydivider = true;
-            _linkdivider = true;
-            _listdivider = true;
+            SetDividerDefaults();
+            SetButtonDefaults();
         }
         else
         {
+            if (buttons._clearAll is true)
+            {
+                SetDividerDefaults(false);
+                SetButtonDefaults(false);
+            }
+            else
+            {
+                SetDividerDefaults();
+                SetButtonDefaults(); 
+            }
+
             if (buttons.Font is not null)
             {
                 _font = buttons.Font;
@@ -524,11 +519,8 @@ public partial class RTBlazorfied
                 _format = buttons.Format;
             }
 
-            if (buttons.Font is null
-                || buttons.Font == true
-                || buttons.Size is null
+            if (buttons.Font == true
                 || buttons.Size == true
-                || buttons.Format is null
                 || buttons.Format == true)
             {
                 _textstylesdivider = true;
@@ -560,20 +552,24 @@ public partial class RTBlazorfied
             }
 
             // If the user did not specify false, keep the button
-            if (buttons.Bold is null 
-                || buttons.Bold == true
-                || buttons.Italic is null 
+            if (buttons.Bold == true
                 || buttons.Italic == true
-                || buttons.Underline is null 
                 || buttons.Underline == true
-                || buttons.Strikethrough is null 
                 || buttons.Strikethrough == true
-                || buttons.Subscript is null 
                 || buttons.Subscript == true
-                || buttons.Superscript is null 
                 || buttons.Superscript == true)
             {
                 _formatdivider = true;
+            }
+
+            if (buttons.TextColor is not null)
+            {
+                _textcolor = buttons.TextColor;
+            }
+
+            if (buttons.TextColor == true)
+            {
+                _textcolordivider = true;
             }
 
             if (buttons.Alignleft is not null)
@@ -598,13 +594,9 @@ public partial class RTBlazorfied
             //}
 
             // If the user did not specify false, keep the button
-            if (buttons.Alignleft is null 
-                || buttons.Alignleft == true
-                || buttons.Aligncenter is null 
+            if (buttons.Alignleft == true
                 || buttons.Aligncenter == true
-                || buttons.Alignright is null 
                 || buttons.Alignright == true
-                || buttons.Alignjustify is null 
                 || buttons.Alignjustify == true)
             {
                 _aligndivider = true;
@@ -628,13 +620,9 @@ public partial class RTBlazorfied
             }
 
             // If the user did not specify false, keep the button
-            if (buttons.Copy is null 
-                || buttons.Copy == true
-                || buttons.Cut is null 
+            if (buttons.Copy == true
                 || buttons.Cut == true
-                || buttons.Delete is null 
                 || buttons.Delete == true
-                || buttons.Selectall is null 
                 || buttons.Selectall == true)
             {
                 _actiondivider = true;
@@ -650,9 +638,7 @@ public partial class RTBlazorfied
             }
 
             // If the user did not specify false, keep the button
-            if (buttons.Undo is null 
-                || buttons.Undo == true
-                || buttons.Redo is null 
+            if (buttons.Undo == true
                 || buttons.Redo == true)
             {
                 _historydivider = true;
@@ -667,8 +653,7 @@ public partial class RTBlazorfied
                 _image = buttons.Image;
             }
             // If the user did not specify false, keep the button
-            if (buttons.Link is null
-                || buttons.Link == true)
+            if (buttons.Link == true)
             {
                 _linkdivider = true;
             }
@@ -682,15 +667,54 @@ public partial class RTBlazorfied
                 _unorderedlist = buttons.Unorderedlist;
             }
             // If the user did not specify false, keep the button
-            if (buttons.Orderedlist is null
-                || buttons.Orderedlist == true
-                || buttons.Unorderedlist is null
+            if (buttons.Orderedlist == true
                 || buttons.Unorderedlist == true)
             {
                 _listdivider = true;
             }
         }
     }
+
+    private void SetDividerDefaults(bool setting = true)
+    {
+        _textstylesdivider = setting;
+        _formatdivider = setting;
+        _textcolordivider = setting;
+        _aligndivider = setting;
+        _actiondivider = setting;
+        _historydivider = setting;
+        _linkdivider = setting;
+        _listdivider = setting;
+    }
+
+    private void SetButtonDefaults(bool setting = true)
+    {
+        _font = setting;
+        _size = setting;
+        _format = setting;
+        _bold = setting;
+        _italic = setting;
+        _underline = setting;
+        _strikethrough = setting;
+        _subscript = setting;
+        _superscript = setting;
+        _textcolor = setting;
+        _alignleft = setting;
+        _aligncenter = setting;
+        _alignright = setting;
+        _alignjustify = setting;
+        _indent = setting;
+        _copy = setting;
+        _cut = setting;
+        _delete = setting;
+        _selectall = setting;
+        _undo = setting;
+        _redo = setting;
+        _link = setting;
+        _image = setting;
+        _orderedlist = setting;
+        _unorderedlist = setting;
+}
 
     private void GetScrollOptions()
     {
@@ -959,7 +983,7 @@ public partial class RTBlazorfied
         "28",
         "36",
         "48",
-        "72"
+        "64"
     };
     private async Task Size(string size) => await js.InvokeVoidAsync("RTBlazorfied_Method", "size", id, size == "None" ? size : $"{size}px");
     #endregion

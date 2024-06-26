@@ -7,6 +7,11 @@ namespace RichTextBlazorfied;
 
 public class RichTextboxButtonVisibilityOptions
 {
+    internal bool? _clearAll;
+    public void ClearAll()
+    {
+        _clearAll = true;
+    }
     public bool? Font { get; set; }
     public bool? Size { get; set; }
     public bool? Format { get; set; }
@@ -16,6 +21,7 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Strikethrough { get; set; }
     public bool? Subscript { get; set; }
     public bool? Superscript { get; set; }
+    public bool? TextColor { get; set; }
     public bool? Alignleft { get; set; }
     public bool? Aligncenter { get; set; }
     public bool? Alignright { get; set; }
