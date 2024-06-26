@@ -174,6 +174,7 @@ public partial class RTBlazorfied
           overflow: auto;
           box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
           z-index: 10001;
+          font-family: Arial, sans-serif;
         }
 
         .rich-text-box-dropdown-btn {
@@ -185,7 +186,7 @@ public partial class RTBlazorfied
             
         }
         .rich-text-box-format-content {
-            min-width: 180px;
+            min-width: 185px;
         }
 
         .rich-text-box-font-button {

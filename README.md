@@ -59,7 +59,7 @@ RTBlazorfied was designed to allow developers to highly customize the appearance
 <RTBlazorfied Html="@Html" Options="@GetOptions()" />
 ```
 
-Then add the options:
+Leaving of the ButtonVisibility options will display all the buttons.
 ```csharp
 public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
 {
