@@ -74,7 +74,7 @@ class RTBlazorfied {
             el.classList.add("rich-text-box-show")
         }
     }
-    openTextColorPicker = () => {
+    openTextColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
@@ -84,27 +84,39 @@ class RTBlazorfied {
             this.selection = selection.getRangeAt(0).cloneRange();
         }
 
-        /* Display or hide dropdown */
-        var el = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
-        if (el != null && el.classList.contains("rich-text-box-show")) {
-            el.classList.remove("rich-text-box-show")
-        }
-        else {
-            this.closeDropdowns();
-            el.classList.add("rich-text-box-show")
-        }
+        // Reset the selected color
+        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        el.style.backgroundColor = '';
+
+        var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
+        e.style.display = "block";
     }
     selectTextColor = (color) => {
-        this.updateNode("textcolor", color);
+        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        el.style.backgroundColor = color;
 
-        var el = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
-        el.classList.remove("rich-text-box-show")
+        /* Reselect the text */
+        //if (this.selection != null) {
+        //    var selection = this.shadowRoot.getSelection();
+        //    selection.removeAllRanges();
+        //    selection.addRange(this.selection);
+        //}
+    }
+    insertTextColor = () => {
+        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+
+        if (el.style.backgroundColor === '') {
+            this.updateNode("textcolor", "None");
+        }
+        else {
+            this.updateNode("textcolor", el.style.backgroundColor);
+        }
+
+        /* Close the dialog */
+        this.closeDialog("rich-text-box-text-color-modal");
     }
     removeTextColor = () => {
         this.updateNode("textcolor", "None");
-
-        var el = this.shadowRoot.getElementById('blazing-rich-text-textcolor-dropdown');
-        el.classList.remove("rich-text-box-show")
     }
     font = (style) => {
         this.updateNode("font", style);
@@ -519,7 +531,8 @@ class RTBlazorfied {
         }
         this.selection = null;
         this.restorestate();
-        this.closeLinkDialog();
+
+        this.closeDialog("rich-text-box-link-modal");
         this.focusEditor();
     }
     removeLink = () => {
@@ -546,9 +559,12 @@ class RTBlazorfied {
         this.restorestate();
         this.focusEditor();
     }
-    closeLinkDialog = () => {
-        var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
-        e.style.display = "none";
+    closeDialog = (id) => {
+        var e = this.shadowRoot.getElementById(id);
+        if (e != null) {
+            e.style.display = "none";
+        }
+        this.lockToolbar = false;
     }
     openImageDialog = () => {
         this.resetImageDialog();
@@ -624,12 +640,9 @@ class RTBlazorfied {
         }
 
         this.restorestate();
-        this.closeImageDialog();
+
+        this.closeDialog("rich-text-box-image-modal");
         this.focusEditor();
-    }
-    closeImageDialog = () => {
-        var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
-        e.style.display = "none";
     }
 
     undo = () => {

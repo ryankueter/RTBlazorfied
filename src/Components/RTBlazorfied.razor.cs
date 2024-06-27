@@ -334,27 +334,11 @@ public partial class RTBlazorfied
         .blazing-rich-text-color-option:hover {
             border-color: #000;
         }
-
-        .blazing-rich-text-color-option-empty {
-            width: 15px;
-            height: 15px;
-            margin: 2px;
+        .blazing-rich-text-color-selection {
+            width: 100%;
+            height: 20px;
             cursor: pointer;
             display: inline-block;
-            border: 2px solid black;
-            background-color: white;
-            position: relative;
-        }
-
-        .blazing-rich-text-color-option-empty::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: black;
-            transform: translateY(-50%) rotate(-45deg);
         }
         """;
 
@@ -481,7 +465,7 @@ public partial class RTBlazorfied
     private bool? _historydivider;
     private bool? _link;
     private bool? _image;
-    private bool? _linkdivider;
+    private bool? _insertdivider;
     private bool? _orderedlist;
     private bool? _unorderedlist;
     private bool? _listdivider;
@@ -504,175 +488,205 @@ public partial class RTBlazorfied
             else
             {
                 SetDividerDefaults();
-                SetButtonDefaults(); 
+                SetButtonDefaults();
             }
 
-            if (buttons.Font is not null)
-            {
-                _font = buttons.Font;
-            }
-            if (buttons.Size is not null)
-            {
-                _size = buttons.Size;
-            }
-            if (buttons.Format is not null)
-            {
-                _format = buttons.Format;
-            }
+            GetTextStyleButtons(buttons);
+            GetTextFormatButtons(buttons);
+            GetTextColorButtons(buttons);
+            GetAlignButtons(buttons);
+            GetActionsButtons(buttons);
+            GetUndoRedoButtons(buttons);
+            GetInsertButtons(buttons);
+            GetListButtons(buttons);
+        }
+    }
 
-            if (buttons.Font == true
-                || buttons.Size == true
-                || buttons.Format == true)
-            {
-                _textstylesdivider = true;
-            }
+    private void GetListButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.Orderedlist is not null)
+        {
+            _orderedlist = buttons.Orderedlist;
+        }
+        if (buttons.Unorderedlist is not null)
+        {
+            _unorderedlist = buttons.Unorderedlist;
+        }
+        // If the user did not specify false, keep the button
+        if (buttons.Orderedlist == true
+            || buttons.Unorderedlist == true)
+        {
+            _listdivider = true;
+        }
+    }
 
-            if (buttons.Bold is not null)
-            {
-                _bold = buttons.Bold;
-            }
-            if (buttons.Italic is not null)
-            {
-                _italic = buttons.Italic;
-            }
-            if (buttons.Underline is not null)
-            {
-                _underline = buttons.Underline;
-            }
-            if (buttons.Strikethrough is not null)
-            {
-                _strikethrough = buttons.Strikethrough;
-            }
-            if (buttons.Subscript is not null)
-            {
-                _subscript = buttons.Subscript;
-            }
-            if (buttons.Superscript is not null)
-            {
-                _superscript = buttons.Superscript;
-            }
+    private void GetInsertButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.Link is not null)
+        {
+            _link = buttons.Link;
+        }
+        if (buttons.Image is not null)
+        {
+            _image = buttons.Image;
+        }
+        // If the user did not specify false, keep the button
+        if (buttons.Link == true
+            || buttons.Image == true)
+        {
+            _insertdivider = true;
+        }
+    }
 
-            // If the user did not specify false, keep the button
-            if (buttons.Bold == true
-                || buttons.Italic == true
-                || buttons.Underline == true
-                || buttons.Strikethrough == true
-                || buttons.Subscript == true
-                || buttons.Superscript == true)
-            {
-                _formatdivider = true;
-            }
+    private void GetUndoRedoButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.Undo is not null)
+        {
+            _undo = buttons.Undo;
+        }
+        if (buttons.Redo is not null)
+        {
+            _redo = buttons.Redo;
+        }
 
-            if (buttons.TextColor is not null)
-            {
-                _textcolor = buttons.TextColor;
-            }
+        // If the user did not specify false, keep the button
+        if (buttons.Undo == true
+            || buttons.Redo == true)
+        {
+            _historydivider = true;
+        }
+    }
 
-            if (buttons.TextColor == true)
-            {
-                _textcolordivider = true;
-            }
+    private void GetActionsButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.Copy is not null)
+        {
+            _copy = buttons.Copy;
+        }
+        if (buttons.Cut is not null)
+        {
+            _cut = buttons.Cut;
+        }
+        if (buttons.Delete is not null)
+        {
+            _delete = buttons.Delete;
+        }
+        if (buttons.Selectall is not null)
+        {
+            _selectall = buttons.Selectall;
+        }
 
-            if (buttons.Alignleft is not null)
-            {
-                _alignleft = buttons.Alignleft;
-            }
-            if (buttons.Aligncenter is not null)
-            {
-                _aligncenter = buttons.Aligncenter;
-            }
-            if (buttons.Alignright is not null)
-            {
-                _alignright = buttons.Alignright;
-            }
-            if (buttons.Alignjustify is not null)
-            {
-                _alignjustify = buttons.Alignjustify;
-            }
-            //if (buttons.Indent is not null)
-            //{
-            //    _indent = buttons.Indent;
-            //}
+        // If the user did not specify false, keep the button
+        if (buttons.Copy == true
+            || buttons.Cut == true
+            || buttons.Delete == true
+            || buttons.Selectall == true)
+        {
+            _actiondivider = true;
+        }
+    }
 
-            // If the user did not specify false, keep the button
-            if (buttons.Alignleft == true
-                || buttons.Aligncenter == true
-                || buttons.Alignright == true
-                || buttons.Alignjustify == true)
-            {
-                _aligndivider = true;
-            }
+    private void GetAlignButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.Alignleft is not null)
+        {
+            _alignleft = buttons.Alignleft;
+        }
+        if (buttons.Aligncenter is not null)
+        {
+            _aligncenter = buttons.Aligncenter;
+        }
+        if (buttons.Alignright is not null)
+        {
+            _alignright = buttons.Alignright;
+        }
+        if (buttons.Alignjustify is not null)
+        {
+            _alignjustify = buttons.Alignjustify;
+        }
 
-            if (buttons.Copy is not null)
-            {
-                _copy = buttons.Copy;
-            }
-            if (buttons.Cut is not null)
-            {
-                _cut = buttons.Cut;
-            }
-            if (buttons.Delete is not null)
-            {
-                _delete = buttons.Delete;
-            }
-            if (buttons.Selectall is not null)
-            {
-                _selectall = buttons.Selectall;
-            }
+        // If the user did not specify false, keep the button
+        if (buttons.Alignleft == true
+            || buttons.Aligncenter == true
+            || buttons.Alignright == true
+            || buttons.Alignjustify == true)
+        {
+            _aligndivider = true;
+        }
+    }
 
-            // If the user did not specify false, keep the button
-            if (buttons.Copy == true
-                || buttons.Cut == true
-                || buttons.Delete == true
-                || buttons.Selectall == true)
-            {
-                _actiondivider = true;
-            }
+    private void GetTextColorButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.TextColor is not null)
+        {
+            _textcolor = buttons.TextColor;
+        }
 
-            if (buttons.Undo is not null)
-            {
-                _undo = buttons.Undo;
-            }
-            if (buttons.Redo is not null)
-            {
-                _redo = buttons.Redo;
-            }
+        if (buttons.TextColor == true)
+        {
+            _textcolordivider = true;
+        }
+    }
 
-            // If the user did not specify false, keep the button
-            if (buttons.Undo == true
-                || buttons.Redo == true)
-            {
-                _historydivider = true;
-            }
+    private void GetTextFormatButtons(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons.Bold is not null)
+        {
+            _bold = buttons.Bold;
+        }
+        if (buttons.Italic is not null)
+        {
+            _italic = buttons.Italic;
+        }
+        if (buttons.Underline is not null)
+        {
+            _underline = buttons.Underline;
+        }
+        if (buttons.Strikethrough is not null)
+        {
+            _strikethrough = buttons.Strikethrough;
+        }
+        if (buttons.Subscript is not null)
+        {
+            _subscript = buttons.Subscript;
+        }
+        if (buttons.Superscript is not null)
+        {
+            _superscript = buttons.Superscript;
+        }
 
-            if (buttons.Link is not null)
-            {
-                _link = buttons.Link;
-            }
-            if (buttons.Image is not null)
-            {
-                _image = buttons.Image;
-            }
-            // If the user did not specify false, keep the button
-            if (buttons.Link == true)
-            {
-                _linkdivider = true;
-            }
+        // If the user did not specify false, keep the button
+        if (buttons.Bold == true
+            || buttons.Italic == true
+            || buttons.Underline == true
+            || buttons.Strikethrough == true
+            || buttons.Subscript == true
+            || buttons.Superscript == true)
+        {
+            _formatdivider = true;
+        }
+    }
 
-            if (buttons.Orderedlist is not null)
-            {
-                _orderedlist = buttons.Orderedlist;
-            }
-            if (buttons.Unorderedlist is not null)
-            {
-                _unorderedlist = buttons.Unorderedlist;
-            }
-            // If the user did not specify false, keep the button
-            if (buttons.Orderedlist == true
-                || buttons.Unorderedlist == true)
-            {
-                _listdivider = true;
-            }
+    private void GetTextStyleButtons(RichTextboxButtonVisibilityOptions buttons)
+    {
+        if (buttons.Font is not null)
+        {
+            _font = buttons.Font;
+        }
+        if (buttons.Size is not null)
+        {
+            _size = buttons.Size;
+        }
+        if (buttons.Format is not null)
+        {
+            _format = buttons.Format;
+        }
+
+        if (buttons.Font == true
+            || buttons.Size == true
+            || buttons.Format == true)
+        {
+            _textstylesdivider = true;
         }
     }
 
@@ -684,7 +698,7 @@ public partial class RTBlazorfied
         _aligndivider = setting;
         _actiondivider = setting;
         _historydivider = setting;
-        _linkdivider = setting;
+        _insertdivider = setting;
         _listdivider = setting;
     }
 
@@ -1041,14 +1055,15 @@ public partial class RTBlazorfied
     private async Task OpenLinkDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openLinkDialog", id);
     private async Task RemoveLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeLink", id);
     private async Task InsertLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertLink", id);
-    private async Task CloseLinkDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeLinkDialog", id);
+    private async Task CloseDialog(string dialog_id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeDialog", id, dialog_id);
     private async Task OpenImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openImageDialog", id);
     private async Task InsertImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertImage", id);
-    private async Task CloseImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeImageDialog", id);
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", id);
     private async Task OpenTextColorPicker() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorPicker", id);
+    private async Task OpenTextColorDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorDialog", id);
     private async Task SelectTextColor(string color) => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectTextColor", id, color);
+    private async Task InsertTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextColor", id);
     private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);
 
     private async Task OpenDropdown(string id) =>
