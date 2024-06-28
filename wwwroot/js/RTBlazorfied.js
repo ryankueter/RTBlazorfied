@@ -881,16 +881,9 @@ class RTBlazorfied {
                 switch (type) {
                     case "textcolor":
                         if (value == "None") {
-
                             var e = this.getElementByStyle(element, type);
-                            //console.log(e);
-
-                            /* Check if the style is applied to the element or parent element */
-                            if (element.style.getPropertyValue("color").toString().length > 0) {
-                                this.removeProperty(element, "color", element.style.getPropertyValue("color"));
-                            }
-                            else if (element.parentElement.style.getPropertyValue("color").toString().length > 0) {
-                                this.removeProperty(element.parentElement, "color", element.parentElement.style.getPropertyValue("color"));
+                            if (e != null) {
+                                this.removeProperty(e, "color", e.style.getPropertyValue("color"));
                             }
                         }
                         else {
@@ -1220,8 +1213,8 @@ class RTBlazorfied {
                 if (value != "initial") {
                     var words = value.split(' ');
 
-                    /* Ensure the style is not something that contains commas, such as color: rgb() */
-                    if (property != "color" && words.length > 1) {
+                    /* Check if the style contains multiple values */
+                    if (property === "text-decoration-line" && words.length > 1) {
                         for (let i = 0; i < words.length; i++) {
                             c++;
                         }
