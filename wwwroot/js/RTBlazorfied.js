@@ -1214,7 +1214,7 @@ class RTBlazorfied {
                     var words = value.split(' ');
 
                     /* Check if the style contains multiple values */
-                    if (property === "text-decoration-line" && words.length > 1) {
+                    if (property != "color" && words.length > 1) {
                         for (let i = 0; i < words.length; i++) {
                             c++;
                         }
