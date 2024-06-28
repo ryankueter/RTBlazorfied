@@ -867,12 +867,14 @@ class RTBlazorfied {
                 }
             }
             else {
+                /* See if this is an outer element */
                 if (this.hasCommonAncestor(sel) == true) {
                     var range = sel.getRangeAt(0);
                     element = range.commonAncestorContainer;
                     this.isCommonAncestor = true;
                 }
                 else {
+                    /* Get the element by the selected content */
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
             }
@@ -1281,6 +1283,9 @@ class RTBlazorfied {
             return null;
         }
 
+        //console.log(el.textContent);
+        //console.log(this.shadowRoot.getSelection().toString());
+
         while (el) {
             /* Prevent recursion outside the editor */
             if (el.nodeName == 'DIV' && el.id == this.id) {
@@ -1300,9 +1305,9 @@ class RTBlazorfied {
                 if (el.nodeName === 'LI') {
                     return el.parentNode;
                 }
-
+                
                 /* Match the text, or get the element by the style */
-                if (this.shadowRoot.getSelection().toString() == el.textContent) {
+                if (this.shadowRoot.getSelection().toString().trim() == el.textContent.trim()) {
                     return el;
                 }
             }
