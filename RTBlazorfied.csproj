@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added a text color changer and small bug fixes to improve the usability of the editor.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.70</Version>
-	  <AssemblyVersion>1.0.70</AssemblyVersion>
-	  <FileVersion>1.0.70</FileVersion>
+	  <Version>1.0.71</Version>
+	  <AssemblyVersion>1.0.71</AssemblyVersion>
+	  <FileVersion>1.0.71</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

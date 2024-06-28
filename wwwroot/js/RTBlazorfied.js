@@ -816,6 +816,10 @@ class RTBlazorfied {
             || element.nodeName == "H5") {
             return true;
         }
+
+        if (element.style.textDecoration != null) {
+            return true;
+        }
     }
     closeDropdowns = () => {
         this.lockToolbar = false;
@@ -877,8 +881,16 @@ class RTBlazorfied {
                 switch (type) {
                     case "textcolor":
                         if (value == "None") {
-                            if (element.style.getPropertyValue("color") != null) {
+
+                            var e = this.getElementByStyle(element, type);
+                            //console.log(e);
+
+                            /* Check if the style is applied to the element or parent element */
+                            if (element.style.getPropertyValue("color").toString().length > 0) {
                                 this.removeProperty(element, "color", element.style.getPropertyValue("color"));
+                            }
+                            else if (element.parentElement.style.getPropertyValue("color").toString().length > 0) {
+                                this.removeProperty(element.parentElement, "color", element.parentElement.style.getPropertyValue("color"));
                             }
                         }
                         else {
@@ -1199,7 +1211,6 @@ class RTBlazorfied {
 
     getUserDefinedStyleCount = (element) => {
         let c = 0;
-
         for (let i = 0; i < element.style.length; i++) {
             let property = element.style[i];
             let value = element.style.getPropertyValue(property);
@@ -1208,7 +1219,9 @@ class RTBlazorfied {
             if (this.isFormatElement(element)) {
                 if (value != "initial") {
                     var words = value.split(' ');
-                    if (words.length > 1) {
+
+                    /* Ensure the style is not something that contains commas, such as color: rgb() */
+                    if (property != "color" && words.length > 1) {
                         for (let i = 0; i < words.length; i++) {
                             c++;
                         }
@@ -1342,72 +1355,108 @@ class RTBlazorfied {
             if (el.style != null) {
                 switch (type) {
                     case "textcolor":
-                        if (el.style.color != null && !this.isFormatElement(el)) {
+                        /* This method is more specific to the element
+                        instead of applying inherited styles */
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("color:")) {
                             return el;
                         }
                         break;
                     case "font":
-                        if (el.style.fontFamily != null && !this.isFormatElement(el)) {
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("font-family:")) {
                             return el;
                         }
                         break;
                     case "size":
-                        if (el.style.fontSize != null && !this.isFormatElement(el)) {
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("font-size:")) {
                             return el;
                         }
                         break;
                     case "bold":
-                        if (el.style.fontWeight != null && el.style.fontWeight == "bold") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("font-weight:")) {
+                            if (el.style.fontWeight == "bold") {
+                                return el;
+                            }
                         }
                         break;
                     case "italic":
-                        if (el.style.fontStyle != null && el.style.fontStyle == "italic") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("font-style:")) {
+                            if (el.style.fontStyle == "italic") {
+                                return el;
+                            }
                         }
                         break;
                     case "underline":
-                        if (el.style.textDecoration != null && el.style.textDecoration.includes("underline")) {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-decoration:")) {
+                            if (el.style.textDecoration.includes("underline")) {
+                                return el;
+                            }
                         }
                         break;
                     case "line-through":
-                        if (el.style.textDecoration != null && el.style.textDecoration.includes("line-through")) {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-decoration:")) {
+                            if (el.style.textDecoration.includes("line-through")) {
+                                return el;
+                            }
                         }
                         break;
                     case "subscript":
-                        if (el.style.verticalAlign != null && el.style.verticalAlign == "sub") {
-                            return el;
-                        }
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("vertical-align:")) {
+                            if (el.style.verticalAlign == "sub") {
+                                return el;
+                            }
+                        }                        
                         break;
                     case "superscript":
-                        if (el.style.verticalAlign != null && el.style.verticalAlign == "superscript") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("vertical-align:")) {
+                            if (el.style.verticalAlign == "superscript") {
+                                return el;
+                            }
                         }
                         break;
                     case "alignleft":
-                        if (el.style.textAlign != null && el.style.textAlign == "left") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-align:")) {
+                            if (el.style.textAlign == "left") {
+                                return el;
+                            }
                         }
                         break;
                     case "aligncenter":
-                        if (el.style.textAlign != null && el.style.textAlign == "center") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-align:")) {
+                            if (el.style.textAlign == "center") {
+                                return el;
+                            }
                         }
                         break;
                     case "alignright":
-                        if (el.style.textAlign != null && el.style.textAlign == "right") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-align:")) {
+                            if (el.style.textAlign == "right") {
+                                return el;
+                            }
                         }
                         break;
                     case "alignjustify":
-                        if (el.style.textAlign != null && el.style.textAlign == "justify") {
-                            return el;
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-align:")) {
+                            if (el.style.textAlign == "justify") {
+                                return el;
+                            }
                         }
                         break;
                     case "indent":
-                        if (el.style.textIndent != null && el.style.textIndent != null) {
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("text-indent:")) {
                             return el;
                         }
                         break;
