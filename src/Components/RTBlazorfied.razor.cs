@@ -104,7 +104,7 @@ public partial class RTBlazorfied
             width: 100%;
             min-height: 25px;
             color: {{_contentTextColor}};
-            transition: 0.3s;
+            transition: 0.1s;
         }
         /*
         ::selection {

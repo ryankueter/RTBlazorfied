@@ -39,22 +39,49 @@ class RTBlazorfied {
 
         this.shadowRoot.appendChild(container);
 
-        document.addEventListener('selectionchange', (e) => {
+        document.addEventListener('selectionchange', (event) => {
             this.selectButtons(this.shadowRoot.getSelection().anchorNode);
         });
 
-        this.content.addEventListener('click', function (event) {
+        this.content.addEventListener('click', (event) => {
             /* Prevent the default link click */
             if (event.target.tagName === 'A') {
                 event.preventDefault(); 
                 event.stopPropagation();
             }
         });
+        
+        this.content.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.key === 'b') {
+                event.preventDefault();
+                this.bold();
+            }
+            if (event.ctrlKey && event.key === 'i') {
+                event.preventDefault();
+                this.italic();
+            }
+            if (event.ctrlKey && event.key === 'u') {
+                event.preventDefault();
+                this.underline();
+            }
+            if (event.ctrlKey && event.key === 'd') {
+                event.preventDefault();
+                this.strikethrough();
+            }
+            if (event.ctrlKey && event.key === 'c') {
+                event.preventDefault();
+                this.copy();
+            }
+            if (event.ctrlKey && event.key === 'x') {
+                event.preventDefault();
+                this.cut();
+            }
+        });
 
         /* Prevent the dropdowns from causing the text box from
         losing focus. */
         var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
-        dropdowns.forEach(function (dropdown) {
+        dropdowns.forEach((dropdown) => {
             dropdown.addEventListener('mousedown', function (event) {
                 event.preventDefault();
             });
