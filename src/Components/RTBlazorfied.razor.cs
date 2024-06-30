@@ -336,7 +336,10 @@ public partial class RTBlazorfied
         }
         .blazing-rich-text-color-selection {
             width: 100%;
-            height: 20px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #999;
+            height: 40px;
             cursor: pointer;
             display: inline-block;
         }

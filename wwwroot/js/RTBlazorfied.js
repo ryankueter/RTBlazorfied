@@ -817,13 +817,12 @@ class RTBlazorfied {
             return true;
         }
 
-        if (element.style.textDecoration != null) {
+        /* Text decoration contains similar format elements */
+        if (element.style != null && element.style.textDecoration != null) {
             return true;
         }
     }
     closeDropdowns = () => {
-        this.lockToolbar = false;
-
         /* Close the Dropdowns */
         var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach(function (dropdown) {
@@ -831,6 +830,8 @@ class RTBlazorfied {
                 dropdown.classList.remove('rich-text-box-show');
             }
         });
+
+        this.lockToolbar = false;
     }
     updateNode = (type, value) => {
         var sel, range;
