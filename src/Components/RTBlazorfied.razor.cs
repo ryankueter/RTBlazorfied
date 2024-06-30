@@ -180,6 +180,7 @@ public partial class RTBlazorfied
         .rich-text-box-dropdown-btn {
             font-size: {{_buttonTextSize}};
             min-height: calc({{_buttonTextSize}} + 14px);
+            padding: 0 10px;
         }
 
         .rich-text-box-format-button {
@@ -226,9 +227,9 @@ public partial class RTBlazorfied
           top: 0;
           width: 100%;
           height: 100%;
-          overflow: auto;
-          background-color: rgb(0,0,0);
-          background-color: rgba(0,0,0,0.1);
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          /* background-color: rgba(0,0,0,0.1); */
         }
 
         .rich-text-box-modal-content {

@@ -1514,66 +1514,23 @@ class RTBlazorfied {
         }
 
         /* Reset Styles */
-        var bold = this.shadowRoot.getElementById("blazing-rich-text-bold-button");
-        if (bold != null && bold.classList.contains("selected")) {
-            bold.classList.remove("selected");
-        }
-
-        var italic = this.shadowRoot.getElementById("blazing-rich-text-italic-button");
-        if (italic != null && italic.classList.contains("selected")) {
-            italic.classList.remove("selected");
-        }
-
-        var underline = this.shadowRoot.getElementById("blazing-rich-text-underline-button");
-        if (underline != null && underline.classList.contains("selected")) {
-            underline.classList.remove("selected");
-        }
-
-        var strike = this.shadowRoot.getElementById("blazing-rich-text-strike-button");
-        if (strike != null && strike.classList.contains("selected")) {
-            strike.classList.remove("selected");
-        }
-
-        var sub = this.shadowRoot.getElementById("blazing-rich-text-sub-button");
-        if (sub != null && sub.classList.contains("selected")) {
-            sub.classList.remove("selected");
-        }
-
-        var superscript = this.shadowRoot.getElementById("blazing-rich-text-super-button");
-        if (superscript != null && superscript.classList.contains("selected")) {
-            superscript.classList.remove("selected");
-        }
-
-        var alignleft = this.shadowRoot.getElementById("blazing-rich-text-alignleft-button");
-        if (alignleft != null && alignleft.classList.contains("selected")) {
-            alignleft.classList.remove("selected");
-        }
-
-        var aligncenter = this.shadowRoot.getElementById("blazing-rich-text-aligncenter-button");
-        if (aligncenter != null && aligncenter.classList.contains("selected")) {
-            aligncenter.classList.remove("selected");
-        }
-
-        var alignright = this.shadowRoot.getElementById("blazing-rich-text-alignright-button");
-        if (alignright != null && alignright.classList.contains("selected")) {
-            alignright.classList.remove("selected");
-        }
-
-        var alignjustify = this.shadowRoot.getElementById("blazing-rich-text-alignjustify-button");
-        if (alignjustify != null && alignjustify.classList.contains("selected")) {
-            alignjustify.classList.remove("selected");
-        }
+        var bold = this.getButton("blazing-rich-text-bold-button");
+        var italic = this.getButton("blazing-rich-text-italic-button");
+        var underline = this.getButton("blazing-rich-text-underline-button");
+        var strike = this.getButton("blazing-rich-text-strike-button");
+        var sub = this.getButton("blazing-rich-text-sub-button");
+        var superscript = this.getButton("blazing-rich-text-super-button");
+        var alignleft = this.getButton("blazing-rich-text-alignleft-button");
+        var aligncenter = this.getButton("blazing-rich-text-aligncenter-button");
+        var alignright = this.getButton("blazing-rich-text-alignright-button");
+        var alignjustify = this.getButton("blazing-rich-text-alignjustify-button");
         this.textAlign = false;
 
-        var indent = this.shadowRoot.getElementById("blazing-rich-text-indent-button");
-        if (indent != null && indent.classList.contains("selected")) {
-            indent.classList.remove("selected");
-        }
-
-        var link = this.shadowRoot.getElementById("blazing-rich-text-link-button");
-        if (link != null && link.classList.contains("selected")) {
-            link.classList.remove("selected");
-        }
+        var indent = this.getButton("blazing-rich-text-indent-button");
+        var link = this.getButton("blazing-rich-text-link-button");
+        var linkRemove = this.getButton("blazing-rich-text-remove-link-button");
+        var textColor = this.getButton("blazing-rich-text-textcolor-button");
+        var textColorRemove = this.getButton("blazing-rich-text-textcolor-remove-button");
 
         /* Menus */
         var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
@@ -1593,8 +1550,6 @@ class RTBlazorfied {
             sizeButton.innerText = "Size";
             this.fontSizeSelected = false;
         }
-        
-        this.closeDropdowns();
 
         while (el.parentNode) {
             /* Prevent selecting unwanted elements */
@@ -1604,8 +1559,12 @@ class RTBlazorfied {
 
             var compStyles = window.getComputedStyle(el.parentNode);
 
-            if (el.parentNode.style.fontWeight == "bold") {
+            if (el.parentNode.style != null && el.parentNode.style.fontWeight == "bold") {
                 bold.classList.add("selected");
+            }
+            if (el.parentNode.style != null && el.parentNode.style.color) {
+                textColor.classList.add("selected");
+                textColorRemove.classList.add("selected");
             }
             if (compStyles.getPropertyValue("font-style") == "italic") {
                 italic.classList.add("selected");
@@ -1622,7 +1581,6 @@ class RTBlazorfied {
             if (compStyles.getPropertyValue("vertical-align") == "super") {
                 superscript.classList.add("selected");
             }
-
             if (compStyles.getPropertyValue("text-align") == "left" && !this.textAlign) {
                 alignleft.classList.add("selected");
                 this.textAlign = true;
@@ -1676,9 +1634,18 @@ class RTBlazorfied {
             }
             if (el.parentNode.nodeName == "A") {
                 link.classList.add("selected");
+                linkRemove.classList.add("selected");
             }
             el = el.parentNode;
         }
+        this.closeDropdowns();
+    }
+    getButton(id) {
+        var element = this.shadowRoot.getElementById(id);
+        if (element != null && element.classList.contains("selected")) {
+            element.classList.remove("selected");
+        }
+        return element;
     }
 }
 
