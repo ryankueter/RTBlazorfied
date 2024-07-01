@@ -514,6 +514,9 @@ class RTBlazorfied {
         }
     }
     openLinkDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+
         this.resetLinkDialog();
 
         var selection = this.shadowRoot.getSelection();
@@ -525,6 +528,10 @@ class RTBlazorfied {
 
             var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
             link.value = selection.anchorNode.parentNode.getAttribute("href");
+
+            var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
+            var classList = selection.anchorNode.parentNode.classList;
+            classes.value = Array.from(classList).join(' ');
 
             var target = selection.anchorNode.parentNode.getAttribute('target');
             if (target === '_blank') {
@@ -582,12 +589,16 @@ class RTBlazorfied {
 
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
         newtab.checked = false;
+
+        var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
+        classes.value = null;
     }
     insertLink = () => {
         this.backupstate();
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
         var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+        var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
 
         /* Get the link selection or element */
         var selection = this.shadowRoot.getSelection();
@@ -595,6 +606,7 @@ class RTBlazorfied {
             var element = this.selection;
             element.href = link.value;
             element.textContent = linktext.value;
+            this.addClasses(classes.value, element);
             if (newtab.checked) {
                 element.target = "_blank";
             }
@@ -612,6 +624,7 @@ class RTBlazorfied {
             var anchor = document.createElement("a");
             anchor.href = link.value;
             anchor.textContent = linktext.value;
+            this.addClasses(classes.value, anchor);
             if (newtab.checked) {
                 anchor.target = "_blank";
             }
@@ -623,6 +636,19 @@ class RTBlazorfied {
 
         this.closeDialog("rich-text-box-link-modal");
         this.focusEditor();
+    }
+    addClasses = (classlist, element) => {
+        if (classlist.length > 0) {
+            //var normalizedClassList = classlist.replace(/\s+/g, ' ').trim();
+            var classNames = classlist.split(' ').map(className => className.trim());
+
+            // Add each class to the element's class list
+            classNames.forEach(className => {
+                if (className) {
+                    element.classList.add(className);
+                }
+            });
+        }
     }
     removeLink = () => {
         this.backupstate();
@@ -656,6 +682,9 @@ class RTBlazorfied {
         this.lockToolbar = false;
     }
     openImageDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+
         this.resetImageDialog();
 
         var selection = this.shadowRoot.getSelection();
@@ -688,6 +717,9 @@ class RTBlazorfied {
 
         var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
         alt.value = null;
+
+        var classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
+        classes.value = null;
     }
     insertImage = () => {
         this.backupstate();
@@ -695,6 +727,7 @@ class RTBlazorfied {
         var width = this.shadowRoot.getElementById("rich-text-box-image-width");
         var height = this.shadowRoot.getElementById("rich-text-box-image-height");
         var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
+        var classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
 
         if (this.imageSelection != null && address.value.length > 0) {
 
@@ -711,6 +744,7 @@ class RTBlazorfied {
             if (alt.value.length > 0) {
                 img.alt = alt.value;
             }
+            this.addClasses(classes.value, img);
             
             range.deleteContents();
             range.insertNode(img);

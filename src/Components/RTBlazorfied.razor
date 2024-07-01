@@ -350,22 +350,26 @@
 
     <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
         <label for="webaddress">Web Address</label>
-        <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www...">
+        <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
         <label for="imagewidth">Image Width</label>
-        <input type="text" id="rich-text-box-image-width" name="imagewidth">
+        <input type="text" id="rich-text-box-image-width" name="imagewidth" tabindex="2">
         <label for="imageheight">Image Height</label>
-        <input type="text" id="rich-text-box-image-height" name="imageheight">
+        <input type="text" id="rich-text-box-image-height" name="imageheight" tabindex="3">
         <label for="alttext">Alternative Text</label>
-        <input type="text" id="rich-text-box-image-alt-text" name="alttext">
+        <input type="text" id="rich-text-box-image-alt-text" name="alttext" tabindex="4">
+        <label for="classes">CSS Classes</label>
+        <input type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
     </RTDialog>
 
     <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
         <label for="webaddress">Web Address</label>
-        <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www...">
+        <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
         <label for="linktext">Link Text</label>
-        <input type="text" id="rich-text-box-linktext" name="linktext">
+        <input type="text" id="rich-text-box-linktext" name="linktext" tabindex="2">
+        <label for="classes">CSS Classes</label>
+        <input type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
         <label style="display: flex; align-items: center;">
-            <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" />
+            <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" tabindex="4" />
             Open in New Tab
         </label>
     </RTDialog>

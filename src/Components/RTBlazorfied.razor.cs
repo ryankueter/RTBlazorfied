@@ -104,7 +104,6 @@ public partial class RTBlazorfied
             width: 100%;
             min-height: 25px;
             color: {{_contentTextColor}};
-            transition: 0.1s;
         }
         /*
         ::selection {
@@ -304,10 +303,25 @@ public partial class RTBlazorfied
           margin-right: 8px;
           accent-color: {{_modalCheckboxAccentColor}}; 
         }
+        .input[type="checkbox"]:focus {
+          border-style: solid;
+          border-color: {{_modalTextboxBorderColor}};
+          border-width: 1px;
+        }
         
         .rich-text-box-form-button {
           padding: 10px 20px !important;
           font-size: 16px !important;
+          border-style: solid;
+          border-color: transparent;
+          border-width: 1px;
+          transition: 0.3s;
+        }
+
+        .rich-text-box-form-button:focus {
+          border-style: solid;
+          border-color: {{_modalTextboxBorderColor}};
+          border-width: 1px;
         }
 
         .blazing-rich-text-color-picker-container {

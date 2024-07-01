@@ -14,8 +14,8 @@
             <div style="padding: 10px;">
                 @ChildContent
                 <div style="margin-top: 20px; text-align: right;">
-                    <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button">Close</button>
-                    <button @onclick="OnClick" class="rich-text-box-form-button">OK</button>
+                    <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button" tabindex="100">Close</button>
+                    <button id="rich-text-box-ok-button" @onclick="OnClick" class="rich-text-box-form-button" tabindex="101">OK</button>
                 </div>
             </div>
         </div>
