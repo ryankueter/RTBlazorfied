@@ -52,30 +52,7 @@ class RTBlazorfied {
         });
         
         this.content.addEventListener('keydown', (event) => {
-            if (event.ctrlKey && event.key === 'b') {
-                event.preventDefault();
-                this.bold();
-            }
-            if (event.ctrlKey && event.key === 'i') {
-                event.preventDefault();
-                this.italic();
-            }
-            if (event.ctrlKey && event.key === 'u') {
-                event.preventDefault();
-                this.underline();
-            }
-            if (event.ctrlKey && event.key === 'd') {
-                event.preventDefault();
-                this.strikethrough();
-            }
-            if (event.ctrlKey && event.key === 'c') {
-                event.preventDefault();
-                this.copy();
-            }
-            if (event.ctrlKey && event.key === 'x') {
-                event.preventDefault();
-                this.cut();
-            }
+            this.keyEvents(event);
         });
 
         /* Prevent the dropdowns from causing the text box from
@@ -86,6 +63,89 @@ class RTBlazorfied {
                 event.preventDefault();
             });
         });
+    }
+    keyEvents = (event) => {
+        if (event.ctrlKey && event.key === 'b') {
+            event.preventDefault();
+            this.bold();
+        }
+        if (event.ctrlKey && event.key === 'i') {
+            event.preventDefault();
+            this.italic();
+        }
+        if (event.ctrlKey && event.key === 'u') {
+            event.preventDefault();
+            this.underline();
+        }
+        if (event.ctrlKey && event.key === 'd') {
+            event.preventDefault();
+            this.strikethrough();
+        }
+        if (event.ctrlKey && event.key === 'c') {
+            event.preventDefault();
+            this.copy();
+        }
+        if (event.ctrlKey && event.key === 'x') {
+            event.preventDefault();
+            this.cut();
+        }
+        if (event.ctrlKey && event.key === '=') {
+            event.preventDefault();
+            this.subscript();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '+') {
+            event.preventDefault();
+            this.superscript();
+        }
+        if (event.ctrlKey && event.key === 'l') {
+            event.preventDefault();
+            this.alignleft();
+        }
+        if (event.ctrlKey && event.key === 'e') {
+            event.preventDefault();
+            this.aligncenter();
+        }
+        if (event.ctrlKey && event.key === 'r') {
+            event.preventDefault();
+            this.alignright();
+        }
+        if (event.ctrlKey && event.key === 'j') {
+            event.preventDefault();
+            this.alignjustify();
+        }
+        if (event.ctrlKey && event.key === 'a') {
+            event.preventDefault();
+            this.selectall();
+        }
+
+        if (event.ctrlKey && event.shiftKey && event.key === '>') {
+            event.preventDefault();
+            this.changeFontSize(true);
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '<') {
+            event.preventDefault();
+            this.changeFontSize(false);
+        }
+    }
+    changeFontSize = (increment) => {
+        var selection = this.shadowRoot.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            /* Get the current selection. */
+            var range = selection.getRangeAt(0);
+
+            /* Get the font size */
+            var computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
+            let fontSize = parseFloat(computedStyle.fontSize);
+
+            /* Increment the font size. */
+            if (increment) {
+                fontSize += 1;
+            }
+            else {
+                fontSize -= 1;
+            }
+            this.updateNode("size", `${fontSize}px`);
+        }
     }
     format = (format) => {
         this.formatNode(format);
@@ -121,13 +181,6 @@ class RTBlazorfied {
     selectTextColor = (color) => {
         var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
         el.style.backgroundColor = color;
-
-        /* Reselect the text */
-        //if (this.selection != null) {
-        //    var selection = this.shadowRoot.getSelection();
-        //    selection.removeAllRanges();
-        //    selection.addRange(this.selection);
-        //}
     }
     insertTextColor = () => {
         var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
@@ -724,8 +777,8 @@ class RTBlazorfied {
     formatNode = (type) => {
         var sel, range;
 
-        this.backupstate();       
-
+        this.backupstate();
+        
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
 
@@ -738,17 +791,23 @@ class RTBlazorfied {
                 }
             }
             else {
-                element = this.getElementByContent(sel.anchorNode, type, sel);
+                /* See if this is an outer element */
+                if (this.hasCommonAncestor(sel) == true) {
+                    var range = sel.getRangeAt(0);
+                    element = range.commonAncestorContainer;
+                    this.isCommonAncestor = true;
+                }
+                else {
+                    /* Get the element by the selected content */
+                    element = this.getElementByContent(sel.anchorNode, type, sel);
+                }
             }
+            
             if (element != null) {
-                
                 if (type == "none") {
-                    var fragment = document.createDocumentFragment();
-
                     while (element.firstChild) {
-                        fragment.appendChild(element.firstChild);
+                        element.parentNode.insertBefore(element.firstChild, element);
                     }
-                    element.parentNode.insertBefore(fragment, element);
                     element.parentNode.removeChild(element);
 
                     if (sel.anchorNode != null && sel.rangeCount != 0) {
@@ -806,26 +865,15 @@ class RTBlazorfied {
                     range = sel.getRangeAt(0);
 
                     /* See if this is an outer element */
-                    if (this.isFormatElement(range.commonAncestorContainer)) {
-                        var commonAncestor = range.commonAncestorContainer;
-
-                        /* Move all children of the common ancestor to the new element */
-                        while (commonAncestor.firstChild) {
-                            newElement.appendChild(commonAncestor.firstChild);
-                        }
-
-                        /* Replace the common ancestor with the new element */
-                        commonAncestor.parentNode.replaceChild(newElement, commonAncestor);
-                    }
-                    else {
+                    if (!this.hasInvalidElementsInRange(range)) {
                         newElement.appendChild(range.cloneContents());
+                        range.deleteContents();
+                        range.insertNode(newElement);
+                        range.selectNodeContents(newElement);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                        this.selectButtons(newElement);
                     }
-                    range.deleteContents();
-                    range.insertNode(newElement);
-                    range.selectNodeContents(newElement);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    this.selectButtons(newElement);
                 }
             }
         }
@@ -834,6 +882,43 @@ class RTBlazorfied {
         this.restorestate();
         this.focusEditor();
     }
+    hasInvalidElementsInRange = (range) => {
+        // Traverse through nodes within the range
+        let node = range.startContainer;
+        const endNode = range.endContainer;
+
+        while (node && node !== endNode.nextSibling) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                const tagName = node.tagName.toLowerCase();
+
+                // Check for block-level elements
+                if (["address", "article", "aside", "blockquote", "details", "dialog", "div", "dl", "fieldset", "figcaption", "figure", "footer", "form", "header", "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"].includes(tagName)) {
+                    return true;
+                }
+
+                // Check for heading elements
+                if (tagName.match(/^h[1-6]$/)) {
+                    return true;
+                }
+
+                // Check for interactive elements
+                if (["a", "button", "input", "textarea", "select"].includes(tagName)) {
+                    return true;
+                }
+
+                // Check for form elements
+                if (tagName === "form") {
+                    return true;
+                }
+            }
+
+            // Move to the next node
+            node = node.nextSibling || node.parentNode.nextSibling;
+        }
+
+        return false;
+    }
+
     isFormatElement = (element) => {
         if (element.nodeName == "P"
             || element.nodeName == "H1"
