@@ -40,6 +40,10 @@ class RTBlazorfied {
         this.shadowRoot.appendChild(container);
 
         document.addEventListener('selectionchange', (event) => {
+
+            this.clearSettings();
+
+            /* Select the buttons */
             this.selectButtons(this.shadowRoot.getSelection().anchorNode);
         });
 
@@ -64,6 +68,10 @@ class RTBlazorfied {
             });
         });
     }
+    clearSettings = () => {
+        this.fontSize = undefined;
+    }
+
     keyEvents = (event) => {
         if (event.ctrlKey && event.key === 'b') {
             event.preventDefault();
@@ -127,25 +135,26 @@ class RTBlazorfied {
             this.changeFontSize(false);
         }
     }
-    changeFontSize = (increment) => {
-        var selection = this.shadowRoot.getSelection();
-        if (selection && selection.rangeCount > 0) {
-            /* Get the current selection. */
-            var range = selection.getRangeAt(0);
-
-            /* Get the font size */
-            var computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
-            let fontSize = parseFloat(computedStyle.fontSize);
-
-            /* Increment the font size. */
-            if (increment) {
-                fontSize += 1;
+    changeFontSize = (increment) => {     
+            
+        /* Get the current selection. */
+        if (this.fontSize === undefined) {
+            var selection = this.shadowRoot.getSelection();
+            if (selection && selection.rangeCount > 0) {
+                var range = selection.getRangeAt(0);
+                var computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
+                this.fontSize = parseFloat(computedStyle.fontSize);
             }
-            else {
-                fontSize -= 1;
-            }
-            this.updateNode("size", `${fontSize}px`);
         }
+       
+        /* Increment the font size. */
+        if (increment) {
+            this.fontSize += 1;
+        }
+        else {
+            this.fontSize -= 1;
+        }
+        this.updateNode("size", `${this.fontSize}px`);
     }
     format = (format) => {
         this.formatNode(format);
