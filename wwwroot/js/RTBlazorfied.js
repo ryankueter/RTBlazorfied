@@ -49,23 +49,7 @@ class RTBlazorfied {
                 this.clearSettings(selection.anchorNode);
             }
         });
-
-        document.addEventListener('touchend', () => {
-            /* Ensure that this event listener only fires for this text box */
-            var selection = this.shadowRoot.getSelection();
-            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
-                this.clearSettings(selection.anchorNode);
-            }
-        });
-
-        document.addEventListener('input', () => {
-            /* Ensure that this event listener only fires for this text box */
-            var selection = this.shadowRoot.getSelection();
-            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
-                this.clearSettings(selection.anchorNode);
-            }
-        });
-
+        
         this.content.addEventListener('click', (event) => {
             /* Prevent the default link click */
             if (event.target.tagName === 'A') {
@@ -89,15 +73,15 @@ class RTBlazorfied {
         /* Callback function to execute when mutations are observed */
         var richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
-                if (mutation.type === 'childList') {
+                if (mutation.type === 'childList' && this.EditMode == true) {
                     /* A child node has been added or removed. */
                     this.saveState();
                 }
-                else if (mutation.type === 'attributes') {
+                else if (mutation.type === 'attributes' && this.EditMode == true) {
                     /* The ${mutation.attributeName} attribute was modified. */
                     this.saveState();
                 }
-                else if (mutation.type === 'characterData') {
+                else if (mutation.type === 'characterData' && this.EditMode == true) {
                     /* The text content of a node has been changed. */
                     this.saveState();
                 }
@@ -677,18 +661,18 @@ class RTBlazorfied {
                 newtab.checked = true;
             }
 
-            this.selection = selection.anchorNode.parentNode;
+            this.linkNode = selection.anchorNode.parentNode;
         }
         else {
             var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             if (selection != null && selection.toString().length > 0) {
-                this.selection = selection.getRangeAt(0).cloneRange();
-                linktext.value = this.selection.toString();
+                this.linkSelection = selection.getRangeAt(0).cloneRange();
+                linktext.value = this.linkSelection.toString();
             }
         }
 
         if (linktext.value.trim().length === 0) {
-            this.selection = this.moveCursorToStart();
+            this.linkSelection = this.moveCursorToStart();
         }
 
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
@@ -719,6 +703,9 @@ class RTBlazorfied {
         return selection.getRangeAt(0).cloneRange();
     }
     resetLinkDialog = () => {
+        this.linkNode = null;
+        this.linkSelection = null;
+
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
         linktext.value = null;
 
@@ -739,8 +726,8 @@ class RTBlazorfied {
 
         /* Get the link selection or element */
         var selection = this.shadowRoot.getSelection();
-        if (this.selection instanceof HTMLElement) {
-            var element = this.selection;
+        if (this.linkNode != null) {
+            var element = this.linkNode;
             element.href = link.value;
             element.textContent = linktext.value;
             this.addClasses(classes.value, element);
@@ -752,9 +739,9 @@ class RTBlazorfied {
             }
         }
         else {
-            if (selection && this.selection) {
+            if (selection && this.linkSelection) {
                 selection.removeAllRanges();
-                selection.addRange(this.selection);
+                selection.addRange(this.linkSelection);
             }
 
             var range = selection.getRangeAt(0);
@@ -768,8 +755,6 @@ class RTBlazorfied {
             range.deleteContents();
             range.insertNode(anchor);
         }
-        this.selection = null;
-
         this.closeDialog("rich-text-box-link-modal");
         this.focusEditor();
     }
@@ -812,6 +797,103 @@ class RTBlazorfied {
             e.style.display = "none";
         }
         this.lockToolbar = false;
+    }
+    openBlockQuoteDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+        this.resetBlockQuoteDialog();
+
+        /* Get the selection */
+        var selection = this.shadowRoot.getSelection();
+
+        var quote = this.shadowRoot.getElementById('rich-text-box-quote');
+        var cite = this.shadowRoot.getElementById('rich-text-box-cite');
+        var classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
+
+
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
+            quote.value = selection.anchorNode.parentNode.textContent;
+
+            if (selection.anchorNode.parentNode.cite != null) {
+                cite.value = selection.anchorNode.parentNode.cite;
+            }           
+                        
+            var classList = selection.anchorNode.parentNode.classList;
+            classes.value = Array.from(classList).join(' ');
+
+            this.quote = selection.anchorNode.parentNode;         
+        }
+        else {
+            if (selection != null && selection.rangeCount > 0) {
+                this.quoteSelection = selection.getRangeAt(0).cloneRange();
+            }
+            else {
+                this.quoteSelection = this.moveCursorToStart();
+            }
+        }
+
+        var e = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
+        e.style.display = "block";
+
+        var quote = this.shadowRoot.getElementById("rich-text-box-quote");
+        if (quote) {
+            quote.focus();
+        }
+    }
+    resetBlockQuoteDialog = () => {
+        this.quote = null;
+        this.quoteSelection = null;
+
+        var quote = this.shadowRoot.getElementById("rich-text-box-quote");
+        quote.value = null;
+
+        var cite = this.shadowRoot.getElementById("rich-text-box-cite");
+        cite.value = null;
+
+        var css = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
+        css.value = null;
+    }
+    insertBlockQuote = () => {
+        var quote = this.shadowRoot.getElementById("rich-text-box-quote");
+        var cite = this.shadowRoot.getElementById("rich-text-box-cite");
+        var classes = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
+
+        if (this.quote != null) {
+            var element = this.quote;
+            element.textContent = quote.value;
+            element.cite = cite.value;
+            this.addClasses(classes.value, element);
+        }
+        else {
+            if (this.quoteSelection != null && quote.value.length > 0) {
+
+                var range = this.quoteSelection.cloneRange();
+
+                var blockquote = document.createElement("blockquote");
+                blockquote.textContent = quote.value;
+                if (cite.value.trim().length > 0) {
+                    blockquote.cite = cite.value;
+                }
+                this.addClasses(classes.value, blockquote);
+
+                range.deleteContents();
+                range.insertNode(blockquote);
+
+                /* Move the cursor after the inserted image */
+                range.setStartAfter(blockquote);
+                range.setEndAfter(blockquote);
+
+                /* Get the selection from the shadowRoot */
+                var selection = this.shadowRoot.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                /* Update the stored cursor position to the new position */
+                this.quoteSelection = range.cloneRange();
+            }
+        }
+        this.closeDialog("rich-text-box-block-quote-modal");
+        this.focusEditor();
     }
     openImageDialog = () => {
         /* Lock the toolbar */
@@ -1752,6 +1834,7 @@ class RTBlazorfied {
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
+        this.EditMode = true;
         this.content.style.fontFamily = 'Arial, sans-serif';
         if (html != null) {
             this.content.innerHTML = html;
@@ -1765,6 +1848,7 @@ class RTBlazorfied {
         }
     };
     loadInnerText = (text) => {
+        this.EditMode = false;
         this.content.style.fontFamily = 'Consolas';
         if (text != null) {
             this.content.innerText = text;
@@ -1803,6 +1887,8 @@ class RTBlazorfied {
         var textColor = this.getButton("blazing-rich-text-textcolor-button");
         var textBackgroundColor = this.getButton("blazing-rich-text-text-bg-color-button");
         var textColorRemove = this.getButton("blazing-rich-text-textcolor-remove-button");
+
+        var blockQuote = this.getButton("blazing-rich-text-quote-button");
 
         /* Menus */
         var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
@@ -1916,6 +2002,9 @@ class RTBlazorfied {
             if (el.parentNode.nodeName == "A") {
                 link.classList.add("selected");
                 linkRemove.classList.add("selected");
+            }
+            if (el.parentNode.nodeName == "BLOCKQUOTE") {
+                blockQuote.classList.add("selected");
             }
             el = el.parentNode;
         }
