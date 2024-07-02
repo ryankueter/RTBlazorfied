@@ -222,6 +222,14 @@ class RTBlazorfied {
             event.preventDefault();
             this.changeFontSize(false);
         }
+        if (event.ctrlKey && event.key === 'z') {
+            event.preventDefault();
+            this.goBack();
+        }
+        if (event.ctrlKey && event.key === 'y') {
+            event.preventDefault();
+            this.goForward();
+        }
     }
     changeFontSize = (increment) => {     
         /* Get the current selection. */
