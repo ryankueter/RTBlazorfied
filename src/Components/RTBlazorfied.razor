@@ -125,6 +125,14 @@
                   TextColor="@_buttonTextColor"
                   IsDisabled="@IsDisabled"></RTButton>
 
+        <RTButton Id="blazing-rich-text-text-bg-color-button"
+                  OnClick="OpenTextBackgroundColorDialog"
+                  Icon="@Icons.TextBackgroundColor"
+                  Title="Text Background Color"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"
+                  IsDisabled="@IsDisabled"></RTButton>
+
         <RTButton Id="blazing-rich-text-textcolor-remove-button"
                   OnClick="RemoveTextColor"
                   Icon="@Icons.RemoveTextFormat"
@@ -318,35 +326,8 @@
     </button>
 
     <!-- Dialogs -->
-    <RTDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor">
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#000000")' style="background-color: #000000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#808080")' style="background-color: #808080;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#C0C0C0")' style="background-color: #C0C0C0;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FF0000")' style="background-color: #FF0000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#C00000")' style="background-color: #C00000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#800000")' style="background-color: #800000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FFFF00")' style="background-color: #FFFF00;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#ffc000")' style="background-color: #ffc000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#808000")' style="background-color: #808000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#92d050")' style="background-color: #92d050;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00FF00")' style="background-color: #00FF00;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#008000")' style="background-color: #008000;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00b050")' style="background-color: #00b050;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00FFFF")' style="background-color: #00FFFF;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#0070c0")' style="background-color: #0070c0;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#008080")' style="background-color: #008080;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#0000FF")' style="background-color: #0000FF;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#000080")' style="background-color: #000080;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#002060")' style="background-color: #002060;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FF00FF")' style="background-color: #FF00FF;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#800080")' style="background-color: #800080;"></div>
-        <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#7030a0")' style="background-color: #7030a0;"></div>
-
-        <div style="margin-top: 20px;">
-            <strong>Selected Color</strong>
-            <span id="blazing-rich-text-color-selection" class="blazing-rich-text-color-selection"></span>
-        </div>
-    </RTDialog>
+    <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
+    <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
 
     <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
         <label for="webaddress">Web Address</label>

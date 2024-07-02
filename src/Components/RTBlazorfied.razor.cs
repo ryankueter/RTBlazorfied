@@ -1078,11 +1078,12 @@ public partial class RTBlazorfied
     private async Task InsertImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertImage", id);
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "undo", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "redo", id);
-    private async Task OpenTextColorPicker() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorPicker", id);
     private async Task OpenTextColorDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorDialog", id);
-    private async Task SelectTextColor(string color) => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectTextColor", id, color);
     private async Task InsertTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextColor", id);
     private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);
+    private async Task OpenTextBackgroundColorDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextBackgroundColorDialog", id);
+    private async Task SelectTextBackgroundColor(string color) => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectTextBackgroundColor", id, color);
+    private async Task InsertTextBackgroundColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextBackgroundColor", id);
     private async Task FormatText(string format) => await js.InvokeVoidAsync("RTBlazorfied_Method", "format", id, format);
     private async Task OpenDropdown(string dropdown_id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", id, dropdown_id);
     

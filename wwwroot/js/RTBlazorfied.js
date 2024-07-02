@@ -196,7 +196,7 @@ class RTBlazorfied {
         /* Get the selection */
         var selection = this.shadowRoot.getSelection();
         
-        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
         if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
             this.selection = selection.getRangeAt(0).cloneRange();
@@ -213,15 +213,15 @@ class RTBlazorfied {
     }
     resetTextColorDialog = () => {
         // Reset the selected color
-        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
         el.style.backgroundColor = '';
     }
     selectTextColor = (color) => {
-        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
         el.style.backgroundColor = color;
     }
     insertTextColor = () => {
-        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
 
         if (el.style.backgroundColor === '') {
             this.updateNode("textcolor", "None");
@@ -235,6 +235,53 @@ class RTBlazorfied {
     }
     removeTextColor = () => {
         this.updateNode("textcolor", "None");
+        this.updateNode("textbgcolor", "None");
+    }
+    openTextBackgroundColorDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+        this.resetTextBackgroundColorDialog();
+
+        /* Get the selection */
+        var selection = this.shadowRoot.getSelection();
+
+        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+            el.style.backgroundColor = selection.anchorNode.parentNode.style.backgroundColor;
+            this.selection = selection.getRangeAt(0).cloneRange();
+        }
+        else {
+            if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
+                this.selection = selection.getRangeAt(0).cloneRange();
+            }
+        }
+
+        var e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
+        e.style.display = "block";
+        el.focus();
+    }
+    resetTextBackgroundColorDialog = () => {
+        // Reset the selected color
+        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
+        el.style.backgroundColor = '';
+    }
+    selectTextBackgroundColor = (color) => {
+        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
+        el.style.backgroundColor = color;
+    }
+    insertTextBackgroundColor = () => {
+        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
+
+        if (el.style.backgroundColor === '') {
+            this.updateNode("textbgcolor", "None");
+        }
+        else {
+            console.log("Test");
+            this.updateNode("textbgcolor", el.style.backgroundColor);
+        }
+
+        /* Close the dialog */
+        this.closeDialog("rich-text-box-text-bg-color-modal");
     }
     font = (style) => {
         this.updateNode("font", style);
@@ -1077,6 +1124,17 @@ class RTBlazorfied {
                             element.style.setProperty("color", value);
                         }
                         break;
+                    case "textbgcolor":
+                        if (value == "None") {
+                            var e = this.getElementByStyle(element, type);
+                            if (e != null) {
+                                this.removeProperty(e, "background-color", e.style.getPropertyValue("background-color"));
+                            }
+                        }
+                        else {
+                            element.style.setProperty("background-color", value);
+                        }
+                        break;
                     case "font":
                         if (value == "None") {
                             this.removeProperty(element, "font-family", value);
@@ -1199,6 +1257,10 @@ class RTBlazorfied {
                     case "textcolor":
                         newElement = this.createElement(sel);
                         newElement.style.color = value;
+                        break;
+                    case "textbgcolor":
+                        newElement = this.createElement(sel);
+                        newElement.style.backgroundColor = value;
                         break;
                     case "font":
                         newElement = this.createElement(sel);
@@ -1401,7 +1463,7 @@ class RTBlazorfied {
                     var words = value.split(' ');
 
                     /* Check if the style contains multiple values */
-                    if (property != "color" && words.length > 1) {
+                    if (property != "background-color" && property != "color" && words.length > 1) {
                         for (let i = 0; i < words.length; i++) {
                             c++;
                         }
@@ -1539,6 +1601,14 @@ class RTBlazorfied {
                         instead of applying inherited styles */
                         var style = el.getAttribute("style");
                         if (style != null && style.includes("color:")) {
+                            return el;
+                        }
+                        break;
+                    case "textbgcolor":
+                        /* This method is more specific to the element
+                        instead of applying inherited styles */
+                        var style = el.getAttribute("style");
+                        if (style != null && style.includes("background-color:")) {
                             return el;
                         }
                         break;
@@ -1711,6 +1781,7 @@ class RTBlazorfied {
         var link = this.getButton("blazing-rich-text-link-button");
         var linkRemove = this.getButton("blazing-rich-text-remove-link-button");
         var textColor = this.getButton("blazing-rich-text-textcolor-button");
+        var textBackgroundColor = this.getButton("blazing-rich-text-text-bg-color-button");
         var textColorRemove = this.getButton("blazing-rich-text-textcolor-remove-button");
 
         /* Menus */
@@ -1740,11 +1811,20 @@ class RTBlazorfied {
 
             var compStyles = window.getComputedStyle(el.parentNode);
 
+            /* Bold */
             if (el.parentNode.style != null && el.parentNode.style.fontWeight == "bold") {
                 bold.classList.add("selected");
             }
+            /* Text color */
             if (el.parentNode.style != null && el.parentNode.style.color) {
                 textColor.classList.add("selected");
+            }
+            /* Text background color */
+            if (el.parentNode.style != null && el.parentNode.style.backgroundColor) {
+                textBackgroundColor.classList.add("selected");
+            }
+            /* Remove text color */
+            if (el.parentNode.style != null && el.parentNode.style.color || el.parentNode.style.backgroundColor) {
                 textColorRemove.classList.add("selected");
             }
             if (compStyles.getPropertyValue("font-style") == "italic") {

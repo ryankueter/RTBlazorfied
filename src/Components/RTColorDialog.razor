@@ -1,0 +1,49 @@
+﻿@namespace RichTextBlazorfied.Components
+
+<div id="@DialogId" class="rich-text-box-modal rich-text-box-scroll">
+    <div class="rich-text-box-modal-content">
+        <div class="rich-text-box-modal-body">
+            <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                <div style="align-self: flex-start; margin-left: 10px;">
+                    <h2>@Title</h2>
+                </div>
+                <div style="align-self: flex-start; margin: 15px 10px 0 0;">
+                    <span @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-modal-close">&times;</span>
+                </div>
+            </div>
+            <div style="padding: 10px;">
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#000000")' style="background-color: #000000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#808080")' style="background-color: #808080;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#C0C0C0")' style="background-color: #C0C0C0;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FF0000")' style="background-color: #FF0000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#C00000")' style="background-color: #C00000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#800000")' style="background-color: #800000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FFFF00")' style="background-color: #FFFF00;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#ffc000")' style="background-color: #ffc000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#808000")' style="background-color: #808000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#92d050")' style="background-color: #92d050;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00FF00")' style="background-color: #00FF00;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#008000")' style="background-color: #008000;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00b050")' style="background-color: #00b050;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#00FFFF")' style="background-color: #00FFFF;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#0070c0")' style="background-color: #0070c0;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#008080")' style="background-color: #008080;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#0000FF")' style="background-color: #0000FF;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#000080")' style="background-color: #000080;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#002060")' style="background-color: #002060;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FF00FF")' style="background-color: #FF00FF;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#800080")' style="background-color: #800080;"></div>
+                <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#7030a0")' style="background-color: #7030a0;"></div>
+
+                <div style="margin-top: 20px;">
+                    <strong>Selected Color</strong>
+                    <span id="@($"{DialogId}-selection")" class="blazing-rich-text-color-selection"></span>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button" tabindex="100">Close</button>
+                    <button id="rich-text-box-ok-button" @onclick="OnClick" class="rich-text-box-form-button" tabindex="101">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
