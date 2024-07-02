@@ -195,14 +195,16 @@ class RTBlazorfied {
 
         /* Get the selection */
         var selection = this.shadowRoot.getSelection();
-        if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
-            this.selection = selection.getRangeAt(0).cloneRange();
-        }        
-
+        
         var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
-        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
-            this.selectedNode = selection.anchorNode.parentNode;
+            this.selection = selection.getRangeAt(0).cloneRange();
+        }
+        else {
+            if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
+                this.selection = selection.getRangeAt(0).cloneRange();
+            }
         }
 
         var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
@@ -1072,12 +1074,7 @@ class RTBlazorfied {
                             }
                         }
                         else {
-                            if (this.selectedNode != null) {
-                                this.selectedNode.style.setProperty("color", value);
-                            }
-                            else {
-                                element.style.setProperty("color", value);
-                            }
+                            element.style.setProperty("color", value);
                         }
                         break;
                     case "font":
