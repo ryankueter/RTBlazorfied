@@ -1083,11 +1083,9 @@ public partial class RTBlazorfied
     private async Task SelectTextColor(string color) => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectTextColor", id, color);
     private async Task InsertTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextColor", id);
     private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);
-
-    private async Task OpenDropdown(string id) =>
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", this.id, id);
-    private async Task FormatText(string format) =>
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "format", id, format);
+    private async Task FormatText(string format) => await js.InvokeVoidAsync("RTBlazorfied_Method", "format", id, format);
+    private async Task OpenDropdown(string id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", this.id, id);
+    
     private async Task OpenCode()
     {
         if (Mode == "html")

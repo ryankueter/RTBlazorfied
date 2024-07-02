@@ -136,7 +136,6 @@ class RTBlazorfied {
         }
     }
     changeFontSize = (increment) => {     
-            
         /* Get the current selection. */
         if (this.fontSize === undefined) {
             var selection = this.shadowRoot.getSelection();
@@ -173,19 +172,28 @@ class RTBlazorfied {
     openTextColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
+        this.resetTextColorDialog();
 
         /* Get the selection */
         var selection = this.shadowRoot.getSelection();
         if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
             this.selection = selection.getRangeAt(0).cloneRange();
-        }
+        }        
+        
+        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
 
-        // Reset the selected color
-        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
-        el.style.backgroundColor = '';
+            var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+            el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
+            this.selectedNode = selection.anchorNode.parentNode;
+        }
 
         var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
         e.style.display = "block";
+    }
+    resetTextColorDialog = () => {
+        // Reset the selected color
+        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        el.style.backgroundColor = '';
     }
     selectTextColor = (color) => {
         var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
@@ -1008,7 +1016,7 @@ class RTBlazorfied {
             if (sel.toString().length == 0) {
                 /* Check if a node exists with this style and get it */
                 element = this.getElementByStyle(sel.anchorNode, type);
-               
+                               
                 /* See if it's an image */
                 if (element == null && sel.anchorNode != null && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
                     var image = sel.anchorNode.querySelector('img');
@@ -1045,7 +1053,12 @@ class RTBlazorfied {
                             }
                         }
                         else {
-                            element.style.setProperty("color", value);
+                            if (this.selectedNode != null) {
+                                this.selectedNode.style.setProperty("color", value);
+                            }
+                            else {
+                                element.style.setProperty("color", value);
+                            }
                         }
                         break;
                     case "font":
@@ -1438,10 +1451,7 @@ class RTBlazorfied {
         if (el == null) {
             return null;
         }
-
-        //console.log(el.textContent);
-        //console.log(this.shadowRoot.getSelection().toString());
-
+        
         while (el) {
             /* Prevent recursion outside the editor */
             if (el.nodeName == 'DIV' && el.id == this.id) {
