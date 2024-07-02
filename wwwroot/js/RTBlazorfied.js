@@ -39,12 +39,28 @@ class RTBlazorfied {
 
         this.shadowRoot.appendChild(container);
 
-        document.addEventListener('selectionchange', (event) => {
+        document.addEventListener('selectionchange', () => {
+            /* Ensure that this event listener only fires for this text box */
+            var selection = this.shadowRoot.getSelection();
+            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
+                this.clearSettings(selection.anchorNode);
+            }
+        });
 
-            this.clearSettings();
+        document.addEventListener('touchend', () => {
+            /* Ensure that this event listener only fires for this text box */
+            var selection = this.shadowRoot.getSelection();
+            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
+                this.clearSettings(selection.anchorNode);
+            }
+        });
 
-            /* Select the buttons */
-            this.selectButtons(this.shadowRoot.getSelection().anchorNode);
+        document.addEventListener('input', () => {
+            /* Ensure that this event listener only fires for this text box */
+            var selection = this.shadowRoot.getSelection();
+            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
+                this.clearSettings(selection.anchorNode);
+            }
         });
 
         this.content.addEventListener('click', (event) => {
@@ -68,8 +84,11 @@ class RTBlazorfied {
             });
         });
     }
-    clearSettings = () => {
+    clearSettings = (node) => {
         this.fontSize = undefined;
+
+        /* Select the buttons */
+        this.selectButtons(node);
     }
 
     keyEvents = (event) => {
@@ -179,16 +198,16 @@ class RTBlazorfied {
         if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
             this.selection = selection.getRangeAt(0).cloneRange();
         }        
-        
-        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
 
-            var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        var el = this.shadowRoot.getElementById('blazing-rich-text-color-selection');
+        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
             this.selectedNode = selection.anchorNode.parentNode;
         }
 
         var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
         e.style.display = "block";
+        el.focus();
     }
     resetTextColorDialog = () => {
         // Reset the selected color
@@ -1814,21 +1833,31 @@ class RTBlazorfied {
     }
 }
 
-let RTBlazorfied_Instances = {};
+window.RTBlazorfied_Instances = {};
 
 window.RTBlazorfied_Initialize = (id, shadow_id, toolbar_id, styles, html) => {
-    RTBlazorfied_Instances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles);
-    RTBlazorfied_Instances[id].loadHtml(html);
+    try {
+        RTBlazorfied_Instances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles);
+        RTBlazorfied_Instances[id].loadHtml(html);
+    }
+    catch (ex) {
+        console.log(ex)
+    }
 }
 
 window.RTBlazorfied_Method = (methodName, id, param) => {
-    var editorInstance = RTBlazorfied_Instances[id];
-    if (editorInstance && typeof editorInstance[methodName] === 'function') {
-        if (param != null) {
-            return editorInstance[methodName](param);
+    try {
+        var editorInstance = RTBlazorfied_Instances[id];
+        if (editorInstance && typeof editorInstance[methodName] === 'function') {
+            if (param != null) {
+                return editorInstance[methodName](param);
+            }
+            else {
+                return editorInstance[methodName]();
+            }
         }
-        else {
-            return editorInstance[methodName]();
-        }
+    }
+    catch (ex) {
+        console.log(ex)
     }
 }
