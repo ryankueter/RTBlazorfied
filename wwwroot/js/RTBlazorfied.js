@@ -13,6 +13,9 @@ class RTBlazorfied {
     }
 
     init = () => {
+        this.history = [];
+        this.currentIndex = -1;
+
         var isolatedContainer = document.getElementById(this.shadow_id);
         this.shadowRoot = isolatedContainer.attachShadow({ mode: 'open' });
 
@@ -75,15 +78,81 @@ class RTBlazorfied {
             this.keyEvents(event);
         });
 
-        /* Prevent the dropdowns from causing the text box from
-        losing focus. */
+        /* Prevent the dropdowns from causing the text box from losing focus. */
         var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach((dropdown) => {
             dropdown.addEventListener('mousedown', function (event) {
                 event.preventDefault();
             });
         });
+
+        /* Callback function to execute when mutations are observed */
+        var richtextbox = (mutationsList, observer) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    /* A child node has been added or removed. */
+                    this.saveState();
+                }
+                else if (mutation.type === 'attributes') {
+                    /* The ${mutation.attributeName} attribute was modified. */
+                    this.saveState();
+                }
+                else if (mutation.type === 'characterData') {
+                    /* The text content of a node has been changed. */
+                    this.saveState();
+                }
+            }
+        };
+
+        /* Options for the observer (which mutations to observe) */
+        var config = {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            characterData: true
+        };
+
+        /* Create an observer instance linked to the callback function */
+        var observer = new MutationObserver(richtextbox);
+        observer.observe(this.content, config);
     }
+    saveState = () => {
+        var currentState = this.content.innerHTML;
+
+        /* If there is any change in the content */
+        if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
+
+            /* Remove all future states */
+            this.history = this.history.slice(0, this.currentIndex + 1);
+
+            /* Add the new state */
+            this.history.push(currentState);
+            this.currentIndex++;
+
+            /* Remove the oldest state if history exceeds 20 entries */
+            if (this.history.length > 20) {
+
+                /* shift() removes the oldest entry */
+                this.history.shift();
+                this.currentIndex--;
+            }
+        }
+    };
+    goBack = () => {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.content.innerHTML = this.history[this.currentIndex];
+        }
+        this.focusEditor();
+    };
+    
+    goForward = () => {
+        if (this.currentIndex < this.history.length - 1) {
+            this.currentIndex++;
+            this.content.innerHTML = this.history[this.currentIndex];
+        }
+        this.focusEditor();
+    };
     clearSettings = (node) => {
         this.fontSize = undefined;
 
@@ -325,21 +394,15 @@ class RTBlazorfied {
         this.updateNode("indent");
     };
     copy = () => {
-        this.backupstate();
-
         var selection = window.getSelection();
         if (selection != null) {
             if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(selection);
             }
         }
-
-        this.restorestate();
         this.focusEditor();
     };
     cut = () => {
-        this.backupstate();
-
         var selection = window.getSelection();
         if (selection != null) {
             if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
@@ -350,8 +413,6 @@ class RTBlazorfied {
                 this.removeEmptyNodes();
             }
         }
-
-        this.restorestate();
         this.focusEditor();
     };
 
@@ -441,12 +502,9 @@ class RTBlazorfied {
     }
 
     delete = () => {
-        this.backupstate();
-
         window.getSelection().deleteFromDocument();
         this.removeEmptyNodes();
-
-        this.restorestate();
+        
         this.focusEditor();
     };
     focusEditor = () => {
@@ -470,8 +528,6 @@ class RTBlazorfied {
         this.addlist("UL");
     };
     addlist = (type) => {
-        this.backupstate();
-
         /* Get the selected text */
         var selection = this.shadowRoot.getSelection();
        
@@ -480,7 +536,6 @@ class RTBlazorfied {
             var list = this.getElementByType(selection.anchorNode, "OL");
             if (list != null) {
                 this.replaceList(list, "UL");
-                this.restorestate();
                 return;
             }
         }
@@ -488,7 +543,6 @@ class RTBlazorfied {
             var list = this.getElementByType(selection.anchorNode, "UL");
             if (list != null) {
                 this.replaceList(list, "OL");
-                this.restorestate();
                 return;
             }
         }
@@ -533,7 +587,6 @@ class RTBlazorfied {
                 }
             }
         }
-        this.restorestate();
         this.focusEditor();
     }
     replaceList = (list, type) => {
@@ -670,7 +723,6 @@ class RTBlazorfied {
         classes.value = null;
     }
     insertLink = () => {
-        this.backupstate();
         var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
         var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
@@ -708,7 +760,6 @@ class RTBlazorfied {
             range.insertNode(anchor);
         }
         this.selection = null;
-        this.restorestate();
 
         this.closeDialog("rich-text-box-link-modal");
         this.focusEditor();
@@ -727,8 +778,6 @@ class RTBlazorfied {
         }
     }
     removeLink = () => {
-        this.backupstate();
-
         var selection = this.shadowRoot.getSelection();
 
         if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "A") {
@@ -747,7 +796,6 @@ class RTBlazorfied {
                 selection.addRange(range);
             }
         }
-        this.restorestate();
         this.focusEditor();
     }
     closeDialog = (id) => {
@@ -798,7 +846,6 @@ class RTBlazorfied {
         classes.value = null;
     }
     insertImage = () => {
-        this.backupstate();
         var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
         var width = this.shadowRoot.getElementById("rich-text-box-image-width");
         var height = this.shadowRoot.getElementById("rich-text-box-image-height");
@@ -838,35 +885,8 @@ class RTBlazorfied {
             this.imageSelection = range.cloneRange();
         }
 
-        this.restorestate();
-
         this.closeDialog("rich-text-box-image-modal");
         this.focusEditor();
-    }
-
-    undo = () => {
-        if (this.undoContent != null) {
-            this.content.innerHTML = this.undoContent;
-        }
-        this.focusEditor();
-    }
-    redo = () => {
-        if (this.redoContent != null) {
-            this.content.innerHTML = this.redoContent;
-        }
-        this.focusEditor();
-    }
-    restorestate = () => {
-        var html = this.content?.innerHTML;
-        if (html != null) {
-            this.redoContent = html;
-        }
-    }
-    backupstate = () => {
-        var html = this.content?.innerHTML;
-        if (html != null) {
-            this.undoContent = html;
-        }
     }
     saveSelection = () => {
         var selection = this.shadowRoot.getSelection();
@@ -895,8 +915,6 @@ class RTBlazorfied {
     }
     formatNode = (type) => {
         var sel, range;
-
-        this.backupstate();
         
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
@@ -953,7 +971,6 @@ class RTBlazorfied {
                 }
                 this.selectButtons(sel.anchorNode);
                 this.closeDropdowns();
-                this.restorestate();
                 this.focusEditor();
                 return;
             }
@@ -998,7 +1015,6 @@ class RTBlazorfied {
         }
         this.closeDropdowns();
         this.removeEmptyNodes();
-        this.restorestate();
         this.focusEditor();
     }
     hasInvalidElementsInRange = (range) => {
@@ -1066,8 +1082,6 @@ class RTBlazorfied {
     }
     updateNode = (type, value) => {
         var sel, range;
-
-        this.backupstate();
 
         if (this.shadowRoot.getSelection()) {
 
@@ -1244,7 +1258,6 @@ class RTBlazorfied {
                 this.selection = null;
                 this.removeEmptyNodes();
                 this.selectButtons(sel.anchorNode);
-                this.restorestate();
                 this.focusEditor();
                 return;
             }
@@ -1330,7 +1343,6 @@ class RTBlazorfied {
         }
         this.removeEmptyNodes();
         this.selectButtons(sel.anchorNode);
-        this.restorestate();
         this.focusEditor();
     }
     hasCommonAncestor(selection) {
@@ -1935,6 +1947,8 @@ window.RTBlazorfied_Method = (methodName, id, param) => {
         }
     }
     catch (ex) {
+        /* Restore the last known good state if an exception was throw */
+        RTBlazorfied_Instances[id].goBack();
         console.log(ex)
     }
 }
