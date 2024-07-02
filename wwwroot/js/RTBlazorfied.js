@@ -130,8 +130,7 @@ class RTBlazorfied {
             this.currentIndex++;
 
             /* Remove the oldest state if history exceeds 20 entries */
-            if (this.history.length > 20) {
-
+            if (this.history.length > 40) {
                 /* shift() removes the oldest entry */
                 this.history.shift();
                 this.currentIndex--;
@@ -144,6 +143,7 @@ class RTBlazorfied {
             this.content.innerHTML = this.history[this.currentIndex];
         }
         this.focusEditor();
+        this.selectButtons(this.shadowRoot.getSelection().anchorNode);
     };
     
     goForward = () => {
@@ -152,6 +152,7 @@ class RTBlazorfied {
             this.content.innerHTML = this.history[this.currentIndex];
         }
         this.focusEditor();
+        this.selectButtons(this.shadowRoot.getSelection().anchorNode);
     };
     clearSettings = (node) => {
         this.fontSize = undefined;
@@ -289,7 +290,7 @@ class RTBlazorfied {
         el.focus();
     }
     resetTextColorDialog = () => {
-        // Reset the selected color
+        /* Reset the selected color */
         var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
         el.style.backgroundColor = '';
     }
@@ -338,7 +339,7 @@ class RTBlazorfied {
         el.focus();
     }
     resetTextBackgroundColorDialog = () => {
-        // Reset the selected color
+        /* Reset the selected color */
         var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
         el.style.backgroundColor = '';
     }
@@ -774,10 +775,9 @@ class RTBlazorfied {
     }
     addClasses = (classlist, element) => {
         if (classlist.length > 0) {
-            //var normalizedClassList = classlist.replace(/\s+/g, ' ').trim();
             var classNames = classlist.split(' ').map(className => className.trim());
 
-            // Add each class to the element's class list
+            /* Add each class to the element's class list */
             classNames.forEach(className => {
                 if (className) {
                     element.classList.add(className);
@@ -1026,36 +1026,36 @@ class RTBlazorfied {
         this.focusEditor();
     }
     hasInvalidElementsInRange = (range) => {
-        // Traverse through nodes within the range
-        let node = range.startContainer;
-        const endNode = range.endContainer;
+        var node = range.startContainer;
+        var endNode = range.endContainer;
 
+        /* Traverse through nodes within the range */
         while (node && node !== endNode.nextSibling) {
             if (node.nodeType === Node.ELEMENT_NODE) {
                 const tagName = node.tagName.toLowerCase();
 
-                // Check for block-level elements
+                /* Check for block-level elements */
                 if (["address", "article", "aside", "blockquote", "details", "dialog", "div", "dl", "fieldset", "figcaption", "figure", "footer", "form", "header", "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"].includes(tagName)) {
                     return true;
                 }
 
-                // Check for heading elements
+                /* Check for heading elements */
                 if (tagName.match(/^h[1-6]$/)) {
                     return true;
                 }
 
-                // Check for interactive elements
+                /* Check for interactive elements */
                 if (["a", "button", "input", "textarea", "select"].includes(tagName)) {
                     return true;
                 }
 
-                // Check for form elements
+                /* Check for form elements */
                 if (tagName === "form") {
                     return true;
                 }
             }
 
-            // Move to the next node
+            /* Move to the next node */
             node = node.nextSibling || node.parentNode.nextSibling;
         }
 
