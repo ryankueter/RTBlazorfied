@@ -486,6 +486,7 @@ public partial class RTBlazorfied
     private bool? _historydivider;
     private bool? _link;
     private bool? _quote;
+    private bool? _codeBlock;
     private bool? _image;
     private bool? _insertdivider;
     private bool? _orderedlist;
@@ -548,6 +549,10 @@ public partial class RTBlazorfied
         {
             _quote = buttons.Quote;
         }
+        if (buttons.CodeBlock is not null)
+        {
+            _codeBlock = buttons.CodeBlock;
+        }
         if (buttons.Link is not null)
         {
             _link = buttons.Link;
@@ -559,7 +564,8 @@ public partial class RTBlazorfied
         // If the user did not specify false, keep the button
         if (buttons.Link == true
             || buttons.Image == true
-            || buttons.Quote == true)
+            || buttons.Quote == true
+            || buttons.CodeBlock == true)
         {
             _insertdivider = true;
         }
@@ -757,6 +763,7 @@ public partial class RTBlazorfied
         _orderedlist = setting;
         _unorderedlist = setting;
         _quote = setting;
+        _codeBlock = setting;
 }
 
     private void GetScrollOptions()

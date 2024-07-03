@@ -260,13 +260,16 @@
     {
         <RTDivider />
     }
-    <RTButton Id="blazing-rich-text-code-block-button"
-              OnClick="OpenCodeBlockDialog"
-              Icon="@Icons.CodeBlocks"
-              Title="Code Block"
-              TextSize="@_buttonTextSize"
-              TextColor="@_buttonTextColor"
-              IsDisabled="@IsDisabled"></RTButton>
+    @if (_codeBlock == true)
+    {
+        <RTButton Id="blazing-rich-text-code-block-button"
+                  OnClick="OpenCodeBlockDialog"
+                  Icon="@Icons.CodeBlocks"
+                  Title="Code Block"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"
+                  IsDisabled="@IsDisabled"></RTButton>
+    }
     @if (_quote == true)
     {
         <RTButton Id="blazing-rich-text-quote-button"

@@ -1,7 +1,7 @@
 # RT Blazorfied
 
 Author: Ryan Kueter  
-Updated: June, 2024
+Updated: July, 2024
 
 ## About
 
@@ -149,6 +149,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Undo = true;
         o.Redo = true;
         o.Quote = true;
+        o.CodeBlock = true;
     });
 });
 ```
