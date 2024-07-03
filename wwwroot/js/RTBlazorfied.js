@@ -238,14 +238,25 @@ class RTBlazorfied {
         var br = document.createElement('br');
         div.appendChild(br);
 
-        element.parentNode.insertBefore(div, element.nextSibling);
+        if (element.nodeName == "CODE") {
+            /* Insert the new div after the grandparent element */
+            var grandparent = element.parentNode.parentNode;            
+            if (grandparent.nextSibling) {
+                grandparent.parentNode.insertBefore(div, grandparent.nextSibling);
+            } else {
+                grandparent.parentNode.appendChild(div);
+            }
+        }
+        else {
+            element.parentNode.insertBefore(div, element.nextSibling);
+        }
 
         /* Move the cursor to the new line */
         var range = document.createRange();
         range.setStartBefore(br);
         range.collapse(true);
 
-        const sel = this.shadowRoot.getSelection();
+        var sel = this.shadowRoot.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
     }
