@@ -485,6 +485,7 @@ public partial class RTBlazorfied
     private bool? _redo;
     private bool? _historydivider;
     private bool? _link;
+    private bool? _quote;
     private bool? _image;
     private bool? _insertdivider;
     private bool? _orderedlist;
@@ -543,6 +544,10 @@ public partial class RTBlazorfied
 
     private void GetInsertButtons(RichTextboxButtonVisibilityOptions? buttons)
     {
+        if (buttons.Quote is not null)
+        {
+            _quote = buttons.Quote;
+        }
         if (buttons.Link is not null)
         {
             _link = buttons.Link;
@@ -553,7 +558,8 @@ public partial class RTBlazorfied
         }
         // If the user did not specify false, keep the button
         if (buttons.Link == true
-            || buttons.Image == true)
+            || buttons.Image == true
+            || buttons.Quote == true)
         {
             _insertdivider = true;
         }

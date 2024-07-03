@@ -148,6 +148,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Link = true;
         o.Undo = true;
         o.Redo = true;
+        o.Quote = true;
     });
 });
 ```

@@ -115,15 +115,7 @@
     {
         <RTDivider />
     }
-    <RTButton Id="blazing-rich-text-quote-button"
-              OnClick="OpenBlockQuoteDialog"
-              Icon="@Icons.Quote"
-              Title="Text Color"
-              TextSize="@_buttonTextSize"
-              TextColor="@_buttonTextColor"
-              IsDisabled="@IsDisabled"></RTButton>
-    <RTDivider />
-     @if (_textcolor == true)
+    @if (_textcolor == true)
     {
         <RTButton Id="blazing-rich-text-textcolor-button"
                   OnClick="OpenTextColorDialog"
@@ -268,8 +260,16 @@
     {
         <RTDivider />
     }
-    
-
+    @if (_quote == true)
+    {
+        <RTButton Id="blazing-rich-text-quote-button"
+            OnClick="OpenBlockQuoteDialog"
+            Icon="@Icons.Quote"
+            Title="Text Color"
+            TextSize="@_buttonTextSize"
+            TextColor="@_buttonTextColor"
+            IsDisabled="@IsDisabled"></RTButton>
+    }
     @if (_link == true)
     {
         <RTButton Id="blazing-rich-text-link-button"
