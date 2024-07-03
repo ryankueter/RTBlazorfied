@@ -216,8 +216,28 @@ class RTBlazorfied {
             this.goForward();
         }
         if (event.key === 'Enter') {
-            /* To Do */
+            var selection = this.shadowRoot.getSelection();
+            switch (selection.anchorNode.parentNode.nodeName) {
+                case "BLOCKQUOTE":
+                    event.preventDefault();
+                    this.insertLineBreak(selection.anchorNode.parentNode);
+                    break;
+            }
         }
+    }
+    insertLineBreak = (element) => {
+        /* Create a <br> element */
+        var br = document.createElement('br');
+        element.parentNode.insertBefore(br, element.nextSibling);
+
+        /* Move the cursor to the new line */
+        var range = document.createRange();
+        range.setStartBefore(br);
+        range.collapse(true);
+
+        const sel = this.shadowRoot.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
     changeFontSize = (increment) => {     
         /* Get the current selection. */
@@ -1215,7 +1235,7 @@ class RTBlazorfied {
             if (sel.toString().length == 0) {
                 /* Check if a node exists with this style and get it */
                 element = this.getElementByStyle(sel.anchorNode, type);
-                               
+                                               
                 /* See if it's an image */
                 if (element == null && sel.anchorNode != null && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
                     var image = sel.anchorNode.querySelector('img');
@@ -1225,7 +1245,7 @@ class RTBlazorfied {
                 }
                 
                 /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
                     element = sel.anchorNode.parentNode;   
                 }
             }
@@ -2071,8 +2091,9 @@ window.RTBlazorfied_Method = (methodName, id, param) => {
         }
     }
     catch (ex) {
+        console.log(ex);
+
         /* Restore the last known good state if an exception was throw */
         RTBlazorfied_Instances[id].goBack();
-        console.log(ex)
     }
 }
