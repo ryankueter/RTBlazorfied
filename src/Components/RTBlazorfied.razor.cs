@@ -756,6 +756,7 @@ public partial class RTBlazorfied
         _image = setting;
         _orderedlist = setting;
         _unorderedlist = setting;
+        _quote = setting;
 }
 
     private void GetScrollOptions()
