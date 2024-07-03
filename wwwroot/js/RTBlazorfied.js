@@ -65,11 +65,11 @@ class RTBlazorfied {
         /* Prevent the dropdowns from causing the text box from losing focus. */
         var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach((dropdown) => {
-            dropdown.addEventListener('mousedown', function (event) {
+            dropdown.addEventListener('mousedown', (event) => {
                 event.preventDefault();
             });
         });
-
+        
         /* Callback function to execute when mutations are observed */
         var richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
@@ -214,6 +214,9 @@ class RTBlazorfied {
         if (event.ctrlKey && event.key === 'y') {
             event.preventDefault();
             this.goForward();
+        }
+        if (event.key === 'Enter') {
+            /* To Do */
         }
     }
     changeFontSize = (increment) => {     
@@ -825,6 +828,7 @@ class RTBlazorfied {
             var classList = selection.anchorNode.parentNode.classList;
             classes.value = Array.from(classList).join(' ');
 
+            this.quoteSelection = selection.getRangeAt(0).cloneRange();
             this.quote = selection.anchorNode.parentNode;         
         }
         else {
@@ -873,6 +877,15 @@ class RTBlazorfied {
                 element.removeAttribute('cite');
             }
             this.addClasses(classes.value, element);
+
+            var range = this.quoteSelection.cloneRange();
+            /* Move the cursor after the inserted element */
+            range.setStartAfter(element);
+            range.setEndAfter(element);
+
+            var selection = this.shadowRoot.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
         }
         else {
             if (this.quoteSelection != null && quote.value.length > 0) {
@@ -889,7 +902,7 @@ class RTBlazorfied {
                 range.deleteContents();
                 range.insertNode(blockquote);
 
-                /* Move the cursor after the inserted image */
+                /* Move the cursor after the inserted element */
                 range.setStartAfter(blockquote);
                 range.setEndAfter(blockquote);
 
@@ -897,9 +910,6 @@ class RTBlazorfied {
                 var selection = this.shadowRoot.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
-
-                /* Update the stored cursor position to the new position */
-                this.quoteSelection = range.cloneRange();
             }
         }
         this.closeDialog("rich-text-box-block-quote-modal");
