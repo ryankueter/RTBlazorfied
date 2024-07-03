@@ -942,6 +942,106 @@ class RTBlazorfied {
         this.closeDialog("rich-text-box-block-quote-modal");
         this.focusEditor();
     }
+    openCodeBlockDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+        this.resetCodeBlockDialog();
+
+        /* Get the selection */
+        var selection = this.shadowRoot.getSelection();
+
+        var code = this.shadowRoot.getElementById('rich-text-box-code');
+        var classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
+
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName == "CODE") {
+            code.value = selection.anchorNode.parentNode.textContent;
+
+            var classList = selection.anchorNode.parentNode.classList;
+            classes.value = Array.from(classList).join(' ');
+
+            this.codeSelection = selection.getRangeAt(0).cloneRange();
+            this.code = selection.anchorNode.parentNode;
+        }
+        else {
+            if (selection != null && selection.rangeCount > 0) {
+                this.codeSelection = selection.getRangeAt(0).cloneRange();
+            }
+        }
+
+        if (selection == null) {
+            this.codeSelection = this.moveCursorToStart();
+        }
+
+        var e = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
+        e.style.display = "block";
+
+        var code = this.shadowRoot.getElementById("rich-text-box-code");
+        if (code) {
+            code.focus();
+        }
+    }
+    resetCodeBlockDialog = () => {
+        this.code = null;
+        this.codeSelection = null;
+
+        var code = this.shadowRoot.getElementById("rich-text-box-code");
+        code.value = null;
+
+        var css = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
+        css.value = null;
+    }
+    insertCodeBlock = () => {
+        var codeText = this.shadowRoot.getElementById("rich-text-box-code");
+        var classes = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
+
+        if (this.code != null) {
+            var element = this.code;
+            element.textContent = codeText.value;
+            this.addClasses(classes.value, element);
+
+            var range = this.codeSelection.cloneRange();
+            /* Move the cursor after the inserted element */
+            range.setStartAfter(element);
+            range.setEndAfter(element);
+
+            var selection = this.shadowRoot.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        else {
+            if (this.codeSelection != null && codeText.value.length > 0) {
+
+                var range = this.codeSelection.cloneRange();
+
+                /* Create the <pre> element */
+                var pre = document.createElement('pre');
+
+                /* Create the <code> element */
+                var code = document.createElement('code');
+                this.addClasses(classes.value, code);
+
+                /* Set the content of the <code> element */
+                code.textContent = codeText.value;
+
+                /* Append the <code> element to the <pre> element */
+                pre.appendChild(code);
+
+                range.deleteContents();
+                range.insertNode(pre);
+
+                /* Move the cursor after the inserted element */
+                range.setStartAfter(pre);
+                range.setEndAfter(pre);
+
+                /* Get the selection from the shadowRoot */
+                var selection = this.shadowRoot.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+        this.closeDialog("rich-text-box-code-block-modal");
+        this.focusEditor();
+    }
     openImageDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
@@ -1936,6 +2036,7 @@ class RTBlazorfied {
         var textColorRemove = this.getButton("blazing-rich-text-textcolor-remove-button");
 
         var blockQuote = this.getButton("blazing-rich-text-quote-button");
+        var codeBlock = this.getButton("blazing-rich-text-code-block-button");
 
         /* Menus */
         var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
@@ -2052,6 +2153,9 @@ class RTBlazorfied {
             }
             if (el.parentNode.nodeName == "BLOCKQUOTE") {
                 blockQuote.classList.add("selected");
+            }
+            if (el.parentNode.nodeName == "CODE") {
+                codeBlock.classList.add("selected");
             }
             el = el.parentNode;
         }

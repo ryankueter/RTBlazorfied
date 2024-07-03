@@ -260,6 +260,13 @@
     {
         <RTDivider />
     }
+    <RTButton Id="blazing-rich-text-code-block-button"
+              OnClick="OpenCodeBlockDialog"
+              Icon="@Icons.CodeBlocks"
+              Title="Code Block"
+              TextSize="@_buttonTextSize"
+              TextColor="@_buttonTextColor"
+              IsDisabled="@IsDisabled"></RTButton>
     @if (_quote == true)
     {
         <RTButton Id="blazing-rich-text-quote-button"
@@ -336,6 +343,13 @@
     <!-- Dialogs -->
     <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
     <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
+
+    <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
+        <label for="code">Code Block</label>
+        <textarea rows="10" cols="50" class="rich-text-box-scroll" id="rich-text-box-code" name="code" tabindex="1" />
+        <label for="classes">CSS Classes</label>
+        <input type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+    </RTDialog>
 
     <RTDialog InstanceId="@id" DialogId="rich-text-box-block-quote-modal" Title="Block Quote" OnClick="InsertQuote">
         <label for="quote">Quote</label>

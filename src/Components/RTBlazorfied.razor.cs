@@ -1090,6 +1090,8 @@ public partial class RTBlazorfied
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goForward", id);
     private async Task OpenBlockQuoteDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openBlockQuoteDialog", id);
     private async Task InsertQuote() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertBlockQuote", id);
+    private async Task OpenCodeBlockDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openCodeBlockDialog", id);
+    private async Task InsertCodeBlock() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertCodeBlock", id);
     private async Task OpenTextColorDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorDialog", id);
     private async Task InsertTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextColor", id);
     private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);
