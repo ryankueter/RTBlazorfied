@@ -272,6 +272,10 @@ class RTBlazorfied {
             }
         }
 
+        if (selection == null) {
+            this.selection = this.moveCursorToStart();
+        }
+
         var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
         e.style.display = "block";
         el.focus();
@@ -321,6 +325,10 @@ class RTBlazorfied {
             }
         }
 
+        if (selection == null) {
+            this.selection = this.moveCursorToStart();
+        }
+
         var e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
         e.style.display = "block";
         el.focus();
@@ -341,7 +349,6 @@ class RTBlazorfied {
             this.updateNode("textbgcolor", "None");
         }
         else {
-            console.log("Test");
             this.updateNode("textbgcolor", el.style.backgroundColor);
         }
 
