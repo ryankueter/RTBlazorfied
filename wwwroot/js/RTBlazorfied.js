@@ -222,13 +222,23 @@ class RTBlazorfied {
                     event.preventDefault();
                     this.insertLineBreak(selection.anchorNode.parentNode);
                     break;
+                case "CODE":
+                    event.preventDefault();
+                    this.insertLineBreak(selection.anchorNode.parentNode);
+                    break;
+                case "SPAN":
+                    event.preventDefault();
+                    this.insertLineBreak(selection.anchorNode.parentNode);
+                    break;
             }
         }
     }
     insertLineBreak = (element) => {
-        /* Create a <br> element */
+        var div = document.createElement('div');
         var br = document.createElement('br');
-        element.parentNode.insertBefore(br, element.nextSibling);
+        div.appendChild(br);
+
+        element.parentNode.insertBefore(div, element.nextSibling);
 
         /* Move the cursor to the new line */
         var range = document.createRange();
