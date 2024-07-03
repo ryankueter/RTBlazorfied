@@ -339,9 +339,9 @@
 
     <RTDialog InstanceId="@id" DialogId="rich-text-box-block-quote-modal" Title="Block Quote" OnClick="InsertQuote">
         <label for="quote">Quote</label>
-        <textarea id="rich-text-box-quote" name="quote" tabindex="1" />
+        <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" tabindex="1" />
         <label for="cite">Cite</label>
-        <input type="text" id="rich-text-box-cite" name="cite" tabindex="2">
+        <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." tabindex="2">
         <label for="classes">CSS Classes</label>
         <input type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
     </RTDialog>

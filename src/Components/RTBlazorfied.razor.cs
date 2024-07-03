@@ -343,7 +343,7 @@ public partial class RTBlazorfied
             margin: 2px;
             cursor: pointer;
             display: inline-block;
-            border: 2px solid transparent;
+            border: 1px solid #999;
         }
 
         .blazing-rich-text-color-option:hover {

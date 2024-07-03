@@ -759,6 +759,10 @@ class RTBlazorfied {
         this.focusEditor();
     }
     addClasses = (classlist, element) => {
+        /* Clear the classes */
+        element.classList.remove(...element.classList);
+
+        /* Readd classes, if necessary */
         if (classlist.length > 0) {
             var classNames = classlist.split(' ').map(className => className.trim());
 
@@ -827,9 +831,10 @@ class RTBlazorfied {
             if (selection != null && selection.rangeCount > 0) {
                 this.quoteSelection = selection.getRangeAt(0).cloneRange();
             }
-            else {
-                this.quoteSelection = this.moveCursorToStart();
-            }
+        }
+
+        if (selection == null) {
+            this.quoteSelection = this.moveCursorToStart();
         }
 
         var e = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
@@ -861,7 +866,12 @@ class RTBlazorfied {
         if (this.quote != null) {
             var element = this.quote;
             element.textContent = quote.value;
-            element.cite = cite.value;
+            if (cite.value.trim().length > 0) {
+                element.setAttribute('cite', cite.value);
+            }
+            else {
+                element.removeAttribute('cite');
+            }
             this.addClasses(classes.value, element);
         }
         else {
