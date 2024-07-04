@@ -99,6 +99,26 @@ class RTBlazorfied {
         /* Create an observer instance linked to the callback function */
         var observer = new MutationObserver(richtextbox);
         observer.observe(this.content, config);
+
+        this.shadowRoot.getElementById('rich-text-box-code').addEventListener('keydown', (event) => {
+            if (event.key === 'Tab') {
+                event.preventDefault(); // Prevent the default tab behavior
+
+                // Get the textarea
+                var textarea = event.target;
+
+                // Get the current selection start and end positions
+                var start = textarea.selectionStart;
+                var end = textarea.selectionEnd;
+
+                // Insert the tab character at the selection position
+                var tabCharacter = '\t';
+                textarea.value = textarea.value.substring(0, start) + tabCharacter + textarea.value.substring(end);
+
+                // Move the cursor to the correct position after inserting the tab
+                textarea.selectionStart = textarea.selectionEnd = start + 1;
+            }
+        });
     }
     saveState = () => {
         var currentState = this.content.innerHTML;
@@ -991,9 +1011,13 @@ class RTBlazorfied {
         var code = this.shadowRoot.getElementById('rich-text-box-code');
         var classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName == "CODE") {
-            code.value = selection.anchorNode.parentNode.textContent;
-
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "CODE") {
+            
+            var clone = selection.anchorNode.parentNode.cloneNode(true);
+            /* Remove the spaces and line breaks */
+            clone.innerHTML = clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&nbsp;/gi, ' ').replace(/&#9;/g, '\t').replace(/\t/g, '\t');
+            code.value = clone.textContent;
+            
             var classList = selection.anchorNode.parentNode.classList;
             classes.value = Array.from(classList).join(' ');
 
@@ -1035,16 +1059,9 @@ class RTBlazorfied {
         if (this.code != null) {
             var element = this.code;
             element.textContent = codeText.value;
+            /* Reinsert the spaces and line breaks */
+            element.innerHTML = element.innerHTML.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
             this.addClasses(classes.value, element);
-
-            var range = this.codeSelection.cloneRange();
-            /* Move the cursor after the inserted element */
-            range.setStartAfter(element);
-            range.setEndAfter(element);
-
-            var selection = this.shadowRoot.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
         }
         else {
             if (this.codeSelection != null && codeText.value.length > 0) {
@@ -1060,6 +1077,8 @@ class RTBlazorfied {
 
                 /* Set the content of the <code> element */
                 code.textContent = codeText.value;
+                /* Reinsert the spaces and line breaks */
+                code.innerHTML = code.innerHTML.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
 
                 /* Append the <code> element to the <pre> element */
                 pre.appendChild(code);

@@ -354,7 +354,7 @@ public partial class RTBlazorfied
             cursor: pointer;
             display: inline-block;
         }
-        .rich-text-box-quote{
+        .rich-text-box-quote {
           font-family: sans-serif !important;
         }
         """;
