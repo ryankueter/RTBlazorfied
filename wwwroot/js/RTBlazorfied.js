@@ -1010,8 +1010,6 @@ class RTBlazorfied {
         if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "CODE") {
             
             var clone = selection.anchorNode.parentNode.cloneNode(true);
-            /* Remove the spaces and line breaks */
-            clone.innerHTML = clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&nbsp;/gi, ' ').replace(/&#9;/g, '\t').replace(/\t/g, '\t');
             code.value = clone.textContent;
             
             var classList = selection.anchorNode.parentNode.classList;
@@ -1053,8 +1051,6 @@ class RTBlazorfied {
         if (this.code != null) {
             var element = this.code;
             element.textContent = codeText.value;
-            /* Reinsert the spaces and line breaks */
-            element.innerHTML = element.innerHTML.replace(/  /g, ' &nbsp;').replace(/\n/g, '<br>').replace(/\t/g, ' &nbsp; &nbsp;');
             this.addClasses(classes.value, element);
         }
         else {
@@ -1071,8 +1067,6 @@ class RTBlazorfied {
 
                 /* Set the content of the <code> element */
                 code.textContent = codeText.value;
-                /* Reinsert the spaces and line breaks */
-                code.innerHTML = code.innerHTML.replace(/  /g, ' &nbsp;').replace(/\n/g, '<br>').replace(/\t/g, ' &nbsp; &nbsp;');
 
                 /* Append the <code> element to the <pre> element */
                 pre.appendChild(code);
@@ -2193,7 +2187,7 @@ class RTBlazorfied {
 
         while (el.parentNode) {
             /* Prevent selecting unwanted elements */
-            if (el.parentNode.nodeType != 1 || el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.id == this.content.id || el.parentNode.id == this.content.id || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
+            if (el.parentNode.nodeType != 1 || el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
             }
 

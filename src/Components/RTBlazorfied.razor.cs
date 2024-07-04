@@ -104,6 +104,8 @@ public partial class RTBlazorfied
             width: 100%;
             min-height: 25px;
             color: {{_contentTextColor}};
+            white-space: pre-wrap; 
+            word-wrap: break-word;
         }
         /*
         ::selection {
@@ -359,7 +361,7 @@ public partial class RTBlazorfied
         }
         .rich-text-box-code {
           overflow: auto !important;
-          white-space: pre;
+          white-space: pre-wrap;
           cursor: pointer;
         }
         """;
