@@ -233,7 +233,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-modal-content {
           position: relative;
-          top: 20%;
+          top: 15%;
           background-color: {{_modalBackgroundColor}};
           color: {{_modalTextColor}};
           margin: auto;
@@ -356,6 +356,11 @@ public partial class RTBlazorfied
         }
         .rich-text-box-quote {
           font-family: sans-serif !important;
+        }
+        .rich-text-box-code {
+          overflow: auto !important;
+          white-space: pre;
+          cursor: pointer;
         }
         """;
 

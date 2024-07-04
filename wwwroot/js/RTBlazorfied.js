@@ -1030,7 +1030,7 @@ class RTBlazorfied {
             }
         }
 
-        if (selection == null) {
+        if (this.codeSelection == null) {
             this.codeSelection = this.moveCursorToStart();
         }
 
@@ -1040,6 +1040,8 @@ class RTBlazorfied {
         var code = this.shadowRoot.getElementById("rich-text-box-code");
         if (code) {
             code.focus();
+            code.scrollTop = 0;
+            code.scrollLeft = 0;
         }
     }
     resetCodeBlockDialog = () => {
