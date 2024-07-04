@@ -2084,7 +2084,7 @@ class RTBlazorfied {
 
         while (el.parentNode) {
             /* Prevent selecting unwanted elements */
-            if (el.parentNode.nodeType != 1 || el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
+            if (el.parentNode.nodeType != 1 || el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.id == this.content.id || el.parentNode.id == this.content.id || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
             }
 
