@@ -146,6 +146,10 @@ class RTBlazorfied {
     }
 
     keyEvents = (event) => {
+        if (this.EditMode === false) {
+            event.preventDefault();
+            return;
+        }
         if (event.ctrlKey && event.key === 'b') {
             event.preventDefault();
             this.bold();
