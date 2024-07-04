@@ -932,6 +932,8 @@ class RTBlazorfied {
         var quote = this.shadowRoot.getElementById("rich-text-box-quote");
         if (quote) {
             quote.focus();
+            quote.scrollTop = 0;
+            quote.scrollLeft = 0;
         }
     }
     resetBlockQuoteDialog = () => {
