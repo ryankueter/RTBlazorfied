@@ -752,11 +752,7 @@ class RTBlazorfied {
                 linktext.value = this.linkSelection.toString();
             }
         }
-
-        if (linktext.value.trim().length === 0) {
-            this.linkSelection = this.moveCursorToStart();
-        }
-
+        
         var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
         e.style.display = "block";
 
@@ -826,22 +822,24 @@ class RTBlazorfied {
             }
         }
         else {
-            var selection = this.shadowRoot.getSelection();
-            if (selection && this.linkSelection) {
-                selection.removeAllRanges();
-                selection.addRange(this.linkSelection);
-            }
+            if (this.linkSelection != null) {
+                var selection = this.shadowRoot.getSelection();
+                if (selection) {
+                    selection.removeAllRanges();
+                    selection.addRange(this.linkSelection);
+                }
 
-            var range = selection.getRangeAt(0);
-            var anchor = document.createElement("a");
-            anchor.href = link.value;
-            anchor.textContent = linktext.value;
-            this.addClasses(classes.value, anchor);
-            if (newtab.checked) {
-                anchor.target = "_blank";
+                var range = selection.getRangeAt(0);
+                var anchor = document.createElement("a");
+                anchor.href = link.value;
+                anchor.textContent = linktext.value;
+                this.addClasses(classes.value, anchor);
+                if (newtab.checked) {
+                    anchor.target = "_blank";
+                }
+                range.deleteContents();
+                range.insertNode(anchor);
             }
-            range.deleteContents();
-            range.insertNode(anchor);
         }
         this.closeDialog("rich-text-box-link-modal");
         this.focusEditor();
@@ -921,11 +919,7 @@ class RTBlazorfied {
                 this.quoteSelection = selection.getRangeAt(0).cloneRange();
             }
         }
-
-        if (selection == null) {
-            this.quoteSelection = this.moveCursorToStart();
-        }
-
+        
         var e = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
         e.style.display = "block";
 
@@ -1032,10 +1026,6 @@ class RTBlazorfied {
             }
         }
 
-        if (this.codeSelection == null) {
-            this.codeSelection = this.moveCursorToStart();
-        }
-
         var e = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
         e.style.display = "block";
 
@@ -1114,9 +1104,6 @@ class RTBlazorfied {
         if (selection != null && selection.rangeCount > 0) {
             this.embedSelection = selection.getRangeAt(0).cloneRange();
         }
-        else {
-            this.embedSelection = this.moveCursorToStart();
-        }
 
         var e = this.shadowRoot.getElementById("rich-text-box-embed-modal");
         e.style.display = "block";
@@ -1191,9 +1178,6 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
         if (selection && selection.rangeCount > 0) {
             this.imageSelection = selection.getRangeAt(0).cloneRange();
-        }
-        else {
-            this.imageSelection = this.moveCursorToStart();
         }
         
         var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
