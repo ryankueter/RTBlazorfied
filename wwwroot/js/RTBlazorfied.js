@@ -1060,7 +1060,7 @@ class RTBlazorfied {
             var element = this.code;
             element.textContent = codeText.value;
             /* Reinsert the spaces and line breaks */
-            element.innerHTML = element.innerHTML.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+            element.innerHTML = element.innerHTML.replace(/  /g, ' &nbsp;').replace(/\n/g, '<br>').replace(/\t/g, ' &nbsp; &nbsp;');
             this.addClasses(classes.value, element);
         }
         else {
@@ -1078,7 +1078,7 @@ class RTBlazorfied {
                 /* Set the content of the <code> element */
                 code.textContent = codeText.value;
                 /* Reinsert the spaces and line breaks */
-                code.innerHTML = code.innerHTML.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+                code.innerHTML = code.innerHTML.replace(/  /g, ' &nbsp;').replace(/\n/g, '<br>').replace(/\t/g, ' &nbsp; &nbsp;');
 
                 /* Append the <code> element to the <pre> element */
                 pre.appendChild(code);
