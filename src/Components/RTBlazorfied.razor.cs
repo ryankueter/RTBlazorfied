@@ -312,16 +312,12 @@ public partial class RTBlazorfied
         .rich-text-box-form-button {
           padding: 10px 20px !important;
           font-size: 16px !important;
-          border-style: solid;
-          border-color: transparent;
-          border-width: 1px;
           transition: 0.3s;
         }
 
         .rich-text-box-form-button:focus {
-          border-style: solid;
-          border-color: {{_modalTextboxBorderColor}};
-          border-width: 1px;
+          background-color: {{_buttonBackgroundColorHover}};
+          border-color: {{_buttonBorderColorHover}};
         }
 
         .blazing-rich-text-color-picker-container {

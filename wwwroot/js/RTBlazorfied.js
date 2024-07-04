@@ -2217,8 +2217,5 @@ window.RTBlazorfied_Method = (methodName, id, param) => {
     }
     catch (ex) {
         console.log(ex);
-
-        /* Restore the last known good state if an exception was throw */
-        RTBlazorfied_Instances[id].goBack();
     }
 }
