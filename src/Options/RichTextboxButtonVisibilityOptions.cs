@@ -39,4 +39,5 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Unorderedlist { get; set; }
     public bool? Quote { get; set; }
     public bool? CodeBlock { get; set; }
+    public bool? EmbedMedia { get; set; }
 }

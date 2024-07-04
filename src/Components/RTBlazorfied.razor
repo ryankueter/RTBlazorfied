@@ -260,6 +260,17 @@
     {
         <RTDivider />
     }
+    @if (_embedMedia == true)
+    {
+        <RTButton Id="blazing-rich-text-embed-button"
+                  OnClick="OpenEmbedDialog"
+                  Icon="@Icons.VideoFile"
+                  Title="Embed Media"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"
+                  IsDisabled="@IsDisabled"></RTButton>
+    }
+    
     @if (_codeBlock == true)
     {
         <RTButton Id="blazing-rich-text-code-block-button"
@@ -346,6 +357,19 @@
     <!-- Dialogs -->
     <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
     <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
+
+    <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Embed Media" OnClick="InsertEmbed">
+        <label for="source">Source</label>
+        <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" tabindex="1">
+        <label for="width">Width</label>
+        <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450" tabindex="2">
+        <label for="height">Height</label>
+        <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250" tabindex="3">
+        <label for="type">Type</label>
+        <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" tabindex="4">
+        <label for="classes">CSS Classes</label>
+        <input type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
+    </RTDialog>
 
     <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
         <label for="code">Code Block</label>

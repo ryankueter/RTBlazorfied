@@ -59,7 +59,7 @@ RTBlazorfied was designed to allow developers to highly customize the appearance
 <RTBlazorfied Html="@Html" Options="@GetOptions()" />
 ```
 
-Leaving of the ButtonVisibility options will display all the buttons.
+CSS variables, e.g., var(--my-variable) are interchangeable with these styles. And omitting the ButtonVisibility options will display all the buttons.
 ```csharp
 public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
 {
@@ -150,6 +150,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Redo = true;
         o.Quote = true;
         o.CodeBlock = true;
+        o.EmbedMedia = true;
     });
 });
 ```

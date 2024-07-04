@@ -73,15 +73,15 @@ class RTBlazorfied {
         /* Callback function to execute when mutations are observed */
         var richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
-                if (mutation.type === 'childList' && this.EditMode == true) {
+                if (mutation.type === 'childList' && this.EditMode === true) {
                     /* A child node has been added or removed. */
                     this.saveState();
                 }
-                else if (mutation.type === 'attributes' && this.EditMode == true) {
+                else if (mutation.type === 'attributes' && this.EditMode === true) {
                     /* The ${mutation.attributeName} attribute was modified. */
                     this.saveState();
                 }
-                else if (mutation.type === 'characterData' && this.EditMode == true) {
+                else if (mutation.type === 'characterData' && this.EditMode === true) {
                     /* The text content of a node has been changed. */
                     this.saveState();
                 }
@@ -147,7 +147,12 @@ class RTBlazorfied {
 
     keyEvents = (event) => {
         if (this.EditMode === false) {
-            event.preventDefault();
+            if (event.ctrlKey && event.key === 'z') {
+                event.preventDefault();
+            }
+            if (event.ctrlKey && event.key === 'y') {
+                event.preventDefault();
+            }
             return;
         }
         if (event.ctrlKey && event.key === 'b') {
@@ -202,7 +207,6 @@ class RTBlazorfied {
             event.preventDefault();
             this.selectall();
         }
-
         if (event.ctrlKey && event.shiftKey && event.key === '>') {
             event.preventDefault();
             this.changeFontSize(true);
@@ -513,6 +517,9 @@ class RTBlazorfied {
                 return true;
                 break;
             case "embed":
+                return true;
+                break;
+            case "object":
                 return true;
                 break;
             case "hr":
@@ -1073,6 +1080,85 @@ class RTBlazorfied {
         this.closeDialog("rich-text-box-code-block-modal");
         this.focusEditor();
     }
+    openEmbedDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+        this.resetEmbedDialog();
+
+        /* Get the selection */
+        var selection = this.shadowRoot.getSelection();
+
+        if (selection != null && selection.rangeCount > 0) {
+            this.embedSelection = selection.getRangeAt(0).cloneRange();
+        }
+        else {
+            this.embedSelection = this.moveCursorToStart();
+        }
+
+        var e = this.shadowRoot.getElementById("rich-text-box-embed-modal");
+        e.style.display = "block";
+
+        var source = this.shadowRoot.getElementById("rich-text-box-embed-source");
+        if (source) {
+            source.focus();
+        }
+    }
+    resetEmbedDialog = () => {
+        this.embed = null;
+        this.embedSelection = null;
+
+        var source = this.shadowRoot.getElementById('rich-text-box-embed-source');
+        source.value = null;
+
+        var width = this.shadowRoot.getElementById('rich-text-box-embed-width');
+        width.value = null;
+
+        var height = this.shadowRoot.getElementById('rich-text-box-embed-height');
+        height.value = null;
+
+        var type = this.shadowRoot.getElementById('rich-text-box-embed-type');
+        type.value = null;
+
+        var classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
+        classes.value = null;
+    }
+    insertEmbed = () => {
+        var source = this.shadowRoot.getElementById('rich-text-box-embed-source');
+        var width = this.shadowRoot.getElementById('rich-text-box-embed-width');
+        var height = this.shadowRoot.getElementById('rich-text-box-embed-height');
+        var type = this.shadowRoot.getElementById('rich-text-box-embed-type');
+        var classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
+
+        if (this.embedSelection != null && source.value.length > 0) {
+
+            var range = this.embedSelection.cloneRange();
+
+            /* Create the <code> element */
+            var object = document.createElement('object');
+
+            /* Set the content of the <code> element */
+            object.data = source.value;
+            object.type = type.value;
+            object.height = height.value;
+            object.width = width.value;
+            this.addClasses(classes.value, object);
+
+            range.deleteContents();
+            range.insertNode(object);
+
+            /* Move the cursor after the inserted element */
+            range.setStartAfter(object);
+            range.setEndAfter(object);
+            
+            /* Get the selection from the shadowRoot */
+            var selection = this.shadowRoot.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        this.closeDialog("rich-text-box-embed-modal");
+        this.focusEditor();
+    }
     openImageDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
@@ -1373,12 +1459,22 @@ class RTBlazorfied {
                     if (image != null) {
                         element = sel.anchorNode;
                     }
+                    var embed = sel.anchorNode.querySelector('embed');
+                    if (embed != null) {
+                        element = sel.anchorNode;
+                    }
+                    var object = sel.anchorNode.querySelector('object');
+                    if (object != null) {
+                        element = sel.anchorNode;
+                    }
+                    console.log(element);
                 }
                 
                 /* If that node does not exist, style the parent node */
                 if (element == null && sel.anchorNode != null && this.content.contains(sel.anchorNode) && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
                     element = sel.anchorNode.parentNode;   
                 }
+                
             }
             else {
                 /* See if this is an outer element */
@@ -1392,6 +1488,7 @@ class RTBlazorfied {
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
             }
+            
             if (element != null) {
                 switch (type) {
                     case "textcolor":

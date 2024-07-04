@@ -483,6 +483,7 @@ public partial class RTBlazorfied
     private bool? _link;
     private bool? _quote;
     private bool? _codeBlock;
+    private bool? _embedMedia;
     private bool? _image;
     private bool? _insertdivider;
     private bool? _orderedlist;
@@ -549,6 +550,10 @@ public partial class RTBlazorfied
         {
             _codeBlock = buttons.CodeBlock;
         }
+        if (buttons.EmbedMedia is not null)
+        {
+            _embedMedia = buttons.EmbedMedia;
+        }
         if (buttons.Link is not null)
         {
             _link = buttons.Link;
@@ -561,7 +566,8 @@ public partial class RTBlazorfied
         if (buttons.Link == true
             || buttons.Image == true
             || buttons.Quote == true
-            || buttons.CodeBlock == true)
+            || buttons.CodeBlock == true
+            || buttons.EmbedMedia == true)
         {
             _insertdivider = true;
         }
@@ -760,7 +766,8 @@ public partial class RTBlazorfied
         _unorderedlist = setting;
         _quote = setting;
         _codeBlock = setting;
-}
+        _embedMedia = setting;
+    }
 
     private void GetScrollOptions()
     {
@@ -1095,6 +1102,8 @@ public partial class RTBlazorfied
     private async Task InsertQuote() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertBlockQuote", id);
     private async Task OpenCodeBlockDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openCodeBlockDialog", id);
     private async Task InsertCodeBlock() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertCodeBlock", id);
+    private async Task OpenEmbedDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openEmbedDialog", id);
+    private async Task InsertEmbed() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertEmbed", id);
     private async Task OpenTextColorDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorDialog", id);
     private async Task InsertTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextColor", id);
     private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);
