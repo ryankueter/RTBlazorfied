@@ -779,8 +779,13 @@ class RTBlazorfied {
         var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
         var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
 
+        if (link.value.length == 0 || linktext.value.length == 0) {
+            this.closeDialog("rich-text-box-link-modal");
+            this.focusEditor();
+            return;
+        }
+
         /* Get the link selection or element */
-        var selection = this.shadowRoot.getSelection();
         if (this.linkNode != null) {
             var element = this.linkNode;
             element.href = link.value;
@@ -794,6 +799,7 @@ class RTBlazorfied {
             }
         }
         else {
+            var selection = this.shadowRoot.getSelection();
             if (selection && this.linkSelection) {
                 selection.removeAllRanges();
                 selection.addRange(this.linkSelection);
@@ -1370,7 +1376,7 @@ class RTBlazorfied {
                 }
                 
                 /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
+                if (element == null && sel.anchorNode != null && this.content.contains(sel.anchorNode) && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
                     element = sel.anchorNode.parentNode;   
                 }
             }
@@ -1386,7 +1392,6 @@ class RTBlazorfied {
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
             }
-            
             if (element != null) {
                 switch (type) {
                     case "textcolor":
