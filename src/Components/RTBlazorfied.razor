@@ -260,37 +260,6 @@
     {
         <RTDivider />
     }
-    @if (_embedMedia == true)
-    {
-        <RTButton Id="blazing-rich-text-embed-button"
-                  OnClick="OpenEmbedDialog"
-                  Icon="@Icons.VideoFile"
-                  Title="Embed Media"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    
-    @if (_codeBlock == true)
-    {
-        <RTButton Id="blazing-rich-text-code-block-button"
-                  OnClick="OpenCodeBlockDialog"
-                  Icon="@Icons.CodeBlocks"
-                  Title="Code Block"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_quote == true)
-    {
-        <RTButton Id="blazing-rich-text-quote-button"
-            OnClick="OpenBlockQuoteDialog"
-            Icon="@Icons.Quote"
-            Title="Block Quote"
-            TextSize="@_buttonTextSize"
-            TextColor="@_buttonTextColor"
-            IsDisabled="@IsDisabled"></RTButton>
-    }
     @if (_link == true)
     {
         <RTButton Id="blazing-rich-text-link-button"
@@ -315,6 +284,36 @@
                   OnClick="OpenImageDialog"
                   Icon="@Icons.Image"
                   Title="Insert Image"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"
+                  IsDisabled="@IsDisabled"></RTButton>
+    }
+    @if (_quote == true)
+    {
+        <RTButton Id="blazing-rich-text-quote-button"
+                  OnClick="OpenBlockQuoteDialog"
+                  Icon="@Icons.Quote"
+                  Title="Block Quote"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"
+                  IsDisabled="@IsDisabled"></RTButton>
+    }
+    @if (_embedMedia == true)
+    {
+        <RTButton Id="blazing-rich-text-embed-button"
+                  OnClick="OpenEmbedDialog"
+                  Icon="@Icons.VideoFile"
+                  Title="Embed Media"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"
+                  IsDisabled="@IsDisabled"></RTButton>
+    }
+    @if (_codeBlock == true)
+    {
+        <RTButton Id="blazing-rich-text-code-block-button"
+                  OnClick="OpenCodeBlockDialog"
+                  Icon="@Icons.CodeBlocks"
+                  Title="Code Block"
                   TextSize="@_buttonTextSize"
                   TextColor="@_buttonTextColor"
                   IsDisabled="@IsDisabled"></RTButton>

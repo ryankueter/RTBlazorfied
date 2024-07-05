@@ -13,9 +13,11 @@ class RTBlazorfied {
     }
 
     init = () => {
+        /* Initialize history */
         this.history = [];
         this.currentIndex = -1;
 
+        /* Load elements into the shadow DOM */
         var isolatedContainer = document.getElementById(this.shadow_id);
         this.shadowRoot = isolatedContainer.attachShadow({ mode: 'open' });
 
@@ -29,11 +31,13 @@ class RTBlazorfied {
         var container = document.createElement('div');
         container.setAttribute('class', 'rich-text-box-container');
 
+        /* The main content that is referenced throughout */
         this.content = document.createElement('div');
         this.content.setAttribute('id', this.id);
         this.content.setAttribute('class', 'rich-text-box-content');
         this.content.setAttribute('contenteditable', 'true');
 
+        /* Assemble everything into the container */
         var toolbar = document.getElementById(this.toolbar_id);
         container.appendChild(toolbar);
 
@@ -42,6 +46,7 @@ class RTBlazorfied {
 
         this.shadowRoot.appendChild(container);
 
+        /* Listen for selection change event to select buttons */
         document.addEventListener('selectionchange', () => {
             /* Ensure that this event listener only fires for this text box */
             var selection = this.shadowRoot.getSelection();
@@ -49,7 +54,8 @@ class RTBlazorfied {
                 this.clearSettings(selection.anchorNode);
             }
         });
-        
+
+        /* Prevent certain clicks */
         this.content.addEventListener('click', (event) => {
             /* Prevent the default link click */
             if (event.target.tagName === 'A') {
@@ -57,7 +63,8 @@ class RTBlazorfied {
                 event.stopPropagation();
             }
         });
-        
+
+        /* Shortcut keys */
         this.content.addEventListener('keydown', (event) => {
             this.keyEvents(event);
         });
@@ -99,27 +106,9 @@ class RTBlazorfied {
         /* Create an observer instance linked to the callback function */
         var observer = new MutationObserver(richtextbox);
         observer.observe(this.content, config);
-
-        this.shadowRoot.getElementById('rich-text-box-code').addEventListener('keydown', (event) => {
-            if (event.key === 'Tab') {
-                event.preventDefault(); // Prevent the default tab behavior
-
-                // Get the textarea
-                var textarea = event.target;
-
-                // Get the current selection start and end positions
-                var start = textarea.selectionStart;
-                var end = textarea.selectionEnd;
-
-                // Insert the tab character at the selection position
-                var tabCharacter = '\t';
-                textarea.value = textarea.value.substring(0, start) + tabCharacter + textarea.value.substring(end);
-
-                // Move the cursor to the correct position after inserting the tab
-                textarea.selectionStart = textarea.selectionEnd = start + 1;
-            }
-        });
     }
+
+    /* History */
     saveState = () => {
         var currentState = this.content.innerHTML;
 
@@ -141,15 +130,15 @@ class RTBlazorfied {
             }
         }
     };
+    /* History */
     goBack = () => {
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.content.innerHTML = this.history[this.currentIndex];
         }
         this.focusEditor();
-        this.selectButtons(this.shadowRoot.getSelection().anchorNode);
+        this.selectButtons(this.shadowRoot.getSelection().anchorNode);        
     };
-    
     goForward = () => {
         if (this.currentIndex < this.history.length - 1) {
             this.currentIndex++;
@@ -158,13 +147,14 @@ class RTBlazorfied {
         this.focusEditor();
         this.selectButtons(this.shadowRoot.getSelection().anchorNode);
     };
+
     clearSettings = (node) => {
         this.fontSize = undefined;
 
         /* Select the buttons */
         this.selectButtons(node);
     }
-
+    /* Shortcuts */
     keyEvents = (event) => {
         if (this.EditMode === false) {
             if (event.ctrlKey && event.key === 'z') {
@@ -245,19 +235,21 @@ class RTBlazorfied {
         }
         if (event.key === 'Enter') {
             var selection = this.shadowRoot.getSelection();
-            switch (selection.anchorNode.parentNode.nodeName) {
-                case "BLOCKQUOTE":
-                    event.preventDefault();
-                    this.insertLineBreak(selection.anchorNode.parentNode);
-                    break;
-                case "CODE":
-                    event.preventDefault();
-                    this.insertLineBreak(selection.anchorNode.parentNode);
-                    break;
-                case "SPAN":
-                    event.preventDefault();
-                    this.insertLineBreak(selection.anchorNode.parentNode);
-                    break;
+            if (selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode)) {
+                switch (selection.anchorNode.parentNode.nodeName) {
+                    case "BLOCKQUOTE":
+                        event.preventDefault();
+                        this.insertLineBreak(selection.anchorNode.parentNode);
+                        break;
+                    case "CODE":
+                        event.preventDefault();
+                        this.insertLineBreak(selection.anchorNode.parentNode);
+                        break;
+                    case "SPAN":
+                        event.preventDefault();
+                        this.insertLineBreak(selection.anchorNode.parentNode);
+                        break;
+                }
             }
         }
     }
@@ -331,7 +323,7 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
         
         var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
             this.selection = selection.getRangeAt(0).cloneRange();
         }
@@ -340,16 +332,14 @@ class RTBlazorfied {
                 this.selection = selection.getRangeAt(0).cloneRange();
             }
         }
-
-        if (selection == null) {
-            this.selection = this.moveCursorToStart();
-        }
-
+        
         var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
         e.style.display = "block";
         el.focus();
     }
     resetTextColorDialog = () => {
+        this.selection = null;
+
         /* Reset the selected color */
         var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
         el.style.backgroundColor = '';
@@ -359,15 +349,17 @@ class RTBlazorfied {
         el.style.backgroundColor = color;
     }
     insertTextColor = () => {
-        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
 
-        if (el.style.backgroundColor === '') {
-            this.updateNode("textcolor", "None");
-        }
-        else {
-            this.updateNode("textcolor", el.style.backgroundColor);
-        }
+        if (this.selection != null) {
+            var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
 
+            if (el.style.backgroundColor === '') {
+                this.updateNode("textcolor", "None");
+            }
+            else {
+                this.updateNode("textcolor", el.style.backgroundColor);
+            }
+        }
         /* Close the dialog */
         this.closeDialog("rich-text-box-text-color-modal");
     }
@@ -384,7 +376,7 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
 
         var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.backgroundColor;
             this.selection = selection.getRangeAt(0).cloneRange();
         }
@@ -394,15 +386,13 @@ class RTBlazorfied {
             }
         }
 
-        if (selection == null) {
-            this.selection = this.moveCursorToStart();
-        }
-
         var e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
         e.style.display = "block";
         el.focus();
     }
     resetTextBackgroundColorDialog = () => {
+        this.selection = null;
+
         /* Reset the selected color */
         var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
         el.style.backgroundColor = '';
@@ -412,15 +402,16 @@ class RTBlazorfied {
         el.style.backgroundColor = color;
     }
     insertTextBackgroundColor = () => {
-        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
+        if (this.selection != null) {
+            var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
 
-        if (el.style.backgroundColor === '') {
-            this.updateNode("textbgcolor", "None");
+            if (el.style.backgroundColor === '') {
+                this.updateNode("textbgcolor", "None");
+            }
+            else {
+                this.updateNode("textbgcolor", el.style.backgroundColor);
+            }
         }
-        else {
-            this.updateNode("textbgcolor", el.style.backgroundColor);
-        }
-
         /* Close the dialog */
         this.closeDialog("rich-text-box-text-bg-color-modal");
     }
@@ -665,8 +656,9 @@ class RTBlazorfied {
         this.focusEditor();
     }
     replaceList = (list, type) => {
-        var element = document.createElement(type);
+        if (list == null || !this.content.contains(list)) { return; }
 
+        var element = document.createElement(type);
         while (list.firstChild) {
             element.appendChild(list.firstChild);
         }
@@ -684,7 +676,7 @@ class RTBlazorfied {
         }
     }
     removelist = (list) => {
-        if (list == null) return;
+        if (list == null || !this.content.contains(list)) { return; }
         
         /* Remove the list */
         while (list.firstChild) {
@@ -712,7 +704,7 @@ class RTBlazorfied {
 
         var selection = this.shadowRoot.getSelection();
 
-        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "A") {
+        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
 
             var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             linktext.value = selection.anchorNode.parentNode.textContent;
@@ -850,7 +842,7 @@ class RTBlazorfied {
     removeLink = () => {
         var selection = this.shadowRoot.getSelection();
 
-        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "A") {
+        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
             var element = selection.anchorNode.parentNode;
             var fragment = document.createDocumentFragment();
 
@@ -888,7 +880,7 @@ class RTBlazorfied {
         var classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
 
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
             quote.value = selection.anchorNode.parentNode.textContent;
 
             if (selection.anchorNode.parentNode.cite != null) {
@@ -994,7 +986,7 @@ class RTBlazorfied {
         var code = this.shadowRoot.getElementById('rich-text-box-code');
         var classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode.nodeName === "CODE") {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
             
             var clone = selection.anchorNode.parentNode.cloneNode(true);
             code.value = clone.textContent;
@@ -1230,31 +1222,6 @@ class RTBlazorfied {
         this.closeDialog("rich-text-box-image-modal");
         this.focusEditor();
     }
-    saveSelection = () => {
-        var selection = this.shadowRoot.getSelection();
-        if (selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            return {
-                startContainer: range.startContainer,
-                startOffset: range.startOffset,
-                endContainer: range.endContainer,
-                endOffset: range.endOffset
-            };
-        }
-        return null;
-    }
-
-    restoreSelection = (savedSelection) => {
-        if (!savedSelection) return;
-
-        var selection = this.shadowRoot.getSelection();
-        var range = document.createRange();
-
-        range.setStart(savedSelection.startContainer, savedSelection.startOffset);
-        range.setEnd(savedSelection.endContainer, savedSelection.endOffset);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
     formatNode = (type) => {
         var sel, range;
         
@@ -1265,7 +1232,7 @@ class RTBlazorfied {
             if it does, change or remove it */
             var element;
             if (sel.toString().length == 0) {
-                if (sel.anchorNode != null && sel.anchorNode.parentNode != null) {
+                if (sel.anchorNode != null && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
                     element = this.getElementByType(sel.anchorNode.parentNode, "Format");
                 }
             }
@@ -1281,8 +1248,9 @@ class RTBlazorfied {
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
             }
-            
-            if (element != null) {
+                        
+            if (element != null && element.parentNode != null && this.content.contains(element.parentNode)) {
+
                 if (type == "none") {
                     while (element.firstChild) {
                         element.parentNode.insertBefore(element.firstChild, element);
@@ -1310,6 +1278,13 @@ class RTBlazorfied {
                         }
                     }
                     element.parentNode.replaceChild(newElement, element);
+
+                    if (sel != null && sel.rangeCount > 0) {
+                        var range = document.createRange();
+                        range.selectNodeContents(newElement);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
                 }
                 this.selectButtons(sel.anchorNode);
                 this.closeDropdowns();
@@ -1359,12 +1334,13 @@ class RTBlazorfied {
         this.removeEmptyNodes();
         this.focusEditor();
     }
+
     hasInvalidElementsInRange = (range) => {
         var node = range.startContainer;
         var endNode = range.endContainer;
 
         /* Traverse through nodes within the range */
-        while (node && node !== endNode.nextSibling) {
+        while (node != null && this.content.contains(node) && node !== endNode.nextSibling) {
             if (node.nodeType === Node.ELEMENT_NODE) {
                 const tagName = node.tagName.toLowerCase();
 
@@ -1397,6 +1373,8 @@ class RTBlazorfied {
     }
 
     isFormatElement = (element) => {
+        if (element == null || !this.content.contains(element)) { return false };
+
         if (element.nodeName == "P"
             || element.nodeName == "H1"
             || element.nodeName == "H2"
@@ -1442,7 +1420,7 @@ class RTBlazorfied {
                 element = this.getElementByStyle(sel.anchorNode, type);
                                                
                 /* See if it's an image */
-                if (element == null && sel.anchorNode != null && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
+                if (element == null && sel.anchorNode != null && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
                     var image = sel.anchorNode.querySelector('img');
                     if (image != null) {
                         element = sel.anchorNode;
@@ -1455,14 +1433,12 @@ class RTBlazorfied {
                     if (object != null) {
                         element = sel.anchorNode;
                     }
-                    console.log(element);
                 }
                 
                 /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && this.content.contains(sel.anchorNode) && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
                     element = sel.anchorNode.parentNode;   
                 }
-                
             }
             else {
                 /* See if this is an outer element */
@@ -1707,7 +1683,7 @@ class RTBlazorfied {
         temp.appendChild(fragment);
 
         var commonAncestor = range.commonAncestorContainer;
-        if (this.content != commonAncestor && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
+        if (this.content.contains(commonAncestor) && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
             temp.remove();
             return true;
         }
@@ -1742,6 +1718,8 @@ class RTBlazorfied {
         return false;
     }
     removeProperty = (element, property, value) => {
+        if (element == null || !this.content.contains(element)) { return; }
+
         /* This should more generally consider all the styles */
         if (this.getUserDefinedStyleCount(element) > 1) {
             element.style.removeProperty(property, value);
@@ -1768,6 +1746,8 @@ class RTBlazorfied {
         }
     }
     addTextDecoration = (element, decoration) => {
+        if (element == null || !this.content.contains(element)) { return; }
+
         var currentDecorations = element.style.textDecoration;
 
         /* Check if the decoration is already applied */
@@ -1778,6 +1758,8 @@ class RTBlazorfied {
         }
     }
     removeTextDecoration = (element, decoration) => {
+        if (element == null || !this.content.contains(element)) { return; }
+
         if (this.getUserDefinedStyleCount(element) > 1) {
             var currentDecorations = element.style.textDecoration.split(' ');
 
@@ -1804,11 +1786,12 @@ class RTBlazorfied {
     }
 
     getUserDefinedStyles = (element) => {
-        let styles = {};
+        if (element == null || !this.content.contains(element)) { return; }
 
-        for (let i = 0; i < element.style.length; i++) {
-            let property = element.style[i];
-            let value = element.style.getPropertyValue(property);
+        var styles = {};
+        for (var i = 0; i < element.style.length; i++) {
+            var property = element.style[i];
+            var value = element.style.getPropertyValue(property);
             styles[property] = value;
         }
 
@@ -1816,7 +1799,9 @@ class RTBlazorfied {
     }
 
     getUserDefinedStyleCount = (element) => {
-        let c = 0;
+        if (element == null || !this.content.contains(element)) { return; }
+
+        var c = 0;
         for (let i = 0; i < element.style.length; i++) {
             let property = element.style[i];
             let value = element.style.getPropertyValue(property);
@@ -1847,15 +1832,11 @@ class RTBlazorfied {
 
     /* Get an element by type */
     getElementByType = (el, type) => {
-        if (el == null) {
-            return null;
-        }
+        if (el == null || !this.content.contains(el)) { return; }
 
         while (el) {
             /* Prevent recursion outside the editor */
-            if (el.nodeName == 'DIV' && el.id == this.id) {
-                break;
-            }
+            if (!this.content.contains(el)) { return; }
 
             /* Recurse into the closest node and return it */
             if (el.nodeName != "#text" && el.nodeName != "#document") {
@@ -1890,15 +1871,11 @@ class RTBlazorfied {
 
     /* Get an element by matching content */
     getElementByContent = (el, type, selection) => {
-        if (el == null) {
-            return null;
-        }
+        if (el == null || !this.content.contains(el)) { return; }
         
         while (el) {
             /* Prevent recursion outside the editor */
-            if (el.nodeName == 'DIV' && el.id == this.id) {
-                break;
-            }
+            if (!this.content.contains(el)) { return; }
 
             /* Recurse into the closest node and return it */
             if (el.nodeName != "#text" && el.nodeName != "#document") {
@@ -1921,11 +1898,12 @@ class RTBlazorfied {
             }
             el = el.parentNode;
         }
-
-        return null;
+        return;
     }
 
     selectionContainsNode(selection, node) {
+        if (node == null || !this.content.contains(node)) { return false; }
+
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 let range = selection.getRangeAt(i);
@@ -1938,6 +1916,8 @@ class RTBlazorfied {
     }
 
     isNodeInRange(node, range) {
+        if (node == null || !this.content.contains(node)) { return false; }
+
         /* Check if the node is contained within the range */
         let nodeRange = node.ownerDocument.createRange();
         nodeRange.selectNode(node);
@@ -1949,15 +1929,11 @@ class RTBlazorfied {
 
     /* Get an element by style */
     getElementByStyle = (el, type) => {
-        if (el == null) {
-            return null;
-        }
+        if (el == null || !this.content.contains(el)) { return; }
 
         while (el) {
             /* Prevent recursion outside the editor */
-            if (el.nodeName == 'DIV' && el.id == this.id) {
-                break;
-            }
+            if (!this.content.contains(el)) { return; }
             if (el.style != null) {
                 switch (type) {
                     case "textcolor":
@@ -2076,7 +2052,6 @@ class RTBlazorfied {
                         break;
                 }
             }
-            
             el = el.parentNode;
         }
 
@@ -2126,9 +2101,7 @@ class RTBlazorfied {
 
     /* Search up the elements */
     selectButtons = (el) => {
-        if (el == null || this.lockToolbar == true) {
-            return null;
-        }
+        if (el == null || !this.content.contains(el) || this.lockToolbar == true) { return; }
 
         /* Reset Styles */
         var bold = this.getButton("blazing-rich-text-bold-button");
@@ -2172,9 +2145,9 @@ class RTBlazorfied {
             this.fontSizeSelected = false;
         }
 
-        while (el.parentNode) {
+        while (el.parentNode != null && this.content.contains(el.parentNode)) {
             /* Prevent selecting unwanted elements */
-            if (el.parentNode.nodeType != 1 || el.parentNode == null || el.parentNode.nodeName == "A" && el.parentNode.classList.contains("rich-text-box-menu-item") || el.nodeName == 'DIV' && el.classList.contains("rich-text-box-content") || el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
+            if (el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
             }
 
