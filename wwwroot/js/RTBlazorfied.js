@@ -2124,7 +2124,7 @@ class RTBlazorfied {
     };
     loadInnerText = (text) => {
         this.EditMode = false;
-        this.content.style.fontFamily = 'Consolas';
+        this.content.style.fontFamily = 'Consolas, monospace';
         if (text != null) {
             this.content.innerText = text;
         }

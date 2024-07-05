@@ -180,7 +180,7 @@ public partial class RTBlazorfied
           overflow: auto;
           box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
           z-index: 10001;
-          font-family: sans-serif !important;
+          font-family: Arial, sans-serif !important;
         }
 
         .rich-text-box-dropdown-btn {
@@ -362,7 +362,7 @@ public partial class RTBlazorfied
             display: inline-block;
         }
         .rich-text-box-quote {
-          font-family: sans-serif !important;
+          font-family: Arial, sans-serif !important;
         }
         .rich-text-box-code {
           overflow: auto !important;
