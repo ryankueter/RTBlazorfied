@@ -25,12 +25,12 @@ Add the following reference to the end of your index.html file:
 
 ### Add the Element
 
-In this example, the @Html is the html string.
+In this example, the @Html is the html string. This height and width will override those specified in the configuration options.
 
 ```html
 @using RichTextBlazorfied
 
-<RTBlazorfied @ref="box" Html="@Html" />
+<RTBlazorfied @ref="box" Html="@Html" Height="500px" Width="1000px" />
 ```
 
 The element reference can be used to get the html or plaintext for saving.

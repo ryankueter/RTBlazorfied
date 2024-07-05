@@ -15,6 +15,10 @@ public partial class RTBlazorfied
 
     [Parameter]
     public string? Html { get; set; }
+    [Parameter]
+    public string? Width { get; set; }
+    [Parameter]
+    public string? Height { get; set; }
 
     private string GetStyles() =>
         $$"""
@@ -144,6 +148,7 @@ public partial class RTBlazorfied
             opacity: .5;
         }
         .rich-text-box-scroll::-webkit-scrollbar {
+            height: {{_scrollWidth}};
             width: {{_scrollWidth}};
             opacity: {{_scrollOpacity}};
         }
@@ -361,7 +366,7 @@ public partial class RTBlazorfied
         }
         .rich-text-box-code {
           overflow: auto !important;
-          white-space: pre-wrap;
+          white-space: pre;
           cursor: pointer;
         }
         """;
@@ -375,7 +380,7 @@ public partial class RTBlazorfied
     private string? _toolbarBorderRadius { get; set; } = "0px";
     private string? _toolbarDropdownBackgroundColor { get; set; } = "#f1f1f1";
     private string? _toolbarDropdownTextColor { get; set; } = "#000000";
-    private string? _toolbarDropdownBackgroundColorHover { get; set; } = "#ddd";
+    private string? _toolbarDropdownBackgroundColorHover { get; set; } = "#e5e5e5";
     private string? _toolbarDropdownTextColorHover { get; set; } = "#000000";
 
     // Buttons
@@ -405,12 +410,12 @@ public partial class RTBlazorfied
     private string? _editorBoxShadow { get; set; } = "none";
 
     // Scroll
-    private string? _scrollWidth { get; set; } = "12px";
+    private string? _scrollWidth { get; set; } = "10px";
     private string? _scrollOpacity { get; set; } = "1";
     private string? _scrollBackgroundColor { get; set; } = "transparent";
-    private string? _scrollThumbBackgroundHover { get; set; } = "#999";
-    private string? _scrollThumbBackground { get; set; } = "#d1d1d1";
-    private string? _scrollThumbBorderRadius { get; set; } = "0px";
+    private string? _scrollThumbBackgroundHover { get; set; } = "#DDD";
+    private string? _scrollThumbBackground { get; set; } = "#AAA";
+    private string? _scrollThumbBorderRadius { get; set; } = "0";
 
     // Modal
     private string? _modalBackgroundColor { get; set; } = "#fefefe";
@@ -861,6 +866,15 @@ public partial class RTBlazorfied
             {
                 _editorBoxShadow = styleOptions.BoxShadow;
             }
+        }
+        // Allow the inline styles to override the options
+        if (Width is not null)
+        {
+            _editorWidth = Width;
+        }
+        if (Height is not null)
+        {
+            _editorHeight = Height;
         }
     }
 
