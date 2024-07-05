@@ -89,7 +89,7 @@ public partial class RTBlazorfied
             border-color: {{_editorBorderColor}};
             border-radius: {{_editorBorderRadius}};
             box-shadow: {{_editorBoxShadow}};
-            width: {{_editorWidth}};
+            max-width: {{_editorWidth}};
             height: {{_editorHeight}};
             display: flex;
             flex-direction: column;
