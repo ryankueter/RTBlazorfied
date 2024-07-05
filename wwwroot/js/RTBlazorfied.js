@@ -639,7 +639,7 @@ class RTBlazorfied {
                     var selectedElements = Array.from(selectedNodes);
 
                     /* Iterate over selected elements */
-                    selectedElements.forEach(function (node) {
+                    selectedElements.forEach((node) => {
                         if (node.nodeType === Node.ELEMENT_NODE
                             || node.nodeType === Node.TEXT_NODE) {
 
@@ -665,35 +665,27 @@ class RTBlazorfied {
         this.focusEditor();
     }
     replaceList = (list, type) => {
-        var olElement = document.createElement(type);
+        var element = document.createElement(type);
 
         while (list.firstChild) {
-            olElement.appendChild(list.firstChild);
+            element.appendChild(list.firstChild);
         }
-        list.parentNode.replaceChild(olElement, list);
+        list.parentNode.replaceChild(element, list);
 
         this.removeEmptyNodes();
 
         var selection = this.shadowRoot.getSelection();
         if (selection.rangeCount != 0) {
             var range = selection.getRangeAt(0);
-            range.deleteContents();
+            range.selectNodeContents(element);
+            range.collapse(true);
             selection.removeAllRanges();
             selection.addRange(range);
         }
     }
     removelist = (list) => {
-
-        /* Get the current selection */
-        var range = document.createRange();
-        var selection = this.shadowRoot.getSelection();
-        if (list != null) {
-            range.setStartBefore(list);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-
+        if (list == null) return;
+        
         /* Remove the list */
         while (list.firstChild) {
             var listItem = list.firstChild;
@@ -711,11 +703,6 @@ class RTBlazorfied {
         list.parentNode.removeChild(list);
 
         this.removeEmptyNodes();
-
-        if (range != null) {
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
     }
     openLinkDialog = () => {
         /* Lock the toolbar */
