@@ -1425,7 +1425,7 @@ class RTBlazorfied {
         this.lockToolbar = false;
     }
     updateNode = (type, value) => {
-        var sel, range;
+        var sel, range;       
 
         if (this.shadowRoot.getSelection()) {
 
@@ -1707,7 +1707,7 @@ class RTBlazorfied {
         temp.appendChild(fragment);
 
         var commonAncestor = range.commonAncestorContainer;
-        if (this.content.contains(commonAncestor) && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
+        if (this.content != commonAncestor && this.content.contains(commonAncestor) && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
             temp.remove();
             return true;
         }
