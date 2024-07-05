@@ -16,6 +16,7 @@ class RTBlazorfied {
         /* Initialize history */
         this.history = [];
         this.currentIndex = -1;
+        this.currentIndex = -1;
 
         /* Load elements into the shadow DOM */
         var isolatedContainer = document.getElementById(this.shadow_id);
@@ -235,7 +236,7 @@ class RTBlazorfied {
         }
         if (event.key === 'Enter') {
             var selection = this.shadowRoot.getSelection();
-            if (selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode)) {
+            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode)) {
                 switch (selection.anchorNode.parentNode.nodeName) {
                     case "BLOCKQUOTE":
                         event.preventDefault();
@@ -323,7 +324,7 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
         
         var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
             this.selection = selection.getRangeAt(0).cloneRange();
         }
@@ -375,7 +376,7 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
 
         var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.backgroundColor;
             this.selection = selection.getRangeAt(0).cloneRange();
         }
@@ -655,7 +656,7 @@ class RTBlazorfied {
         this.focusEditor();
     }
     replaceList = (list, type) => {
-        if (list == null || !this.content.contains(list)) { return; }
+        if (list === null || list === this.content || !this.content.contains(list)) { return; }
         
         var element = document.createElement(type);
         while (list.firstChild) {
@@ -675,9 +676,7 @@ class RTBlazorfied {
         }
     }
     removelist = (list) => {
-        if (list == null || !this.content.contains(list)) { return; }
-
-        
+        if (list == null || list == this.content || !this.content.contains(list)) { return; }
 
         /* Remove the list */
         while (list.firstChild) {
@@ -712,7 +711,7 @@ class RTBlazorfied {
 
         var selection = this.shadowRoot.getSelection();
 
-        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
+        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
 
             var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             linktext.value = selection.anchorNode.parentNode.textContent;
@@ -850,7 +849,7 @@ class RTBlazorfied {
     removeLink = () => {
         var selection = this.shadowRoot.getSelection();
 
-        if (selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
+        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
             var element = selection.anchorNode.parentNode;
             var fragment = document.createDocumentFragment();
 
@@ -888,7 +887,7 @@ class RTBlazorfied {
         var classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
 
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
             quote.value = selection.anchorNode.parentNode.textContent;
 
             if (selection.anchorNode.parentNode.cite != null) {
@@ -994,7 +993,7 @@ class RTBlazorfied {
         var code = this.shadowRoot.getElementById('rich-text-box-code');
         var classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
             
             var clone = selection.anchorNode.parentNode.cloneNode(true);
             code.value = clone.textContent;
@@ -1240,7 +1239,7 @@ class RTBlazorfied {
             if it does, change or remove it */
             var element;
             if (sel.toString().length == 0) {
-                if (sel.anchorNode != null && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
+                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
                     element = this.getElementByType(sel.anchorNode.parentNode, "Format");
                 }
             }
@@ -1257,7 +1256,7 @@ class RTBlazorfied {
                 }
             }
                         
-            if (element != null && element.parentNode != null && this.content.contains(element.parentNode)) {
+            if (element != null && element != this.content && element.parentNode != null && element.parentNode != this.content && this.content.contains(element.parentNode)) {
 
                 if (type == "none") {
                     while (element.firstChild) {
@@ -1363,7 +1362,7 @@ class RTBlazorfied {
         var endNode = range.endContainer;
 
         /* Traverse through nodes within the range */
-        while (node != null && this.content.contains(node) && node !== endNode.nextSibling) {
+        while (node != null && node !== this.content && this.content.contains(node) && node !== endNode.nextSibling) {
             if (node.nodeType === Node.ELEMENT_NODE) {
                 const tagName = node.tagName.toLowerCase();
 
@@ -1396,7 +1395,7 @@ class RTBlazorfied {
     }
 
     isFormatElement = (element) => {
-        if (element == null || !this.content.contains(element)) { return false };
+        if (element == null || element == this.content || !this.content.contains(element)) { return false };
 
         if (element.nodeName == "P"
             || element.nodeName == "H1"
@@ -1443,7 +1442,7 @@ class RTBlazorfied {
                 element = this.getElementByStyle(sel.anchorNode, type);
                                                
                 /* See if it's an image */
-                if (element == null && sel.anchorNode != null && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
                     var image = sel.anchorNode.querySelector('img');
                     if (image != null) {
                         element = sel.anchorNode;
@@ -1459,7 +1458,7 @@ class RTBlazorfied {
                 }
                 
                 /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
                     element = sel.anchorNode.parentNode;   
                 }
             }
@@ -1706,7 +1705,7 @@ class RTBlazorfied {
         temp.appendChild(fragment);
 
         var commonAncestor = range.commonAncestorContainer;
-        if (this.content != commonAncestor && this.content.contains(commonAncestor) && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
+        if (commonAncestor !== this.content && this.content.contains(commonAncestor) && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
             temp.remove();
             return true;
         }
@@ -1741,7 +1740,7 @@ class RTBlazorfied {
         return false;
     }
     removeProperty = (element, property, value) => {
-        if (element == null || !this.content.contains(element)) { return; }
+        if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
         /* This should more generally consider all the styles */
         if (this.getUserDefinedStyleCount(element) > 1) {
@@ -1769,7 +1768,7 @@ class RTBlazorfied {
         }
     }
     addTextDecoration = (element, decoration) => {
-        if (element == null || !this.content.contains(element)) { return; }
+        if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
         var currentDecorations = element.style.textDecoration;
 
@@ -1781,7 +1780,7 @@ class RTBlazorfied {
         }
     }
     removeTextDecoration = (element, decoration) => {
-        if (element == null || !this.content.contains(element)) { return; }
+        if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
         if (this.getUserDefinedStyleCount(element) > 1) {
             var currentDecorations = element.style.textDecoration.split(' ');
@@ -1809,7 +1808,7 @@ class RTBlazorfied {
     }
 
     getUserDefinedStyles = (element) => {
-        if (element == null || !this.content.contains(element)) { return; }
+        if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
         var styles = {};
         for (var i = 0; i < element.style.length; i++) {
@@ -1822,7 +1821,7 @@ class RTBlazorfied {
     }
 
     getUserDefinedStyleCount = (element) => {
-        if (element == null || !this.content.contains(element)) { return; }
+        if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
         var c = 0;
         for (let i = 0; i < element.style.length; i++) {
@@ -1869,11 +1868,11 @@ class RTBlazorfied {
 
     /* Get an element by type */
     getElementByType = (el, type) => {
-        if (el == null || !this.content.contains(el)) { return; }
+        if (el == null || el == this.content || !this.content.contains(el)) { return; }
 
         while (el) {
             /* Prevent recursion outside the editor */
-            if (!this.content.contains(el)) { return; }
+            if (el === this.content || !this.content.contains(el)) { return; }
 
             /* Recurse into the closest node and return it */
             if (el.nodeName != "#text" && el.nodeName != "#document") {
@@ -1908,11 +1907,11 @@ class RTBlazorfied {
 
     /* Get an element by matching content */
     getElementByContent = (el, type, selection) => {
-        if (el == null || !this.content.contains(el)) { return; }
+        if (el == null || el == this.content || !this.content.contains(el)) { return; }
         
         while (el) {
             /* Prevent recursion outside the editor */
-            if (!this.content.contains(el)) { return; }
+            if (el === this.content || !this.content.contains(el)) { return; }
 
             /* Recurse into the closest node and return it */
             if (el.nodeName != "#text" && el.nodeName != "#document") {
@@ -1939,7 +1938,7 @@ class RTBlazorfied {
     }
 
     selectionContainsNode(selection, node) {
-        if (node == null || !this.content.contains(node)) { return false; }
+        if (node == null || node == this.content || !this.content.contains(node)) { return false; }
 
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
@@ -1953,7 +1952,7 @@ class RTBlazorfied {
     }
 
     isNodeInRange(node, range) {
-        if (node == null || !this.content.contains(node)) { return false; }
+        if (node == null || node == this.content || !this.content.contains(node)) { return false; }
 
         /* Check if the node is contained within the range */
         let nodeRange = node.ownerDocument.createRange();
@@ -1966,11 +1965,11 @@ class RTBlazorfied {
 
     /* Get an element by style */
     getElementByStyle = (el, type) => {
-        if (el == null || !this.content.contains(el)) { return; }
+        if (el == null || el == this.content || !this.content.contains(el)) { return; }
 
         while (el) {
             /* Prevent recursion outside the editor */
-            if (!this.content.contains(el)) { return; }
+            if (el === this.content || !this.content.contains(el)) { return; }
             if (el.style != null) {
                 switch (type) {
                     case "textcolor":
@@ -2138,8 +2137,8 @@ class RTBlazorfied {
 
     /* Search up the elements */
     selectButtons = (el) => {
-        if (el == null || !this.content.contains(el) || this.lockToolbar == true) { return; }
-
+        if (el == null || el == this.content || !this.content.contains(el) || this.lockToolbar == true) { return; }
+       
         /* Reset Styles */
         var bold = this.getButton("blazing-rich-text-bold-button");
         var italic = this.getButton("blazing-rich-text-italic-button");
@@ -2185,7 +2184,8 @@ class RTBlazorfied {
             this.fontSizeSelected = false;
         }
 
-        while (el.parentNode != null && this.content.contains(el.parentNode)) {
+        while (el !== this.content && el.parentNode !== null && this.content.contains(el.parentNode)) {
+
             /* Prevent selecting unwanted elements */
             if (el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
                 break;
@@ -2247,6 +2247,7 @@ class RTBlazorfied {
                 fontButton.innerText = el.style.fontFamily.replace(/^"(.*)"$/, '$1');
                 this.fontSelected = true;
             }
+            
             if (el != null && el.style != null && el.style.fontSize && !this.fontSizeSelected) {
                 sizeButton.innerText = el.style.fontSize;
                 this.fontSizeSelected = true;
