@@ -236,7 +236,7 @@ class RTBlazorfied {
         }
         if (event.key === 'Enter') {
             var selection = this.shadowRoot.getSelection();
-            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode)) {
+            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode)) {
                 switch (selection.anchorNode.parentNode.nodeName) {
                     case "BLOCKQUOTE":
                         event.preventDefault();
@@ -324,7 +324,7 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
         
         var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
             this.selection = selection.getRangeAt(0).cloneRange();
         }
@@ -376,7 +376,7 @@ class RTBlazorfied {
         var selection = this.shadowRoot.getSelection();
 
         var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
             el.style.backgroundColor = selection.anchorNode.parentNode.style.backgroundColor;
             this.selection = selection.getRangeAt(0).cloneRange();
         }
@@ -711,7 +711,7 @@ class RTBlazorfied {
 
         var selection = this.shadowRoot.getSelection();
 
-        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
+        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
 
             var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             linktext.value = selection.anchorNode.parentNode.textContent;
@@ -849,7 +849,7 @@ class RTBlazorfied {
     removeLink = () => {
         var selection = this.shadowRoot.getSelection();
 
-        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
+        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
             var element = selection.anchorNode.parentNode;
             var fragment = document.createDocumentFragment();
 
@@ -887,7 +887,7 @@ class RTBlazorfied {
         var classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
 
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
             quote.value = selection.anchorNode.parentNode.textContent;
 
             if (selection.anchorNode.parentNode.cite != null) {
@@ -993,7 +993,7 @@ class RTBlazorfied {
         var code = this.shadowRoot.getElementById('rich-text-box-code');
         var classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
             
             var clone = selection.anchorNode.parentNode.cloneNode(true);
             code.value = clone.textContent;
@@ -1239,7 +1239,7 @@ class RTBlazorfied {
             if it does, change or remove it */
             var element;
             if (sel.toString().length == 0) {
-                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
+                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
                     element = this.getElementByType(sel.anchorNode.parentNode, "Format");
                 }
             }
@@ -1256,7 +1256,7 @@ class RTBlazorfied {
                 }
             }
                         
-            if (element != null && element != this.content && element.parentNode != null && element.parentNode != this.content && this.content.contains(element.parentNode)) {
+            if (element != null && element != this.content && element.parentNode != null && this.content.contains(element.parentNode)) {
 
                 if (type == "none") {
                     while (element.firstChild) {
@@ -1458,7 +1458,7 @@ class RTBlazorfied {
                 }
                 
                 /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
                     element = sel.anchorNode.parentNode;   
                 }
             }
