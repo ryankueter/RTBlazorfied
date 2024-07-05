@@ -657,17 +657,17 @@ class RTBlazorfied {
     }
     replaceList = (list, type) => {
         if (list == null || !this.content.contains(list)) { return; }
-
+        
         var element = document.createElement(type);
         while (list.firstChild) {
             element.appendChild(list.firstChild);
         }
         list.parentNode.replaceChild(element, list);
 
-        this.removeEmptyNodes();
+        this.removeEmptyNodes();       
 
         var selection = this.shadowRoot.getSelection();
-        if (selection.rangeCount != 0) {
+        if (selection != null && selection.rangeCount > 0) {
             var range = selection.getRangeAt(0);
             range.selectNodeContents(element);
             range.collapse(true);
@@ -677,7 +677,9 @@ class RTBlazorfied {
     }
     removelist = (list) => {
         if (list == null || !this.content.contains(list)) { return; }
+
         
+
         /* Remove the list */
         while (list.firstChild) {
             var listItem = list.firstChild;
@@ -695,6 +697,13 @@ class RTBlazorfied {
         list.parentNode.removeChild(list);
 
         this.removeEmptyNodes();
+
+        var selection = this.shadowRoot.getSelection();
+        if (selection != null && selection.rangeCount > 0) {
+            var range = selection.getRangeAt(0);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
     openLinkDialog = () => {
         /* Lock the toolbar */
@@ -1265,6 +1274,8 @@ class RTBlazorfied {
                     }
                 }
                 else {
+                    var caretPos = this.saveCaretPosition(element);
+
                     var newElement = document.createElement(type);
                     newElement.innerHTML = element.innerHTML;
 
@@ -1279,12 +1290,7 @@ class RTBlazorfied {
                     }
                     element.parentNode.replaceChild(newElement, element);
 
-                    if (sel != null && sel.rangeCount > 0) {
-                        var range = document.createRange();
-                        range.selectNodeContents(newElement);
-                        sel.removeAllRanges();
-                        sel.addRange(range);
-                    }
+                    this.restoreCaretPosition(newElement, caretPos);
                 }
                 this.selectButtons(sel.anchorNode);
                 this.closeDropdowns();
@@ -1333,6 +1339,24 @@ class RTBlazorfied {
         this.closeDropdowns();
         this.removeEmptyNodes();
         this.focusEditor();
+    }
+
+    saveCaretPosition = (el) => {
+        let range = document.createRange();
+        let sel = this.shadowRoot.getSelection();
+        let startOffset = sel.getRangeAt(0).startOffset;
+        let endOffset = sel.getRangeAt(0).endOffset;
+
+        return { startOffset, endOffset };
+    }
+
+    restoreCaretPosition = (el, savedPos) => {
+        let range = document.createRange();
+        let sel = this.shadowRoot.getSelection();
+        range.setStart(el.firstChild, savedPos.startOffset);
+        range.setEnd(el.firstChild, savedPos.endOffset);
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
 
     hasInvalidElementsInRange = (range) => {
@@ -2116,6 +2140,9 @@ class RTBlazorfied {
         var alignjustify = this.getButton("blazing-rich-text-alignjustify-button");
         this.textAlign = false;
 
+        var ol = this.getButton("blazing-rich-text-orderedlist-button");
+        var ul = this.getButton("blazing-rich-text-unorderedlist-button");
+
         var indent = this.getButton("blazing-rich-text-indent-button");
         var link = this.getButton("blazing-rich-text-link-button");
         var linkRemove = this.getButton("blazing-rich-text-remove-link-button");
@@ -2244,6 +2271,12 @@ class RTBlazorfied {
             }
             if (el.parentNode.nodeName == "CODE") {
                 codeBlock.classList.add("selected");
+            }
+            if (el.parentNode.nodeName == "OL") {
+                ol.classList.add("selected");
+            }
+            if (el.parentNode.nodeName == "UL") {
+                ul.classList.add("selected");
             }
             el = el.parentNode;
         }
