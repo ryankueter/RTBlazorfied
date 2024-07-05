@@ -349,7 +349,6 @@ class RTBlazorfied {
         el.style.backgroundColor = color;
     }
     insertTextColor = () => {
-
         if (this.selection != null) {
             var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
 
@@ -1836,7 +1835,7 @@ class RTBlazorfied {
                     var words = value.split(' ');
 
                     /* Check if the style contains multiple values */
-                    if (property != "background-color" && property != "color" && words.length > 1) {
+                    if (!this.isMultiValueProperty(property) && words.length > 1) {
                         for (let i = 0; i < words.length; i++) {
                             c++;
                         }
@@ -1852,6 +1851,20 @@ class RTBlazorfied {
             }
         }
         return c;
+    }
+    isMultiValueProperty = (property) => {
+        switch (property) {
+            case "background-color":
+                return true;
+                break;
+            case "color":
+                return true;
+                break;
+            case "font-family":
+                return true;
+                break;
+        }
+        return false;
     }
 
     /* Get an element by type */
