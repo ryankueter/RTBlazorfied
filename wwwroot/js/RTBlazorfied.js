@@ -1318,7 +1318,7 @@ class RTBlazorfied {
                         newElement = document.createElement("h5");
                         break;
                 }
-                if (newElement != null && sel.rangeCount != 0) {
+                if (newElement != null && sel.rangeCount > 0) {
                     range = sel.getRangeAt(0);
 
                     /* See if this is an outer element */
@@ -1360,29 +1360,30 @@ class RTBlazorfied {
     hasInvalidElementsInRange = (range) => {
         var node = range.startContainer;
         var endNode = range.endContainer;
-
+        
         /* Traverse through nodes within the range */
         while (node != null && node !== this.content && this.content.contains(node) && node !== endNode.nextSibling) {
             if (node.nodeType === Node.ELEMENT_NODE) {
                 const tagName = node.tagName.toLowerCase();
 
                 /* Check for block-level elements */
-                if (["address", "article", "aside", "blockquote", "details", "dialog", "div", "dl", "fieldset", "figcaption", "figure", "footer", "form", "header", "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"].includes(tagName)) {
+                /* Check for block-level elements */
+                if (node !== endNode && ["address", "article", "aside", "blockquote", "details", "dialog", "div", "dl", "fieldset", "figcaption", "figure", "footer", "form", "header", "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"].includes(tagName)) {
                     return true;
                 }
 
                 /* Check for heading elements */
-                if (tagName.match(/^h[1-6]$/)) {
+                if (node !== endNode && tagName.match(/^h[1-6]$/)) {
                     return true;
                 }
 
                 /* Check for interactive elements */
-                if (["a", "button", "input", "textarea", "select"].includes(tagName)) {
+                if (node !== endNode && ["a", "button", "input", "textarea", "select"].includes(tagName)) {
                     return true;
                 }
 
                 /* Check for form elements */
-                if (tagName === "form") {
+                if (node !== endNode && tagName === "form") {
                     return true;
                 }
             }
