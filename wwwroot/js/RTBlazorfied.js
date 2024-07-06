@@ -1266,7 +1266,7 @@ class RTBlazorfied {
 
                     if (sel.anchorNode != null && sel.rangeCount != 0) {
                         var range = document.createRange();
-                        range.selectNodeContents(sel.anchorNode);
+                        range.setStartAfter(sel.anchorNode);
                         sel.removeAllRanges();
                         sel.addRange(range);
                     }

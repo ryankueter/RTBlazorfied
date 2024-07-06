@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added an embed media button and small bug fixes to improve the usability of the editor.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.124</Version>
-	  <AssemblyVersion>1.0.124</AssemblyVersion>
-	  <FileVersion>1.0.124</FileVersion>
+	  <Version>1.0.125</Version>
+	  <AssemblyVersion>1.0.125</AssemblyVersion>
+	  <FileVersion>1.0.125</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>
