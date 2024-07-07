@@ -479,7 +479,7 @@ public partial class RTBlazorfied
 
     // Editor
     private string? _editorWidth { get; set; } = "100%";
-    private string? _editorHeight { get; set; } = "100%";
+    private string? _editorHeight { get; set; } = "300px";
     private string? _editorBorderRadius { get; set; } = "0px";
     private string? _editorBorderStyle { get; set; } = "solid";
     private string? _editorBorderWidth { get; set; } = "1px";
