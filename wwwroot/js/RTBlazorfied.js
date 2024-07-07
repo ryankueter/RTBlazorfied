@@ -115,14 +115,14 @@ class RTBlazorfied {
             let values = colorPicker.querySelectorAll('.rich-text-box-red-value, .rich-text-box-green-value, .rich-text-box-blue-value');
 
             sliders.forEach(slider => {
-                slider.addEventListener('input', () => this.updateColor(colorPicker));
+                slider.addEventListener('input', () => this.updateColor());
             });
 
             values.forEach(value => {
                 value.addEventListener('input', (event) => {
                     let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
                     correspondingSlider.value = event.target.value;
-                    this.updateColor(colorPicker);
+                    this.updateColor();
                 });
             });
 
@@ -130,7 +130,7 @@ class RTBlazorfied {
             hexInput.addEventListener('keyup', (event) => {
                 // Only update if the input is a valid hex color
                 if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
-                    this.updateFromHex(colorPicker);
+                    this.updateFromHex();
                 }
             });
             hexInput.addEventListener('change', () => this.updateFromHex());
