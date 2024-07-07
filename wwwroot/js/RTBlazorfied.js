@@ -1053,7 +1053,7 @@ class RTBlazorfied {
 
                 /* Set the content of the <code> element */
                 code.textContent = codeText.value;
-
+                
                 /* Append the <code> element to the <pre> element */
                 pre.appendChild(code);
 
@@ -1714,12 +1714,10 @@ class RTBlazorfied {
         return false;
     }
     createElement(selection) {
-        if (this.containsElements(selection)) {
+        if (this.containsElements(selection) || !this.containsElements(this.content)) {
             return document.createElement("div");
         }
-        else {
-            return document.createElement("span");
-        }
+        return document.createElement("span");
     }
     containsElements(selection) {
         if (selection.rangeCount > 0) {
@@ -2115,10 +2113,6 @@ class RTBlazorfied {
         }
         else {
             this.content.innerHTML = "";
-        }
-        if (this.IsLoaded) {
-            this.selectButtons(this.content);
-            this.IsLoaded = true;
         }
     };
     loadInnerText = (text) => {
