@@ -138,9 +138,9 @@ class RTBlazorfied {
         });
     }
     updateColor = () => {
-        this.currentColor = null;
         const colorPickers = this.shadowRoot.querySelectorAll('.rich-text-box-color-picker');
         colorPickers.forEach(colorPicker => {
+            let dialogtype = colorPicker.querySelector('.rich-text-box-color-dialog-type');
             let redSlider = colorPicker.querySelector('.rich-text-box-red-slider');
             let greenSlider = colorPicker.querySelector('.rich-text-box-green-slider');
             let blueSlider = colorPicker.querySelector('.rich-text-box-blue-slider');
@@ -154,8 +154,11 @@ class RTBlazorfied {
             let g = parseInt(greenSlider.value);
             let b = parseInt(blueSlider.value);
             let color = `rgb(${r}, ${g}, ${b})`;
-
-            this.currentColor = color;
+            
+            if (dialogtype.value == this.colorDialogType) {
+                this.currentColor = color;
+            }
+            
             colorDisplay.style.backgroundColor = color;
             redValue.value = r;
             greenValue.value = g;
@@ -435,6 +438,9 @@ class RTBlazorfied {
         }
         
         const e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
+        const type = e.querySelector(".rich-text-box-color-dialog-type");
+        type.value = "textcolor";
+        this.colorDialogType = "textcolor";
         e.style.display = "block";
     }
     colorToHex = (color) => {
@@ -473,6 +479,7 @@ class RTBlazorfied {
         this.closeDialog("rich-text-box-text-color-modal");
     }
     removeTextColor = () => {
+        this.currentColor = null;
         this.updateNode("textcolor", "None");
         this.updateNode("textbgcolor", "None");
     }
@@ -498,8 +505,11 @@ class RTBlazorfied {
                 this.selection = selection.getRangeAt(0).cloneRange();
             }
         }
-
+        
         const e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
+        const type = e.querySelector(".rich-text-box-color-dialog-type");
+        type.value = "textbackgroundcolor";
+        this.colorDialogType = "textbackgroundcolor";
         e.style.display = "block";
     }
     resetTextBackgroundColorDialog = () => {
@@ -521,7 +531,7 @@ class RTBlazorfied {
     }
     insertTextBackgroundColor = () => {
         if (this.selection != null) {
-            if (this.currentColor === null) {
+            if (this.currentColor == null) {
                 this.updateNode("textbgcolor", "None");
             }
             else {
