@@ -369,6 +369,83 @@ public partial class RTBlazorfied
           white-space: pre;
           cursor: pointer;
         }
+
+        /* Color Picker */
+        .rich-text-box-color-picker {
+            width: 100%;
+        }
+        .rich-text-box-color-display {
+            width: 100%;
+            height: 50px;
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        .rich-text-box-slider-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .rich-text-box-slider-container label {
+            width: 20px;
+            margin-right: 10px;
+            color: {{_modalTextColor}};
+        }
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+             background: {{_modalTextColor}};
+             height: 5px;
+             border-radius: 10px;
+        }
+        input[type="range"]::-moz-range-track {
+             background: {{_modalTextColor}};
+             height: 5px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+             -webkit-appearance: none;
+             height: 15px;
+             width: 15px;
+             background: {{_modalTextColor}};
+             margin-top: -5px;
+             border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+             height: 15px;
+             width: 15px;
+             background: {{_modalTextColor}};
+             margin-top: -5px;
+             border-radius: 50%;
+        }
+        input[type="number"] {
+            width: 50px;
+            margin-left: 10px;
+            width: 100px;
+            padding: 5px;
+            font-size: 14px;
+            background-color: {{_modalTextboxBackgroundColor}};
+            color: {{_modalTextboxTextColor}};
+            border-width: 1px;
+            border-style: solid;
+            border-color: {{_modalTextboxBorderColor}};
+            outline: 0;
+            border-radius: 0px;
+            box-sizing: border-box;
+        }
+        .rich-text-box-hex-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .rich-text-box-hex-input {
+            width: 100px !important;
+            margin-left: 10px;
+        }
         """;
 
     #region Styles

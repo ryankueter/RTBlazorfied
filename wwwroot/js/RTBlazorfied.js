@@ -19,17 +19,17 @@ class RTBlazorfied {
         this.currentIndex = -1;
 
         /* Load elements into the shadow DOM */
-        var isolatedContainer = document.getElementById(this.shadow_id);
+        const isolatedContainer = document.getElementById(this.shadow_id);
         this.shadowRoot = isolatedContainer.attachShadow({ mode: 'open' });
 
-        var style = document.createElement('style');
+        const style = document.createElement('style');
         style.textContent = this.styles;
         this.shadowRoot.appendChild(style);
 
-        var contentContainer = document.createElement('div');
+        const contentContainer = document.createElement('div');
         contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
 
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         container.setAttribute('class', 'rich-text-box-container');
 
         /* The main content that is referenced throughout */
@@ -39,7 +39,7 @@ class RTBlazorfied {
         this.content.setAttribute('contenteditable', 'true');
 
         /* Assemble everything into the container */
-        var toolbar = document.getElementById(this.toolbar_id);
+        const toolbar = document.getElementById(this.toolbar_id);
         container.appendChild(toolbar);
 
         contentContainer.appendChild(this.content);
@@ -50,7 +50,7 @@ class RTBlazorfied {
         /* Listen for selection change event to select buttons */
         document.addEventListener('selectionchange', () => {
             /* Ensure that this event listener only fires for this text box */
-            var selection = this.shadowRoot.getSelection();
+            const selection = this.shadowRoot.getSelection();
             if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
                 this.clearSettings(selection.anchorNode);
             }
@@ -71,7 +71,7 @@ class RTBlazorfied {
         });
 
         /* Prevent the dropdowns from causing the text box from losing focus. */
-        var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
+        const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach((dropdown) => {
             dropdown.addEventListener('mousedown', (event) => {
                 event.preventDefault();
@@ -79,7 +79,7 @@ class RTBlazorfied {
         });
         
         /* Callback function to execute when mutations are observed */
-        var richtextbox = (mutationsList, observer) => {
+        const richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList' && this.EditMode === true) {
                     /* A child node has been added or removed. */
@@ -97,7 +97,7 @@ class RTBlazorfied {
         };
 
         /* Options for the observer (which mutations to observe) */
-        var config = {
+        const config = {
             attributes: true,
             childList: true,
             subtree: true,
@@ -105,13 +105,108 @@ class RTBlazorfied {
         };
 
         /* Create an observer instance linked to the callback function */
-        var observer = new MutationObserver(richtextbox);
+        const observer = new MutationObserver(richtextbox);
         observer.observe(this.content, config);
+
+
+        /* Even listeners for the color pickers */
+        this.shadowRoot.querySelectorAll('.rich-text-box-color-picker').forEach(colorPicker => {
+            let sliders = colorPicker.querySelectorAll('.rich-text-box-red-slider, .rich-text-box-green-slider, .rich-text-box-blue-slider');
+            let values = colorPicker.querySelectorAll('.rich-text-box-red-value, .rich-text-box-green-value, .rich-text-box-blue-value');
+
+            sliders.forEach(slider => {
+                slider.addEventListener('input', () => this.updateColor(colorPicker));
+            });
+
+            values.forEach(value => {
+                value.addEventListener('input', (event) => {
+                    let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
+                    correspondingSlider.value = event.target.value;
+                    this.updateColor(colorPicker);
+                });
+            });
+
+            let hexInput = colorPicker.querySelector('.rich-text-box-hex-input');
+            hexInput.addEventListener('keyup', (event) => {
+                // Only update if the input is a valid hex color
+                if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
+                    this.updateFromHex(colorPicker);
+                }
+            });
+            hexInput.addEventListener('change', () => this.updateFromHex());
+            hexInput.addEventListener('paste', () => this.updateFromHex());
+        });
+    }
+    updateColor = () => {
+        this.currentColor = null;
+        const colorPickers = this.shadowRoot.querySelectorAll('.rich-text-box-color-picker');
+        colorPickers.forEach(colorPicker => {
+            let redSlider = colorPicker.querySelector('.rich-text-box-red-slider');
+            let greenSlider = colorPicker.querySelector('.rich-text-box-green-slider');
+            let blueSlider = colorPicker.querySelector('.rich-text-box-blue-slider');
+            let redValue = colorPicker.querySelector('.rich-text-box-red-value');
+            let greenValue = colorPicker.querySelector('.rich-text-box-green-value');
+            let blueValue = colorPicker.querySelector('.rich-text-box-blue-value');
+            let hexInput = colorPicker.querySelector('.rich-text-box-hex-input');
+            let colorDisplay = colorPicker.querySelector('.rich-text-box-color-display');
+
+            let r = parseInt(redSlider.value);
+            let g = parseInt(greenSlider.value);
+            let b = parseInt(blueSlider.value);
+            let color = `rgb(${r}, ${g}, ${b})`;
+
+            this.currentColor = color;
+            colorDisplay.style.backgroundColor = color;
+            redValue.value = r;
+            greenValue.value = g;
+            blueValue.value = b;
+            hexInput.value = this.rgbToHex(r, g, b);
+        });
+    }
+
+    updateFromHex = () => {
+        const colorPickers = this.shadowRoot.querySelectorAll('.rich-text-box-color-picker');
+        colorPickers.forEach(colorPicker => {
+            let redSlider = colorPicker.querySelector('.rich-text-box-red-slider');
+            let greenSlider = colorPicker.querySelector('.rich-text-box-green-slider');
+            let blueSlider = colorPicker.querySelector('.rich-text-box-blue-slider');
+            let redValue = colorPicker.querySelector('.rich-text-box-red-value');
+            let greenValue = colorPicker.querySelector('.rich-text-box-green-value');
+            let blueValue = colorPicker.querySelector('.rich-text-box-blue-value');
+            let currentHexInput = colorPicker.querySelector('.rich-text-box-hex-input');
+
+            let hex = currentHexInput.value.trim();
+            if (hex.charAt(0) !== '#') {
+                hex = '#' + hex;
+            }
+            if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+                let rgb = this.hexToRgb(hex);
+                if (rgb) {
+                    redSlider.value = redValue.value = rgb.r;
+                    greenSlider.value = greenValue.value = rgb.g;
+                    blueSlider.value = blueValue.value = rgb.b;
+                }
+            }
+        });
+        this.updateColor();
+    }
+
+    rgbToHex = (r, g, b) => {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    hexToRgb = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
     }
 
     /* History */
     saveState = () => {
-        var currentState = this.content.innerHTML;
+        const currentState = this.content.innerHTML;
 
         /* If there is any change in the content */
         if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
@@ -235,7 +330,7 @@ class RTBlazorfied {
             this.goForward();
         }
         if (event.key === 'Enter') {
-            var selection = this.shadowRoot.getSelection();
+            const selection = this.shadowRoot.getSelection();
             if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode)) {
                 switch (selection.anchorNode.parentNode.nodeName) {
                     case "BLOCKQUOTE":
@@ -255,13 +350,13 @@ class RTBlazorfied {
         }
     }
     insertLineBreak = (element) => {
-        var div = document.createElement('div');
-        var br = document.createElement('br');
+        const div = document.createElement('div');
+        const br = document.createElement('br');
         div.appendChild(br);
 
         if (element.nodeName == "CODE") {
             /* Insert the new div after the grandparent element */
-            var grandparent = element.parentNode.parentNode;            
+            const grandparent = element.parentNode.parentNode;            
             if (grandparent.nextSibling) {
                 grandparent.parentNode.insertBefore(div, grandparent.nextSibling);
             } else {
@@ -273,21 +368,21 @@ class RTBlazorfied {
         }
 
         /* Move the cursor to the new line */
-        var range = document.createRange();
+        const range = document.createRange();
         range.setStartBefore(br);
         range.collapse(true);
 
-        var sel = this.shadowRoot.getSelection();
+        const sel = this.shadowRoot.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
     }
     changeFontSize = (increment) => {     
         /* Get the current selection. */
         if (this.fontSize === undefined) {
-            var selection = this.shadowRoot.getSelection();
+            const selection = this.shadowRoot.getSelection();
             if (selection && selection.rangeCount > 0) {
-                var range = selection.getRangeAt(0);
-                var computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
+                const range = selection.getRangeAt(0);
+                const computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
                 this.fontSize = parseFloat(computedStyle.fontSize);
             }
         }
@@ -306,13 +401,13 @@ class RTBlazorfied {
         this.closeDropdown("blazing-rich-text-format-button-dropdown");
     }
     dropdown = (id) => {
-        var el = this.shadowRoot.getElementById(id);
-        if (el != null && el.classList.contains("rich-text-box-show")) {
-            el.classList.remove("rich-text-box-show")
+        const element = this.shadowRoot.getElementById(id);
+        if (element != null && element.classList.contains("rich-text-box-show")) {
+            element.classList.remove("rich-text-box-show")
         }
         else {
             this.closeDropdowns();
-            el.classList.add("rich-text-box-show")
+            element.classList.add("rich-text-box-show")
         }
     }
     openTextColorDialog = () => {
@@ -321,43 +416,57 @@ class RTBlazorfied {
         this.resetTextColorDialog();
 
         /* Get the selection */
-        var selection = this.shadowRoot.getSelection();
-        
-        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
-            el.style.backgroundColor = selection.anchorNode.parentNode.style.color;
+        const selection = this.shadowRoot.getSelection();
+        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color.toString().length > 0) {
+            hexInput.forEach(input => {
+                this.selection = selection.getRangeAt(0).cloneRange();
+
+                let hexColor = this.colorToHex(selection.anchorNode.parentNode.style.color);
+                input.value = hexColor;
+                this.updateFromHex();
+            });
             this.selection = selection.getRangeAt(0).cloneRange();
         }
         else {
-            if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
+            if (selection != null && selection.rangeCount > 0) {
                 this.selection = selection.getRangeAt(0).cloneRange();
             }
         }
         
-        var e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
         e.style.display = "block";
-        el.focus();
+    }
+    colorToHex = (color) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = color;
+        return ctx.fillStyle;
     }
     resetTextColorDialog = () => {
         this.selection = null;
 
         /* Reset the selected color */
-        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-        el.style.backgroundColor = '';
+        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
+        hexInput.forEach(input => {
+            input.value = "#000000";
+        });
+        this.updateFromHex();
     }
     selectTextColor = (color) => {
-        var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-        el.style.backgroundColor = color;
+        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');        
+        hexInput.forEach(input => {
+            input.value = color;
+        });       
+        this.updateFromHex();
     }
     insertTextColor = () => {
         if (this.selection != null) {
-            var el = this.shadowRoot.getElementById('rich-text-box-text-color-modal-selection');
-
-            if (el.style.backgroundColor === '') {
+            if (this.currentColor == null) {
                 this.updateNode("textcolor", "None");
             }
             else {
-                this.updateNode("textcolor", el.style.backgroundColor);
+                this.updateNode("textcolor", this.currentColor);
             }
         }
         /* Close the dialog */
@@ -373,43 +482,50 @@ class RTBlazorfied {
         this.resetTextBackgroundColorDialog();
 
         /* Get the selection */
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
+        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.backgroundColor.toString().length > 0) {
+            hexInput.forEach(input => {
+                this.selection = selection.getRangeAt(0).cloneRange();
 
-        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color != null) {
-            el.style.backgroundColor = selection.anchorNode.parentNode.style.backgroundColor;
-            this.selection = selection.getRangeAt(0).cloneRange();
+                let hexColor = this.colorToHex(selection.anchorNode.parentNode.style.backgroundColor);
+                input.value = hexColor;
+                this.updateFromHex();
+            });
         }
         else {
-            if (selection != null && selection.rangeCount > 0 && selection.toString().length > 0) {
+            if (selection != null && selection.rangeCount > 0) {
                 this.selection = selection.getRangeAt(0).cloneRange();
             }
         }
 
-        var e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
         e.style.display = "block";
-        el.focus();
     }
     resetTextBackgroundColorDialog = () => {
         this.selection = null;
 
         /* Reset the selected color */
-        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-        el.style.backgroundColor = '';
+        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
+        hexInput.forEach(input => {
+            input.value = "#000000";
+        });
+        this.updateFromHex();
     }
     selectTextBackgroundColor = (color) => {
-        var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-        el.style.backgroundColor = color;
+        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
+        hexInput.forEach(input => {
+            input.value = color;
+        });
+        this.updateFromHex();
     }
     insertTextBackgroundColor = () => {
         if (this.selection != null) {
-            var el = this.shadowRoot.getElementById('rich-text-box-text-bg-color-modal-selection');
-
-            if (el.style.backgroundColor === '') {
+            if (this.currentColor === null) {
                 this.updateNode("textbgcolor", "None");
             }
             else {
-                this.updateNode("textbgcolor", el.style.backgroundColor);
+                this.updateNode("textbgcolor", this.currentColor);
             }
         }
         /* Close the dialog */
@@ -457,7 +573,7 @@ class RTBlazorfied {
         this.updateNode("indent");
     };
     copy = () => {
-        var selection = window.getSelection();
+        const selection = window.getSelection();
         if (selection != null) {
             if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(selection);
@@ -466,7 +582,7 @@ class RTBlazorfied {
         this.focusEditor();
     };
     cut = () => {
-        var selection = window.getSelection();
+        const selection = window.getSelection();
         if (selection != null) {
             if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(selection);
@@ -480,17 +596,16 @@ class RTBlazorfied {
     };
 
     closeDropdown = (id) => {
-        var e = this.shadowRoot.getElementById(id);
+        const e = this.shadowRoot.getElementById(id);
         e.classList.remove("rich-text-box-show");
         this.lockToolbar = false;
         this.focusEditor();
     }
 
     removeEmptyNodes = () => {
-        var div = this.content;
-
+        const div = this.content;
         if (div) {
-            var elements = div.querySelectorAll('*');
+            const elements = div.querySelectorAll('*');
 
             elements.forEach(element => {
                 if (!element.hasChildNodes() ||
@@ -578,9 +693,10 @@ class RTBlazorfied {
         this.content.focus();
     }
     selectall = () => {
-        var range = document.createRange();
+        const range = document.createRange();
         range.selectNodeContents(this.content)
-        var sel = this.shadowRoot.getSelection();
+
+        const sel = this.shadowRoot.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
         this.focusEditor();
@@ -595,48 +711,48 @@ class RTBlazorfied {
     };
     addlist = (type) => {
         /* Get the selected text */
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
        
         /* Check if the element is already an OL and replace it */
         if (type == "UL") {
-            var list = this.getElementByType(selection.anchorNode, "OL");
+            const list = this.getElementByType(selection.anchorNode, "OL");
             if (list != null) {
                 this.replaceList(list, "UL");
                 return;
             }
         }
         else {
-            var list = this.getElementByType(selection.anchorNode, "UL");
+            const list = this.getElementByType(selection.anchorNode, "UL");
             if (list != null) {
                 this.replaceList(list, "OL");
                 return;
             }
         }
 
-        var list = this.getElementByType(selection.anchorNode, type);
+        const list = this.getElementByType(selection.anchorNode, type);
         if (list != null) {
             this.removelist(list);
         }
         else {
-            var selectedText = selection.toString().trim();
+            const selectedText = selection.toString().trim();
             if (selectedText) {
-                var ulElement = document.createElement(type);
+                const ulElement = document.createElement(type);
 
                 if (selection.rangeCount > 0) {
-                    var range = selection.getRangeAt(0);
-                    var selectedNodes = range.cloneContents().childNodes;
+                    const range = selection.getRangeAt(0);
+                    const selectedNodes = range.cloneContents().childNodes;
 
                     /* Convert NodeList to Array for easier iteration */
-                    var selectedElements = Array.from(selectedNodes);
+                    const selectedElements = Array.from(selectedNodes);
 
                     /* Iterate over selected elements */
                     selectedElements.forEach((node) => {
                         if (node.nodeType === Node.ELEMENT_NODE
                             || node.nodeType === Node.TEXT_NODE) {
 
-                            var liElement = document.createElement('li');
+                            let liElement = document.createElement('li');
 
-                            var clonedContent = node.cloneNode(true);
+                            let clonedContent = node.cloneNode(true);
                             liElement.appendChild(clonedContent);
 
                             ulElement.appendChild(liElement);
@@ -658,7 +774,7 @@ class RTBlazorfied {
     replaceList = (list, type) => {
         if (list === null || list === this.content || !this.content.contains(list)) { return; }
         
-        var element = document.createElement(type);
+        const element = document.createElement(type);
         while (list.firstChild) {
             element.appendChild(list.firstChild);
         }
@@ -666,9 +782,9 @@ class RTBlazorfied {
 
         this.removeEmptyNodes();       
 
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
         if (selection != null && selection.rangeCount > 0) {
-            var range = selection.getRangeAt(0);
+            const range = selection.getRangeAt(0);
             range.selectNodeContents(element);
             range.collapse(true);
             selection.removeAllRanges();
@@ -680,7 +796,7 @@ class RTBlazorfied {
 
         /* Remove the list */
         while (list.firstChild) {
-            var listItem = list.firstChild;
+            const listItem = list.firstChild;
 
             /* Move each child node of listItem to before list */
             while (listItem.firstChild) {
@@ -696,9 +812,9 @@ class RTBlazorfied {
 
         this.removeEmptyNodes();
 
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
         if (selection != null && selection.rangeCount > 0) {
-            var range = selection.getRangeAt(0);
+            const range = selection.getRangeAt(0);
             selection.removeAllRanges();
             selection.addRange(range);
         }
@@ -709,48 +825,48 @@ class RTBlazorfied {
 
         this.resetLinkDialog();
 
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
 
         if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
 
-            var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+            const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             linktext.value = selection.anchorNode.parentNode.textContent;
 
-            var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
+            const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
             link.value = selection.anchorNode.parentNode.getAttribute("href");
 
-            var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
-            var classList = selection.anchorNode.parentNode.classList;
+            const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
+            const classList = selection.anchorNode.parentNode.classList;
             classes.value = Array.from(classList).join(' ');
 
-            var target = selection.anchorNode.parentNode.getAttribute('target');
+            const target = selection.anchorNode.parentNode.getAttribute('target');
             if (target === '_blank') {
-                var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+                const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
                 newtab.checked = true;
             }
 
             this.linkNode = selection.anchorNode.parentNode;
         }
         else {
-            var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+            const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
             if (selection != null && selection.toString().length > 0) {
                 this.linkSelection = selection.getRangeAt(0).cloneRange();
                 linktext.value = this.linkSelection.toString();
             }
         }
         
-        var e = this.shadowRoot.getElementById("rich-text-box-link-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-link-modal");
         e.style.display = "block";
 
-        var address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
+        const address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         if (address) {
             address.focus();
         }
     }
     moveCursorToStart = () => {
-        var el = this.content;
-        var range = document.createRange();
-        var selection = this.shadowRoot.getSelection();
+        const el = this.content;
+        const range = document.createRange();
+        let selection = this.shadowRoot.getSelection();
 
         /* Create a new range at the beginning of the contenteditable div */
         range.setStart(el, 0);
@@ -763,30 +879,30 @@ class RTBlazorfied {
         /* Optionally, set the focus to the contenteditable div */
         el.focus();
 
-        var selection = this.shadowRoot.getSelection();
+        selection = this.shadowRoot.getSelection();
         return selection.getRangeAt(0).cloneRange();
     }
     resetLinkDialog = () => {
         this.linkNode = null;
         this.linkSelection = null;
 
-        var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+        const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
         linktext.value = null;
 
-        var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
+        const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         link.value = null;
 
-        var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+        const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
         newtab.checked = false;
 
-        var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
+        const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
         classes.value = null;
     }
     insertLink = () => {
-        var linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
-        var link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
-        var newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
-        var classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
+        const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+        const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
+        const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+        const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
 
         if (link.value.length == 0 || linktext.value.length == 0) {
             this.closeDialog("rich-text-box-link-modal");
@@ -796,7 +912,7 @@ class RTBlazorfied {
 
         /* Get the link selection or element */
         if (this.linkNode != null) {
-            var element = this.linkNode;
+            const element = this.linkNode;
             element.href = link.value;
             element.textContent = linktext.value;
             this.addClasses(classes.value, element);
@@ -809,14 +925,14 @@ class RTBlazorfied {
         }
         else {
             if (this.linkSelection != null) {
-                var selection = this.shadowRoot.getSelection();
+                const selection = this.shadowRoot.getSelection();
                 if (selection) {
                     selection.removeAllRanges();
                     selection.addRange(this.linkSelection);
                 }
 
-                var range = selection.getRangeAt(0);
-                var anchor = document.createElement("a");
+                const range = selection.getRangeAt(0);
+                const anchor = document.createElement("a");
                 anchor.href = link.value;
                 anchor.textContent = linktext.value;
                 this.addClasses(classes.value, anchor);
@@ -836,7 +952,7 @@ class RTBlazorfied {
 
         /* Readd classes, if necessary */
         if (classlist.length > 0) {
-            var classNames = classlist.split(' ').map(className => className.trim());
+            const classNames = classlist.split(' ').map(className => className.trim());
 
             /* Add each class to the element's class list */
             classNames.forEach(className => {
@@ -847,11 +963,11 @@ class RTBlazorfied {
         }
     }
     removeLink = () => {
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
 
         if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
-            var element = selection.anchorNode.parentNode;
-            var fragment = document.createDocumentFragment();
+            const element = selection.anchorNode.parentNode;
+            const fragment = document.createDocumentFragment();
 
             while (element.firstChild) {
                 fragment.appendChild(element.firstChild);
@@ -860,7 +976,7 @@ class RTBlazorfied {
             element.parentNode.removeChild(element);
 
             if (selection.anchorNode != null && selection.rangeCount != 0) {
-                var range = document.createRange();
+                const range = document.createRange();
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
@@ -868,7 +984,7 @@ class RTBlazorfied {
         this.focusEditor();
     }
     closeDialog = (id) => {
-        var e = this.shadowRoot.getElementById(id);
+        const e = this.shadowRoot.getElementById(id);
         if (e != null) {
             e.style.display = "none";
         }
@@ -880,11 +996,11 @@ class RTBlazorfied {
         this.resetBlockQuoteDialog();
 
         /* Get the selection */
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
 
-        var quote = this.shadowRoot.getElementById('rich-text-box-quote');
-        var cite = this.shadowRoot.getElementById('rich-text-box-cite');
-        var classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
+        const quote = this.shadowRoot.getElementById('rich-text-box-quote');
+        const cite = this.shadowRoot.getElementById('rich-text-box-cite');
+        const classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
 
 
         if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
@@ -894,7 +1010,7 @@ class RTBlazorfied {
                 cite.value = selection.anchorNode.parentNode.cite;
             }           
                         
-            var classList = selection.anchorNode.parentNode.classList;
+            const classList = selection.anchorNode.parentNode.classList;
             classes.value = Array.from(classList).join(' ');
 
             this.quoteSelection = selection.getRangeAt(0).cloneRange();
@@ -906,10 +1022,9 @@ class RTBlazorfied {
             }
         }
         
-        var e = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
         e.style.display = "block";
 
-        var quote = this.shadowRoot.getElementById("rich-text-box-quote");
         if (quote) {
             quote.focus();
             quote.scrollTop = 0;
@@ -920,22 +1035,22 @@ class RTBlazorfied {
         this.quote = null;
         this.quoteSelection = null;
 
-        var quote = this.shadowRoot.getElementById("rich-text-box-quote");
+        const quote = this.shadowRoot.getElementById("rich-text-box-quote");
         quote.value = null;
 
-        var cite = this.shadowRoot.getElementById("rich-text-box-cite");
+        const cite = this.shadowRoot.getElementById("rich-text-box-cite");
         cite.value = null;
 
-        var css = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
+        const css = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
         css.value = null;
     }
     insertBlockQuote = () => {
-        var quote = this.shadowRoot.getElementById("rich-text-box-quote");
-        var cite = this.shadowRoot.getElementById("rich-text-box-cite");
-        var classes = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
+        const quote = this.shadowRoot.getElementById("rich-text-box-quote");
+        const cite = this.shadowRoot.getElementById("rich-text-box-cite");
+        const classes = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
 
         if (this.quote != null) {
-            var element = this.quote;
+            const element = this.quote;
             element.textContent = quote.value;
             if (cite.value.trim().length > 0) {
                 element.setAttribute('cite', cite.value);
@@ -945,21 +1060,21 @@ class RTBlazorfied {
             }
             this.addClasses(classes.value, element);
 
-            var range = this.quoteSelection.cloneRange();
+            const range = this.quoteSelection.cloneRange();
             /* Move the cursor after the inserted element */
             range.setStartAfter(element);
             range.setEndAfter(element);
 
-            var selection = this.shadowRoot.getSelection();
+            const selection = this.shadowRoot.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
         }
         else {
             if (this.quoteSelection != null && quote.value.length > 0) {
 
-                var range = this.quoteSelection.cloneRange();
+                const range = this.quoteSelection.cloneRange();
 
-                var blockquote = document.createElement("blockquote");
+                const blockquote = document.createElement("blockquote");
                 blockquote.textContent = quote.value;
                 if (cite.value.trim().length > 0) {
                     blockquote.cite = cite.value;
@@ -974,7 +1089,7 @@ class RTBlazorfied {
                 range.setEndAfter(blockquote);
 
                 /* Get the selection from the shadowRoot */
-                var selection = this.shadowRoot.getSelection();
+                const selection = this.shadowRoot.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
@@ -988,17 +1103,17 @@ class RTBlazorfied {
         this.resetCodeBlockDialog();
 
         /* Get the selection */
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
 
-        var code = this.shadowRoot.getElementById('rich-text-box-code');
-        var classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
+        const code = this.shadowRoot.getElementById('rich-text-box-code');
+        const classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
 
         if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
             
-            var clone = selection.anchorNode.parentNode.cloneNode(true);
+            const clone = selection.anchorNode.parentNode.cloneNode(true);
             code.value = clone.textContent;
             
-            var classList = selection.anchorNode.parentNode.classList;
+            const classList = selection.anchorNode.parentNode.classList;
             classes.value = Array.from(classList).join(' ');
 
             this.codeSelection = selection.getRangeAt(0).cloneRange();
@@ -1010,10 +1125,9 @@ class RTBlazorfied {
             }
         }
 
-        var e = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
         e.style.display = "block";
 
-        var code = this.shadowRoot.getElementById("rich-text-box-code");
         if (code) {
             code.focus();
             code.scrollTop = 0;
@@ -1024,31 +1138,31 @@ class RTBlazorfied {
         this.code = null;
         this.codeSelection = null;
 
-        var code = this.shadowRoot.getElementById("rich-text-box-code");
+        const code = this.shadowRoot.getElementById("rich-text-box-code");
         code.value = null;
 
-        var css = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
+        const css = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
         css.value = null;
     }
     insertCodeBlock = () => {
-        var codeText = this.shadowRoot.getElementById("rich-text-box-code");
-        var classes = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
+        const codeText = this.shadowRoot.getElementById("rich-text-box-code");
+        const classes = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
 
         if (this.code != null) {
-            var element = this.code;
+            const element = this.code;
             element.textContent = codeText.value;
             this.addClasses(classes.value, element);
         }
         else {
             if (this.codeSelection != null && codeText.value.length > 0) {
 
-                var range = this.codeSelection.cloneRange();
+                const range = this.codeSelection.cloneRange();
 
                 /* Create the <pre> element */
-                var pre = document.createElement('pre');
+                const pre = document.createElement('pre');
 
                 /* Create the <code> element */
-                var code = document.createElement('code');
+                const code = document.createElement('code');
                 this.addClasses(classes.value, code);
 
                 /* Set the content of the <code> element */
@@ -1065,7 +1179,7 @@ class RTBlazorfied {
                 range.setEndAfter(pre);
 
                 /* Get the selection from the shadowRoot */
-                var selection = this.shadowRoot.getSelection();
+                const selection = this.shadowRoot.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
@@ -1079,16 +1193,16 @@ class RTBlazorfied {
         this.resetEmbedDialog();
 
         /* Get the selection */
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
 
         if (selection != null && selection.rangeCount > 0) {
             this.embedSelection = selection.getRangeAt(0).cloneRange();
         }
 
-        var e = this.shadowRoot.getElementById("rich-text-box-embed-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-embed-modal");
         e.style.display = "block";
 
-        var source = this.shadowRoot.getElementById("rich-text-box-embed-source");
+        const source = this.shadowRoot.getElementById("rich-text-box-embed-source");
         if (source) {
             source.focus();
         }
@@ -1097,34 +1211,34 @@ class RTBlazorfied {
         this.embed = null;
         this.embedSelection = null;
 
-        var source = this.shadowRoot.getElementById('rich-text-box-embed-source');
+        const source = this.shadowRoot.getElementById('rich-text-box-embed-source');
         source.value = null;
 
-        var width = this.shadowRoot.getElementById('rich-text-box-embed-width');
+        const width = this.shadowRoot.getElementById('rich-text-box-embed-width');
         width.value = null;
 
-        var height = this.shadowRoot.getElementById('rich-text-box-embed-height');
+        const height = this.shadowRoot.getElementById('rich-text-box-embed-height');
         height.value = null;
 
-        var type = this.shadowRoot.getElementById('rich-text-box-embed-type');
+        const type = this.shadowRoot.getElementById('rich-text-box-embed-type');
         type.value = null;
 
-        var classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
+        const classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
         classes.value = null;
     }
     insertEmbed = () => {
-        var source = this.shadowRoot.getElementById('rich-text-box-embed-source');
-        var width = this.shadowRoot.getElementById('rich-text-box-embed-width');
-        var height = this.shadowRoot.getElementById('rich-text-box-embed-height');
-        var type = this.shadowRoot.getElementById('rich-text-box-embed-type');
-        var classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
+        const source = this.shadowRoot.getElementById('rich-text-box-embed-source');
+        const width = this.shadowRoot.getElementById('rich-text-box-embed-width');
+        const height = this.shadowRoot.getElementById('rich-text-box-embed-height');
+        const type = this.shadowRoot.getElementById('rich-text-box-embed-type');
+        const classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
 
         if (this.embedSelection != null && source.value.length > 0) {
 
-            var range = this.embedSelection.cloneRange();
+            const range = this.embedSelection.cloneRange();
 
             /* Create the <code> element */
-            var object = document.createElement('object');
+            const object = document.createElement('object');
 
             /* Set the content of the <code> element */
             object.data = source.value;
@@ -1141,7 +1255,7 @@ class RTBlazorfied {
             range.setEndAfter(object);
             
             /* Get the selection from the shadowRoot */
-            var selection = this.shadowRoot.getSelection();
+            const selection = this.shadowRoot.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
         }
@@ -1155,15 +1269,15 @@ class RTBlazorfied {
 
         this.resetImageDialog();
 
-        var selection = this.shadowRoot.getSelection();
+        const selection = this.shadowRoot.getSelection();
         if (selection && selection.rangeCount > 0) {
             this.imageSelection = selection.getRangeAt(0).cloneRange();
         }
         
-        var e = this.shadowRoot.getElementById("rich-text-box-image-modal");
+        const e = this.shadowRoot.getElementById("rich-text-box-image-modal");
         e.style.display = "block";
 
-        var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+        const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
         if (address) {
             address.focus();
         }
@@ -1171,33 +1285,33 @@ class RTBlazorfied {
     resetImageDialog = () => {
         this.imageSelection = null;
 
-        var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+        const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
         address.value = null;
 
-        var width = this.shadowRoot.getElementById("rich-text-box-image-width");
+        const width = this.shadowRoot.getElementById("rich-text-box-image-width");
         width.value = null;
 
-        var height = this.shadowRoot.getElementById("rich-text-box-image-height");
+        const height = this.shadowRoot.getElementById("rich-text-box-image-height");
         height.value = null;
 
-        var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
+        const alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
         alt.value = null;
 
-        var classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
+        const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
         classes.value = null;
     }
     insertImage = () => {
-        var address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
-        var width = this.shadowRoot.getElementById("rich-text-box-image-width");
-        var height = this.shadowRoot.getElementById("rich-text-box-image-height");
-        var alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
-        var classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
+        const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+        const width = this.shadowRoot.getElementById("rich-text-box-image-width");
+        const height = this.shadowRoot.getElementById("rich-text-box-image-height");
+        const alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
+        const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
 
         if (this.imageSelection != null && address.value.length > 0) {
 
-            var range = this.imageSelection.cloneRange();
+            const range = this.imageSelection.cloneRange();
 
-            var img = document.createElement("img");
+            const img = document.createElement("img");
             img.src = address.value;
             if (width.value.length > 0) {
                 img.width = width.value;
@@ -1218,7 +1332,7 @@ class RTBlazorfied {
             range.setEndAfter(img);
 
             /* Get the selection from the shadowRoot */
-            var selection = this.shadowRoot.getSelection();
+            const selection = this.shadowRoot.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
 
@@ -1230,14 +1344,14 @@ class RTBlazorfied {
         this.focusEditor();
     }
     formatNode = (type) => {
-        var sel, range;
+        let sel, range;
         
         if (this.shadowRoot.getSelection()) {
             sel = this.shadowRoot.getSelection();
 
             /* See if an element with matching content exists
             if it does, change or remove it */
-            var element;
+            let element;
             if (sel.toString().length == 0) {
                 if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
                     element = this.getElementByType(sel.anchorNode.parentNode, "Format");
@@ -1246,7 +1360,7 @@ class RTBlazorfied {
             else {
                 /* See if this is an outer element */
                 if (this.hasCommonAncestor(sel) == true) {
-                    var range = sel.getRangeAt(0);
+                    const range = sel.getRangeAt(0);
                     element = range.commonAncestorContainer;
                     this.isCommonAncestor = true;
                 }
@@ -1265,23 +1379,23 @@ class RTBlazorfied {
                     element.parentNode.removeChild(element);
 
                     if (sel.anchorNode != null && sel.rangeCount != 0) {
-                        var range = document.createRange();
+                        const range = document.createRange();
                         range.setStartAfter(sel.anchorNode);
                         sel.removeAllRanges();
                         sel.addRange(range);
                     }
                 }
                 else {
-                    var caretPos = this.saveCaretPosition(element);
+                    let caretPos = this.saveCaretPosition(element);
 
-                    var newElement = document.createElement(type);
+                    const newElement = document.createElement(type);
                     newElement.innerHTML = element.innerHTML;
 
                     /* Copy styles */
-                    var computedStyles = window.getComputedStyle(element);
-                    for (var i = 0; i < computedStyles.length; i++) {
-                        var styleName = computedStyles[i];
-                        var inlineStyleValue = element.style.getPropertyValue(styleName);
+                    const computedStyles = window.getComputedStyle(element);
+                    for (let i = 0; i < computedStyles.length; i++) {
+                        let styleName = computedStyles[i];
+                        let inlineStyleValue = element.style.getPropertyValue(styleName);
                         if (inlineStyleValue !== "") {
                             newElement.style[styleName] = inlineStyleValue;
                         }
@@ -1297,7 +1411,7 @@ class RTBlazorfied {
             }
 
             if (sel.toString().length > 0) {                
-                var newElement;
+                let newElement;
                 switch (type) {
                     case "p":
                         newElement = document.createElement("p");
@@ -1358,8 +1472,8 @@ class RTBlazorfied {
     }
 
     hasInvalidElementsInRange = (range) => {
-        var node = range.startContainer;
-        var endNode = range.endContainer;
+        const node = range.startContainer;
+        const endNode = range.endContainer;
         
         /* Traverse through nodes within the range */
         while (node != null && node !== this.content && this.content.contains(node) && node !== endNode.nextSibling) {
@@ -1391,7 +1505,6 @@ class RTBlazorfied {
             /* Move to the next node */
             node = node.nextSibling || node.parentNode.nextSibling;
         }
-
         return false;
     }
 
@@ -1414,7 +1527,7 @@ class RTBlazorfied {
     }
     closeDropdowns = () => {
         /* Close the Dropdowns */
-        var dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
+        const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach(function (dropdown) {
             if (dropdown.classList.contains("rich-text-box-show")) {
                 dropdown.classList.remove('rich-text-box-show');
@@ -1424,7 +1537,7 @@ class RTBlazorfied {
         this.lockToolbar = false;
     }
     updateNode = (type, value) => {
-        var sel, range;       
+        let sel, range;       
 
         if (this.shadowRoot.getSelection()) {
 
@@ -1434,25 +1547,26 @@ class RTBlazorfied {
             if (this.selection != null) {
                 sel.removeAllRanges();
                 sel.addRange(this.selection);
-            }
+            }            
             
-            var element;
+            let element;
             this.isCommonAncestor = false;
             if (sel.toString().length == 0) {
+
                 /* Check if a node exists with this style and get it */
                 element = this.getElementByStyle(sel.anchorNode, type);
                                                
                 /* See if it's an image */
                 if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
-                    var image = sel.anchorNode.querySelector('img');
+                    const image = sel.anchorNode.querySelector('img');
                     if (image != null) {
                         element = sel.anchorNode;
                     }
-                    var embed = sel.anchorNode.querySelector('embed');
+                    const embed = sel.anchorNode.querySelector('embed');
                     if (embed != null) {
                         element = sel.anchorNode;
                     }
-                    var object = sel.anchorNode.querySelector('object');
+                    const object = sel.anchorNode.querySelector('object');
                     if (object != null) {
                         element = sel.anchorNode;
                     }
@@ -1466,7 +1580,7 @@ class RTBlazorfied {
             else {
                 /* See if this is an outer element */
                 if (this.hasCommonAncestor(sel) == true) {
-                    var range = sel.getRangeAt(0);
+                    const range = sel.getRangeAt(0);
                     element = range.commonAncestorContainer;
                     this.isCommonAncestor = true;
                 }
@@ -1477,10 +1591,11 @@ class RTBlazorfied {
             }
             
             if (element != null) {
+                let e;
                 switch (type) {
                     case "textcolor":
                         if (value == "None") {
-                            var e = this.getElementByStyle(element, type);
+                            e = this.getElementByStyle(element, type);
                             if (e != null) {
                                 this.removeProperty(e, "color", e.style.getPropertyValue("color"));
                             }
@@ -1491,7 +1606,7 @@ class RTBlazorfied {
                         break;
                     case "textbgcolor":
                         if (value == "None") {
-                            var e = this.getElementByStyle(element, type);
+                            e = this.getElementByStyle(element, type);
                             if (e != null) {
                                 this.removeProperty(e, "background-color", e.style.getPropertyValue("background-color"));
                             }
@@ -1616,7 +1731,7 @@ class RTBlazorfied {
             /* Insert a new node */
             /* Make certain the element has content */
             if (sel.toString().length > 0 && value != "None") {
-                var newElement;
+                let newElement;
                 switch (type) {
                     case "textcolor":
                         newElement = this.createElement(sel);
@@ -1697,15 +1812,15 @@ class RTBlazorfied {
         this.focusEditor();
     }
     hasCommonAncestor(selection) {
-        var range = selection.getRangeAt(0);
+        const range = selection.getRangeAt(0);
 
         /* This is used to compare the html contents
         to ensure they are the same element */
-        var fragment = range.cloneContents();
-        var temp = document.createElement('div');
+        const fragment = range.cloneContents();
+        const temp = document.createElement('div');
         temp.appendChild(fragment);
 
-        var commonAncestor = range.commonAncestorContainer;
+        const commonAncestor = range.commonAncestorContainer;
         if (commonAncestor !== this.content && this.content.contains(commonAncestor) && temp.innerHTML == range.commonAncestorContainer.innerHTML && commonAncestor.nodeType !== Node.TEXT_NODE) {
             temp.remove();
             return true;
@@ -1714,22 +1829,21 @@ class RTBlazorfied {
         return false;
     }
     createElement(selection) {
-        if (this.containsElements(selection) || !this.containsElements(this.content)) {
+        if (this.containsElements(selection) || this.content.children.length === 0) {
             return document.createElement("div");
         }
         return document.createElement("span");
     }
     containsElements(selection) {
         if (selection.rangeCount > 0) {
-            var range = selection.getRangeAt(0);
+            const range = selection.getRangeAt(0);
 
             /* Clone the contents to a document fragment */
-            var fragment = range.cloneContents();
+            const fragment = range.cloneContents();
 
             /* Check for child elements */
             for (let node of fragment.childNodes) {
                 if (node.nodeType === Node.ELEMENT_NODE) {
-
                     /* If it contains an element */
                     return true;
                 }
@@ -1769,12 +1883,12 @@ class RTBlazorfied {
     addTextDecoration = (element, decoration) => {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
-        var currentDecorations = element.style.textDecoration;
+        const currentDecorations = element.style.textDecoration;
 
         /* Check if the decoration is already applied */
         if (currentDecorations != null && !currentDecorations.includes(decoration)) {
             /* Add the new decoration */
-            var newDecorations = currentDecorations ? currentDecorations + ' ' + decoration : decoration;
+            const newDecorations = currentDecorations ? currentDecorations + ' ' + decoration : decoration;
             element.style.textDecoration = newDecorations;
         }
     }
@@ -1782,10 +1896,10 @@ class RTBlazorfied {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
         if (this.getUserDefinedStyleCount(element) > 1) {
-            var currentDecorations = element.style.textDecoration.split(' ');
+            const currentDecorations = element.style.textDecoration.split(' ');
 
             /* Remove the specified decoration */
-            var newDecorations = currentDecorations.filter(decor => decor !== decoration);
+            const newDecorations = currentDecorations.filter(decor => decor !== decoration);
 
             /* Update the element's text-decoration style */
             element.style.textDecoration = newDecorations.join(' ');
@@ -1809,10 +1923,10 @@ class RTBlazorfied {
     getUserDefinedStyles = (element) => {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
-        var styles = {};
-        for (var i = 0; i < element.style.length; i++) {
-            var property = element.style[i];
-            var value = element.style.getPropertyValue(property);
+        let styles = {};
+        for (let i = 0; i < element.style.length; i++) {
+            let property = element.style[i];
+            let value = element.style.getPropertyValue(property);
             styles[property] = value;
         }
 
@@ -1822,7 +1936,7 @@ class RTBlazorfied {
     getUserDefinedStyleCount = (element) => {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
 
-        var c = 0;
+        let c = 0;
         for (let i = 0; i < element.style.length; i++) {
             let property = element.style[i];
             let value = element.style.getPropertyValue(property);
@@ -1830,7 +1944,7 @@ class RTBlazorfied {
             /* Filter out the initual values, e.g., <h1> */
             if (this.isFormatElement(element)) {
                 if (value != "initial") {
-                    var words = value.split(' ');
+                    let words = value.split(' ');
 
                     /* Check if the style contains multiple values */
                     if (!this.isMultiValueProperty(property) && words.length > 1) {
@@ -1916,7 +2030,7 @@ class RTBlazorfied {
             if (el.nodeName != "#text" && el.nodeName != "#document") {
 
                 /* Check if a style element exists  */
-                var e = this.getElementByStyle(el, type);
+                const e = this.getElementByStyle(el, type);
                 if (e != null && this.selectionContainsNode(selection, e)) {
                     return e;
                 }
@@ -1970,11 +2084,12 @@ class RTBlazorfied {
             /* Prevent recursion outside the editor */
             if (el === this.content || !this.content.contains(el)) { return; }
             if (el.style != null) {
+                let style = null;
                 switch (type) {
                     case "textcolor":
                         /* This method is more specific to the element
                         instead of applying inherited styles */
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("color:")) {
                             return el;
                         }
@@ -1982,25 +2097,25 @@ class RTBlazorfied {
                     case "textbgcolor":
                         /* This method is more specific to the element
                         instead of applying inherited styles */
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("background-color:")) {
                             return el;
                         }
                         break;
                     case "font":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("font-family:")) {
                             return el;
                         }
                         break;
                     case "size":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("font-size:")) {
                             return el;
                         }
                         break;
                     case "bold":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("font-weight:")) {
                             if (el.style.fontWeight == "bold") {
                                 return el;
@@ -2008,7 +2123,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "italic":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("font-style:")) {
                             if (el.style.fontStyle == "italic") {
                                 return el;
@@ -2016,7 +2131,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "underline":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-decoration:")) {
                             if (el.style.textDecoration.includes("underline")) {
                                 return el;
@@ -2024,7 +2139,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "line-through":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-decoration:")) {
                             if (el.style.textDecoration.includes("line-through")) {
                                 return el;
@@ -2032,7 +2147,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "subscript":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("vertical-align:")) {
                             if (el.style.verticalAlign == "sub") {
                                 return el;
@@ -2040,7 +2155,7 @@ class RTBlazorfied {
                         }                        
                         break;
                     case "superscript":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("vertical-align:")) {
                             if (el.style.verticalAlign == "superscript") {
                                 return el;
@@ -2048,7 +2163,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "alignleft":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-align:")) {
                             if (el.style.textAlign == "left") {
                                 return el;
@@ -2056,7 +2171,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "aligncenter":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-align:")) {
                             if (el.style.textAlign == "center") {
                                 return el;
@@ -2064,7 +2179,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "alignright":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-align:")) {
                             if (el.style.textAlign == "right") {
                                 return el;
@@ -2072,7 +2187,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "alignjustify":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-align:")) {
                             if (el.style.textAlign == "justify") {
                                 return el;
@@ -2080,7 +2195,7 @@ class RTBlazorfied {
                         }
                         break;
                     case "indent":
-                        var style = el.getAttribute("style");
+                        style = el.getAttribute("style");
                         if (style != null && style.includes("text-indent:")) {
                             return el;
                         }
@@ -2093,12 +2208,12 @@ class RTBlazorfied {
         return null;
     }
     getHtml = () => {
-        var html = this.html();
+        const html = this.html();
         this.loadInnerText(html);
         this.focusEditor();
     };
     getCode = () => {
-        var plaintext = this.plaintext();
+        const plaintext = this.plaintext();
         this.loadHtml(plaintext);
         this.focusEditor();
     };
@@ -2135,45 +2250,45 @@ class RTBlazorfied {
         if (el == null || el == this.content || !this.content.contains(el) || this.lockToolbar == true) { return; }
        
         /* Reset Styles */
-        var bold = this.getButton("blazing-rich-text-bold-button");
-        var italic = this.getButton("blazing-rich-text-italic-button");
-        var underline = this.getButton("blazing-rich-text-underline-button");
-        var strike = this.getButton("blazing-rich-text-strike-button");
-        var sub = this.getButton("blazing-rich-text-sub-button");
-        var superscript = this.getButton("blazing-rich-text-super-button");
-        var alignleft = this.getButton("blazing-rich-text-alignleft-button");
-        var aligncenter = this.getButton("blazing-rich-text-aligncenter-button");
-        var alignright = this.getButton("blazing-rich-text-alignright-button");
-        var alignjustify = this.getButton("blazing-rich-text-alignjustify-button");
+        const bold = this.getButton("blazing-rich-text-bold-button");
+        const italic = this.getButton("blazing-rich-text-italic-button");
+        const underline = this.getButton("blazing-rich-text-underline-button");
+        const strike = this.getButton("blazing-rich-text-strike-button");
+        const sub = this.getButton("blazing-rich-text-sub-button");
+        const superscript = this.getButton("blazing-rich-text-super-button");
+        const alignleft = this.getButton("blazing-rich-text-alignleft-button");
+        const aligncenter = this.getButton("blazing-rich-text-aligncenter-button");
+        const alignright = this.getButton("blazing-rich-text-alignright-button");
+        const alignjustify = this.getButton("blazing-rich-text-alignjustify-button");
         this.textAlign = false;
 
-        var ol = this.getButton("blazing-rich-text-orderedlist-button");
-        var ul = this.getButton("blazing-rich-text-unorderedlist-button");
+        const ol = this.getButton("blazing-rich-text-orderedlist-button");
+        const ul = this.getButton("blazing-rich-text-unorderedlist-button");
 
-        var indent = this.getButton("blazing-rich-text-indent-button");
-        var link = this.getButton("blazing-rich-text-link-button");
-        var linkRemove = this.getButton("blazing-rich-text-remove-link-button");
-        var textColor = this.getButton("blazing-rich-text-textcolor-button");
-        var textBackgroundColor = this.getButton("blazing-rich-text-text-bg-color-button");
-        var textColorRemove = this.getButton("blazing-rich-text-textcolor-remove-button");
+        const indent = this.getButton("blazing-rich-text-indent-button");
+        const link = this.getButton("blazing-rich-text-link-button");
+        const linkRemove = this.getButton("blazing-rich-text-remove-link-button");
+        const textColor = this.getButton("blazing-rich-text-textcolor-button");
+        const textBackgroundColor = this.getButton("blazing-rich-text-text-bg-color-button");
+        const textColorRemove = this.getButton("blazing-rich-text-textcolor-remove-button");
 
-        var blockQuote = this.getButton("blazing-rich-text-quote-button");
-        var codeBlock = this.getButton("blazing-rich-text-code-block-button");
+        const blockQuote = this.getButton("blazing-rich-text-quote-button");
+        const codeBlock = this.getButton("blazing-rich-text-code-block-button");
 
         /* Menus */
-        var formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
+        const formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
         if (formatButton != null) {
             formatButton.innerText = "Format";
             this.formatSelected = false;
         }
        
-        var fontButton = this.shadowRoot.getElementById("blazing-rich-text-font-button");
+        const fontButton = this.shadowRoot.getElementById("blazing-rich-text-font-button");
         if (fontButton != null) {
             fontButton.innerText = "Font";
             this.fontSelected = false;
         }
         
-        var sizeButton = this.shadowRoot.getElementById("blazing-rich-text-size-button");
+        const sizeButton = this.shadowRoot.getElementById("blazing-rich-text-size-button");
         if (sizeButton != null) {
             sizeButton.innerText = "Size";
             this.fontSizeSelected = false;
@@ -2186,7 +2301,7 @@ class RTBlazorfied {
                 break;
             }
 
-            var compStyles = window.getComputedStyle(el.parentNode);
+            let compStyles = window.getComputedStyle(el.parentNode);
 
             /* Bold */
             if (el.parentNode.style != null && el.parentNode.style.fontWeight == "bold") {
@@ -2291,7 +2406,7 @@ class RTBlazorfied {
         }
         this.closeDropdowns();
     }
-    getButton(id) {
+    getButton = (id) => {
         var element = this.shadowRoot.getElementById(id);
         if (element != null && element.classList.contains("selected")) {
             element.classList.remove("selected");
@@ -2314,7 +2429,7 @@ window.RTBlazorfied_Initialize = (id, shadow_id, toolbar_id, styles, html) => {
 
 window.RTBlazorfied_Method = (methodName, id, param) => {
     try {
-        var editorInstance = RTBlazorfied_Instances[id];
+        const editorInstance = RTBlazorfied_Instances[id];
         if (editorInstance && typeof editorInstance[methodName] === 'function') {
             if (param != null) {
                 return editorInstance[methodName](param);
