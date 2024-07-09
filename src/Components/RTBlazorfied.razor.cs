@@ -14,7 +14,10 @@ public partial class RTBlazorfied
     private IJSRuntime js { get; set; } = default!;
 
     [Parameter]
-    public string? Html { get; set; }
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
     [Parameter]
     public string? Width { get; set; }
     [Parameter]
@@ -1155,18 +1158,18 @@ public partial class RTBlazorfied
         OpenEditorStyles = "rich-text-box-menu-item-special selected";
         OpenCodeStyles = "rich-text-box-menu-item-special";
 
-        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Html);
+        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value);
     }
 
     public async Task Reinitialize() 
     {
         if (Mode == "html")
         {
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Html);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
         }
         else
         {
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Html);
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
         }
     }
 

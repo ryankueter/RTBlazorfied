@@ -30,7 +30,7 @@ In this example, the @Html is the html string. This height and width will overri
 ```html
 @using RichTextBlazorfied
 
-<RTBlazorfied @ref="box" Html="@Html" Height="500px" Width="1000px" />
+<RTBlazorfied @ref="box" @bind-Value="@Html" Height="500px" Width="1000px" />
 ```
 
 The element reference can be used to get the html or plaintext for saving.
@@ -56,7 +56,7 @@ box.Reinitialize();
 
 RTBlazorfied was designed to allow developers to highly customize the appearance of the rich textbox with the following configuration options:
 ```html
-<RTBlazorfied Html="@Html" Options="@GetOptions()" />
+<RTBlazorfied @bind-Value="@Html" Options="@GetOptions()" />
 ```
 
 CSS variables, e.g., var(--my-variable) are interchangeable with these styles. And omitting the ButtonVisibility options will display all the buttons.
