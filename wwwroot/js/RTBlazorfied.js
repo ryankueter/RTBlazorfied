@@ -4,14 +4,14 @@
  * file that was distributed with this source code.
  */
 class RTBlazorfied {
-    constructor(id, shadow_id, toolbar_id, styles) {
+    constructor(id, shadow_id, toolbar_id, styles, dotNetObjectReference) {
         this.id = id;
         this.shadow_id = shadow_id;
         this.toolbar_id = toolbar_id;
         this.styles = styles;
+        this.dotNetObjectReference = dotNetObjectReference;
         this.init();
     }
-
     init = () => {
         /* Initialize history */
         this.history = [];
@@ -29,23 +29,34 @@ class RTBlazorfied {
         const contentContainer = document.createElement('div');
         contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
 
-        const container = document.createElement('div');
-        container.setAttribute('class', 'rich-text-box-container');
+        this.container = document.createElement('div');
+        this.container.setAttribute('class', 'rich-text-box-container');
+        
 
         /* The main content that is referenced throughout */
         this.content = document.createElement('div');
         this.content.setAttribute('id', this.id);
         this.content.setAttribute('class', 'rich-text-box-content');
         this.content.setAttribute('contenteditable', 'true');
+        this.content.style.display = "block";
+
+        this.source = document.createElement('textarea');
+        this.source.setAttribute('id', 'rich-text-box-source');
+        this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
+        this.source.style.borderStyle = "none";
+        this.source.style.display = "none";
+        this.source.style.resize = "none";
+        this.source.style.margin = "0";
 
         /* Assemble everything into the container */
         const toolbar = document.getElementById(this.toolbar_id);
-        container.appendChild(toolbar);
+        this.container.appendChild(toolbar);
 
         contentContainer.appendChild(this.content);
-        container.appendChild(contentContainer);
+        contentContainer.appendChild(this.source);
+        this.container.appendChild(contentContainer);
 
-        this.shadowRoot.appendChild(container);
+        this.shadowRoot.appendChild(this.container);
 
         /* Listen for selection change event to select buttons */
         document.addEventListener('selectionchange', () => {
@@ -60,7 +71,7 @@ class RTBlazorfied {
         this.content.addEventListener('click', (event) => {
             /* Prevent the default link click */
             if (event.target.tagName === 'A') {
-                event.preventDefault(); 
+                event.preventDefault();
                 event.stopPropagation();
             }
         });
@@ -77,7 +88,7 @@ class RTBlazorfied {
                 event.preventDefault();
             });
         });
-        
+
         /* Callback function to execute when mutations are observed */
         const richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
@@ -136,6 +147,14 @@ class RTBlazorfied {
             hexInput.addEventListener('change', () => this.updateFromHex());
             hexInput.addEventListener('paste', () => this.updateFromHex());
         });
+    }
+    updateCode = () => {
+        if (this.content.style.display = "block") {
+            this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
+        }
+        else {
+            this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.source.value);
+        }
     }
     updateColor = () => {
         const colorPickers = this.shadowRoot.querySelectorAll('.rich-text-box-color-picker');
@@ -228,6 +247,7 @@ class RTBlazorfied {
                 this.currentIndex--;
             }
         }
+        this.updateCode();
     };
     /* History */
     goBack = () => {
@@ -1482,7 +1502,7 @@ class RTBlazorfied {
     }
 
     hasInvalidElementsInRange = (range) => {
-        const node = range.startContainer;
+        let node = range.startContainer;
         const endNode = range.endContainer;
         
         /* Traverse through nodes within the range */
@@ -1490,7 +1510,6 @@ class RTBlazorfied {
             if (node.nodeType === Node.ELEMENT_NODE) {
                 const tagName = node.tagName.toLowerCase();
 
-                /* Check for block-level elements */
                 /* Check for block-level elements */
                 if (node !== endNode && ["address", "article", "aside", "blockquote", "details", "dialog", "div", "dl", "fieldset", "figcaption", "figure", "footer", "form", "header", "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"].includes(tagName)) {
                     return true;
@@ -2220,11 +2239,15 @@ class RTBlazorfied {
     getHtml = () => {
         const html = this.html();
         this.loadInnerText(html);
+        this.content.style.display = "none";
+        this.source.style.display = "block";
         this.focusEditor();
     };
     getCode = () => {
         const plaintext = this.plaintext();
         this.loadHtml(plaintext);
+        this.content.style.display = "block";
+        this.source.style.display = "none";
         this.focusEditor();
     };
     html = () => {
@@ -2242,17 +2265,17 @@ class RTBlazorfied {
     };
     loadInnerText = (text) => {
         this.EditMode = false;
-        this.content.style.fontFamily = 'Consolas, monospace';
+        this.source.style.fontFamily = 'Consolas, monospace';
         if (text != null) {
-            this.content.innerText = text;
+            this.source.textContent = text;
         }
         else {
-            this.content.innerText = "";
+            this.source.textContent = "";
         }
         this.selectButtons(this.content);
     };
     plaintext = () => {
-        return this.content.innerText || this.content.textContent;
+        return this.source.value;
     };
 
     /* Search up the elements */
@@ -2427,10 +2450,12 @@ class RTBlazorfied {
 
 window.RTBlazorfied_Instances = {};
 
-window.RTBlazorfied_Initialize = (id, shadow_id, toolbar_id, styles, html) => {
+window.RTBlazorfied_Initialize = (id, shadow_id, toolbar_id, styles, html, objectReference) => {
     try {
-        RTBlazorfied_Instances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles);
-        RTBlazorfied_Instances[id].loadHtml(html);
+        if (RTBlazorfied_Instances[id] == null) {
+            RTBlazorfied_Instances[id] = new RTBlazorfied(id, shadow_id, toolbar_id, styles, objectReference);
+            RTBlazorfied_Instances[id].loadHtml(html);
+        }
     }
     catch (ex) {
         console.log(ex)
@@ -2440,7 +2465,7 @@ window.RTBlazorfied_Initialize = (id, shadow_id, toolbar_id, styles, html) => {
 window.RTBlazorfied_Method = (methodName, id, param) => {
     try {
         const editorInstance = RTBlazorfied_Instances[id];
-        if (editorInstance && typeof editorInstance[methodName] === 'function') {
+        if (editorInstance != null && typeof editorInstance[methodName] === 'function') {
             if (param != null) {
                 return editorInstance[methodName](param);
             }

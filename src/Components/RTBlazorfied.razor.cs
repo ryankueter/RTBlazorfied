@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System.Security.AccessControl;
 
 /**
  * Author: Ryan A. Kueter
@@ -15,9 +16,22 @@ public partial class RTBlazorfied
 
     [Parameter]
     public string? Value { get; set; }
-
     [Parameter]
-    public EventCallback<string?> ValueChanged { get; set; }
+    public EventCallback<string> ValueChanged { get; set; }
+    private DotNetObjectReference<RTBlazorfied>? objectReference;
+    private bool _settingParameter;
+
+    [JSInvokable]
+    public async Task UpdateValue(string? value)
+    {
+        _settingParameter = true;
+        if (value is not null)
+        {
+            Value = value;
+            await ValueChanged.InvokeAsync(value);
+        }
+        _settingParameter = false;
+    }
     [Parameter]
     public string? Width { get; set; }
     [Parameter]
@@ -27,10 +41,10 @@ public partial class RTBlazorfied
         $$"""
         .rich-text-box-tool-bar {
             background-color: {{_toolbarBackgroundColor}};
-            border-style: {{_toolbarBorderStyle}};
-            border-width: {{_toolbarBorderWidth}};
-            border-color: {{_toolbarBorderColor}};
-            border-radius: {{_toolbarBorderRadius}};
+            border-bottom-style: {{_toolbarBorderStyle}};
+            border-bottom-width: {{_toolbarBorderWidth}};
+            border-bottom-color: {{_toolbarBorderColor}};
+            border-bottom-radius: {{_toolbarBorderRadius}};
             padding-left: 3px;
             display: flex;
             flex-wrap: wrap;
@@ -113,6 +127,16 @@ public partial class RTBlazorfied
             color: {{_contentTextColor}};
             white-space: pre-wrap; 
             word-wrap: break-word;
+        }
+        .rich-text-box-source {
+            padding: 10px;
+            width: 100%;
+            min-height: 25px;
+            color: {{_contentTextColor}};
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+            background-color: {{_contentBackgroundColor}};
+            box-shadow: {{_contentBoxShadow}};
         }
         /*
         ::selection {
@@ -453,15 +477,15 @@ public partial class RTBlazorfied
 
     #region Styles
     // Toolbar
-    private string? _toolbarBackgroundColor { get; set; } = "#f1f1f1";
-    private string? _toolbarBorderStyle { get; set; } = "none";
-    private string? _toolbarBorderWidth { get; set; } = "0px";
-    private string? _toolbarBorderColor { get; set; } = "#000000";
+    private string? _toolbarBackgroundColor { get; set; } = "#FFF";
+    private string? _toolbarBorderStyle { get; set; } = "solid";
+    private string? _toolbarBorderWidth { get; set; } = "1px";
+    private string? _toolbarBorderColor { get; set; } = "#EEE";
     private string? _toolbarBorderRadius { get; set; } = "0px";
-    private string? _toolbarDropdownBackgroundColor { get; set; } = "#f1f1f1";
-    private string? _toolbarDropdownTextColor { get; set; } = "#000000";
+    private string? _toolbarDropdownBackgroundColor { get; set; } = "#FFF";
+    private string? _toolbarDropdownTextColor { get; set; } = "#000";
     private string? _toolbarDropdownBackgroundColorHover { get; set; } = "#e5e5e5";
-    private string? _toolbarDropdownTextColorHover { get; set; } = "#000000";
+    private string? _toolbarDropdownTextColorHover { get; set; } = "#000";
 
     // Buttons
     private string? _buttonTextColor { get; set; } = "#000";
@@ -486,7 +510,7 @@ public partial class RTBlazorfied
     private string? _editorBorderRadius { get; set; } = "0px";
     private string? _editorBorderStyle { get; set; } = "solid";
     private string? _editorBorderWidth { get; set; } = "1px";
-    private string? _editorBorderColor { get; set; } = "#EEEEEE";
+    private string? _editorBorderColor { get; set; } = "#EEE";
     private string? _editorBoxShadow { get; set; } = "none";
 
     // Scroll
@@ -514,7 +538,6 @@ public partial class RTBlazorfied
 
     private string? Mode { get; set; }
     private bool IsDisabled { get; set; }
-    private string? OpenEditorStyles { get; set; }
     private string? OpenCodeStyles { get; set; }
     private bool Editable { get; set; } = true;
     protected override void OnInitialized()
@@ -525,7 +548,6 @@ public partial class RTBlazorfied
             Options(_options!);
         }
         LoadOptions();
-        _ = OpenCode();
     }
 
     [Parameter]
@@ -1141,24 +1163,27 @@ public partial class RTBlazorfied
     };
     private async Task Size(string size) => await js.InvokeVoidAsync("RTBlazorfied_Method", "size", id, size == "None" ? size : $"{size}px");
     #endregion
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await Initialize();
-        }
+        await Initialize();
     }
 
     private string id = Guid.NewGuid().ToString();
     private async Task Initialize()
     {
-        Mode = "html";
+        
         IsDisabled = false;
-        OpenEditorStyles = "rich-text-box-menu-item-special selected";
         OpenCodeStyles = "rich-text-box-menu-item-special";
 
-        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value);
+        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, DotNetObjectReference.Create(this));
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_settingParameter == false)
+        {
+            Mode = "html";
+            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
+        }
     }
 
     public async Task Reinitialize() 
@@ -1220,7 +1245,6 @@ public partial class RTBlazorfied
         {
             Mode = "code";
             IsDisabled = true;
-            OpenEditorStyles = "rich-text-box-menu-item-special";
             OpenCodeStyles = "rich-text-box-menu-item-special selected";
             await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", id);
         }
@@ -1228,7 +1252,6 @@ public partial class RTBlazorfied
         {
             Mode = "html";
             IsDisabled = false;
-            OpenEditorStyles = "rich-text-box-menu-item-special selected";
             OpenCodeStyles = "rich-text-box-menu-item-special";
             await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", id);
         }
