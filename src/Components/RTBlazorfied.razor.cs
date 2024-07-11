@@ -1170,6 +1170,7 @@ public partial class RTBlazorfied
         await Initialize();
     }
 
+    private bool _error;
     private string id = Guid.NewGuid().ToString();
     private DotNetObjectReference<RTBlazorfied>? objectReference;
     private async Task Initialize()
@@ -1178,7 +1179,13 @@ public partial class RTBlazorfied
         OpenCodeStyles = "rich-text-box-menu-item-special";
 
         objectReference = DotNetObjectReference.Create(this);
-        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, objectReference);
+        try
+        {
+            await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, objectReference);
+        }
+        catch {
+           _error = true;
+        }
     }
     public void Dispose() => objectReference?.Dispose();
     protected override async Task OnParametersSetAsync()
@@ -1186,7 +1193,14 @@ public partial class RTBlazorfied
         if (!_settingParameter)
         {
             Mode = "html";
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
+            try
+            {
+                await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
+            }
+            catch
+            {
+                _error = true;
+            }
         }
     }
 
@@ -1249,4 +1263,6 @@ public partial class RTBlazorfied
         }
     }
     #endregion
+
+    
 }

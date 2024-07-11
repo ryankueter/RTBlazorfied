@@ -1,415 +1,442 @@
 ﻿@namespace RichTextBlazorfied
 
-<div id="@($"{id}_Toolbar")" class="rich-text-box-tool-bar">
-    @if (_font == true)
-    {
-        <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-font-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
-                Font
-            </button>
-            <div id="blazing-rich-text-font-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-font-content rich-text-box-scroll">
-                @foreach (var font in Fonts)
-                {
-                    <a class="rich-text-box-menu-item" style="font-family: @font; cursor: pointer" @onclick='() => Font(font)'>@font</a>
-                }
-            </div>
+<style>
+    .alert {
+        padding: 30px;
+        background-color: #777;
+        color: white;
+        opacity: 1;
+        transition: opacity 0.6s;
+        margin-bottom: 15px;
+        border-radius: 10px;
+    }
+</style>
+
+@if (_error)
+{
+    <div class="alert">
+        <h4>RT Blazorfied Encountered an Error</h4>
+        <div>
+            Perhaps the following script reference is missing?
         </div>
-    }
-    @if (_size == true)
-    {
-        <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + >)" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
-                Size
-            </button>
-            <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
-                @foreach (var size in Sizes)
-                {
-                    <a class="rich-text-box-menu-item" style="font-size: @($"{size}px") !important; cursor: pointer" @onclick='() => Size(size)'>@size</a>
-                }
-            </div>
+        <div>
+            _content/RTBlazorfied/js/RTBlazorfied.js
         </div>
-    }    
-    @if (_format == true)
-    {
-        <div class="rich-text-box-dropdown">
-            <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
-                Format
-            </button>
-            <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
-                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("none")'>None</a>
-                <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("p")'>Paragraph</a>
-                <a class="rich-text-box-menu-item" style="font-size: 34px; cursor: pointer" @onclick='() => FormatText("h1")'>Header 1</a>
-                <a class="rich-text-box-menu-item" style="font-size: 30px; cursor: pointer" @onclick='() => FormatText("h2")'>Header 2</a>
-                <a class="rich-text-box-menu-item" style="font-size: 24px; cursor: pointer" @onclick='() => FormatText("h3")'>Header 3</a>
-                <a class="rich-text-box-menu-item" style="font-size: 20px; cursor: pointer" @onclick='() => FormatText("h4")'>Header 4</a>
-                <a class="rich-text-box-menu-item" style="font-size: 18px; cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
-                <a class="rich-text-box-menu-item" style="font-size: 16px; cursor: pointer" @onclick='() => FormatText("h6")'>Header 6</a>
+    </div>
+}
+else
+{
+    <div id="@($"{id}_Toolbar")" class="rich-text-box-tool-bar">
+        @if (_font == true)
+        {
+            <div class="rich-text-box-dropdown">
+                <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-font-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
+                    Font
+                </button>
+                <div id="blazing-rich-text-font-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-font-content rich-text-box-scroll">
+                    @foreach (var font in Fonts)
+                    {
+                        <a class="rich-text-box-menu-item" style="font-family: @font; cursor: pointer" @onclick='() => Font(font)'>@font</a>
+                    }
+                </div>
             </div>
-        </div>
-    }
-    @if (_textstylesdivider == true)
-    {
-        <RTDivider />
-    }
-    @if (_bold == true)
-    {
-        <RTButton Id="blazing-rich-text-bold-button"
-                  OnClick="Bold"
-                  Icon="@Icons.Bold"
-                  Title="Bold (Ctrl + B)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_italic == true)
-    {
-        <RTButton Id="blazing-rich-text-italic-button"
-                  OnClick="Italic"
-                  Icon="@Icons.Italic"
-                  Title="Italic (Ctrl + I)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_underline == true)
-    {
-        <RTButton Id="blazing-rich-text-underline-button"
-                  OnClick="Underline"
-                  Icon="@Icons.Underline"
-                  Title="Underline (Ctrl + U)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_strikethrough == true)
-    {
-        <RTButton Id="blazing-rich-text-strike-button"
-                  OnClick="Strikethrough"
-                  Icon="@Icons.Strikethrough"
-                  Title="Strikethrough (Ctrl + D)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_subscript == true)
-    {
-        <RTButton Id="blazing-rich-text-sub-button"
-                  OnClick="Subscript"
-                  Icon="@Icons.Subscript"
-                  Title="Subscript (Ctrl + =)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_superscript == true)
-    {
-        <RTButton Id="blazing-rich-text-super-button"
-                  OnClick="Superscript"
-                  Icon="@Icons.Superscript"
-                  Title="Superscript (Ctrl + Shift + +)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_formatdivider == true)
-    {
-        <RTDivider />
-    }
-    @if (_textcolor == true)
-    {
-        <RTButton Id="blazing-rich-text-textcolor-button"
-                  OnClick="OpenTextColorDialog"
-                  Icon="@Icons.TextColor"
-                  Title="Text Color"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_size == true)
+        {
+            <div class="rich-text-box-dropdown">
+                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + >)" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
+                    Size
+                </button>
+                <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
+                    @foreach (var size in Sizes)
+                    {
+                        <a class="rich-text-box-menu-item" style="font-size: @($"{size}px") !important; cursor: pointer" @onclick='() => Size(size)'>@size</a>
+                    }
+                </div>
+            </div>
+        }
+        @if (_format == true)
+        {
+            <div class="rich-text-box-dropdown">
+                <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
+                    Format
+                </button>
+                <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
+                    <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("none")'>None</a>
+                    <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("p")'>Paragraph</a>
+                    <a class="rich-text-box-menu-item" style="font-size: 34px; cursor: pointer" @onclick='() => FormatText("h1")'>Header 1</a>
+                    <a class="rich-text-box-menu-item" style="font-size: 30px; cursor: pointer" @onclick='() => FormatText("h2")'>Header 2</a>
+                    <a class="rich-text-box-menu-item" style="font-size: 24px; cursor: pointer" @onclick='() => FormatText("h3")'>Header 3</a>
+                    <a class="rich-text-box-menu-item" style="font-size: 20px; cursor: pointer" @onclick='() => FormatText("h4")'>Header 4</a>
+                    <a class="rich-text-box-menu-item" style="font-size: 18px; cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
+                    <a class="rich-text-box-menu-item" style="font-size: 16px; cursor: pointer" @onclick='() => FormatText("h6")'>Header 6</a>
+                </div>
+            </div>
+        }
+        @if (_textstylesdivider == true)
+        {
+            <RTDivider />
+        }
+        @if (_bold == true)
+        {
+            <RTButton Id="blazing-rich-text-bold-button"
+                      OnClick="Bold"
+                      Icon="@Icons.Bold"
+                      Title="Bold (Ctrl + B)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_italic == true)
+        {
+            <RTButton Id="blazing-rich-text-italic-button"
+                      OnClick="Italic"
+                      Icon="@Icons.Italic"
+                      Title="Italic (Ctrl + I)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_underline == true)
+        {
+            <RTButton Id="blazing-rich-text-underline-button"
+                      OnClick="Underline"
+                      Icon="@Icons.Underline"
+                      Title="Underline (Ctrl + U)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_strikethrough == true)
+        {
+            <RTButton Id="blazing-rich-text-strike-button"
+                      OnClick="Strikethrough"
+                      Icon="@Icons.Strikethrough"
+                      Title="Strikethrough (Ctrl + D)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_subscript == true)
+        {
+            <RTButton Id="blazing-rich-text-sub-button"
+                      OnClick="Subscript"
+                      Icon="@Icons.Subscript"
+                      Title="Subscript (Ctrl + =)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_superscript == true)
+        {
+            <RTButton Id="blazing-rich-text-super-button"
+                      OnClick="Superscript"
+                      Icon="@Icons.Superscript"
+                      Title="Superscript (Ctrl + Shift + +)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_formatdivider == true)
+        {
+            <RTDivider />
+        }
+        @if (_textcolor == true)
+        {
+            <RTButton Id="blazing-rich-text-textcolor-button"
+                      OnClick="OpenTextColorDialog"
+                      Icon="@Icons.TextColor"
+                      Title="Text Color"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
 
-        <RTButton Id="blazing-rich-text-text-bg-color-button"
-                  OnClick="OpenTextBackgroundColorDialog"
-                  Icon="@Icons.TextBackgroundColor"
-                  Title="Text Background Color"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
+            <RTButton Id="blazing-rich-text-text-bg-color-button"
+                      OnClick="OpenTextBackgroundColorDialog"
+                      Icon="@Icons.TextBackgroundColor"
+                      Title="Text Background Color"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
 
-        <RTButton Id="blazing-rich-text-textcolor-remove-button"
-                  OnClick="RemoveTextColor"
-                  Icon="@Icons.RemoveTextFormat"
-                  Title="Remove Color"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_textcolordivider == true)
-    {
-        <RTDivider />
-    }
+            <RTButton Id="blazing-rich-text-textcolor-remove-button"
+                      OnClick="RemoveTextColor"
+                      Icon="@Icons.RemoveTextFormat"
+                      Title="Remove Color"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_textcolordivider == true)
+        {
+            <RTDivider />
+        }
 
-    @if (_alignleft == true)
-    {
-        <RTButton Id="blazing-rich-text-alignleft-button"
-                  OnClick="Alignleft"
-                  Icon="@Icons.Alignleft"
-                  Title="Align Left (Ctrl + L)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_aligncenter == true)
-    {
-        <RTButton Id="blazing-rich-text-aligncenter-button"
-                  OnClick="Aligncenter"
-                  Icon="@Icons.Aligncenter"
-                  Title="Align Center (Ctrl + E)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_alignright == true)
-    {
-        <RTButton Id="blazing-rich-text-alignright-button"
-                  OnClick="Alignright"
-                  Icon="@Icons.Alignright"
-                  Title="Align Right (Ctrl + R)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_alignjustify == true)
-    {
-        <RTButton Id="blazing-rich-text-alignjustify-button"
-                  OnClick="Alignjustify"
-                  Icon="@Icons.Alignjustify"
-                  Title="Align Justify (Ctrl + J)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_aligndivider == true)
-    {
-        <RTDivider />
-    }
+        @if (_alignleft == true)
+        {
+            <RTButton Id="blazing-rich-text-alignleft-button"
+                      OnClick="Alignleft"
+                      Icon="@Icons.Alignleft"
+                      Title="Align Left (Ctrl + L)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_aligncenter == true)
+        {
+            <RTButton Id="blazing-rich-text-aligncenter-button"
+                      OnClick="Aligncenter"
+                      Icon="@Icons.Aligncenter"
+                      Title="Align Center (Ctrl + E)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_alignright == true)
+        {
+            <RTButton Id="blazing-rich-text-alignright-button"
+                      OnClick="Alignright"
+                      Icon="@Icons.Alignright"
+                      Title="Align Right (Ctrl + R)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_alignjustify == true)
+        {
+            <RTButton Id="blazing-rich-text-alignjustify-button"
+                      OnClick="Alignjustify"
+                      Icon="@Icons.Alignjustify"
+                      Title="Align Justify (Ctrl + J)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_aligndivider == true)
+        {
+            <RTDivider />
+        }
 
-    @if (_copy == true)
-    {
-        <RTButton Id="blazing-rich-text-copy-button"
-                  OnClick="Copy"
-                  Icon="@Icons.Copy"
-                  Title="Copy (Ctrl + C)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_cut == true)
-    {
-        <RTButton Id="blazing-rich-text-cut-button"
-                  OnClick="Cut"
-                  Icon="@Icons.Cut"
-                  Title="Cut (Ctrl + X)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_delete == true)
-    {
-        <RTButton Id="blazing-rich-text-delete-button"
-                  OnClick="Delete"
-                  Icon="@Icons.Delete"
-                  Title="Delete"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_selectall == true)
-    {
-        <RTButton Id="blazing-rich-text-selectall-button"
-                  OnClick="Selectall"
-                  Icon="@Icons.Selectall"
-                  Title="Select All"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_actiondivider == true)
-    {
-       <RTDivider />
-    }
+        @if (_copy == true)
+        {
+            <RTButton Id="blazing-rich-text-copy-button"
+                      OnClick="Copy"
+                      Icon="@Icons.Copy"
+                      Title="Copy (Ctrl + C)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_cut == true)
+        {
+            <RTButton Id="blazing-rich-text-cut-button"
+                      OnClick="Cut"
+                      Icon="@Icons.Cut"
+                      Title="Cut (Ctrl + X)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_delete == true)
+        {
+            <RTButton Id="blazing-rich-text-delete-button"
+                      OnClick="Delete"
+                      Icon="@Icons.Delete"
+                      Title="Delete"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_selectall == true)
+        {
+            <RTButton Id="blazing-rich-text-selectall-button"
+                      OnClick="Selectall"
+                      Icon="@Icons.Selectall"
+                      Title="Select All"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_actiondivider == true)
+        {
+            <RTDivider />
+        }
 
-    @if (_orderedlist == true)
-    {
-        <RTButton Id="blazing-rich-text-orderedlist-button"
-                  OnClick="OrderedList"
-                  Icon="@Icons.OrderedList"
-                  Title="Ordered List"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_unorderedlist == true)
-    {
-        <RTButton Id="blazing-rich-text-unorderedlist-button"
-                  OnClick="UnorderedList"
-                  Icon="@Icons.UnorderedList"
-                  Title="Unordered List"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_listdivider == true)
-    {
-        <RTDivider />
-    }
-    @if (_link == true)
-    {
-        <RTButton Id="blazing-rich-text-link-button"
-                  OnClick="OpenLinkDialog"
-                  Icon="@Icons.CreateLink"
-                  Title="Insert Link"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
+        @if (_orderedlist == true)
+        {
+            <RTButton Id="blazing-rich-text-orderedlist-button"
+                      OnClick="OrderedList"
+                      Icon="@Icons.OrderedList"
+                      Title="Ordered List"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_unorderedlist == true)
+        {
+            <RTButton Id="blazing-rich-text-unorderedlist-button"
+                      OnClick="UnorderedList"
+                      Icon="@Icons.UnorderedList"
+                      Title="Unordered List"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_listdivider == true)
+        {
+            <RTDivider />
+        }
+        @if (_link == true)
+        {
+            <RTButton Id="blazing-rich-text-link-button"
+                      OnClick="OpenLinkDialog"
+                      Icon="@Icons.CreateLink"
+                      Title="Insert Link"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
 
-        <RTButton Id="blazing-rich-text-remove-link-button"
-                  OnClick="RemoveLink"
-                  Icon="@Icons.RemoveLink"
-                  Title="Remove Link"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_image == true)
-    {
-        <RTButton Id="blazing-rich-text-link-button"
-                  OnClick="OpenImageDialog"
-                  Icon="@Icons.Image"
-                  Title="Insert Image"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_quote == true)
-    {
-        <RTButton Id="blazing-rich-text-quote-button"
-                  OnClick="OpenBlockQuoteDialog"
-                  Icon="@Icons.Quote"
-                  Title="Block Quote"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_embedMedia == true)
-    {
-        <RTButton Id="blazing-rich-text-embed-button"
-                  OnClick="OpenEmbedDialog"
-                  Icon="@Icons.VideoFile"
-                  Title="Embed Media"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_codeBlock == true)
-    {
-        <RTButton Id="blazing-rich-text-code-block-button"
-                  OnClick="OpenCodeBlockDialog"
-                  Icon="@Icons.CodeBlocks"
-                  Title="Code Block"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_insertdivider == true)
-    {
-        <RTDivider />
-    }
-    @if (_undo == true)
-    {
-        <RTButton Id="blazing-rich-text-undo-button"
-                  OnClick="Undo"
-                  Icon="@Icons.Undo"
-                  Title="Undo (Ctrl + Z)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_redo == true)
-    {
-        <RTButton Id="blazing-rich-text-redo-button"
-                  OnClick="Redo"
-                  Icon="@Icons.Redo"
-                  Title="Redo (Ctrl + Y)"
-                  TextSize="@_buttonTextSize"
-                  TextColor="@_buttonTextColor"
-                  IsDisabled="@IsDisabled"></RTButton>
-    }
-    @if (_historydivider == true)
-    {
-       <RTDivider />
-    }
-    
-    <button id="blazing-rich-text-source" title="Html Code" class="@OpenCodeStyles" @onclick="OpenCode">
-        <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-            <path d="@Icons.Code" />
-        </svg>
-    </button>
+            <RTButton Id="blazing-rich-text-remove-link-button"
+                      OnClick="RemoveLink"
+                      Icon="@Icons.RemoveLink"
+                      Title="Remove Link"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_image == true)
+        {
+            <RTButton Id="blazing-rich-text-link-button"
+                      OnClick="OpenImageDialog"
+                      Icon="@Icons.Image"
+                      Title="Insert Image"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_quote == true)
+        {
+            <RTButton Id="blazing-rich-text-quote-button"
+                      OnClick="OpenBlockQuoteDialog"
+                      Icon="@Icons.Quote"
+                      Title="Block Quote"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_embedMedia == true)
+        {
+            <RTButton Id="blazing-rich-text-embed-button"
+                      OnClick="OpenEmbedDialog"
+                      Icon="@Icons.VideoFile"
+                      Title="Embed Media"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_codeBlock == true)
+        {
+            <RTButton Id="blazing-rich-text-code-block-button"
+                      OnClick="OpenCodeBlockDialog"
+                      Icon="@Icons.CodeBlocks"
+                      Title="Code Block"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_insertdivider == true)
+        {
+            <RTDivider />
+        }
+        @if (_undo == true)
+        {
+            <RTButton Id="blazing-rich-text-undo-button"
+                      OnClick="Undo"
+                      Icon="@Icons.Undo"
+                      Title="Undo (Ctrl + Z)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_redo == true)
+        {
+            <RTButton Id="blazing-rich-text-redo-button"
+                      OnClick="Redo"
+                      Icon="@Icons.Redo"
+                      Title="Redo (Ctrl + Y)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
+        @if (_historydivider == true)
+        {
+            <RTDivider />
+        }
 
-    <!-- Dialogs -->
-    <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
-    <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
+        <button id="blazing-rich-text-source" title="Html Code" class="@OpenCodeStyles" @onclick="OpenCode">
+            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                <path d="@Icons.Code" />
+            </svg>
+        </button>
 
-    <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Embed Media" OnClick="InsertEmbed">
-        <label for="source">Source</label>
-        <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" tabindex="1">
-        <label for="width">Width</label>
-        <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450" tabindex="2">
-        <label for="height">Height</label>
-        <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250" tabindex="3">
-        <label for="type">Type</label>
-        <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" tabindex="4">
-        <label for="classes">CSS Classes</label>
-        <input type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
-    </RTDialog>
+        <!-- Dialogs -->
+        <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
+        <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
 
-    <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
-        <label for="code">Code Block</label>
-        <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" wrap="off" tabindex="1" />
-        <label for="classes">CSS Classes</label>
-        <input type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
-    </RTDialog>
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Embed Media" OnClick="InsertEmbed">
+            <label for="source">Source</label>
+            <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" tabindex="1">
+            <label for="width">Width</label>
+            <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450" tabindex="2">
+            <label for="height">Height</label>
+            <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250" tabindex="3">
+            <label for="type">Type</label>
+            <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" tabindex="4">
+            <label for="classes">CSS Classes</label>
+            <input type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
+        </RTDialog>
 
-    <RTDialog InstanceId="@id" DialogId="rich-text-box-block-quote-modal" Title="Block Quote" OnClick="InsertQuote">
-        <label for="quote">Quote</label>
-        <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" tabindex="1" />
-        <label for="cite">Cite</label>
-        <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." tabindex="2">
-        <label for="classes">CSS Classes</label>
-        <input type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
-    </RTDialog>
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
+            <label for="code">Code Block</label>
+            <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" wrap="off" tabindex="1" />
+            <label for="classes">CSS Classes</label>
+            <input type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+        </RTDialog>
 
-    <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
-        <label for="webaddress">Web Address</label>
-        <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
-        <label for="imagewidth">Image Width</label>
-        <input type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" tabindex="2">
-        <label for="imageheight">Image Height</label>
-        <input type="text" id="rich-text-box-image-height" name="imageheight" tabindex="3">
-        <label for="alttext">Alternative Text</label>
-        <input type="text" id="rich-text-box-image-alt-text" name="alttext" tabindex="4">
-        <label for="classes">CSS Classes</label>
-        <input type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
-    </RTDialog>
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-block-quote-modal" Title="Block Quote" OnClick="InsertQuote">
+            <label for="quote">Quote</label>
+            <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" tabindex="1" />
+            <label for="cite">Cite</label>
+            <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." tabindex="2">
+            <label for="classes">CSS Classes</label>
+            <input type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+        </RTDialog>
 
-    <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
-        <label for="webaddress">Web Address</label>
-        <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
-        <label for="linktext">Link Text</label>
-        <input type="text" id="rich-text-box-linktext" name="linktext" tabindex="2">
-        <label for="classes">CSS Classes</label>
-        <input type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
-        <label style="display: flex; align-items: center;">
-            <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" tabindex="4" />
-            Open in New Tab
-        </label>
-    </RTDialog>
-</div>
-<div id="@($"{id}_Shadow")"></div>
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
+            <label for="webaddress">Web Address</label>
+            <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
+            <label for="imagewidth">Image Width</label>
+            <input type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" tabindex="2">
+            <label for="imageheight">Image Height</label>
+            <input type="text" id="rich-text-box-image-height" name="imageheight" tabindex="3">
+            <label for="alttext">Alternative Text</label>
+            <input type="text" id="rich-text-box-image-alt-text" name="alttext" tabindex="4">
+            <label for="classes">CSS Classes</label>
+            <input type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
+        </RTDialog>
+
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
+            <label for="webaddress">Web Address</label>
+            <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
+            <label for="linktext">Link Text</label>
+            <input type="text" id="rich-text-box-linktext" name="linktext" tabindex="2">
+            <label for="classes">CSS Classes</label>
+            <input type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+            <label style="display: flex; align-items: center;">
+                <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" tabindex="4" />
+                Open in New Tab
+            </label>
+        </RTDialog>
+    </div>
+    <div id="@($"{id}_Shadow")"></div>
+}
