@@ -43,10 +43,8 @@ class RTBlazorfied {
         this.source = document.createElement('textarea');
         this.source.setAttribute('id', 'rich-text-box-source');
         this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
-        this.source.style.borderStyle = "none";
         this.source.style.display = "none";
-        this.source.style.resize = "none";
-        this.source.style.margin = "0";
+        
 
         /* Assemble everything into the container */
         const toolbar = document.getElementById(this.toolbar_id);
@@ -150,10 +148,14 @@ class RTBlazorfied {
     }
     updateCode = () => {
         if (this.content.style.display = "block") {
-            this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
+            if (this.dotNetObjectReference) {
+                this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
+            }
         }
         else {
-            this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.source.value);
+            if (this.dotNetObjectReference) {
+                this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.source.value);
+            }
         }
     }
     updateColor = () => {

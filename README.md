@@ -33,25 +33,6 @@ In this example, the @Html is the html string. This height and width will overri
 <RTBlazorfied @ref="box" @bind-Value="@Html" Height="500px" Width="1000px" />
 ```
 
-The element reference can be used to get the html or plaintext for saving.
-
-```csharp
-private RTBlazorfied box { get; set; } = new();
-private string? html { get; set; }
-private string? plaintext { get; set; }
-
-private async Task GetHtml() => 
-    html = await box.GetHtmlAsync();
-
-private async Task GetPlainText() => 
-    plaintext = await box.GetPlainTextAsync();
-```
-
-The element reference also provides a method for restoring the text to the beginning:
-```csharp
-box.Reinitialize();
-```
-
 ### Configure the Options
 
 RTBlazorfied was designed to allow developers to highly customize the appearance of the rich textbox with the following configuration options:

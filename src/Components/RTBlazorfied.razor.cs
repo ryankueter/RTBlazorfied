@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Security.AccessControl;
 
 /**
  * Author: Ryan A. Kueter
@@ -18,11 +17,10 @@ public partial class RTBlazorfied
     public string? Value { get; set; }
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }
-    private DotNetObjectReference<RTBlazorfied>? objectReference;
     private bool _settingParameter;
 
     [JSInvokable]
-    public async Task UpdateValue(string? value)
+    public async Task UpdateValue(string value)
     {
         _settingParameter = true;
         if (value is not null)
@@ -134,9 +132,13 @@ public partial class RTBlazorfied
             min-height: 25px;
             color: {{_contentTextColor}};
             white-space: pre-wrap; 
-            word-wrap: break-word;
             background-color: {{_contentBackgroundColor}};
             box-shadow: {{_contentBoxShadow}};
+            border-style: none;
+            display: none;
+            resize: none;
+            margin: 0;
+            line-height: 1.5;
         }
         /*
         ::selection {
@@ -1169,32 +1171,22 @@ public partial class RTBlazorfied
     }
 
     private string id = Guid.NewGuid().ToString();
+    private DotNetObjectReference<RTBlazorfied>? objectReference;
     private async Task Initialize()
     {
-        
         IsDisabled = false;
         OpenCodeStyles = "rich-text-box-menu-item-special";
 
-        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, DotNetObjectReference.Create(this));
+        objectReference = DotNetObjectReference.Create(this);
+        await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, objectReference);
     }
+    public void Dispose() => objectReference?.Dispose();
     protected override async Task OnParametersSetAsync()
     {
-        if (_settingParameter == false)
+        if (!_settingParameter)
         {
             Mode = "html";
             await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
-        }
-    }
-
-    public async Task Reinitialize() 
-    {
-        if (Mode == "html")
-        {
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
-        }
-        else
-        {
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
         }
     }
 
