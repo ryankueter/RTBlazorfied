@@ -190,6 +190,7 @@ public partial class RTBlazorfied
         }
         .rich-text-box-scroll::-webkit-scrollbar-thumb:hover {
             background: {{_scrollThumbBackgroundHover}};
+            cursor: default;
         }
 
         .rich-text-box-dropdown {
@@ -396,7 +397,6 @@ public partial class RTBlazorfied
         .rich-text-box-code {
           overflow: auto !important;
           white-space: pre;
-          cursor: pointer;
         }
 
         /* Color Picker */
