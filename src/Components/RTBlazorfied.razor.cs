@@ -269,31 +269,40 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-modal-content {
-          position: relative;
-          top: 15%;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
           background-color: {{_modalBackgroundColor}};
           color: {{_modalTextColor}};
           margin: auto;
           border: 1px solid #888;
           width: 600px;
           box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-          -webkit-animation-name: animatezoom;
-          -webkit-animation-duration: 0.1s;
-          animation-name: animatezoom;
-          animation-duration: 0.1s;
+          -webkit-animation: fade .2s;
+          animation: fade .2s;
+          -moz-animation: fade .2s;
+          -o-animation: fade .2s;
           border-radius: 5px;
         }
-
-        @-webkit-keyframes animatezoom {
-            from {-webkit-transform: scale(0); opacity:0} 
-            to {-webkit-transform: scale(1)}
+        @-webkit-keyframes fade {
+          0% {opacity: 0} 
+          100% {opacity:1}
         }
 
-        @keyframes animatezoom {
-            from {transform: scale(0); opacity:0} 
-            to {transform: scale(1)}
+        @-moz-keyframes fade{
+            0% {opacity: 0} 
+          100% {opacity:1}
         }
 
+        @keyframes fade {
+          0% {opacity: 0} 
+          100% {opacity:1}
+            }
+        @-o-keyframes fade {
+        0% {opacity: 0} 
+          100% {opacity:1}
+        }
         @media screen and (max-width: 768px) {
             .rich-text-box-modal-content {
                 width: 100%;
