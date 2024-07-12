@@ -13,11 +13,6 @@ class RTBlazorfied {
         this.init();
     }
     init = () => {
-        /* Initialize history */
-        this.history = [];
-        this.currentIndex = -1;
-        this.currentIndex = -1;
-
         /* Load elements into the shadow DOM */
         const isolatedContainer = document.getElementById(this.shadow_id);
         this.shadowRoot = isolatedContainer.attachShadow({ mode: 'open' });
@@ -32,7 +27,6 @@ class RTBlazorfied {
         this.container = document.createElement('div');
         this.container.setAttribute('class', 'rich-text-box-container');
         
-
         /* The main content that is referenced throughout */
         this.content = document.createElement('div');
         this.content.setAttribute('id', this.id);
@@ -45,7 +39,6 @@ class RTBlazorfied {
         this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
         this.source.style.display = "none";
         
-
         /* Assemble everything into the container */
         const toolbar = document.getElementById(this.toolbar_id);
         this.container.appendChild(toolbar);
@@ -87,20 +80,23 @@ class RTBlazorfied {
             });
         });
 
-        /* Callback function to execute when mutations are observed */
+        /* Create a state manager */
+        this.stateManager = new RTBlazorfiedStateManager(this.content, this.source, this.dotNetObjectReference);
+
+        /* Save the state when mutations to the state are observed */
         const richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList' && this.EditMode === true) {
                     /* A child node has been added or removed. */
-                    this.saveState();
+                    this.stateManager.saveState();
                 }
                 else if (mutation.type === 'attributes' && this.EditMode === true) {
                     /* The ${mutation.attributeName} attribute was modified. */
-                    this.saveState();
+                    this.stateManager.saveState();
                 }
                 else if (mutation.type === 'characterData' && this.EditMode === true) {
                     /* The text content of a node has been changed. */
-                    this.saveState();
+                    this.stateManager.saveState();
                 }
             }
         };
@@ -117,154 +113,25 @@ class RTBlazorfied {
         const observer = new MutationObserver(richtextbox);
         observer.observe(this.content, config);
 
-
-        /* Even listeners for the color pickers */
-        this.shadowRoot.querySelectorAll('.rich-text-box-color-picker').forEach(colorPicker => {
-            let sliders = colorPicker.querySelectorAll('.rich-text-box-red-slider, .rich-text-box-green-slider, .rich-text-box-blue-slider');
-            let values = colorPicker.querySelectorAll('.rich-text-box-red-value, .rich-text-box-green-value, .rich-text-box-blue-value');
-
-            sliders.forEach(slider => {
-                slider.addEventListener('input', () => this.updateColor());
-            });
-
-            values.forEach(value => {
-                value.addEventListener('input', (event) => {
-                    let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
-                    correspondingSlider.value = event.target.value;
-                    this.updateColor();
-                });
-            });
-
-            let hexInput = colorPicker.querySelector('.rich-text-box-hex-input');
-            hexInput.addEventListener('keyup', (event) => {
-                // Only update if the input is a valid hex color
-                if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
-                    this.updateFromHex();
-                }
-            });
-            hexInput.addEventListener('change', () => this.updateFromHex());
-            hexInput.addEventListener('paste', () => this.updateFromHex());
-        });
-    }
-    updateCode = () => {
-        if (this.content.style.display = "block") {
-            if (this.dotNetObjectReference) {
-                this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
-            }
+        /* Create the color pickers */
+        this.ColorPickers = {};
+        const colorModal = "rich-text-box-text-color-modal";
+        const bgColorModal = "rich-text-box-text-bg-color-modal";
+        if (this.ColorPickers[colorModal] == null) {
+            this.ColorPickers[colorModal] = new RTBlazorfiedColorPicker(this.shadowRoot, colorModal);
         }
-        else {
-            if (this.dotNetObjectReference) {
-                this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.source.value);
-            }
+        if (this.ColorPickers[bgColorModal] == null) {
+            this.ColorPickers[bgColorModal] = new RTBlazorfiedColorPicker(this.shadowRoot, bgColorModal);
         }
     }
-    updateColor = () => {
-        const colorPickers = this.shadowRoot.querySelectorAll('.rich-text-box-color-picker');
-        colorPickers.forEach(colorPicker => {
-            let dialogtype = colorPicker.querySelector('.rich-text-box-color-dialog-type');
-            let redSlider = colorPicker.querySelector('.rich-text-box-red-slider');
-            let greenSlider = colorPicker.querySelector('.rich-text-box-green-slider');
-            let blueSlider = colorPicker.querySelector('.rich-text-box-blue-slider');
-            let redValue = colorPicker.querySelector('.rich-text-box-red-value');
-            let greenValue = colorPicker.querySelector('.rich-text-box-green-value');
-            let blueValue = colorPicker.querySelector('.rich-text-box-blue-value');
-            let hexInput = colorPicker.querySelector('.rich-text-box-hex-input');
-            let colorDisplay = colorPicker.querySelector('.rich-text-box-color-display');
-
-            let r = parseInt(redSlider.value);
-            let g = parseInt(greenSlider.value);
-            let b = parseInt(blueSlider.value);
-            let color = `rgb(${r}, ${g}, ${b})`;
-            
-            if (dialogtype.value == this.colorDialogType) {
-                this.currentColor = color;
-            }
-            
-            colorDisplay.style.backgroundColor = color;
-            redValue.value = r;
-            greenValue.value = g;
-            blueValue.value = b;
-            hexInput.value = this.rgbToHex(r, g, b);
-        });
-    }
-
-    updateFromHex = () => {
-        const colorPickers = this.shadowRoot.querySelectorAll('.rich-text-box-color-picker');
-        colorPickers.forEach(colorPicker => {
-            let redSlider = colorPicker.querySelector('.rich-text-box-red-slider');
-            let greenSlider = colorPicker.querySelector('.rich-text-box-green-slider');
-            let blueSlider = colorPicker.querySelector('.rich-text-box-blue-slider');
-            let redValue = colorPicker.querySelector('.rich-text-box-red-value');
-            let greenValue = colorPicker.querySelector('.rich-text-box-green-value');
-            let blueValue = colorPicker.querySelector('.rich-text-box-blue-value');
-            let currentHexInput = colorPicker.querySelector('.rich-text-box-hex-input');
-
-            let hex = currentHexInput.value.trim();
-            if (hex.charAt(0) !== '#') {
-                hex = '#' + hex;
-            }
-            if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
-                let rgb = this.hexToRgb(hex);
-                if (rgb) {
-                    redSlider.value = redValue.value = rgb.r;
-                    greenSlider.value = greenValue.value = rgb.g;
-                    blueSlider.value = blueValue.value = rgb.b;
-                }
-            }
-        });
-        this.updateColor();
-    }
-
-    rgbToHex = (r, g, b) => {
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-    }
-
-    hexToRgb = (hex) => {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
-    /* History */
-    saveState = () => {
-        const currentState = this.content.innerHTML;
-
-        /* If there is any change in the content */
-        if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
-
-            /* Remove all future states */
-            this.history = this.history.slice(0, this.currentIndex + 1);
-
-            /* Add the new state */
-            this.history.push(currentState);
-            this.currentIndex++;
-
-            /* Remove the oldest state if history exceeds 20 entries */
-            if (this.history.length > 40) {
-                /* shift() removes the oldest entry */
-                this.history.shift();
-                this.currentIndex--;
-            }
-        }
-        this.updateCode();
-    };
     /* History */
     goBack = () => {
-        if (this.currentIndex > 0) {
-            this.currentIndex--;
-            this.content.innerHTML = this.history[this.currentIndex];
-        }
+        this.stateManager.goBack();
         this.focusEditor();
         this.selectButtons(this.shadowRoot.getSelection().anchorNode);        
     };
     goForward = () => {
-        if (this.currentIndex < this.history.length - 1) {
-            this.currentIndex++;
-            this.content.innerHTML = this.history[this.currentIndex];
-        }
+        this.stateManager.goForward();
         this.focusEditor();
         this.selectButtons(this.shadowRoot.getSelection().anchorNode);
     };
@@ -438,57 +305,24 @@ class RTBlazorfied {
     openTextColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.resetTextColorDialog();
+
+        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
+        colorPicker.resetColorDialog();
 
         /* Get the selection */
         const selection = this.shadowRoot.getSelection();
-        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.color.toString().length > 0) {
-            hexInput.forEach(input => {
-                this.selection = selection.getRangeAt(0).cloneRange();
 
-                let hexColor = this.colorToHex(selection.anchorNode.parentNode.style.color);
-                input.value = hexColor;
-                this.updateFromHex();
-            });
-            this.selection = selection.getRangeAt(0).cloneRange();
-        }
-        else {
-            if (selection != null && selection.rangeCount > 0) {
-                this.selection = selection.getRangeAt(0).cloneRange();
-            }
-        }
-        
-        const e = this.shadowRoot.getElementById("rich-text-box-text-color-modal");
-        const type = e.querySelector(".rich-text-box-color-dialog-type");
-        type.value = "textcolor";
-        this.colorDialogType = "textcolor";
-        e.style.display = "block";
-    }
-    colorToHex = (color) => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = color;
-        return ctx.fillStyle;
-    }
-    resetTextColorDialog = () => {
-        this.selection = null;
-
-        /* Reset the selected color */
-        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
-        hexInput.forEach(input => {
-            input.value = "#000000";
-        });
-        this.updateFromHex();
+        /* Open the color picker */
+        this.selection = colorPicker.openColorPicker(selection, this.content);
     }
     selectTextColor = (color) => {
-        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');        
-        hexInput.forEach(input => {
-            input.value = color;
-        });       
-        this.updateFromHex();
+        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
+        colorPicker.selectColor(color);
     }
     insertTextColor = () => {
+        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
+        this.currentColor = colorPicker.getCurrentColor();
+
         if (this.selection != null) {
             if (this.currentColor == null) {
                 this.updateNode("textcolor", "None");
@@ -508,50 +342,24 @@ class RTBlazorfied {
     openTextBackgroundColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.resetTextBackgroundColorDialog();
+        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
+        colorPicker.resetColorDialog();
 
         /* Get the selection */
         const selection = this.shadowRoot.getSelection();
-        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null && selection.anchorNode.parentNode.style.backgroundColor.toString().length > 0) {
-            hexInput.forEach(input => {
-                this.selection = selection.getRangeAt(0).cloneRange();
 
-                let hexColor = this.colorToHex(selection.anchorNode.parentNode.style.backgroundColor);
-                input.value = hexColor;
-                this.updateFromHex();
-            });
-        }
-        else {
-            if (selection != null && selection.rangeCount > 0) {
-                this.selection = selection.getRangeAt(0).cloneRange();
-            }
-        }
-        
-        const e = this.shadowRoot.getElementById("rich-text-box-text-bg-color-modal");
-        const type = e.querySelector(".rich-text-box-color-dialog-type");
-        type.value = "textbackgroundcolor";
-        this.colorDialogType = "textbackgroundcolor";
-        e.style.display = "block";
+        /* Open the color picker */
+        this.selection = colorPicker.openColorPicker(selection, this.content);
     }
-    resetTextBackgroundColorDialog = () => {
-        this.selection = null;
 
-        /* Reset the selected color */
-        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
-        hexInput.forEach(input => {
-            input.value = "#000000";
-        });
-        this.updateFromHex();
-    }
     selectTextBackgroundColor = (color) => {
-        const hexInput = this.shadowRoot.querySelectorAll('.rich-text-box-hex-input');
-        hexInput.forEach(input => {
-            input.value = color;
-        });
-        this.updateFromHex();
+        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
+        colorPicker.selectColor(color);
     }
     insertTextBackgroundColor = () => {
+        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
+        this.currentColor = colorPicker.getCurrentColor();
+
         if (this.selection != null) {
             if (this.currentColor == null) {
                 this.updateNode("textbgcolor", "None");
@@ -2279,7 +2087,7 @@ class RTBlazorfied {
     plaintext = () => {
         return this.source.value;
     };
-
+    
     /* Search up the elements */
     selectButtons = (el) => {
         if (el == null || el == this.content || !this.content.contains(el) || this.lockToolbar == true) { return; }
@@ -2447,6 +2255,220 @@ class RTBlazorfied {
             element.classList.remove("selected");
         }
         return element;
+    }
+}
+
+class RTBlazorfiedStateManager {
+    constructor(content, source, dotNetObjectReference) {
+        this.content = content;
+        this.source = source;
+        this.dotNetObjectReference = dotNetObjectReference;
+
+        /* Initialize history */
+        this.history = [];
+        this.currentIndex = -1;
+        this.currentIndex = -1;
+    }
+
+    updateCode = () => {
+        if (this.content.style.display = "block") {
+            if (this.dotNetObjectReference) {
+                this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
+            }
+        }
+        else {
+            if (this.dotNetObjectReference) {
+                this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.source.value);
+            }
+        }
+    }
+
+    /* History */
+    saveState = () => {
+        const currentState = this.content.innerHTML;
+
+        /* If there is any change in the content */
+        if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
+
+            /* Remove all future states */
+            this.history = this.history.slice(0, this.currentIndex + 1);
+
+            /* Add the new state */
+            this.history.push(currentState);
+            this.currentIndex++;
+
+            /* Remove the oldest state if history exceeds 20 entries */
+            if (this.history.length > 40) {
+                /* shift() removes the oldest entry */
+                this.history.shift();
+                this.currentIndex--;
+            }
+        }
+        this.updateCode();
+    };
+
+    /* History */
+    goBack = () => {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.content.innerHTML = this.history[this.currentIndex];
+        }
+    };
+    goForward = () => {
+        if (this.currentIndex < this.history.length - 1) {
+            this.currentIndex++;
+            this.content.innerHTML = this.history[this.currentIndex];
+        }
+    };
+}
+
+class RTBlazorfiedColorPicker {
+    constructor(shadowRoot, id) {
+        this.shadowRoot = shadowRoot;
+        this.id = id;
+        this.init();
+    }
+
+    init = () => {
+        this.colorPickerDialog = this.shadowRoot.getElementById(this.id);
+        this.colorPicker = this.colorPickerDialog.querySelector(".rich-text-box-color-picker");
+
+        let sliders = this.colorPicker.querySelectorAll('.rich-text-box-red-slider, .rich-text-box-green-slider, .rich-text-box-blue-slider');
+        let values = this.colorPicker.querySelectorAll('.rich-text-box-red-value, .rich-text-box-green-value, .rich-text-box-blue-value');
+
+        sliders.forEach(slider => {
+            slider.addEventListener('input', () => this.updateColor());
+        });
+
+        values.forEach(value => {
+            value.addEventListener('input', (event) => {
+                let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
+                correspondingSlider.value = event.target.value;
+                this.updateColor();
+            });
+        });
+
+        this.hexInput = this.colorPicker.querySelector('.rich-text-box-hex-input');
+        this.hexInput.addEventListener('keyup', (event) => {
+            // Only update if the input is a valid hex color
+            if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
+                this.updateFromHex();
+            }
+        });
+        this.hexInput.addEventListener('change', () => this.updateFromHex());
+        this.hexInput.addEventListener('paste', () => this.updateFromHex());
+    }
+
+    openColorPicker = (selection, content) => {
+        if (selection != null && selection.anchorNode != null && selection.anchorNode != content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != content && content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null) {
+            this.selection = selection.getRangeAt(0).cloneRange();
+
+            /* Get the type of color dialog and the type of color */
+            switch (this.id) {
+                case "rich-text-box-text-color-modal":
+                    if (selection.anchorNode.parentNode.style.color.toString().length > 0) {
+                        this.hexInput.value = this.colorToHex(selection.anchorNode.parentNode.style.color);
+                    }
+                    break;
+                case "rich-text-box-text-bg-color-modal":
+                    if (selection.anchorNode.parentNode.style.backgroundColor.toString().length > 0) {
+                        this.hexInput.value = this.colorToHex(selection.anchorNode.parentNode.style.backgroundColor);
+                    }                    
+                    break;
+            }
+            this.updateFromHex();
+            this.selection = selection.getRangeAt(0).cloneRange();
+        }
+        else {
+            if (selection != null && selection.rangeCount > 0) {
+                this.selection = selection.getRangeAt(0).cloneRange();
+            }
+        }
+
+        this.colorPickerDialog.style.display = "block";
+        return this.selection;
+    }
+
+    resetColorDialog = () => {
+        this.selection = null;
+
+        /* Reset the selected color */
+        this.hexInput.value = "#000000";
+        this.updateFromHex();
+    }
+
+    selectColor = (color) => {
+        this.hexInput.value = color;
+        this.updateFromHex();
+    }
+    
+    updateColor = () => {
+        let redSlider = this.colorPicker.querySelector('.rich-text-box-red-slider');
+        let greenSlider = this.colorPicker.querySelector('.rich-text-box-green-slider');
+        let blueSlider = this.colorPicker.querySelector('.rich-text-box-blue-slider');
+        let redValue = this.colorPicker.querySelector('.rich-text-box-red-value');
+        let greenValue = this.colorPicker.querySelector('.rich-text-box-green-value');
+        let blueValue = this.colorPicker.querySelector('.rich-text-box-blue-value');
+        let hexInput = this.colorPicker.querySelector('.rich-text-box-hex-input');
+        let colorDisplay = this.colorPicker.querySelector('.rich-text-box-color-display');
+
+        let r = parseInt(redSlider.value);
+        let g = parseInt(greenSlider.value);
+        let b = parseInt(blueSlider.value);
+        let color = `rgb(${r}, ${g}, ${b})`;
+
+        this.currentColor = color;
+        colorDisplay.style.backgroundColor = color;
+        redValue.value = r;
+        greenValue.value = g;
+        blueValue.value = b;
+        hexInput.value = this.rgbToHex(r, g, b);
+    }
+
+    getCurrentColor = () => {
+        return this.currentColor;
+    }
+
+    updateFromHex = () => {
+        let redSlider = this.colorPicker.querySelector('.rich-text-box-red-slider');
+        let greenSlider = this.colorPicker.querySelector('.rich-text-box-green-slider');
+        let blueSlider = this.colorPicker.querySelector('.rich-text-box-blue-slider');
+        let redValue = this.colorPicker.querySelector('.rich-text-box-red-value');
+        let greenValue = this.colorPicker.querySelector('.rich-text-box-green-value');
+        let blueValue = this.colorPicker.querySelector('.rich-text-box-blue-value');
+
+        let hex = this.hexInput.value.trim();
+        if (hex.charAt(0) !== '#') {
+            hex = '#' + hex;
+        }
+        if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+            let rgb = this.hexToRgb(hex);
+            if (rgb) {
+                redSlider.value = redValue.value = rgb.r;
+                greenSlider.value = greenValue.value = rgb.g;
+                blueSlider.value = blueValue.value = rgb.b;
+            }
+        }
+        this.updateColor();
+    }
+
+    rgbToHex = (r, g, b) => {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    hexToRgb = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+    colorToHex = (color) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = color;
+        return ctx.fillStyle;
     }
 }
 

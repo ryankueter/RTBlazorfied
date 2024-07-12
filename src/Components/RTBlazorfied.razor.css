@@ -1,0 +1,12 @@
+.alert {
+    padding: 30px;
+    background-color: #333;
+    color: white;
+    opacity: 1;
+    transition: opacity 0.6s;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #222
+}
