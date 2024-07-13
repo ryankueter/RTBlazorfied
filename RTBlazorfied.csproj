@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added the ability to remove css inputs and dividers and small bug fixes to improve the usability of the editor.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.140</Version>
-	  <AssemblyVersion>1.0.140</AssemblyVersion>
-	  <FileVersion>1.0.140</FileVersion>
+	  <Version>1.0.141</Version>
+	  <AssemblyVersion>1.0.141</AssemblyVersion>
+	  <FileVersion>1.0.141</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

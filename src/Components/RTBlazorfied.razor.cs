@@ -1246,7 +1246,7 @@ public partial class RTBlazorfied
         objectReference = DotNetObjectReference.Create(this);
         try
         {
-            Mode = "html";
+            
             await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, objectReference);
         }
         catch {
@@ -1258,17 +1258,18 @@ public partial class RTBlazorfied
     {
         if (!_settingParameter)
         {
-            
+            Mode = "html";
             try
             {
-                if (Mode == "html")
-                {
-                    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
-                }
-                else
-                {
-                    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
-                }
+                await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
+                //if (Mode == "html")
+                //{
+                //    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
+                //}
+                //else
+                //{
+                //    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
+                //}
             }
             catch
             {
