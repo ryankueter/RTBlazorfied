@@ -538,6 +538,7 @@ public partial class RTBlazorfied
             Options(_options!);
         }
         LoadOptions();
+        Mode = "html";
     }
 
     [Parameter]
@@ -1242,11 +1243,9 @@ public partial class RTBlazorfied
     {
         IsDisabled = false;
         OpenCodeStyles = "rich-text-box-menu-item-special";
-
         objectReference = DotNetObjectReference.Create(this);
         try
         {
-            
             await js.InvokeVoidAsync("RTBlazorfied_Initialize", id, $"{id}_Shadow", $"{id}_Toolbar", GetStyles(), Value, objectReference);
         }
         catch {
@@ -1258,18 +1257,16 @@ public partial class RTBlazorfied
     {
         if (!_settingParameter)
         {
-            Mode = "html";
             try
             {
-                await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
-                //if (Mode == "html")
-                //{
-                //    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
-                //}
-                //else
-                //{
-                //    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
-                //}
+                if (Mode == "html")
+                {
+                    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
+                }
+                else
+                {
+                    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
+                }
             }
             catch
             {
@@ -1321,6 +1318,7 @@ public partial class RTBlazorfied
 
     private async Task OpenCode()
     {
+        Console.WriteLine(Mode);
         if (Mode == "html")
         {
             Mode = "code";
