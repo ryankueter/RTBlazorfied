@@ -83,7 +83,7 @@ class RTBlazorfied {
         /* Create a state manager */
         this.stateManager = new RTBlazorfiedStateManager(this.content, this.source, this.dotNetObjectReference);
 
-        /* Save the state when mutations to the state are observed */
+        /* Save the state when mutations to the state occur */
         const richtextbox = (mutationsList, observer) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList' && this.EditMode === true) {
@@ -117,12 +117,8 @@ class RTBlazorfied {
         this.ColorPickers = {};
         const colorModal = "rich-text-box-text-color-modal";
         const bgColorModal = "rich-text-box-text-bg-color-modal";
-        if (this.ColorPickers[colorModal] == null) {
-            this.ColorPickers[colorModal] = new RTBlazorfiedColorPicker(this.shadowRoot, colorModal);
-        }
-        if (this.ColorPickers[bgColorModal] == null) {
-            this.ColorPickers[bgColorModal] = new RTBlazorfiedColorPicker(this.shadowRoot, bgColorModal);
-        }
+        this.ColorPickers[colorModal] = new RTBlazorfiedColorPicker(this.shadowRoot, colorModal);
+        this.ColorPickers[bgColorModal] = new RTBlazorfiedColorPicker(this.shadowRoot, bgColorModal);
     }
     /* History */
     goBack = () => {
@@ -305,14 +301,12 @@ class RTBlazorfied {
     openTextColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-
-        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
-        colorPicker.resetColorDialog();
-
+        
         /* Get the selection */
         const selection = this.shadowRoot.getSelection();
 
         /* Open the color picker */
+        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
         this.selection = colorPicker.openColorPicker(selection, this.content);
     }
     selectTextColor = (color) => {
@@ -320,7 +314,8 @@ class RTBlazorfied {
         colorPicker.selectColor(color);
     }
     insertTextColor = () => {
-        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
+        const modal = "rich-text-box-text-color-modal";
+        const colorPicker = this.ColorPickers[modal];
         this.currentColor = colorPicker.getCurrentColor();
 
         if (this.selection != null) {
@@ -332,7 +327,7 @@ class RTBlazorfied {
             }
         }
         /* Close the dialog */
-        this.closeDialog("rich-text-box-text-color-modal");
+        this.closeDialog(modal);
     }
     removeTextColor = () => {
         this.currentColor = null;
@@ -342,13 +337,12 @@ class RTBlazorfied {
     openTextBackgroundColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
-        colorPicker.resetColorDialog();
 
         /* Get the selection */
         const selection = this.shadowRoot.getSelection();
 
         /* Open the color picker */
+        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
         this.selection = colorPicker.openColorPicker(selection, this.content);
     }
 
@@ -357,7 +351,8 @@ class RTBlazorfied {
         colorPicker.selectColor(color);
     }
     insertTextBackgroundColor = () => {
-        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
+        const modal = "rich-text-box-text-bg-color-modal";
+        const colorPicker = this.ColorPickers[modal];
         this.currentColor = colorPicker.getCurrentColor();
 
         if (this.selection != null) {
@@ -369,7 +364,7 @@ class RTBlazorfied {
             }
         }
         /* Close the dialog */
-        this.closeDialog("rich-text-box-text-bg-color-modal");
+        this.closeDialog(modal);
     }
     font = (style) => {
         this.updateNode("font", style);
@@ -525,7 +520,6 @@ class RTBlazorfied {
     delete = () => {
         this.shadowRoot.getSelection().deleteFromDocument();
         this.removeEmptyNodes();
-        
         this.focusEditor();
     };
     focusEditor = () => {
@@ -676,9 +670,11 @@ class RTBlazorfied {
             link.value = selection.anchorNode.parentNode.getAttribute("href");
 
             const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
-            const classList = selection.anchorNode.parentNode.classList;
-            classes.value = Array.from(classList).join(' ');
-
+            if (classes != null) {
+                const classList = selection.anchorNode.parentNode.classList;
+                classes.value = Array.from(classList).join(' ');
+            }
+            
             const target = selection.anchorNode.parentNode.getAttribute('target');
             if (target === '_blank') {
                 const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
@@ -736,7 +732,9 @@ class RTBlazorfied {
         newtab.checked = false;
 
         const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
-        classes.value = null;
+        if (classes != null) {
+            classes.value = null;
+        }
     }
     insertLink = () => {
         const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
@@ -755,7 +753,9 @@ class RTBlazorfied {
             const element = this.linkNode;
             element.href = link.value;
             element.textContent = linktext.value;
-            this.addClasses(classes.value, element);
+            if (classes != null) {
+                this.addClasses(classes.value, element);
+            }
             if (newtab.checked) {
                 element.target = "_blank";
             }
@@ -775,7 +775,9 @@ class RTBlazorfied {
                 const anchor = document.createElement("a");
                 anchor.href = link.value;
                 anchor.textContent = linktext.value;
-                this.addClasses(classes.value, anchor);
+                if (classes != null) {
+                    this.addClasses(classes.value, anchor);
+                }
                 if (newtab.checked) {
                     anchor.target = "_blank";
                 }
@@ -787,6 +789,8 @@ class RTBlazorfied {
         this.focusEditor();
     }
     addClasses = (classlist, element) => {
+        if (classlist == null || element == null) { return; }
+
         /* Clear the classes */
         element.classList.remove(...element.classList);
 
@@ -849,10 +853,12 @@ class RTBlazorfied {
             if (selection.anchorNode.parentNode.cite != null) {
                 cite.value = selection.anchorNode.parentNode.cite;
             }           
-                        
-            const classList = selection.anchorNode.parentNode.classList;
-            classes.value = Array.from(classList).join(' ');
 
+            if (classes != null) {
+                const classList = selection.anchorNode.parentNode.classList;
+                classes.value = Array.from(classList).join(' ');
+            }
+            
             this.quoteSelection = selection.getRangeAt(0).cloneRange();
             this.quote = selection.anchorNode.parentNode;         
         }
@@ -882,7 +888,9 @@ class RTBlazorfied {
         cite.value = null;
 
         const css = this.shadowRoot.getElementById("rich-text-box-quote-css-classes");
-        css.value = null;
+        if (css != null) {
+            css.value = null;
+        }
     }
     insertBlockQuote = () => {
         const quote = this.shadowRoot.getElementById("rich-text-box-quote");
@@ -898,8 +906,10 @@ class RTBlazorfied {
             else {
                 element.removeAttribute('cite');
             }
-            this.addClasses(classes.value, element);
-
+            if (classes != null) {
+                this.addClasses(classes.value, element);
+            }
+            
             const range = this.quoteSelection.cloneRange();
             /* Move the cursor after the inserted element */
             range.setStartAfter(element);
@@ -919,8 +929,10 @@ class RTBlazorfied {
                 if (cite.value.trim().length > 0) {
                     blockquote.cite = cite.value;
                 }
-                this.addClasses(classes.value, blockquote);
-
+                if (classes != null) {
+                    this.addClasses(classes.value, blockquote);
+                }
+                
                 range.deleteContents();
                 range.insertNode(blockquote);
 
@@ -952,10 +964,12 @@ class RTBlazorfied {
             
             const clone = selection.anchorNode.parentNode.cloneNode(true);
             code.value = clone.textContent;
-            
-            const classList = selection.anchorNode.parentNode.classList;
-            classes.value = Array.from(classList).join(' ');
 
+            if (classes != null) {
+                const classList = selection.anchorNode.parentNode.classList;
+                classes.value = Array.from(classList).join(' ');
+            }
+            
             this.codeSelection = selection.getRangeAt(0).cloneRange();
             this.code = selection.anchorNode.parentNode;
         }
@@ -982,7 +996,9 @@ class RTBlazorfied {
         code.value = null;
 
         const css = this.shadowRoot.getElementById("rich-text-box-code-css-classes");
-        css.value = null;
+        if (css != null) {
+            css.value = null;
+        }
     }
     insertCodeBlock = () => {
         const codeText = this.shadowRoot.getElementById("rich-text-box-code");
@@ -991,7 +1007,9 @@ class RTBlazorfied {
         if (this.code != null) {
             const element = this.code;
             element.textContent = codeText.value;
-            this.addClasses(classes.value, element);
+            if (classes != null) {
+                this.addClasses(classes.value, element);
+            }
         }
         else {
             if (this.codeSelection != null && codeText.value.length > 0) {
@@ -1003,8 +1021,10 @@ class RTBlazorfied {
 
                 /* Create the <code> element */
                 const code = document.createElement('code');
-                this.addClasses(classes.value, code);
-
+                if (classes != null) {
+                    this.addClasses(classes.value, code);
+                }
+                
                 /* Set the content of the <code> element */
                 code.textContent = codeText.value;
                 
@@ -1064,7 +1084,9 @@ class RTBlazorfied {
         type.value = null;
 
         const classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
-        classes.value = null;
+        if (classes != null) {
+            classes.value = null;
+        }
     }
     insertEmbed = () => {
         const source = this.shadowRoot.getElementById('rich-text-box-embed-source');
@@ -1085,8 +1107,10 @@ class RTBlazorfied {
             object.type = type.value;
             object.height = height.value;
             object.width = width.value;
-            this.addClasses(classes.value, object);
-
+            if (classes != null) {
+                this.addClasses(classes.value, object);
+            }
+            
             range.deleteContents();
             range.insertNode(object);
 
@@ -1138,7 +1162,9 @@ class RTBlazorfied {
         alt.value = null;
 
         const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
-        classes.value = null;
+        if (classes != null) {
+            classes.value = null;
+        }
     }
     insertImage = () => {
         const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
@@ -1162,8 +1188,10 @@ class RTBlazorfied {
             if (alt.value.length > 0) {
                 img.alt = alt.value;
             }
-            this.addClasses(classes.value, img);
-            
+            if (classes != null) {
+                this.addClasses(classes.value, img);
+            }
+                        
             range.deleteContents();
             range.insertNode(img);
 
@@ -2330,36 +2358,60 @@ class RTBlazorfiedColorPicker {
     }
 
     init = () => {
+        /* Get the dialog and color picker */
         this.colorPickerDialog = this.shadowRoot.getElementById(this.id);
         this.colorPicker = this.colorPickerDialog.querySelector(".rich-text-box-color-picker");
 
-        let sliders = this.colorPicker.querySelectorAll('.rich-text-box-red-slider, .rich-text-box-green-slider, .rich-text-box-blue-slider');
-        let values = this.colorPicker.querySelectorAll('.rich-text-box-red-value, .rich-text-box-green-value, .rich-text-box-blue-value');
+        /* Add the elements from the color picker and even listeners */
+        this.redSlider = this.colorPicker.querySelector('.rich-text-box-red-slider');
+        this.addSliderEventListener(this.redSlider);
 
-        sliders.forEach(slider => {
-            slider.addEventListener('input', () => this.updateColor());
-        });
+        this.greenSlider = this.colorPicker.querySelector('.rich-text-box-green-slider');
+        this.addSliderEventListener(this.greenSlider);
 
-        values.forEach(value => {
-            value.addEventListener('input', (event) => {
-                let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
-                correspondingSlider.value = event.target.value;
-                this.updateColor();
-            });
-        });
+        this.blueSlider = this.colorPicker.querySelector('.rich-text-box-blue-slider');
+        this.addSliderEventListener(this.blueSlider);
+
+        this.redValue = this.colorPicker.querySelector('.rich-text-box-red-value');
+        this.addValueEventListener(this.redValue);
+
+        this.greenValue = this.colorPicker.querySelector('.rich-text-box-green-value');
+        this.addValueEventListener(this.greenValue);
+
+        this.blueValue = this.colorPicker.querySelector('.rich-text-box-blue-value');
+        this.addValueEventListener(this.blueValue);
 
         this.hexInput = this.colorPicker.querySelector('.rich-text-box-hex-input');
-        this.hexInput.addEventListener('keyup', (event) => {
+        this.addHexEventListener(this.hexInput);
+
+        this.colorDisplay = this.colorPicker.querySelector('.rich-text-box-color-display');
+    }
+
+    addSliderEventListener = (slider) => {
+        slider.addEventListener('input', () => this.updateColor());
+    }
+
+    addValueEventListener = (value) => {
+        value.addEventListener('input', (event) => {
+            let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
+            correspondingSlider.value = event.target.value;
+            this.updateColor();
+        });
+    }
+
+    addHexEventListener = (hexInput) => {
+        hexInput.addEventListener('keyup', (event) => {
             // Only update if the input is a valid hex color
             if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
                 this.updateFromHex();
             }
         });
-        this.hexInput.addEventListener('change', () => this.updateFromHex());
-        this.hexInput.addEventListener('paste', () => this.updateFromHex());
+        hexInput.addEventListener('change', () => this.updateFromHex());
+        hexInput.addEventListener('paste', () => this.updateFromHex());
     }
 
     openColorPicker = (selection, content) => {
+        this.resetColorDialog();
         if (selection != null && selection.anchorNode != null && selection.anchorNode != content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != content && content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null) {
             this.selection = selection.getRangeAt(0).cloneRange();
 
@@ -2403,26 +2455,17 @@ class RTBlazorfiedColorPicker {
     }
     
     updateColor = () => {
-        let redSlider = this.colorPicker.querySelector('.rich-text-box-red-slider');
-        let greenSlider = this.colorPicker.querySelector('.rich-text-box-green-slider');
-        let blueSlider = this.colorPicker.querySelector('.rich-text-box-blue-slider');
-        let redValue = this.colorPicker.querySelector('.rich-text-box-red-value');
-        let greenValue = this.colorPicker.querySelector('.rich-text-box-green-value');
-        let blueValue = this.colorPicker.querySelector('.rich-text-box-blue-value');
-        let hexInput = this.colorPicker.querySelector('.rich-text-box-hex-input');
-        let colorDisplay = this.colorPicker.querySelector('.rich-text-box-color-display');
-
-        let r = parseInt(redSlider.value);
-        let g = parseInt(greenSlider.value);
-        let b = parseInt(blueSlider.value);
+        let r = parseInt(this.redSlider.value);
+        let g = parseInt(this.greenSlider.value);
+        let b = parseInt(this.blueSlider.value);
         let color = `rgb(${r}, ${g}, ${b})`;
 
         this.currentColor = color;
-        colorDisplay.style.backgroundColor = color;
-        redValue.value = r;
-        greenValue.value = g;
-        blueValue.value = b;
-        hexInput.value = this.rgbToHex(r, g, b);
+        this.colorDisplay.style.backgroundColor = color;
+        this.redValue.value = r;
+        this.greenValue.value = g;
+        this.blueValue.value = b;
+        this.hexInput.value = this.rgbToHex(r, g, b);
     }
 
     getCurrentColor = () => {
@@ -2430,13 +2473,7 @@ class RTBlazorfiedColorPicker {
     }
 
     updateFromHex = () => {
-        let redSlider = this.colorPicker.querySelector('.rich-text-box-red-slider');
-        let greenSlider = this.colorPicker.querySelector('.rich-text-box-green-slider');
-        let blueSlider = this.colorPicker.querySelector('.rich-text-box-blue-slider');
-        let redValue = this.colorPicker.querySelector('.rich-text-box-red-value');
-        let greenValue = this.colorPicker.querySelector('.rich-text-box-green-value');
-        let blueValue = this.colorPicker.querySelector('.rich-text-box-blue-value');
-
+        
         let hex = this.hexInput.value.trim();
         if (hex.charAt(0) !== '#') {
             hex = '#' + hex;
@@ -2444,9 +2481,9 @@ class RTBlazorfiedColorPicker {
         if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
             let rgb = this.hexToRgb(hex);
             if (rgb) {
-                redSlider.value = redValue.value = rgb.r;
-                greenSlider.value = greenValue.value = rgb.g;
-                blueSlider.value = blueValue.value = rgb.b;
+                this.redSlider.value = this.redValue.value = rgb.r;
+                this.greenSlider.value = this.greenValue.value = rgb.g;
+                this.blueSlider.value = this.blueValue.value = rgb.b;
             }
         }
         this.updateColor();

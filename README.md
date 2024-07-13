@@ -47,17 +47,18 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
     o.ToolbarStyles(o =>
     {
         o.BackgroundColor = "#00FF00";
-        o.BorderColor = "#FF0000";
+        o.BorderColor = "var(--border-color)";
         o.BorderWidth = "1px";
         o.BorderStyle = "solid";
         o.BorderRadius = "10px 0px";
-        o.DropdownBackgroundColor = "#333333";
+        o.DropdownBackgroundColor = "var(--background-color)";
         o.DropdownTextColor = "#FFFFFF";
         o.DropdownBackgroundColorHover = "#777777";
         o.DropdownTextColorHover = "#FFFFAA";
     });
     o.ModalStyles(o =>
     {
+        o.RemoveCSSInputs();
         o.BackgroundColor = "#333333";
         o.TextColor = "#FFFFAA";
         o.TextboxBackgroundColor = "#333333";
@@ -132,6 +133,16 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Quote = true;
         o.CodeBlock = true;
         o.EmbedMedia = true;
+
+        // Dividers
+        o.TextStylesDivider = false;
+        o.FormatDivider = false;
+        o.TextColorDivider = false;
+        o.AlignDivider = false;
+        o.ActionDivider = false;
+        o.ListDivider = false;
+        o.MediaDivider = false;
+        o.HistoryDivider = false;
     });
 });
 ```

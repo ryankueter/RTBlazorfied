@@ -40,4 +40,12 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Quote { get; set; }
     public bool? CodeBlock { get; set; }
     public bool? EmbedMedia { get; set; }
+    public bool? TextStylesDivider { get; set; }
+    public bool? FormatDivider { get; set; }
+    public bool? TextColorDivider { get; set; }
+    public bool? AlignDivider { get; set; }
+    public bool? ActionDivider { get; set; }
+    public bool? ListDivider { get; set; }
+    public bool? MediaDivider { get; set; }
+    public bool? HistoryDivider { get; set; }
 }

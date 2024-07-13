@@ -511,6 +511,7 @@ public partial class RTBlazorfied
     private string? _scrollThumbBorderRadius { get; set; } = "0";
 
     // Modal
+    private bool _modalRemoveCSSInputs { get; set; }
     private string? _modalBackgroundColor { get; set; } = "#fefefe";
     private string? _modalTextColor { get; set; } = "#000";
     private string? _modalTextboxBackgroundColor { get; set; } = "#fff";
@@ -588,7 +589,7 @@ public partial class RTBlazorfied
     private bool? _codeBlock;
     private bool? _embedMedia;
     private bool? _image;
-    private bool? _insertdivider;
+    private bool? _mediadivider;
     private bool? _orderedlist;
     private bool? _unorderedlist;
     private bool? _listdivider;
@@ -598,19 +599,16 @@ public partial class RTBlazorfied
         var buttons = _options.GetButtonVisibilityOptions();
         if (buttons is null)
         {
-            SetDividerDefaults();
             SetButtonDefaults();
         }
         else
         {
             if (buttons._clearAll is true)
             {
-                SetDividerDefaults(false);
                 SetButtonDefaults(false);
             }
             else
             {
-                SetDividerDefaults();
                 SetButtonDefaults();
             }
 
@@ -641,7 +639,14 @@ public partial class RTBlazorfied
             if (buttons.Orderedlist == true
                 || buttons.Unorderedlist == true)
             {
-                _listdivider = true;
+                if (buttons.ListDivider is not null)
+                {
+                    _listdivider = buttons.ListDivider;
+                }
+                else
+                {
+                    _listdivider = true;
+                }
             }
         }
     }
@@ -677,7 +682,14 @@ public partial class RTBlazorfied
                 || buttons.CodeBlock == true
                 || buttons.EmbedMedia == true)
             {
-                _insertdivider = true;
+                if (buttons.MediaDivider is not null)
+                {
+                    _mediadivider = buttons.MediaDivider;
+                }
+                else
+                {
+                    _mediadivider = true;
+                }
             }
         }
     }
@@ -699,7 +711,14 @@ public partial class RTBlazorfied
             if (buttons.Undo == true
                 || buttons.Redo == true)
             {
-                _historydivider = true;
+                if (buttons.HistoryDivider is not null)
+                {
+                    _historydivider = buttons.HistoryDivider;
+                }
+                else
+                {
+                    _historydivider = true;
+                }
             }
         }
     }
@@ -731,7 +750,14 @@ public partial class RTBlazorfied
                 || buttons.Delete == true
                 || buttons.Selectall == true)
             {
-                _actiondivider = true;
+                if (buttons.ActionDivider is not null)
+                {
+                    _actiondivider = buttons.ActionDivider;
+                }
+                else
+                {
+                    _actiondivider = true;
+                }
             }
         }
     }
@@ -763,7 +789,14 @@ public partial class RTBlazorfied
                 || buttons.Alignright == true
                 || buttons.Alignjustify == true)
             {
-                _aligndivider = true;
+                if (buttons.AlignDivider is not null)
+                {
+                    _aligndivider = buttons.AlignDivider;
+                }
+                else
+                {
+                    _aligndivider = true;
+                }
             }
         }
     }
@@ -779,7 +812,14 @@ public partial class RTBlazorfied
 
             if (buttons.TextColor == true)
             {
-                _textcolordivider = true;
+                if (buttons.TextColorDivider is not null)
+                {
+                    _textcolordivider = buttons.TextColorDivider;
+                }
+                else
+                {
+                    _textcolordivider = true;
+                }
             }
         }
     }
@@ -821,7 +861,14 @@ public partial class RTBlazorfied
                 || buttons.Subscript == true
                 || buttons.Superscript == true)
             {
-                _formatdivider = true;
+                if (buttons.FormatDivider is not null)
+                {
+                    _formatdivider = buttons.FormatDivider;
+                }
+                else
+                {
+                    _formatdivider = true;
+                }
             }
         }
     }
@@ -840,25 +887,21 @@ public partial class RTBlazorfied
         {
             _format = buttons.Format;
         }
+        
 
         if (buttons.Font == true
             || buttons.Size == true
             || buttons.Format == true)
         {
-            _textstylesdivider = true;
+            if (buttons.TextStylesDivider is not null)
+            {
+                _textstylesdivider = buttons.TextStylesDivider;
+            }
+            else
+            {
+                _textstylesdivider = true;
+            }
         }
-    }
-
-    private void SetDividerDefaults(bool setting = true)
-    {
-        _textstylesdivider = setting;
-        _formatdivider = setting;
-        _textcolordivider = setting;
-        _aligndivider = setting;
-        _actiondivider = setting;
-        _historydivider = setting;
-        _insertdivider = setting;
-        _listdivider = setting;
     }
 
     private void SetButtonDefaults(bool setting = true)
@@ -891,6 +934,16 @@ public partial class RTBlazorfied
         _quote = setting;
         _codeBlock = setting;
         _embedMedia = setting;
+
+        // Dividers
+        _textstylesdivider = setting;
+        _formatdivider = setting;
+        _textcolordivider = setting;
+        _aligndivider = setting;
+        _actiondivider = setting;
+        _historydivider = setting;
+        _mediadivider = setting;
+        _listdivider = setting;
     }
 
     private void GetScrollOptions()
@@ -1091,6 +1144,10 @@ public partial class RTBlazorfied
         var modalOptions = _options.GetModalOptions();
         if (modalOptions is not null)
         {
+            if (modalOptions.removeCSSInputs is not null)
+            {
+                _modalRemoveCSSInputs = Convert.ToBoolean(modalOptions.removeCSSInputs);
+            }
             if (modalOptions.BackgroundColor is not null)
             {
                 _modalBackgroundColor = modalOptions.BackgroundColor;
