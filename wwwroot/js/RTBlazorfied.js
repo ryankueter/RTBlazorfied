@@ -2083,7 +2083,6 @@ class RTBlazorfied {
     };
     getCode = () => {
         const plaintext = this.source.value;
-        console.log(plaintext);
         this.loadHtml(plaintext);
         this.content.style.display = "block";
         this.source.style.display = "none";
@@ -2106,10 +2105,10 @@ class RTBlazorfied {
         this.EditMode = false;
         this.source.style.fontFamily = 'Consolas, monospace';
         if (text != null) {
-            this.source.textContent = text;
+            this.source.value = text;
         }
         else {
-            this.source.textContent = "";
+            this.source.value = "";
         }
         this.selectButtons(this.content);
     };
