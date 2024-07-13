@@ -2113,7 +2113,7 @@ class RTBlazorfied {
         this.selectButtons(this.content);
     };
     plaintext = () => {
-        return this.source.value;
+        return this.content.innerHTML;
     };
     
     /* Search up the elements */
