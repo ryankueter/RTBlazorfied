@@ -22,21 +22,21 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Subscript { get; set; }
     public bool? Superscript { get; set; }
     public bool? TextColor { get; set; }
-    public bool? Alignleft { get; set; }
-    public bool? Aligncenter { get; set; }
-    public bool? Alignright { get; set; }
-    public bool? Alignjustify { get; set; }
+    public bool? AlignLeft { get; set; }
+    public bool? AlignCenter { get; set; }
+    public bool? AlignRight { get; set; }
+    public bool? AlignJustify { get; set; }
     //public bool? Indent { get; set; }
     public bool? Copy { get; set; }
     public bool? Cut { get; set; }
     public bool? Delete { get; set; }
-    public bool? Selectall { get; set; }
+    public bool? SelectAll { get; set; }
     public bool? Undo { get; set; }
     public bool? Redo { get; set; }
     public bool? Link { get; set; }
     public bool? Image { get; set; }
-    public bool? Orderedlist { get; set; }
-    public bool? Unorderedlist { get; set; }
+    public bool? OrderedList { get; set; }
+    public bool? UnorderedList { get; set; }
     public bool? Quote { get; set; }
     public bool? CodeBlock { get; set; }
     public bool? EmbedMedia { get; set; }

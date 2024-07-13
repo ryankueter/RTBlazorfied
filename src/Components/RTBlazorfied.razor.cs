@@ -511,7 +511,7 @@ public partial class RTBlazorfied
     private string? _scrollThumbBorderRadius { get; set; } = "0";
 
     // Modal
-    private bool _modalRemoveCSSInputs { get; set; }
+    private bool _modalRemoveCSSClassInputs { get; set; }
     private string? _modalBackgroundColor { get; set; } = "#fefefe";
     private string? _modalTextColor { get; set; } = "#000";
     private string? _modalTextboxBackgroundColor { get; set; } = "#fff";
@@ -628,17 +628,17 @@ public partial class RTBlazorfied
     {
         if (buttons is not null)
         {
-            if (buttons.Orderedlist is not null)
+            if (buttons.OrderedList is not null)
             {
-                _orderedlist = buttons.Orderedlist;
+                _orderedlist = buttons.OrderedList;
             }
-            if (buttons.Unorderedlist is not null)
+            if (buttons.UnorderedList is not null)
             {
-                _unorderedlist = buttons.Unorderedlist;
+                _unorderedlist = buttons.UnorderedList;
             }
             // If the user did not specify false, keep the button
-            if (buttons.Orderedlist == true
-                || buttons.Unorderedlist == true)
+            if (buttons.OrderedList == true
+                || buttons.UnorderedList == true)
             {
                 if (buttons.ListDivider is not null)
                 {
@@ -740,16 +740,16 @@ public partial class RTBlazorfied
             {
                 _delete = buttons.Delete;
             }
-            if (buttons.Selectall is not null)
+            if (buttons.SelectAll is not null)
             {
-                _selectall = buttons.Selectall;
+                _selectall = buttons.SelectAll;
             }
 
             // If the user did not specify false, keep the button
             if (buttons.Copy == true
                 || buttons.Cut == true
                 || buttons.Delete == true
-                || buttons.Selectall == true)
+                || buttons.SelectAll == true)
             {
                 if (buttons.ActionDivider is not null)
                 {
@@ -767,28 +767,28 @@ public partial class RTBlazorfied
     {
         if (buttons is not null)
         {
-            if (buttons.Alignleft is not null)
+            if (buttons.AlignLeft is not null)
             {
-                _alignleft = buttons.Alignleft;
+                _alignleft = buttons.AlignLeft;
             }
-            if (buttons.Aligncenter is not null)
+            if (buttons.AlignCenter is not null)
             {
-                _aligncenter = buttons.Aligncenter;
+                _aligncenter = buttons.AlignCenter;
             }
-            if (buttons.Alignright is not null)
+            if (buttons.AlignRight is not null)
             {
-                _alignright = buttons.Alignright;
+                _alignright = buttons.AlignRight;
             }
-            if (buttons.Alignjustify is not null)
+            if (buttons.AlignJustify is not null)
             {
-                _alignjustify = buttons.Alignjustify;
+                _alignjustify = buttons.AlignJustify;
             }
 
             // If the user did not specify false, keep the button
-            if (buttons.Alignleft == true
-                || buttons.Aligncenter == true
-                || buttons.Alignright == true
-                || buttons.Alignjustify == true)
+            if (buttons.AlignLeft == true
+                || buttons.AlignCenter == true
+                || buttons.AlignRight == true
+                || buttons.AlignJustify == true)
             {
                 if (buttons.AlignDivider is not null)
                 {
@@ -1145,9 +1145,9 @@ public partial class RTBlazorfied
         var modalOptions = _options.GetModalOptions();
         if (modalOptions is not null)
         {
-            if (modalOptions.removeCSSInputs is not null)
+            if (modalOptions.removeCSSClassInputs is not null)
             {
-                _modalRemoveCSSInputs = Convert.ToBoolean(modalOptions.removeCSSInputs);
+                _modalRemoveCSSClassInputs = Convert.ToBoolean(modalOptions.removeCSSClassInputs);
             }
             if (modalOptions.BackgroundColor is not null)
             {
@@ -1318,7 +1318,6 @@ public partial class RTBlazorfied
 
     private async Task OpenCode()
     {
-        Console.WriteLine(Mode);
         if (Mode == "html")
         {
             Mode = "code";

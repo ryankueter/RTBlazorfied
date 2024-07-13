@@ -380,7 +380,7 @@ else
             <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250" tabindex="3">
             <label for="type">Type</label>
             <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" tabindex="4">
-            @if (!_modalRemoveCSSInputs)
+            @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
                 <input type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
@@ -390,7 +390,7 @@ else
         <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
             <label for="code">Code Block</label>
             <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" wrap="off" tabindex="1" />
-            @if (!_modalRemoveCSSInputs)
+            @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
                 <input type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
@@ -402,7 +402,7 @@ else
             <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" tabindex="1" />
             <label for="cite">Cite</label>
             <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." tabindex="2">
-            @if (!_modalRemoveCSSInputs)
+            @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
                 <input type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
@@ -418,7 +418,7 @@ else
             <input type="text" id="rich-text-box-image-height" name="imageheight" tabindex="3">
             <label for="alttext">Alternative Text</label>
             <input type="text" id="rich-text-box-image-alt-text" name="alttext" tabindex="4">
-            @if (!_modalRemoveCSSInputs)
+            @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
                 <input type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
@@ -430,7 +430,7 @@ else
             <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
             <label for="linktext">Link Text</label>
             <input type="text" id="rich-text-box-linktext" name="linktext" tabindex="2">
-            @if (!_modalRemoveCSSInputs)
+            @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
                 <input type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">

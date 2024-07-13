@@ -7,9 +7,9 @@ namespace RichTextBlazorfied;
 
 public class RichTextboxModalOptions
 {
-    internal bool? removeCSSInputs { get; set; }
-    public void RemoveCSSInputs() {
-        removeCSSInputs = true;
+    internal bool? removeCSSClassInputs { get; set; }
+    public void RemoveCSSClassInputs() {
+        removeCSSClassInputs = true;
     }
     public string? BackgroundColor { get; set; }
     public string? TextColor { get; set; }

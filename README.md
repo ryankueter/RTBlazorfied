@@ -26,11 +26,21 @@ Add the following reference to the end of your index.html file:
 ### Add the Element
 
 In this example, the @Html is the html string. This height and width will override those specified in the configuration options.
-
 ```html
 @using RichTextBlazorfied
 
 <RTBlazorfied @ref="box" @bind-Value="@Html" Height="500px" Width="1000px" />
+```
+
+The element reference provides another way to get the html or plaintext:
+```csharp
+private RTBlazorfied? box { get; set; }
+
+private async Task<string?> GetHtml() =>
+        await box!.GetHtmlAsync();
+
+private async Task<string?> GetPlainText() =>
+        await box!.GetPlainTextAsync();
 ```
 
 ### Configure the Options
@@ -58,7 +68,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
     });
     o.ModalStyles(o =>
     {
-        o.RemoveCSSInputs();
+        o.RemoveCSSClassInputs();
         o.BackgroundColor = "#333333";
         o.TextColor = "#FFFFAA";
         o.TextboxBackgroundColor = "#333333";
@@ -118,16 +128,18 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Subscript = true;
         o.Superscript = true;
         o.TextColor = true;
-        o.Alignleft = true;
-        o.Aligncenter = true;
-        o.Alignright = true;
-        o.Alignjustify = true;
+        o.AlignLeft = true;
+        o.AlignCenter = true;
+        o.AlignRight = true;
+        o.AlignJustify = true;
         o.Copy = true;
         o.Cut = true;
         o.Delete = true;
-        o.Selectall = true;
+        o.SelectAll = true;
         o.Image = true;
         o.Link = true;
+        o.OrderedList = true;
+        o.UnorderedList = true;
         o.Undo = true;
         o.Redo = true;
         o.Quote = true;

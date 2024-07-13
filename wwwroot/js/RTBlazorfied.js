@@ -2082,7 +2082,8 @@ class RTBlazorfied {
         this.focusEditor();
     };
     getCode = () => {
-        const plaintext = this.plaintext();
+        const plaintext = this.source.value;
+        console.log(plaintext);
         this.loadHtml(plaintext);
         this.content.style.display = "block";
         this.source.style.display = "none";
