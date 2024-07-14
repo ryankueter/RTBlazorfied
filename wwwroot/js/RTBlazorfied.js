@@ -173,6 +173,10 @@ class RTBlazorfied {
             event.preventDefault();
             this.cut();
         }
+        if (event.ctrlKey && event.key === 'v') {
+            event.preventDefault();
+            this.paste();
+        }
         if (event.ctrlKey && event.key === '=') {
             event.preventDefault();
             this.subscript();
@@ -429,6 +433,75 @@ class RTBlazorfied {
         }
         this.focusEditor();
     };
+    paste = () => {
+        navigator.clipboard.readText().then(text => {
+            this.pasteNode(text);
+           
+        }).catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+        });
+        this.focusEditor();
+    };
+
+    pasteNode = (text) => {
+        /* Insert the pasted text at the cursor position */
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) { return false; }
+
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+
+        /* See if this node contains paragraphs */
+        let paragraphs = text.split(/\n\s*\n/);
+        if (paragraphs.length > 1) {
+           
+            let fragment = document.createDocumentFragment();
+            paragraphs.forEach(para => {
+                let p = document.createElement('p');
+                p.textContent = para.trim();
+                fragment.appendChild(p);
+            });
+
+            range.insertNode(fragment);
+            if (fragment.lastChild != null) {
+                range.setStartAfter(fragment.lastChild);
+                range.setEndAfter(fragment.lastChild);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            return;
+        }
+
+        /* Check if its a list of new lines */
+        let lines = text.trim().split(/\n+/);
+        if (lines.length > 1) {
+            let fragment = document.createDocumentFragment();
+            lines.forEach(line => {
+                let div = document.createElement('div');
+                div.textContent = line.trim(); // Set text content of the div
+                fragment.appendChild(div);
+            });
+
+            range.insertNode(fragment);
+            if (fragment.lastChild != null) {
+                range.setStartAfter(fragment.lastChild);
+                range.setEndAfter(fragment.lastChild);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            return;
+        }
+
+        /* Default: Insert a text node */
+        const newNode = document.createTextNode(text);
+        range.insertNode(newNode);
+
+        /* Move the cursor to the end of the newly pasted text */
+        range.setStartAfter(newNode);
+        range.setEndAfter(newNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
 
     closeDropdown = (id) => {
         const e = this.shadowRoot.getElementById(id);

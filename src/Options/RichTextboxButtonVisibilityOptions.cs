@@ -29,6 +29,7 @@ public class RichTextboxButtonVisibilityOptions
     //public bool? Indent { get; set; }
     public bool? Copy { get; set; }
     public bool? Cut { get; set; }
+    public bool? Paste { get; set; }
     public bool? Delete { get; set; }
     public bool? SelectAll { get; set; }
     public bool? Undo { get; set; }

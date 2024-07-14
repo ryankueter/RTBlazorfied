@@ -579,6 +579,7 @@ public partial class RTBlazorfied
     private bool? _aligndivider;
     private bool? _copy;
     private bool? _cut;
+    private bool? _paste;
     private bool? _delete;
     private bool? _selectall;
     private bool? _actiondivider;
@@ -736,6 +737,10 @@ public partial class RTBlazorfied
             {
                 _cut = buttons.Cut;
             }
+            if (buttons.Paste is not null)
+            {
+                _paste = buttons.Paste;
+            }
             if (buttons.Delete is not null)
             {
                 _delete = buttons.Delete;
@@ -748,6 +753,7 @@ public partial class RTBlazorfied
             // If the user did not specify false, keep the button
             if (buttons.Copy == true
                 || buttons.Cut == true
+                || buttons.Paste == true
                 || buttons.Delete == true
                 || buttons.SelectAll == true)
             {
@@ -924,6 +930,7 @@ public partial class RTBlazorfied
         _indent = setting;
         _copy = setting;
         _cut = setting;
+        _paste = setting;
         _delete = setting;
         _selectall = setting;
         _undo = setting;
@@ -1289,6 +1296,7 @@ public partial class RTBlazorfied
     private async Task Indent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "indent", id);
     private async Task Copy() => await js.InvokeVoidAsync("RTBlazorfied_Method", "copy", id);
     private async Task Cut() => await js.InvokeVoidAsync("RTBlazorfied_Method", "cut", id);
+    private async Task Paste() => await js.InvokeVoidAsync("RTBlazorfied_Method", "paste", id);
     private async Task Delete() => await js.InvokeVoidAsync("RTBlazorfied_Method", "delete", id);
     private async Task Selectall() => await js.InvokeVoidAsync("RTBlazorfied_Method", "selectall", id);
     private async Task OrderedList() => await js.InvokeVoidAsync("RTBlazorfied_Method", "orderedlist", id);

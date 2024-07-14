@@ -204,7 +204,16 @@ else
         {
             <RTDivider />
         }
-
+        @if (_cut == true)
+        {
+            <RTButton Id="blazing-rich-text-cut-button"
+                      OnClick="Cut"
+                      Icon="@Icons.Cut"
+                      Title="Cut (Ctrl + X)"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"
+                      IsDisabled="@IsDisabled"></RTButton>
+        }
         @if (_copy == true)
         {
             <RTButton Id="blazing-rich-text-copy-button"
@@ -215,12 +224,12 @@ else
                       TextColor="@_buttonTextColor"
                       IsDisabled="@IsDisabled"></RTButton>
         }
-        @if (_cut == true)
+        @if (_paste == true)
         {
-            <RTButton Id="blazing-rich-text-cut-button"
-                      OnClick="Cut"
-                      Icon="@Icons.Cut"
-                      Title="Cut (Ctrl + X)"
+            <RTButton Id="blazing-rich-text-paste-button"
+                      OnClick="Paste"
+                      Icon="@Icons.Paste"
+                      Title="Paste (Ctrl + V)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"
                       IsDisabled="@IsDisabled"></RTButton>
