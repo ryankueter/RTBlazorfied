@@ -444,6 +444,16 @@ class RTBlazorfied {
     };
 
     pasteNode = (text) => {
+        if (this.checkParagraphs(text)) {
+            return;
+        }
+        if (this.checkLines(text)) {
+            return;
+        }
+        this.checkText(text);
+    }
+
+    checkParagraphs = (text) => {
         /* Insert the pasted text at the cursor position */
         const selection = this.shadowRoot.getSelection();
         if (!selection.rangeCount) { return false; }
@@ -454,12 +464,15 @@ class RTBlazorfied {
         /* See if this node contains paragraphs */
         let paragraphs = text.split(/\n\s*\n/);
         if (paragraphs.length > 1) {
-           
+
             let fragment = document.createDocumentFragment();
             paragraphs.forEach(para => {
-                let p = document.createElement('p');
-                p.textContent = para.trim();
-                fragment.appendChild(p);
+                /* !this.checkParagraphTable(para, fragment) */
+                if (!this.checkParagraphLines(para, fragment)) {
+                    let p = document.createElement('p');
+                    p.textContent = para.trim();
+                    fragment.appendChild(p);
+                }
             });
 
             range.insertNode(fragment);
@@ -469,8 +482,80 @@ class RTBlazorfied {
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
-            return;
+            return true;
         }
+        return false;
+    }
+
+    /* See if the paragraph may also contain lines */
+    checkParagraphLines = (text, fragment) => {
+        let n = 0;
+        let lines = text.trim().split(/\n+/);
+        if (lines.length > 1) {
+            lines.forEach(line => {
+                n++;
+                if (n === lines.length) {
+                    let p = document.createElement('p');
+                    p.textContent = line.trim();
+                    fragment.appendChild(p);
+                }
+                else {
+                    let div = document.createElement('div');
+                    div.textContent = line.trim();
+                    fragment.appendChild(div);
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /* See if the code may contain a table */
+    checkParagraphTable = (text, fragment) => {
+       
+        if (text.includes('\t')) {
+
+            /* If it has more than 3 tabs, it may be a table */
+            let tabs = text.split('\t');
+            if (tabs.length > 3) {
+                /* Create table element */
+                let table = document.createElement('table');
+
+                /* Split the text by lines */
+                let lines = text.split('\n');
+
+                lines.forEach(line => {
+
+                    /* Split each line by tabs */
+                    let cells = line.split('\t');
+
+                    /*  Create table row element */
+                    let row = document.createElement('tr');
+                    cells.forEach(cell => {
+                        /* Create table cell element */
+                        let cellElement = document.createElement('td');
+                        cellElement.textContent = cell;
+                        row.appendChild(cellElement);
+                    });
+
+                    /* Append row to the fragment */
+                    table.appendChild(row);
+                });
+                console.log(table);
+
+                /* Create table element */
+                fragment.appendChild(table);
+            }            
+        }
+    }
+
+    checkLines = (text) => {
+        /* Insert the pasted text at the cursor position */
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) { return false; }
+
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
 
         /* Check if its a list of new lines */
         let lines = text.trim().split(/\n+/);
@@ -489,9 +574,18 @@ class RTBlazorfied {
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
-            return;
+            return true;
         }
+    }
 
+    checkText = (text) => {
+        /* Insert the pasted text at the cursor position */
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) { return false; }
+
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        
         /* Default: Insert a text node */
         const newNode = document.createTextNode(text);
         range.insertNode(newNode);
