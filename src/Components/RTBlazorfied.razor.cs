@@ -119,7 +119,7 @@ public partial class RTBlazorfied
             box-shadow: {{_contentBoxShadow}};
         }
         .rich-text-box-content {
-            padding: 10px;
+            padding: 5px 10px;
             width: 100%;
             min-height: 25px;
             color: {{_contentTextColor}};
@@ -138,7 +138,8 @@ public partial class RTBlazorfied
             display: none;
             resize: none;
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-size: 16px;
         }
         /*
         ::selection {
@@ -327,7 +328,7 @@ public partial class RTBlazorfied
           margin-right: 8px;
           accent-color: {{_modalCheckboxAccentColor}}; 
         }
-        .input[type="checkbox"]:focus {
+        input[type="checkbox"]:focus {
           border-style: solid;
           border-color: {{_modalTextboxBorderColor}};
           border-width: 1px;
@@ -461,6 +462,28 @@ public partial class RTBlazorfied
         .rich-text-box-hex-input {
             width: 100px !important;
             margin-left: 10px;
+        }
+        blockquote {
+          background: #f9f9f9;
+          border-left: 10px solid #ccc;
+          margin: 1.5em 10px;
+          padding: 0.5em 10px;
+        }
+        pre {
+          background: #f9f9f9;
+          border-radius: 10px;
+          overflow-x: auto;
+          white-space: pre-wrap;
+          margin: 1.5em 10px;
+          padding: 0.5em 10px;
+        }
+        table {
+          border-collapse: collapse;
+        }
+
+        td, th {
+          border: 1px solid #ccc;
+          padding: 8px;
         }
         """;
 

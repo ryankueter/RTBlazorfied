@@ -435,7 +435,16 @@ class RTBlazorfied {
     };
     paste = () => {
         navigator.clipboard.readText().then(text => {
-            this.pasteNode(text);
+            if (this.checkParagraphs(text)) {
+                return;
+            }
+            if (this.checkTables(text)) {
+                return;
+            }
+            if (this.checkLines(text)) {
+                return;
+            }
+            this.checkText(text);
            
         }).catch(err => {
             console.error('Failed to read clipboard contents: ', err);
@@ -443,32 +452,24 @@ class RTBlazorfied {
         this.focusEditor();
     };
 
-    pasteNode = (text) => {
-        if (this.checkParagraphs(text)) {
-            return;
-        }
-        if (this.checkLines(text)) {
-            return;
-        }
-        this.checkText(text);
-    }
-
     checkParagraphs = (text) => {
-        /* Insert the pasted text at the cursor position */
-        const selection = this.shadowRoot.getSelection();
-        if (!selection.rangeCount) { return false; }
-
-        const range = selection.getRangeAt(0);
-        range.deleteContents();
-
         /* See if this node contains paragraphs */
         let paragraphs = text.split(/\n\s*\n/);
         if (paragraphs.length > 1) {
+            /* Insert the pasted text at the cursor position */
+            const selection = this.shadowRoot.getSelection();
+            if (!selection.rangeCount) { return false; }
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
 
             let fragment = document.createDocumentFragment();
             paragraphs.forEach(para => {
-                /* !this.checkParagraphTable(para, fragment) */
-                if (!this.checkParagraphLines(para, fragment)) {
+                let checked = this.checkParagraphTable(para, fragment);
+                if (!checked) {
+                    checked = this.checkParagraphLines(para, fragment);
+                }
+                if (!checked) {
                     let p = document.createElement('p');
                     p.textContent = para.trim();
                     fragment.appendChild(p);
@@ -476,12 +477,10 @@ class RTBlazorfied {
             });
 
             range.insertNode(fragment);
-            if (fragment.lastChild != null) {
-                range.setStartAfter(fragment.lastChild);
-                range.setEndAfter(fragment.lastChild);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+            range.setStartBefore(fragment);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
             return true;
         }
         return false;
@@ -512,54 +511,27 @@ class RTBlazorfied {
 
     /* See if the code may contain a table */
     checkParagraphTable = (text, fragment) => {
-       
-        if (text.includes('\t')) {
-
-            /* If it has more than 3 tabs, it may be a table */
-            let tabs = text.split('\t');
-            if (tabs.length > 3) {
-                /* Create table element */
-                let table = document.createElement('table');
-
-                /* Split the text by lines */
-                let lines = text.split('\n');
-
-                lines.forEach(line => {
-
-                    /* Split each line by tabs */
-                    let cells = line.split('\t');
-
-                    /*  Create table row element */
-                    let row = document.createElement('tr');
-                    cells.forEach(cell => {
-                        /* Create table cell element */
-                        let cellElement = document.createElement('td');
-                        cellElement.textContent = cell;
-                        row.appendChild(cellElement);
-                    });
-
-                    /* Append row to the fragment */
-                    table.appendChild(row);
-                });
-                console.log(table);
-
-                /* Create table element */
-                fragment.appendChild(table);
-            }            
+        if (this.isTable(text)) {
+            /* Create table element */
+            let table = this.buildTable(text);            
+            fragment.appendChild(table);
+            return true;
         }
+        return false;
     }
 
     checkLines = (text) => {
-        /* Insert the pasted text at the cursor position */
-        const selection = this.shadowRoot.getSelection();
-        if (!selection.rangeCount) { return false; }
-
-        const range = selection.getRangeAt(0);
-        range.deleteContents();
-
         /* Check if its a list of new lines */
         let lines = text.trim().split(/\n+/);
+
         if (lines.length > 1) {
+            /* Insert the pasted text at the cursor position */
+            const selection = this.shadowRoot.getSelection();
+            if (!selection.rangeCount) { return false; }
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+
             let fragment = document.createDocumentFragment();
             lines.forEach(line => {
                 let div = document.createElement('div');
@@ -568,14 +540,98 @@ class RTBlazorfied {
             });
 
             range.insertNode(fragment);
-            if (fragment.lastChild != null) {
-                range.setStartAfter(fragment.lastChild);
-                range.setEndAfter(fragment.lastChild);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+            range.setStartBefore(fragment);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
             return true;
         }
+    }
+
+    checkTables = (text) => {
+
+        if (this.isTable(text)) {
+            
+            /* Insert the pasted text at the cursor position */
+            const selection = this.shadowRoot.getSelection();
+            if (!selection.rangeCount) { return false; }
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+
+            let fragment = document.createDocumentFragment();
+
+            let table = this.buildTable(text);
+
+            /* Create table element */
+            fragment.appendChild(table);
+
+            range.insertNode(fragment);
+            range.setStartBefore(fragment);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            return true;
+        }
+    }
+
+    buildTable = (text) => {
+        /* Create table element */
+        let table = document.createElement('table');
+
+        /* Split the text by lines */
+        let lines = text.split('\n');
+
+        lines.forEach(line => {
+            if (line.trim().length > 0) {
+                /* Split each line by tabs */
+                let cells = line.split('\t');
+
+                /*  Create table row element */
+                let row = document.createElement('tr');
+                cells.forEach(cell => {
+                    /* Create table cell element */
+                    let cellElement = document.createElement('td');
+                    if (cell.trim().length > 0) {
+                        cellElement.textContent = cell;
+                    }
+                    row.appendChild(cellElement);
+                });
+
+                /* Append row to the fragment */
+                table.appendChild(row);
+            }
+        });
+        return table;
+    }
+
+    isTable = (text) => {
+        if (text.includes('\t')) {
+            /* Split the text by lines */
+            let lines = text.split('\n');
+
+            /* Get the number of tabs in the first line (if needed) */
+            /* let firstLineTabs = (lines[0].match(/\t/g) || []).length; */
+
+            /* Check the number of tabs in the subsequent lines */
+            if (lines.length > 1 && lines[1].trim().length > 0) {
+                let expectedTabs = (lines[1].match(/\t/g) || []).length;
+
+                for (let i = 2; i < lines.length; i++) {
+                    let line = lines[i];
+                    if (line.trim().length > 0) {
+                        let tabCount = (line.match(/\t/g) || []).length;
+
+                        if (tabCount !== expectedTabs) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+        }       
+
+        return false;
     }
 
     checkText = (text) => {
@@ -615,7 +671,7 @@ class RTBlazorfied {
                         element.childNodes[0].nodeType === 3 &&
                         !/\S/.test(element.textContent))) {
 
-                    if (element.parentElement && !this.isSelfClosingTag(element.nodeName)) {
+                    if (element.parentElement && !this.approvedTags(element.nodeName)) {
                         element.parentElement.removeChild(element);
                     }
                 }
@@ -624,8 +680,11 @@ class RTBlazorfied {
         this.selectButtons(div);
     };
 
-    isSelfClosingTag(nodeName) {
+    approvedTags = (nodeName) => {
         switch (nodeName.toLowerCase()) {
+            case "td":
+                return true;
+                break;
             case "img":
                 return true;
                 break;
@@ -676,9 +735,6 @@ class RTBlazorfied {
                 break;
             case "keygen":
                 return true;
-                break;
-            default:
-                return false;
                 break;
         }
         return false;
@@ -1604,6 +1660,10 @@ class RTBlazorfied {
                     if (object != null) {
                         element = sel.anchorNode;
                     }
+                    const table = sel.anchorNode.querySelector('table');
+                    if (table != null) {
+                        element = table;
+                    }
                 }
                 
                 /* If that node does not exist, style the parent node */
@@ -1623,7 +1683,7 @@ class RTBlazorfied {
                     element = this.getElementByContent(sel.anchorNode, type, sel);
                 }
             }
-            
+
             if (element != null) {
                 let e;
                 switch (type) {
@@ -1727,7 +1787,7 @@ class RTBlazorfied {
                         }
                         else {
                             element.style.setProperty("text-align", "center");
-                        }
+                        }                  
                         break;
                     case "alignright":
                         if (element.style.textAlign == "right") {
