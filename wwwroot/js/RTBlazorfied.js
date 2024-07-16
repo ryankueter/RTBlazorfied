@@ -50,8 +50,7 @@ class RTBlazorfied {
         this.shadowRoot.appendChild(this.container);
 
         /* Listen for selection change event to select buttons */
-        document.addEventListener('selectionchange', () => {
-            /* Ensure that this event listener only fires for this text box */
+        document.addEventListener('selectionchange', (event) => {
             const selection = this.shadowRoot.getSelection();
             if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
                 this.clearSettings(selection.anchorNode);
@@ -114,8 +113,8 @@ class RTBlazorfied {
         /* Initialize Code Block Dialog */
         this.CodeBlockDialog = new RTBlazorfiedCodeBlockDialog(this.shadowRoot, this.content);
 
-        /* Initialize the Embed Dialog */
-        this.EmbedDialog = new RTBlazorfiedEmbedDialog(this.shadowRoot);
+        /* Initialize the Media Dialog */
+        this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot);
     }
     /* History */
     goBack = () => {
@@ -464,13 +463,13 @@ class RTBlazorfied {
         this.CodeBlockDialog.insertCodeBlock();
         this.NodeManager.refreshUI();
     }
-    openEmbedDialog = () => {
+    openMediaDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.EmbedDialog.openEmbedDialog();
+        this.MediaDialog.openMediaDialog();
     }
-    insertEmbed = () => {
-        this.EmbedDialog.insertEmbed();
+    insertMedia = () => {
+        this.MediaDialog.insertMedia();
         this.NodeManager.refreshUI();
     }
     openImageDialog = () => {
@@ -762,274 +761,272 @@ class RTBlazorfiedNodeManager {
     updateNode = (type, value, selection) => {
         let sel, range;
 
-        if (this.shadowRoot.getSelection()) {
+        sel = this.shadowRoot.getSelection();
 
-            sel = this.shadowRoot.getSelection();
+        /* Get the color selection if one exists */
+        if (selection != null) {
+            sel.removeAllRanges();
+            sel.addRange(selection);
+        }
 
-            /* Get the color selection if one exists */
-            if (selection != null) {
-                sel.removeAllRanges();
-                sel.addRange(selection);
+        let element;
+        this.isCommonAncestor = false;
+        if (sel.toString().length == 0) {
+            
+            /* Check if a node exists with this style and get it */
+            element = this.getElementByStyle(sel.anchorNode, type);
+
+            /* See if it's an image */
+            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
+                const image = sel.anchorNode.querySelector('img');
+                if (image != null) {
+                    element = sel.anchorNode;
+                }
+                const embed = sel.anchorNode.querySelector('embed');
+                if (embed != null) {
+                    element = sel.anchorNode;
+                }
+                const object = sel.anchorNode.querySelector('object');
+                if (object != null) {
+                    element = sel.anchorNode;
+                }
+                //const table = sel.anchorNode.querySelector('table');
+                //if (table != null) {
+                //    element = table;
+                //}
             }
 
-            let element;
-            this.isCommonAncestor = false;
-            if (sel.toString().length == 0) {
-
-                /* Check if a node exists with this style and get it */
-                element = this.getElementByStyle(sel.anchorNode, type);
-
-                /* See if it's an image */
-                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
-                    const image = sel.anchorNode.querySelector('img');
-                    if (image != null) {
-                        element = sel.anchorNode;
-                    }
-                    const embed = sel.anchorNode.querySelector('embed');
-                    if (embed != null) {
-                        element = sel.anchorNode;
-                    }
-                    const object = sel.anchorNode.querySelector('object');
-                    if (object != null) {
-                        element = sel.anchorNode;
-                    }
-                    const table = sel.anchorNode.querySelector('table');
-                    if (table != null) {
-                        element = table;
-                    }
-                }
-
-                /* If that node does not exist, style the parent node */
-                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
-                    element = sel.anchorNode.parentNode;
-                }
+            /* If that node does not exist, style the parent node */
+            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
+                element = sel.anchorNode.parentNode;
+            }
+        }
+        else {
+            /* See if this is an outer element */
+            if (this.hasCommonAncestor(sel) == true) {
+                const range = sel.getRangeAt(0);
+                element = range.commonAncestorContainer;
+                this.isCommonAncestor = true;
             }
             else {
-                /* See if this is an outer element */
-                if (this.hasCommonAncestor(sel) == true) {
-                    const range = sel.getRangeAt(0);
-                    element = range.commonAncestorContainer;
-                    this.isCommonAncestor = true;
-                }
-                else {
-                    /* Get the element by the selected content */
-                    element = this.getElementByContent(sel.anchorNode, type, sel);
-                }
+                /* Get the element by the selected content */
+                element = this.getElementByContent(sel.anchorNode, type, sel);
             }
-            if (element != null) {
-                let e;
-                switch (type) {
-                    case "textcolor":
-                        if (value == "None") {
-                            e = this.getElementByStyle(element, type);
-                            if (e != null) {
-                                this.removeProperty(e, "color", e.style.getPropertyValue("color"));
-                            }
+        }
+        
+        if (element != null) {
+            let e;
+            switch (type) {
+                case "textcolor":
+                    if (value == "None") {
+                        e = this.getElementByStyle(element, type);
+                        if (e != null) {
+                            this.removeProperty(e, "color", e.style.getPropertyValue("color"));
                         }
-                        else {
-                            element.style.setProperty("color", value);
+                    }
+                    else {
+                        element.style.setProperty("color", value);
+                    }
+                    break;
+                case "textbgcolor":
+                    if (value == "None") {
+                        e = this.getElementByStyle(element, type);
+                        if (e != null) {
+                            this.removeProperty(e, "background-color", e.style.getPropertyValue("background-color"));
                         }
-                        break;
-                    case "textbgcolor":
-                        if (value == "None") {
-                            e = this.getElementByStyle(element, type);
-                            if (e != null) {
-                                this.removeProperty(e, "background-color", e.style.getPropertyValue("background-color"));
-                            }
-                        }
-                        else {
-                            element.style.setProperty("background-color", value);
-                        }
-                        break;
-                    case "font":
-                        if (value == "None") {
-                            this.removeProperty(element, "font-family", value);
-                        }
-                        else {
-                            element.style.setProperty("font-family", value);
-                        }
-                        break;
-                    case "size":
-                        if (value == "None") {
-                            this.removeProperty(element, "font-size");
-                        }
-                        else {
-                            element.style.setProperty("font-size", value);
-                        }
-                        break;
-                    case "bold":
-                        if (element.style.fontWeight == "bold") {
-                            this.removeProperty(element, "font-weight", "bold");
-                        }
-                        else {
-                            element.style.setProperty("font-weight", "bold");
-                        }
-                        break;
-                    case "italic":
-                        if (element.style.fontStyle == "italic") {
-                            this.removeProperty(element, "font-style", "italic");
-                        }
-                        else {
-                            element.style.setProperty("font-style", "italic");
-                        }
-                        break;
-                    case "underline":
-                        if (element.style.textDecoration.includes("underline")) {
-                            this.removeTextDecoration(element, "underline");
-                        }
-                        else {
-                            this.addTextDecoration(element, "underline");
-                        }
-                        break;
-                    case "line-through":
-                        if (element.style.textDecoration.includes("line-through")) {
-                            this.removeTextDecoration(element, "line-through");
-                        }
-                        else {
-                            this.addTextDecoration(element, "line-through");
-                        }
-                        break;
-                    case "subscript":
-                        if (element.style.verticalAlign == "sub") {
-                            this.removeProperty(element, "vertical-align", "sub");
-                        }
-                        else {
-                            element.style.setProperty("vertical-align", "sub");
-                        }
-                        break;
-                    case "superscript":
-                        if (element.style.verticalAlign == "super") {
-                            this.removeProperty(element, "vertical-align", "super");
-                        }
-                        else {
-                            element.style.setProperty("vertical-align", "super");
-                        }
-                        break;
-                    case "alignleft":
-                        if (element.style.textAlign == "left") {
-                            this.removeProperty(element, "text-align", "left");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "left");
-                        }
-                        break;
-                    case "aligncenter":
-                        if (element.style.textAlign == "center") {
-                            this.removeProperty(element, "text-align", "center");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "center");
-                        }
-                        break;
-                    case "alignright":
-                        if (element.style.textAlign == "right") {
-                            this.removeProperty(element, "text-align", "right");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "right");
-                        }
-                        break;
-                    case "alignjustify":
-                        if (element.style.textAlign == "justify") {
-                            this.removeProperty(element, "text-align", "justify");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "justify");
-                        }
-                        break;
-                    case "indent":
-                        if (element.style.textIndent == "40px") {
-                            this.removeProperty(element, "text-indent", "40px");
-                        }
-                        else {
-                            element.style.setProperty("text-indent", "40px");
-                        }
-                        break;
-                    default:
-                }
+                    }
+                    else {
+                        element.style.setProperty("background-color", value);
+                    }
+                    break;
+                case "font":
+                    if (value == "None") {
+                        this.removeProperty(element, "font-family", value);
+                    }
+                    else {
+                        element.style.setProperty("font-family", value);
+                    }
+                    break;
+                case "size":
+                    if (value == "None") {
+                        this.removeProperty(element, "font-size");
+                    }
+                    else {
+                        element.style.setProperty("font-size", value);
+                    }
+                    break;
+                case "bold":
+                    if (element.style.fontWeight == "bold") {
+                        this.removeProperty(element, "font-weight", "bold");
+                    }
+                    else {
+                        element.style.setProperty("font-weight", "bold");
+                    }
+                    break;
+                case "italic":
+                    if (element.style.fontStyle == "italic") {
+                        this.removeProperty(element, "font-style", "italic");
+                    }
+                    else {
+                        element.style.setProperty("font-style", "italic");
+                    }
+                    break;
+                case "underline":
+                    if (element.style.textDecoration.includes("underline")) {
+                        this.removeTextDecoration(element, "underline");
+                    }
+                    else {
+                        this.addTextDecoration(element, "underline");
+                    }
+                    break;
+                case "line-through":
+                    if (element.style.textDecoration.includes("line-through")) {
+                        this.removeTextDecoration(element, "line-through");
+                    }
+                    else {
+                        this.addTextDecoration(element, "line-through");
+                    }
+                    break;
+                case "subscript":
+                    if (element.style.verticalAlign == "sub") {
+                        this.removeProperty(element, "vertical-align", "sub");
+                    }
+                    else {
+                        element.style.setProperty("vertical-align", "sub");
+                    }
+                    break;
+                case "superscript":
+                    if (element.style.verticalAlign == "super") {
+                        this.removeProperty(element, "vertical-align", "super");
+                    }
+                    else {
+                        element.style.setProperty("vertical-align", "super");
+                    }
+                    break;
+                case "alignleft":
+                    if (element.style.textAlign == "left") {
+                        this.removeProperty(element, "text-align", "left");
+                    }
+                    else {
+                        element.style.setProperty("text-align", "left");
+                    }
+                    break;
+                case "aligncenter":
+                    if (element.style.textAlign == "center") {
+                        this.removeProperty(element, "text-align", "center");
+                    }
+                    else {
+                        element.style.setProperty("text-align", "center");
+                    }
+                    break;
+                case "alignright":
+                    if (element.style.textAlign == "right") {
+                        this.removeProperty(element, "text-align", "right");
+                    }
+                    else {
+                        element.style.setProperty("text-align", "right");
+                    }
+                    break;
+                case "alignjustify":
+                    if (element.style.textAlign == "justify") {
+                        this.removeProperty(element, "text-align", "justify");
+                    }
+                    else {
+                        element.style.setProperty("text-align", "justify");
+                    }
+                    break;
+                case "indent":
+                    if (element.style.textIndent == "40px") {
+                        this.removeProperty(element, "text-indent", "40px");
+                    }
+                    else {
+                        element.style.setProperty("text-indent", "40px");
+                    }
+                    break;
+                default:
+            }
+            this.selection = null;
+            this.refreshUI();
+            return;
+        }
+
+        /* Insert a new node */
+        /* Make certain the element has content */
+        if (sel.toString().length > 0 && value != "None") {
+            let newElement;
+            switch (type) {
+                case "textcolor":
+                    newElement = this.createElement(sel);
+                    newElement.style.color = value;
+                    break;
+                case "textbgcolor":
+                    newElement = this.createElement(sel);
+                    newElement.style.backgroundColor = value;
+                    break;
+                case "font":
+                    newElement = this.createElement(sel);
+                    newElement.style.fontFamily = value;
+                    break;
+                case "size":
+                    newElement = this.createElement(sel);
+                    newElement.style.fontSize = value;
+                    break;
+                case "bold":
+                    newElement = this.createElement(sel);
+                    newElement.style.fontWeight = "bold";
+                    break;
+                case "italic":
+                    newElement = this.createElement(sel);
+                    newElement.style.fontStyle = "italic";
+                    break;
+                case "underline":
+                    newElement = this.createElement(sel);
+                    this.addTextDecoration(newElement, "underline");
+                    break;
+                case "line-through":
+                    newElement = this.createElement(sel);
+                    this.addTextDecoration(newElement, "line-through");
+                    break;
+                case "subscript":
+                    newElement = this.createElement(sel);
+                    newElement.style.verticalAlign = "sub";
+                    break;
+                case "superscript":
+                    newElement = this.createElement(sel);
+                    newElement.style.verticalAlign = "super";
+                    break;
+                case "alignleft":
+                    newElement = document.createElement("div");
+                    newElement.style.textAlign = "left";
+                    break;
+                case "aligncenter":
+                    newElement = document.createElement("div");
+                    newElement.style.textAlign = "center";
+                    break;
+                case "alignright":
+                    newElement = document.createElement("div");
+                    newElement.style.textAlign = "right";
+                    break;
+                case "alignjustify":
+                    newElement = document.createElement("div");
+                    newElement.style.textAlign = "justify";
+                    break;
+                case "indent":
+                    newElement = document.createElement("div");
+                    newElement.style.textIndent = "40px";
+                    break;
+                default:
+            }
+            if (newElement != null && sel.rangeCount != 0) {
+                range = sel.getRangeAt(0);
+                newElement.appendChild(range.cloneContents());
+                range.deleteContents();
+                range.insertNode(newElement);
+                range.selectNodeContents(newElement);
+                sel.removeAllRanges();
+                sel.addRange(range);
                 this.selection = null;
                 this.refreshUI();
-                return;
-            }
-
-            /* Insert a new node */
-            /* Make certain the element has content */
-            if (sel.toString().length > 0 && value != "None") {
-                let newElement;
-                switch (type) {
-                    case "textcolor":
-                        newElement = this.createElement(sel);
-                        newElement.style.color = value;
-                        break;
-                    case "textbgcolor":
-                        newElement = this.createElement(sel);
-                        newElement.style.backgroundColor = value;
-                        break;
-                    case "font":
-                        newElement = this.createElement(sel);
-                        newElement.style.fontFamily = value;
-                        break;
-                    case "size":
-                        newElement = this.createElement(sel);
-                        newElement.style.fontSize = value;
-                        break;
-                    case "bold":
-                        newElement = this.createElement(sel);
-                        newElement.style.fontWeight = "bold";
-                        break;
-                    case "italic":
-                        newElement = this.createElement(sel);
-                        newElement.style.fontStyle = "italic";
-                        break;
-                    case "underline":
-                        newElement = this.createElement(sel);
-                        this.addTextDecoration(newElement, "underline");
-                        break;
-                    case "line-through":
-                        newElement = this.createElement(sel);
-                        this.addTextDecoration(newElement, "line-through");
-                        break;
-                    case "subscript":
-                        newElement = this.createElement(sel);
-                        newElement.style.verticalAlign = "sub";
-                        break;
-                    case "superscript":
-                        newElement = this.createElement(sel);
-                        newElement.style.verticalAlign = "super";
-                        break;
-                    case "alignleft":
-                        newElement = document.createElement("div");
-                        newElement.style.textAlign = "left";
-                        break;
-                    case "aligncenter":
-                        newElement = document.createElement("div");
-                        newElement.style.textAlign = "center";
-                        break;
-                    case "alignright":
-                        newElement = document.createElement("div");
-                        newElement.style.textAlign = "right";
-                        break;
-                    case "alignjustify":
-                        newElement = document.createElement("div");
-                        newElement.style.textAlign = "justify";
-                        break;
-                    case "indent":
-                        newElement = document.createElement("div");
-                        newElement.style.textIndent = "40px";
-                        break;
-                    default:
-                }
-                if (newElement != null && sel.rangeCount != 0) {
-                    range = sel.getRangeAt(0);
-                    newElement.appendChild(range.cloneContents());
-                    range.deleteContents();
-                    range.insertNode(newElement);
-                    range.selectNodeContents(newElement);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    this.selection = null;
-                    this.refreshUI();
-                }
             }
         }
     }
@@ -2173,7 +2170,7 @@ class RTBlazorfiedUtilities {
     closeDialog = (id) => {
         const e = this.shadowRoot.getElementById(id);
         if (e != null) {
-            e.style.display = "none";
+            e.close();
         }
     }
     addClasses = (classlist, element) => {
@@ -2195,14 +2192,14 @@ class RTBlazorfiedUtilities {
         }
     }
 }
-class RTBlazorfiedEmbedDialog {
+class RTBlazorfiedMediaDialog {
     constructor(shadowRoot) {
         this.shadowRoot = shadowRoot;
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
     }
 
-    openEmbedDialog = () => {
-        this.resetEmbedDialog();
+    openMediaDialog = () => {
+        this.resetMediaDialog();
 
         /* Get the selection */
         const selection = this.shadowRoot.getSelection();
@@ -2211,15 +2208,14 @@ class RTBlazorfiedEmbedDialog {
             this.embedSelection = selection.getRangeAt(0).cloneRange();
         }
 
-        const e = this.shadowRoot.getElementById("rich-text-box-embed-modal");
-        e.style.display = "block";
+        this.shadowRoot.getElementById("rich-text-box-embed-modal").show();
 
         const source = this.shadowRoot.getElementById("rich-text-box-embed-source");
         if (source) {
             source.focus();
         }
     }
-    resetEmbedDialog = () => {
+    resetMediaDialog = () => {
         this.embed = null;
         this.embedSelection = null;
 
@@ -2240,7 +2236,7 @@ class RTBlazorfiedEmbedDialog {
             classes.value = null;
         }
     }
-    insertEmbed = () => {
+    insertMedia = () => {
         const source = this.shadowRoot.getElementById('rich-text-box-embed-source');
         const width = this.shadowRoot.getElementById('rich-text-box-embed-width');
         const height = this.shadowRoot.getElementById('rich-text-box-embed-height');
@@ -2314,8 +2310,7 @@ class RTBlazorfiedCodeBlockDialog {
             }
         }
 
-        const e = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
-        e.style.display = "block";
+        this.shadowRoot.getElementById("rich-text-box-code-block-modal").show();
 
         if (code) {
             code.focus();
@@ -2421,9 +2416,7 @@ class RTBlazorfiedBlockQuoteDialog {
             }
         }
 
-        const e = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
-        e.style.display = "block";
-
+        this.shadowRoot.getElementById("rich-text-box-block-quote-modal").show();
         if (quote) {
             quote.focus();
             quote.scrollTop = 0;
@@ -2516,8 +2509,7 @@ class RTBlazorfiedImageDialog {
             this.imageSelection = selection.getRangeAt(0).cloneRange();
         }
 
-        const e = this.shadowRoot.getElementById("rich-text-box-image-modal");
-        e.style.display = "block";
+        this.shadowRoot.getElementById("rich-text-box-image-modal").show();
 
         const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
         if (address) {
@@ -2631,8 +2623,7 @@ class RTBlazorfiedLinkDialog {
             }
         }
 
-        const e = this.shadowRoot.getElementById("rich-text-box-link-modal");
-        e.style.display = "block";
+        this.shadowRoot.getElementById("rich-text-box-link-modal").show();
 
         const address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         if (address) {
@@ -2662,7 +2653,7 @@ class RTBlazorfiedLinkDialog {
         const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
         const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
-
+        
         if (link.value.length == 0 || linktext.value.length == 0) {
             this.Utilities.closeDialog("rich-text-box-link-modal");
             this.content.focus();
@@ -2686,13 +2677,7 @@ class RTBlazorfiedLinkDialog {
         }
         else {
             if (this.linkSelection != null) {
-                const selection = this.shadowRoot.getSelection();
-                if (selection) {
-                    selection.removeAllRanges();
-                    selection.addRange(this.linkSelection);
-                }
-
-                const range = selection.getRangeAt(0);
+                const range = this.linkSelection;
                 const anchor = document.createElement("a");
                 anchor.href = link.value;
                 anchor.textContent = linktext.value;
@@ -2829,7 +2814,7 @@ class RTBlazorfiedColorDialog {
             }
         }
 
-        this.colorPickerDialog.style.display = "block";
+        this.colorPickerDialog.show();
         return this.selection;
     }
 

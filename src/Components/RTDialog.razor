@@ -1,23 +1,19 @@
 ﻿@namespace RichTextBlazorfied.Components
 
-<div id="@DialogId" class="rich-text-box-modal rich-text-box-scroll">
-    <div class="rich-text-box-modal-content">
-        <div class="rich-text-box-modal-body">
-            <div style="display: flex; flex-direction: row; justify-content: space-between;">
-                <div style="align-self: flex-start; margin-left: 10px;">
-                    <h2>@Title</h2>
-                </div>
-                <div style="align-self: flex-start; margin: 15px 10px 0 0;">
-                    <span @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-modal-close">&times;</span>
-                </div>
-            </div>
-            <div style="padding: 10px;">
-                @ChildContent
-                <div style="margin-top: 20px; text-align: right;">
-                    <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button" tabindex="100">Close</button>
-                    <button id="rich-text-box-ok-button" @onclick="OnClick" class="rich-text-box-form-button" tabindex="101">OK</button>
-                </div>
-            </div>
+<dialog id="@DialogId" class="rich-text-box-modal rich-text-box-scroll">
+    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div style="align-self: flex-start; margin-left: 10px;">
+            <h2>@Title 123</h2>
+        </div>
+        <div style="align-self: flex-start; margin: 15px 10px 0 0;">
+            <span @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-modal-close">&times;</span>
         </div>
     </div>
-</div>
+    <div style="padding: 10px;">
+        @ChildContent
+        <div style="margin-top: 20px; text-align: right;">
+            <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button">Close</button>
+            <button id="rich-text-box-ok-button" @onclick="OnClick" class="rich-text-box-form-button">OK</button>
+        </div>
+    </div>
+</dialog>

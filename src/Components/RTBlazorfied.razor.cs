@@ -256,24 +256,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-show {display: block;}
 
-        .rich-text-box-modal {
-          display: none;
-          position: fixed;
-          z-index: 10001;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          overflow-y: auto !important;
-          overflow-x: hidden !important;
-          /* background-color: rgba(0,0,0,0.1); */
-        }
-
-        .rich-text-box-modal-content {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
+        dialog {
           background-color: {{_modalBackgroundColor}};
           color: {{_modalTextColor}};
           margin: auto;
@@ -281,9 +264,11 @@ public partial class RTBlazorfied
           width: 600px;
           box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
           border-radius: 5px;
+          user-select: none;
+          z-index: 2000;
         }
         @media screen and (max-width: 768px) {
-            .rich-text-box-modal-content {
+            dialog {
                 width: 100%;
             }
         }
@@ -1334,8 +1319,8 @@ public partial class RTBlazorfied
     private async Task InsertQuote() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertBlockQuote", id);
     private async Task OpenCodeBlockDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openCodeBlockDialog", id);
     private async Task InsertCodeBlock() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertCodeBlock", id);
-    private async Task OpenEmbedDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openEmbedDialog", id);
-    private async Task InsertEmbed() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertEmbed", id);
+    private async Task OpenMediaDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openMediaDialog", id);
+    private async Task InsertMedia() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertMedia", id);
     private async Task OpenTextColorDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTextColorDialog", id);
     private async Task InsertTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextColor", id);
     private async Task RemoveTextColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "removeTextColor", id);

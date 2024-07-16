@@ -324,9 +324,9 @@ else
         @if (_embedMedia == true)
         {
             <RTButton Id="blazing-rich-text-embed-button"
-                      OnClick="OpenEmbedDialog"
+                      OnClick="OpenMediaDialog"
                       Icon="@Icons.VideoFile"
-                      Title="Embed Media"
+                      Title="Insert Media"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"
                       IsDisabled="@IsDisabled"></RTButton>
@@ -380,72 +380,72 @@ else
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
 
-        <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Embed Media" OnClick="InsertEmbed">
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Embed Media" OnClick="InsertMedia">
             <label for="source">Source</label>
-            <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" tabindex="1">
+            <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf">
             <label for="width">Width</label>
-            <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450" tabindex="2">
+            <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450">
             <label for="height">Height</label>
-            <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250" tabindex="3">
+            <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250">
             <label for="type">Type</label>
-            <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" tabindex="4">
+            <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
-                <input type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
+                <input type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes">
             }
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
             <label for="code">Code Block</label>
-            <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" wrap="off" tabindex="1" />
+            <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" wrap="off" />
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
-                <input type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+                <input type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes">
             }
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-block-quote-modal" Title="Block Quote" OnClick="InsertQuote">
             <label for="quote">Quote</label>
-            <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" tabindex="1" />
+            <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" />
             <label for="cite">Cite</label>
-            <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." tabindex="2">
+            <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www...">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
-                <input type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+                <input type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes">
             }
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
             <label for="webaddress">Web Address</label>
-            <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
+            <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www...">
             <label for="imagewidth">Image Width</label>
-            <input type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" tabindex="2">
+            <input type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400">
             <label for="imageheight">Image Height</label>
-            <input type="text" id="rich-text-box-image-height" name="imageheight" tabindex="3">
+            <input type="text" id="rich-text-box-image-height" name="imageheight">
             <label for="alttext">Alternative Text</label>
-            <input type="text" id="rich-text-box-image-alt-text" name="alttext" tabindex="4">
+            <input type="text" id="rich-text-box-image-alt-text" name="alttext">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
-                <input type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="5">
+                <input type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes">
             }
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
             <label for="webaddress">Web Address</label>
-            <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." tabindex="1">
+            <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www...">
             <label for="linktext">Link Text</label>
-            <input type="text" id="rich-text-box-linktext" name="linktext" tabindex="2">
+            <input type="text" id="rich-text-box-linktext" name="linktext">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
-                <input type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes" tabindex="3">
+                <input type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes">
             }
             <label style="display: flex; align-items: center;">
-                <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" tabindex="4" />
+                <input id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" />
                 Open in New Tab
             </label>
         </RTDialog>
