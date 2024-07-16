@@ -112,7 +112,7 @@ class RTBlazorfied {
         this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content);
 
         /* Initialize Code Block Dialog */
-        this.CodeBlock = new RTBlazorfiedCodeBlockDialog(this.shadowRoot, this.content);
+        this.CodeBlockDialog = new RTBlazorfiedCodeBlockDialog(this.shadowRoot, this.content);
 
         /* Initialize the Embed Dialog */
         this.EmbedDialog = new RTBlazorfiedEmbedDialog(this.shadowRoot);
@@ -458,10 +458,10 @@ class RTBlazorfied {
     openCodeBlockDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.CodeBlock.openCodeBlockDialog();
+        this.CodeBlockDialog.openCodeBlockDialog();
     }
     insertCodeBlock = () => {
-        this.CodeBlock.insertCodeBlock();
+        this.CodeBlockDialog.insertCodeBlock();
         this.NodeManager.refreshUI();
     }
     openEmbedDialog = () => {
@@ -1431,7 +1431,7 @@ class RTBlazorfiedNodeManager {
         }
     }
     addTextDecoration = (element, decoration) => {
-        if (element == null || element == this.content || !this.content.contains(element)) { return; }
+        if (element == null || element == this.content || element == this.content.parentNode) { return; }
 
         const currentDecorations = element.style.textDecoration;
 
