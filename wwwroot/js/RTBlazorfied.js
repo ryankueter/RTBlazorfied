@@ -952,43 +952,43 @@ class RTBlazorfiedNodeManager {
                 let newElement;
                 switch (type) {
                     case "textcolor":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.color = value;
                         break;
                     case "textbgcolor":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.backgroundColor = value;
                         break;
                     case "font":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.fontFamily = value;
                         break;
                     case "size":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.fontSize = value;
                         break;
                     case "bold":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.fontWeight = "bold";
                         break;
                     case "italic":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.fontStyle = "italic";
                         break;
                     case "underline":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         this.addTextDecoration(newElement, "underline");
                         break;
                     case "line-through":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         this.addTextDecoration(newElement, "line-through");
                         break;
                     case "subscript":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.verticalAlign = "sub";
                         break;
                     case "superscript":
-                        newElement = this.createElement();
+                        newElement = this.createElement(sel);
                         newElement.style.verticalAlign = "super";
                         break;
                     case "alignleft":
@@ -1363,12 +1363,38 @@ class RTBlazorfiedNodeManager {
         temp.remove();
         return false;
     }
-    createElement = () => {
+    createElement = (selection) => {
         /* Insert a div if no elements exist in the editor */
-        if (this.content.children.length === 0) {
+        if (this.content.children.length === 0 || this.allElementsSelected(selection)) {
             return document.createElement("div");
         }
         return document.createElement("span");
+    }
+    allElementsSelected(selection) {
+
+        if (selection.rangeCount === 0) {
+            return [];
+        }
+        const range = selection.getRangeAt(0);
+
+        /* Create a DocumentFragment to hold the selected elements */
+        const fragment = document.createDocumentFragment();
+
+        /* Clone the contents of the range into the fragment */
+        fragment.appendChild(range.cloneContents());
+
+        /* Get all elements within the fragment */
+        const elements = fragment.querySelectorAll('*');
+
+        const childElements = this.content.querySelectorAll('*');
+        
+        /* See if the selection contains the same number of elements
+        as the editor */
+        if (Array.from(elements).length === childElements.length) {
+            return true;
+        }
+
+        return false;
     }
     removeProperty = (element, property, value) => {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
