@@ -551,7 +551,6 @@ public partial class RTBlazorfied
 
     private string? Mode { get; set; }
     private bool IsDisabled { get; set; }
-    private string? OpenCodeStyles { get; set; }
     private bool Editable { get; set; } = true;
     protected override void OnInitialized()
     {
@@ -1272,7 +1271,6 @@ public partial class RTBlazorfied
     private async Task Initialize()
     {
         IsDisabled = false;
-        OpenCodeStyles = "rich-text-box-menu-item-special";
         objectReference = DotNetObjectReference.Create(this);
         try
         {
@@ -1353,14 +1351,12 @@ public partial class RTBlazorfied
         {
             Mode = "code";
             IsDisabled = true;
-            OpenCodeStyles = "rich-text-box-menu-item-special selected";
             await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", id);
         }
         else
         {
             Mode = "html";
             IsDisabled = false;
-            OpenCodeStyles = "rich-text-box-menu-item-special";
             await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", id);
         }
     }
