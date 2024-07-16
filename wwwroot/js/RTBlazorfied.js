@@ -680,10 +680,16 @@ class RTBlazorfiedNodeManager {
             if (element != null && element != this.content && element.parentNode != null && this.content.contains(element.parentNode)) {
 
                 if (type == "none") {
+                    // Create a new div element
+                    const div = document.createElement('div');
+
+                    // Move all child nodes from the original element to the new div
                     while (element.firstChild) {
-                        element.parentNode.insertBefore(element.firstChild, element);
+                        div.appendChild(element.firstChild);
                     }
-                    element.parentNode.removeChild(element);
+
+                    // Replace the original element with the new div
+                    element.parentNode.replaceChild(div, element);
 
                     if (sel.anchorNode != null && sel.rangeCount != 0) {
                         const range = document.createRange();
