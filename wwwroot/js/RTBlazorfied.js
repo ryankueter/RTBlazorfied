@@ -38,6 +38,7 @@ class RTBlazorfied {
         this.source.setAttribute('id', 'rich-text-box-source');
         this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
         this.source.style.display = "none";
+        this.source.spellcheck = false;
         
         /* Assemble everything into the container */
         const toolbar = document.getElementById(this.toolbar_id);
