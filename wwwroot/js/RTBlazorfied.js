@@ -762,8 +762,7 @@ class RTBlazorfiedNodeManager {
                 if (newElement != null && sel.rangeCount > 0) {
                     range = sel.getRangeAt(0);
 
-                    /* See if this is an outer element */
-                    if (!this.hasInvalidElementsInRange(range)) {
+                    if (!this.hasInvalidElementsInSelection(sel)) {
                         newElement.appendChild(range.cloneContents());
                         range.deleteContents();
                         range.insertNode(newElement);
@@ -1371,35 +1370,7 @@ class RTBlazorfiedNodeManager {
         sel.removeAllRanges();
         sel.addRange(range);
     }
-
-    hasInvalidElementsInRange = (range) => {
-        let node = range.startContainer;
-        const endNode = range.endContainer;
-
-        /* Traverse through nodes within the range */
-        while (node != null && node !== this.content && this.content.contains(node) && node !== endNode.nextSibling) {
-            if (node.nodeType === Node.ELEMENT_NODE && node !== endNode) {
-                const tagName = node.tagName.toLowerCase();
-
-                const relevantElements = [
-                    "address", "article", "aside", "blockquote", "details", "dialog", "div",
-                    "dl", "fieldset", "figcaption", "figure", "footer", "form", "header",
-                    "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section",
-                    "table", "ul", "a", "button", "input", "textarea", "select", "form",
-                    "h1", "h2", "h3", "h4", "h5", "h6"
-                ];
-
-                if (relevantElements.includes(tagName)) {
-                    return true;
-                }
-            }
-
-            /* Move to the next node */
-            node = node.nextSibling || node.parentNode.nextSibling;
-        }
-        return false;
-    }
-
+    
     hasCommonAncestor(selection) {
         const range = selection.getRangeAt(0);
 
