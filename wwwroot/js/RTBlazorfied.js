@@ -1426,37 +1426,19 @@ class RTBlazorfiedNodeManager {
         return false;
     }
     createElement = (selection) => {
-        /* Insert a div if no elements exist in the editor */
-        if (this.content.children.length === 0 || this.allElementsSelected(selection) || this.hasInvalidElementsInRange(selection)) {
-            return document.createElement("div");
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const selectedText = selection.toString();
+
+            if (selectedText) {
+                const parentElement = range.commonAncestorContainer;
+                if (parentElement.nodeType === Node.TEXT_NODE && this.content.children.length > 0) {
+                    return document.createElement('span');
+                } else {
+                    return document.createElement('div');
+                }
+            }
         }
-        return document.createElement("span");
-    }
-    allElementsSelected(selection) {
-
-        if (selection.rangeCount === 0) {
-            return [];
-        }
-        const range = selection.getRangeAt(0);
-
-        /* Create a DocumentFragment to hold the selected elements */
-        const fragment = document.createDocumentFragment();
-
-        /* Clone the contents of the range into the fragment */
-        fragment.appendChild(range.cloneContents());
-
-        /* Get all elements within the fragment */
-        const elements = fragment.querySelectorAll('*');
-
-        const childElements = this.content.querySelectorAll('*');
-        
-        /* See if the selection contains the same number of elements
-        as the editor */
-        if (Array.from(elements).length === childElements.length) {
-            return true;
-        }
-
-        return false;
     }
     removeProperty = (element, property, value) => {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
