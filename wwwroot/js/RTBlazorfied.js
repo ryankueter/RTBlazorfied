@@ -506,7 +506,8 @@ class RTBlazorfied {
         this.content.style.display = "none";
         this.source.style.display = "block";
         this.source.focus();
-        this.NodeManager.clearButtons();
+        //this.source.scrollTop = 0;
+        //this.source.scrollLeft = 0;
         this.disableButtons();
     };
     getCode = () => {
@@ -515,7 +516,6 @@ class RTBlazorfied {
         this.content.style.display = "block";
         this.source.style.display = "none";
         this.content.focus();
-        this.NodeManager.clearButtons();
         this.enableButtons();
     };
     html = () => {
@@ -537,6 +537,7 @@ class RTBlazorfied {
         else {
             this.content.innerHTML = "";
         }
+        this.NodeManager.clearButtons();
     };
     loadInnerText = (text) => {
         this.EditMode = false;
@@ -552,7 +553,7 @@ class RTBlazorfied {
         else {
             this.source.value = "";
         }
-        this.NodeManager.selectButtons(this.content);
+        this.NodeManager.clearButtons();
     };
     plaintext = () => {
         return this.content.textContent;
@@ -966,10 +967,10 @@ class RTBlazorfiedNodeManager {
             this.refreshUI();
             return;
         }
-
+        
         /* Insert a new node */
         /* Make certain the element has content */
-        if (sel.toString().length > 0 && value != "None") {
+        if (sel.toString().length > 0 && value != "None" && !this.isExcluded(sel)) {
             let newElement;
             switch (type) {
                 case "textcolor":
@@ -1047,6 +1048,21 @@ class RTBlazorfiedNodeManager {
             }
         }
     }
+    isExcluded = (selection) => {
+        switch (selection.anchorNode.parentNode.nodeName) {
+            case "TD":
+                return true;
+                break;
+            case "CODE":
+                return true;
+                break;
+            case "PRE":
+                return true;
+                break;
+        }
+        return false;
+    }
+
     /* Search up the elements */
     selectButtons = (el) => {
         if (el == null || el == this.content || !this.content.contains(el) || this.lockToolbar == true) { return; }
@@ -1243,11 +1259,9 @@ class RTBlazorfiedNodeManager {
             });
         }
 
-        /* Focus the content */
-        this.content.focus();
-
         /* Select Buttons */
         this.selectButtons(this.shadowRoot.getSelection().anchorNode);
+        this.content.focus();        
     };
 
     clearButtons = () => {
@@ -1413,7 +1427,7 @@ class RTBlazorfiedNodeManager {
     }
     createElement = (selection) => {
         /* Insert a div if no elements exist in the editor */
-        if (this.content.children.length === 0 || this.allElementsSelected(selection)) {
+        if (this.content.children.length === 0 || this.allElementsSelected(selection) || this.hasInvalidElementsInRange(selection)) {
             return document.createElement("div");
         }
         return document.createElement("span");
@@ -2121,7 +2135,6 @@ class RTBlazorfiedActionOptions {
             fragment.appendChild(table);
 
             range.insertNode(fragment);
-            range.setStartBefore(fragment);
             range.collapse(true);
             selection.removeAllRanges();
             selection.addRange(range);
@@ -2132,6 +2145,7 @@ class RTBlazorfiedActionOptions {
     buildTable = (text) => {
         /* Create table element */
         let table = document.createElement('table');
+        table.style.setProperty('margin', 'auto');
 
         /* Split the text by lines */
         let lines = text.split('\n');
@@ -2164,23 +2178,25 @@ class RTBlazorfiedActionOptions {
             /* Split the text by lines */
             let lines = text.split('\n');
 
-            /* Get the number of tabs in the first line (if needed) */
-            /* let firstLineTabs = (lines[0].match(/\t/g) || []).length; */
-
             /* Check the number of tabs in the subsequent lines */
             if (lines.length > 1 && lines[1].trim().length > 0) {
                 let expectedTabs = (lines[1].match(/\t/g) || []).length;
+                if (expectedTabs === 0) {
+                    return false;
+                }
+                else {
+                    for (let i = 1; i < lines.length; i++) {
+                        let line = lines[i];
+                        if (line.trim().length > 0) {
+                            let tabCount = (line.match(/\t/g) || []).length;
 
-                for (let i = 2; i < lines.length; i++) {
-                    let line = lines[i];
-                    if (line.trim().length > 0) {
-                        let tabCount = (line.match(/\t/g) || []).length;
-
-                        if (tabCount !== expectedTabs) {
-                            return false;
+                            if (tabCount !== expectedTabs) {
+                                return false;
+                            }
                         }
                     }
                 }
+                
                 return true;
             }
         }
