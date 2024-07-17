@@ -1378,26 +1378,18 @@ class RTBlazorfiedNodeManager {
 
         /* Traverse through nodes within the range */
         while (node != null && node !== this.content && this.content.contains(node) && node !== endNode.nextSibling) {
-            if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.nodeType === Node.ELEMENT_NODE && node !== endNode) {
                 const tagName = node.tagName.toLowerCase();
 
-                /* Check for block-level elements */
-                if (node !== endNode && ["address", "article", "aside", "blockquote", "details", "dialog", "div", "dl", "fieldset", "figcaption", "figure", "footer", "form", "header", "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section", "table", "ul"].includes(tagName)) {
-                    return true;
-                }
+                const relevantElements = [
+                    "address", "article", "aside", "blockquote", "details", "dialog", "div",
+                    "dl", "fieldset", "figcaption", "figure", "footer", "form", "header",
+                    "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section",
+                    "table", "ul", "a", "button", "input", "textarea", "select", "form",
+                    "h1", "h2", "h3", "h4", "h5", "h6"
+                ];
 
-                /* Check for heading elements */
-                if (node !== endNode && tagName.match(/^h[1-6]$/)) {
-                    return true;
-                }
-
-                /* Check for interactive elements */
-                if (node !== endNode && ["a", "button", "input", "textarea", "select"].includes(tagName)) {
-                    return true;
-                }
-
-                /* Check for form elements */
-                if (node !== endNode && tagName === "form") {
+                if (relevantElements.includes(tagName)) {
                     return true;
                 }
             }
@@ -1426,19 +1418,65 @@ class RTBlazorfiedNodeManager {
         return false;
     }
     createElement = (selection) => {
-        if (selection.rangeCount > 0) {
+        /* Insert a div if no elements exist in the editor */
+        if (this.content.children.length === 0 || this.allElementsSelected(selection) || this.hasInvalidElementsInSelection(selection)) {
+            return document.createElement("div");
+        }
+        return document.createElement("span");
+    }
+    hasInvalidElementsInSelection = (selection) => {
+        if (selection) {
+            const relevantElements = [
+                "address", "article", "aside", "blockquote", "details", "dialog", "div",
+                "dl", "fieldset", "figcaption", "figure", "footer", "form", "header",
+                "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section",
+                "table", "ul", "a", "button", "input", "textarea", "select", "form",
+                "h1", "h2", "h3", "h4", "h5", "h6"
+            ];
+            
+            /* Get the range of the selection */
             const range = selection.getRangeAt(0);
-            const selectedText = selection.toString();
 
-            if (selectedText) {
-                const parentElement = range.commonAncestorContainer;
-                if (parentElement.nodeType === Node.TEXT_NODE && this.content.children.length > 0) {
-                    return document.createElement('span');
-                } else {
-                    return document.createElement('div');
+            /* Create a document fragment to hold the contents of the range */
+            const fragment = range.cloneContents();
+
+            /* Query all elements within the fragment */
+            const elements = fragment.querySelectorAll('*');
+            for (let i = 0; i < elements.length; i++) {
+                const element = elements[i];
+                /* Check if the element's tag name is in relevantElements */
+                if (relevantElements.includes(element.tagName.toLowerCase())) {
+                    return true;
                 }
             }
         }
+        return false;
+    }
+    allElementsSelected(selection) {
+
+        if (selection.rangeCount === 0) {
+            return [];
+        }
+        const range = selection.getRangeAt(0);
+
+        /* Create a DocumentFragment to hold the selected elements */
+        const fragment = document.createDocumentFragment();
+
+        /* Clone the contents of the range into the fragment */
+        fragment.appendChild(range.cloneContents());
+
+        /* Get all elements within the fragment */
+        const elements = fragment.querySelectorAll('*');
+
+        const childElements = this.content.querySelectorAll('*');
+
+        /* See if the selection contains the same number of elements
+        as the editor */
+        if (Array.from(elements).length === childElements.length) {
+            return true;
+        }
+
+        return false;
     }
     removeProperty = (element, property, value) => {
         if (element == null || element == this.content || !this.content.contains(element)) { return; }
@@ -2027,7 +2065,6 @@ class RTBlazorfiedActionOptions {
             });
 
             range.insertNode(fragment);
-            range.setStartBefore(fragment);
             range.collapse(true);
             selection.removeAllRanges();
             selection.addRange(range);
