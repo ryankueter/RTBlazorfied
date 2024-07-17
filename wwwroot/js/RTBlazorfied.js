@@ -506,8 +506,8 @@ class RTBlazorfied {
         this.content.style.display = "none";
         this.source.style.display = "block";
         this.source.focus();
-        //this.source.scrollTop = 0;
-        //this.source.scrollLeft = 0;
+        this.source.scrollTop = 0;
+        this.source.scrollLeft = 0;
         this.disableButtons();
     };
     getCode = () => {
