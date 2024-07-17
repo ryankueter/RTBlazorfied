@@ -71,12 +71,24 @@ public partial class RTBlazorfied
             border-color: {{_buttonBorderColorSelected}};
         }
 
-        .rich-text-box-tool-bar button.disabled:hover {
-            background-color: inherit;
+        .rich-text-box-tool-bar button:disabled {
+            background-color: transparent;
+            color: #999;
+            cursor: default;
         }
 
-        .rich-text-box-tool-bar button.disabled:selected {
-            background-color: inherit;
+         .rich-text-box-tool-bar button svg {
+            fill: {{_buttonTextColor}};
+            width: {{_buttonTextSize}};
+            height: {{_buttonTextSize}};
+        }
+
+        .rich-text-box-tool-bar button:hover svg {
+            fill: {{_buttonTextColor}};
+        }
+
+        .rich-text-box-tool-bar button:disabled svg {
+            fill: #999;
         }
 
         .rich-text-box-menu-item {
@@ -93,6 +105,10 @@ public partial class RTBlazorfied
           width: auto;
           max-height: 100%;
           max-width: 100%;
+        }
+
+        .rich-text-box-menu-item:disabled {
+            color: #999;
         }
 
         .rich-text-box-container {
@@ -535,7 +551,6 @@ public partial class RTBlazorfied
         await js.InvokeAsync<string>("RTBlazorfied_Method", "html", id);
 
     private string? Mode { get; set; }
-    private bool IsDisabled { get; set; }
     private bool Editable { get; set; } = true;
     protected override void OnInitialized()
     {
@@ -1255,7 +1270,6 @@ public partial class RTBlazorfied
     private DotNetObjectReference<RTBlazorfied>? objectReference;
     private async Task Initialize()
     {
-        IsDisabled = false;
         objectReference = DotNetObjectReference.Create(this);
         try
         {
@@ -1335,13 +1349,11 @@ public partial class RTBlazorfied
         if (Mode == "html")
         {
             Mode = "code";
-            IsDisabled = true;
             await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", id);
         }
         else
         {
             Mode = "html";
-            IsDisabled = false;
             await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", id);
         }
     }

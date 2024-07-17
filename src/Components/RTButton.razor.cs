@@ -16,6 +16,4 @@ public partial class RTButton
     public string? TextColor { get; set; }
     [Parameter]
     public string? Icon { get; set; }
-    [Parameter]
-    public bool IsDisabled { get; set; }
 }

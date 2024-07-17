@@ -18,7 +18,7 @@ else
         @if (_font == true)
         {
             <div class="rich-text-box-dropdown">
-                <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-font-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
+                <button id="blazing-rich-text-font-button" title="Font" @onclick='() => OpenDropdown("blazing-rich-text-font-button-dropdown")' class="rich-text-box-font-button rich-text-box-dropdown-btn">
                     Font
                 </button>
                 <div id="blazing-rich-text-font-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-font-content rich-text-box-scroll">
@@ -32,7 +32,7 @@ else
         @if (_size == true)
         {
             <div class="rich-text-box-dropdown">
-                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + >)" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
+                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + >)" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn">
                     Size
                 </button>
                 <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
@@ -46,7 +46,7 @@ else
         @if (_format == true)
         {
             <div class="rich-text-box-dropdown">
-                <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn" disabled="@IsDisabled">
+                <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn">
                     Format
                 </button>
                 <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
@@ -72,8 +72,7 @@ else
                       Icon="@Icons.Bold"
                       Title="Bold (Ctrl + B)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_italic == true)
         {
@@ -82,8 +81,7 @@ else
                       Icon="@Icons.Italic"
                       Title="Italic (Ctrl + I)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_underline == true)
         {
@@ -92,8 +90,7 @@ else
                       Icon="@Icons.Underline"
                       Title="Underline (Ctrl + U)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_strikethrough == true)
         {
@@ -102,8 +99,7 @@ else
                       Icon="@Icons.Strikethrough"
                       Title="Strikethrough (Ctrl + D)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_subscript == true)
         {
@@ -112,8 +108,7 @@ else
                       Icon="@Icons.Subscript"
                       Title="Subscript (Ctrl + =)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_superscript == true)
         {
@@ -122,8 +117,7 @@ else
                       Icon="@Icons.Superscript"
                       Title="Superscript (Ctrl + Shift + +)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_formatdivider == true)
         {
@@ -136,24 +130,21 @@ else
                       Icon="@Icons.TextColor"
                       Title="Text Color"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
 
             <RTButton Id="blazing-rich-text-text-bg-color-button"
                       OnClick="OpenTextBackgroundColorDialog"
                       Icon="@Icons.TextBackgroundColor"
                       Title="Text Background Color"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
 
             <RTButton Id="blazing-rich-text-textcolor-remove-button"
                       OnClick="RemoveTextColor"
                       Icon="@Icons.RemoveTextFormat"
                       Title="Remove Color"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_textcolordivider == true)
         {
@@ -167,8 +158,7 @@ else
                       Icon="@Icons.Alignleft"
                       Title="Align Left (Ctrl + L)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_aligncenter == true)
         {
@@ -177,8 +167,7 @@ else
                       Icon="@Icons.Aligncenter"
                       Title="Align Center (Ctrl + E)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_alignright == true)
         {
@@ -187,8 +176,7 @@ else
                       Icon="@Icons.Alignright"
                       Title="Align Right (Ctrl + R)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_alignjustify == true)
         {
@@ -197,8 +185,7 @@ else
                       Icon="@Icons.Alignjustify"
                       Title="Align Justify (Ctrl + J)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_aligndivider == true)
         {
@@ -211,8 +198,7 @@ else
                       Icon="@Icons.Cut"
                       Title="Cut (Ctrl + X)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_copy == true)
         {
@@ -221,8 +207,7 @@ else
                       Icon="@Icons.Copy"
                       Title="Copy (Ctrl + C)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_paste == true)
         {
@@ -231,8 +216,7 @@ else
                       Icon="@Icons.Paste"
                       Title="Paste (Ctrl + V)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_delete == true)
         {
@@ -241,8 +225,7 @@ else
                       Icon="@Icons.Delete"
                       Title="Delete"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_selectall == true)
         {
@@ -251,8 +234,7 @@ else
                       Icon="@Icons.Selectall"
                       Title="Select All"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_actiondivider == true)
         {
@@ -266,8 +248,7 @@ else
                       Icon="@Icons.OrderedList"
                       Title="Ordered List"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_unorderedlist == true)
         {
@@ -276,8 +257,7 @@ else
                       Icon="@Icons.UnorderedList"
                       Title="Unordered List"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_listdivider == true)
         {
@@ -290,16 +270,14 @@ else
                       Icon="@Icons.CreateLink"
                       Title="Insert Link"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
 
             <RTButton Id="blazing-rich-text-remove-link-button"
                       OnClick="RemoveLink"
                       Icon="@Icons.RemoveLink"
                       Title="Remove Link"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_image == true)
         {
@@ -308,8 +286,7 @@ else
                       Icon="@Icons.Image"
                       Title="Insert Image"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_quote == true)
         {
@@ -318,8 +295,7 @@ else
                       Icon="@Icons.Quote"
                       Title="Block Quote"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_embedMedia == true)
         {
@@ -328,8 +304,7 @@ else
                       Icon="@Icons.VideoFile"
                       Title="Insert Media"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_codeBlock == true)
         {
@@ -338,8 +313,7 @@ else
                       Icon="@Icons.CodeBlocks"
                       Title="Code Block"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_mediadivider == true)
         {
@@ -352,8 +326,7 @@ else
                       Icon="@Icons.Undo"
                       Title="Undo (Ctrl + Z)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_redo == true)
         {
@@ -362,8 +335,7 @@ else
                       Icon="@Icons.Redo"
                       Title="Redo (Ctrl + Y)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"
-                      IsDisabled="@IsDisabled"></RTButton>
+                      TextColor="@_buttonTextColor"></RTButton>
         }
         @if (_historydivider == true)
         {
@@ -398,7 +370,7 @@ else
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
             <label for="code">Code Block</label>
-            <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" wrap="off" spellcheck="false" />
+            <textarea rows="10" cols="50" class="rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" spellcheck="false" />
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>

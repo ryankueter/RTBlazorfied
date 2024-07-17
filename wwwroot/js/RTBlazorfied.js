@@ -487,13 +487,27 @@ class RTBlazorfied {
         this.Utilities.closeDialog(id);
         this.lockToolbar = false;
     }
-    
+    enableButtons = () => {
+        
+        const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-btn');
+        dropdowns.forEach(button => button.disabled = false);
+        const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
+        buttons.forEach(button => button.disabled = false);
+    }
+    disableButtons = () => {
+        const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-btn');
+        dropdowns.forEach(button => button.disabled = true);
+        const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
+        buttons.forEach(button => button.disabled = true);
+    }
     getHtml = () => {
         const html = this.html();
         this.loadInnerText(html);
         this.content.style.display = "none";
         this.source.style.display = "block";
         this.source.focus();
+        this.NodeManager.clearButtons();
+        this.disableButtons();
     };
     getCode = () => {
         const plaintext = this.source.value;
@@ -501,6 +515,8 @@ class RTBlazorfied {
         this.content.style.display = "block";
         this.source.style.display = "none";
         this.content.focus();
+        this.NodeManager.clearButtons();
+        this.enableButtons();
     };
     html = () => {
         return this.content.innerHTML;
@@ -1035,6 +1051,9 @@ class RTBlazorfiedNodeManager {
     selectButtons = (el) => {
         if (el == null || el == this.content || !this.content.contains(el) || this.lockToolbar == true) { return; }
 
+        /* Clear the buttons */
+        this.clearButtons();
+
         /* Reset Styles */
         const bold = this.getButton("blazing-rich-text-bold-button");
         const italic = this.getButton("blazing-rich-text-italic-button");
@@ -1202,11 +1221,7 @@ class RTBlazorfiedNodeManager {
         });
     }
     getButton = (id) => {
-        var element = this.shadowRoot.getElementById(id);
-        if (element != null && element.classList.contains("selected")) {
-            element.classList.remove("selected");
-        }
-        return element;
+        return this.shadowRoot.getElementById(id);
     }
     refreshUI = () => {
 
@@ -1234,6 +1249,35 @@ class RTBlazorfiedNodeManager {
         /* Select Buttons */
         this.selectButtons(this.shadowRoot.getSelection().anchorNode);
     };
+
+    clearButtons = () => {
+        this.closeDropdowns();
+
+        const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
+        buttons.forEach(function (button) {
+            if (button.classList.contains("selected")) {
+                button.classList.remove('selected');
+            }
+        });
+
+        const formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
+        if (formatButton != null) {
+            formatButton.innerText = "Format";
+            this.formatSelected = false;
+        }
+
+        const fontButton = this.shadowRoot.getElementById("blazing-rich-text-font-button");
+        if (fontButton != null) {
+            fontButton.innerText = "Font";
+            this.fontSelected = false;
+        }
+
+        const sizeButton = this.shadowRoot.getElementById("blazing-rich-text-size-button");
+        if (sizeButton != null) {
+            sizeButton.innerText = "Size";
+            this.fontSizeSelected = false;
+        }
+    }
 
     /* A list of nodes that should not be removed */
     isNotRemovable = (nodeName) => {
