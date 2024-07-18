@@ -485,6 +485,8 @@ public partial class RTBlazorfied
         td, th {
           border: 1px solid #ccc;
           padding: 8px;
+          min-height: 25px;
+          min-width: 45px;
         }
         """;
 
@@ -611,6 +613,7 @@ public partial class RTBlazorfied
     private bool? _link;
     private bool? _quote;
     private bool? _codeBlock;
+    private bool? _table;
     private bool? _embedMedia;
     private bool? _image;
     private bool? _mediadivider;
@@ -691,6 +694,10 @@ public partial class RTBlazorfied
             {
                 _embedMedia = buttons.EmbedMedia;
             }
+            if (buttons.InsertTable is not null)
+            {
+                _table = buttons.InsertTable;
+            }
             if (buttons.Link is not null)
             {
                 _link = buttons.Link;
@@ -704,7 +711,8 @@ public partial class RTBlazorfied
                 || buttons.Image == true
                 || buttons.Quote == true
                 || buttons.CodeBlock == true
-                || buttons.EmbedMedia == true)
+                || buttons.EmbedMedia == true
+                || buttons.InsertTable == true)
             {
                 if (buttons.MediaDivider is not null)
                 {
@@ -964,6 +972,7 @@ public partial class RTBlazorfied
         _quote = setting;
         _codeBlock = setting;
         _embedMedia = setting;
+        _table = setting;
 
         // Dividers
         _textstylesdivider = setting;
@@ -1343,6 +1352,8 @@ public partial class RTBlazorfied
     private async Task InsertTextBackgroundColor() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTextBackgroundColor", id);
     private async Task FormatText(string format) => await js.InvokeVoidAsync("RTBlazorfied_Method", "format", id, format);
     private async Task OpenDropdown(string dropdown_id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", id, dropdown_id);
+    private async Task OpenTableDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTableDialog", id);
+    private async Task InsertTable() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTable", id);
 
     private async Task OpenCode()
     {

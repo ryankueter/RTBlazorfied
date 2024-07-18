@@ -69,6 +69,13 @@ class RTBlazorfied {
 
         /* Shortcut keys */
         this.content.addEventListener('keydown', (event) => {
+            /* Create an element if one doesn't alreay exist */
+            if (this.content.innerHTML.trim() === '') {
+                const div = document.createElement('div');
+                const br = document.createElement('br');
+                div.appendChild(br);
+                this.content.appendChild(div);
+            }
             this.keyEvents(event);
         });
 
@@ -347,6 +354,148 @@ class RTBlazorfied {
         /* Close the dialog */
         this.closeDialog(modal);
     }
+    openTableDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+
+        /* Get the selection */
+        const selection = this.shadowRoot.getSelection();
+
+        this.resetTableDialog();
+
+        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && selection.anchorNode.parentNode.nodeName === "TD") {
+
+            console.log(selection.anchorNode.parentNode.parentNode.parentNode.parentNode.nodeName);
+            const table = this.getTable(selection);
+            if (table) {
+                console.log("test");
+                const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+                rows.value = table.rows.length;
+                rows.disabled = true;
+
+                const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+                columns.value = this.getColumns(table);
+                columns.disabled = true;
+
+                const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
+                if (classes != null) {
+                    const classList = table.classList;
+                    classes.value = Array.from(classList).join(' ');
+                }
+
+                this.table = table;
+            }
+        }
+        else {
+            if (selection != null) {
+                this.tableSelection = selection.getRangeAt(0).cloneRange();
+            }
+        }
+
+        this.shadowRoot.getElementById("rich-text-box-table-modal").show();
+
+        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+        if (rows) {
+            rows.focus();
+        }
+    }
+    getTable = (selection) => {
+        if (selection.anchorNode.parentNode.parentNode.parentNode.nodeName === "TABLE") {
+            return selection.anchorNode.parentNode.parentNode.parentNode;
+        }
+        if (selection.anchorNode.parentNode.parentNode.parentNode.parentNode.nodeName === "TABLE") {
+            return selection.anchorNode.parentNode.parentNode.parentNode.parentNode;
+        }
+    }
+    getColumns(table) {
+        let maxColumns = 0;
+
+        for (let i = 0; i < table.rows.length; i++) {
+            const row = table.rows[i];
+            let numColumns = row.cells.length;
+            if (numColumns > maxColumns) {
+                maxColumns = numColumns;
+            }
+        }
+
+        return maxColumns;
+    }
+    resetTableDialog = () => {
+        this.table = null;
+        this.tableSelection = null;
+
+        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+        rows.value = null;
+        rows.disabled = false;
+
+        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+        columns.value = null;
+        columns.disabled = false;
+
+        const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
+        if (classes != null) {
+            classes.value = null;
+        }
+    }
+   
+    insertTable = () => {
+        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+        const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
+
+        if (rows.value.length == 0 || columns.value.length == 0) {
+            this.Utilities.closeDialog("rich-text-box-table-modal");
+            this.content.focus();
+            return;
+        }
+
+        /* Get the link selection or element */
+        if (this.table != null) {
+            if (classes != null) {
+                this.Utilities.addClasses(classes.value, this.table);
+            }
+        }
+        else {
+            if (this.tableSelection != null) {
+                const range = this.tableSelection;
+                const table = this.createTable(rows.value, columns.value);
+                if (classes != null) {
+                    this.Utilities.addClasses(classes.value, table);
+                }
+                range.deleteContents();
+                range.insertNode(table);
+            }
+        }
+        this.Utilities.closeDialog("rich-text-box-table-modal");
+    }
+    createTable = (r, c) => {
+        // Convert rows and columns to integers
+        const rows = parseInt(r, 10);
+        const columns = parseInt(c, 10);
+
+        // Create the table element
+        const table = document.createElement('table');
+        table.style.setProperty('margin', 'auto');
+
+        // Loop through the number of rows
+        for (let i = 0; i < rows; i++) {
+            // Create a row element
+            const tr = document.createElement('tr');
+
+            // Loop through the number of columns
+            for (let j = 0; j < columns; j++) {
+                // Create a cell element
+                const td = document.createElement('td');
+                td.textContent = ` `;
+                tr.appendChild(td);
+            }
+
+            // Append the row to the table
+            table.appendChild(tr);
+        }
+
+        return table;
+    }
     font = (style) => {
         this.NodeManager.updateNode("font", style);
         this.closeDropdown("blazing-rich-text-font-button-dropdown");
@@ -407,7 +556,6 @@ class RTBlazorfied {
         this.lockToolbar = false;
         this.content.focus();
     }
-
     delete = () => {
         this.shadowRoot.getSelection().deleteFromDocument();
         this.NodeManager.refreshUI();
@@ -1094,6 +1242,7 @@ class RTBlazorfiedNodeManager {
 
         const blockQuote = this.getButton("blazing-rich-text-quote-button");
         const codeBlock = this.getButton("blazing-rich-text-code-block-button");
+        const table = this.getButton("blazing-rich-text-table-button");
 
         /* Menus */
         const formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
@@ -1215,6 +1364,9 @@ class RTBlazorfiedNodeManager {
             }
             if (el.parentNode.nodeName == "CODE") {
                 codeBlock.classList.add("selected");
+            }
+            if (el.parentNode.nodeName == "TD") {
+                table.classList.add("selected");
             }
             if (el.parentNode.nodeName == "OL") {
                 ol.classList.add("selected");
@@ -1390,7 +1542,7 @@ class RTBlazorfiedNodeManager {
     }
     createElement = (selection) => {
         /* Insert a div if no elements exist in the editor */
-        if (this.content.children.length === 0 || this.allElementsSelected(selection) || this.hasInvalidElementsInSelection(selection)) {
+        if (this.hasInvalidElementsInSelection(selection)) {
             return document.createElement("div");
         }
         return document.createElement("span");
@@ -1401,7 +1553,7 @@ class RTBlazorfiedNodeManager {
                 "address", "article", "aside", "blockquote", "details", "dialog", "div",
                 "dl", "fieldset", "figcaption", "figure", "footer", "form", "header",
                 "hgroup", "hr", "main", "menu", "nav", "ol", "p", "pre", "section",
-                "table", "ul", "a", "button", "input", "textarea", "select", "form",
+                "table", "ul", "button", "input", "textarea", "select", "form",
                 "h1", "h2", "h3", "h4", "h5", "h6"
             ];
             
@@ -1421,32 +1573,6 @@ class RTBlazorfiedNodeManager {
                 }
             }
         }
-        return false;
-    }
-    allElementsSelected(selection) {
-
-        if (selection.rangeCount === 0) {
-            return [];
-        }
-        const range = selection.getRangeAt(0);
-
-        /* Create a DocumentFragment to hold the selected elements */
-        const fragment = document.createDocumentFragment();
-
-        /* Clone the contents of the range into the fragment */
-        fragment.appendChild(range.cloneContents());
-
-        /* Get all elements within the fragment */
-        const elements = fragment.querySelectorAll('*');
-
-        const childElements = this.content.querySelectorAll('*');
-
-        /* See if the selection contains the same number of elements
-        as the editor */
-        if (Array.from(elements).length === childElements.length) {
-            return true;
-        }
-
         return false;
     }
     removeProperty = (element, property, value) => {

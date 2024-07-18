@@ -306,6 +306,15 @@ else
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
+        @if (_table == true)
+        {
+            <RTButton Id="blazing-rich-text-table-button"
+                      OnClick="OpenTableDialog"
+                      Icon="@Icons.Table"
+                      Title="Table"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"></RTButton>
+        }
         @if (_codeBlock == true)
         {
             <RTButton Id="blazing-rich-text-code-block-button"
@@ -352,7 +361,19 @@ else
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
 
-        <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Embed Media" OnClick="InsertMedia">
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-table-modal" Title="Table" OnClick="InsertTable">
+            <label for="rows">Rows</label>
+            <input type="text" id="rich-text-box-table-rows" name="rows">
+            <label for="columns">Columns</label>
+            <input type="text" id="rich-text-box-table-columns" name="columns">
+            @if (!_modalRemoveCSSClassInputs)
+            {
+                <label for="classes">CSS Classes</label>
+                <input type="text" id="rich-text-box-table-classes" placeholder="class1 class2 class3" name="classes">
+            }
+        </RTDialog>
+
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Media" OnClick="InsertMedia">
             <label for="source">Source</label>
             <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf">
             <label for="width">Width</label>
