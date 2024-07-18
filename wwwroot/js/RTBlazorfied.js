@@ -69,13 +69,6 @@ class RTBlazorfied {
 
         /* Shortcut keys */
         this.content.addEventListener('keydown', (event) => {
-            /* Create an element if one doesn't alreay exist */
-            if (this.content.innerHTML.trim() === '') {
-                const div = document.createElement('div');
-                const br = document.createElement('br');
-                div.appendChild(br);
-                this.content.appendChild(div);
-            }
             this.keyEvents(event);
         });
 
@@ -97,7 +90,7 @@ class RTBlazorfied {
         this.ListProvider = new RTBlazorfiedListProvider(this.shadowRoot, this.content);
 
         /* Create a state manager */
-        this.stateManager = new RTBlazorfiedStateManager(this.content, this.source, this.dotNetObjectReference);
+        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.dotNetObjectReference);
 
         /* Initialize the color pickers */
         this.ColorPickers = {};
@@ -123,14 +116,16 @@ class RTBlazorfied {
 
         /* Initialize the Media Dialog */
         this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot);
+
+        this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content);
     }
     /* History */
     goBack = () => {
-        this.stateManager.goBack();
+        this.StateManager.goBack();
         this.NodeManager.refreshUI();
     };
     goForward = () => {
-        this.stateManager.goForward();
+        this.StateManager.goForward();
         this.NodeManager.refreshUI();
     };
 
@@ -142,6 +137,13 @@ class RTBlazorfied {
     }
     /* Shortcuts */
     keyEvents = (event) => {
+        /* Create an element if one doesn't alreay exist */
+        if (this.content.innerHTML.trim() === '') {
+            const div = document.createElement('div');
+            const br = document.createElement('br');
+            div.appendChild(br);
+            this.content.appendChild(div);
+        }
         if (this.EditMode === false) {
             if (event.ctrlKey && event.key === 'z') {
                 event.preventDefault();
@@ -361,140 +363,12 @@ class RTBlazorfied {
         /* Get the selection */
         const selection = this.shadowRoot.getSelection();
 
-        this.resetTableDialog();
-
-        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && selection.anchorNode.parentNode.nodeName === "TD") {
-
-            console.log(selection.anchorNode.parentNode.parentNode.parentNode.parentNode.nodeName);
-            const table = this.getTable(selection);
-            if (table) {
-                console.log("test");
-                const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
-                rows.value = table.rows.length;
-                rows.disabled = true;
-
-                const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
-                columns.value = this.getColumns(table);
-                columns.disabled = true;
-
-                const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
-                if (classes != null) {
-                    const classList = table.classList;
-                    classes.value = Array.from(classList).join(' ');
-                }
-
-                this.table = table;
-            }
-        }
-        else {
-            if (selection != null) {
-                this.tableSelection = selection.getRangeAt(0).cloneRange();
-            }
-        }
-
-        this.shadowRoot.getElementById("rich-text-box-table-modal").show();
-
-        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
-        if (rows) {
-            rows.focus();
-        }
-    }
-    getTable = (selection) => {
-        if (selection.anchorNode.parentNode.parentNode.parentNode.nodeName === "TABLE") {
-            return selection.anchorNode.parentNode.parentNode.parentNode;
-        }
-        if (selection.anchorNode.parentNode.parentNode.parentNode.parentNode.nodeName === "TABLE") {
-            return selection.anchorNode.parentNode.parentNode.parentNode.parentNode;
-        }
-    }
-    getColumns(table) {
-        let maxColumns = 0;
-
-        for (let i = 0; i < table.rows.length; i++) {
-            const row = table.rows[i];
-            let numColumns = row.cells.length;
-            if (numColumns > maxColumns) {
-                maxColumns = numColumns;
-            }
-        }
-
-        return maxColumns;
-    }
-    resetTableDialog = () => {
-        this.table = null;
-        this.tableSelection = null;
-
-        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
-        rows.value = null;
-        rows.disabled = false;
-
-        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
-        columns.value = null;
-        columns.disabled = false;
-
-        const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
-        if (classes != null) {
-            classes.value = null;
-        }
+        this.TableDialog.openTableDialog(selection);
     }
    
     insertTable = () => {
-        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
-        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
-        const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
 
-        if (rows.value.length == 0 || columns.value.length == 0) {
-            this.Utilities.closeDialog("rich-text-box-table-modal");
-            this.content.focus();
-            return;
-        }
-
-        /* Get the link selection or element */
-        if (this.table != null) {
-            if (classes != null) {
-                this.Utilities.addClasses(classes.value, this.table);
-            }
-        }
-        else {
-            if (this.tableSelection != null) {
-                const range = this.tableSelection;
-                const table = this.createTable(rows.value, columns.value);
-                if (classes != null) {
-                    this.Utilities.addClasses(classes.value, table);
-                }
-                range.deleteContents();
-                range.insertNode(table);
-            }
-        }
-        this.Utilities.closeDialog("rich-text-box-table-modal");
-    }
-    createTable = (r, c) => {
-        // Convert rows and columns to integers
-        const rows = parseInt(r, 10);
-        const columns = parseInt(c, 10);
-
-        // Create the table element
-        const table = document.createElement('table');
-        table.style.setProperty('margin', 'auto');
-
-        // Loop through the number of rows
-        for (let i = 0; i < rows; i++) {
-            // Create a row element
-            const tr = document.createElement('tr');
-
-            // Loop through the number of columns
-            for (let j = 0; j < columns; j++) {
-                // Create a cell element
-                const td = document.createElement('td');
-                td.textContent = ` `;
-                tr.appendChild(td);
-            }
-
-            // Append the row to the table
-            table.appendChild(tr);
-        }
-
-        return table;
+        this.TableDialog.insertTable();
     }
     font = (style) => {
         this.NodeManager.updateNode("font", style);
@@ -2367,6 +2241,150 @@ class RTBlazorfiedUtilities {
                 }
             });
         }
+    }
+}
+class RTBlazorfiedTableDialog {
+    constructor(shadowRoot, content) {
+        this.shadowRoot = shadowRoot;
+        this.content = content;
+
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+    }
+
+    openTableDialog = (selection) => {
+        this.resetTableDialog();
+
+        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && selection.anchorNode.parentNode.nodeName === "TD") {
+
+            const table = this.getTable(selection);
+            if (table) {
+                const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+                rows.value = table.rows.length;
+                rows.disabled = true;
+
+                const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+                columns.value = this.getColumns(table);
+                columns.disabled = true;
+
+                const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
+                if (classes != null) {
+                    const classList = table.classList;
+                    classes.value = Array.from(classList).join(' ');
+                }
+
+                this.table = table;
+            }
+        }
+        else {
+            if (selection != null) {
+                this.tableSelection = selection.getRangeAt(0).cloneRange();
+            }
+        }
+
+        this.shadowRoot.getElementById("rich-text-box-table-modal").show();
+
+        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+        if (rows) {
+            rows.focus();
+        }
+    }
+    getTable = (selection) => {
+        if (selection.anchorNode.parentNode.parentNode.parentNode.nodeName === "TABLE") {
+            return selection.anchorNode.parentNode.parentNode.parentNode;
+        }
+        if (selection.anchorNode.parentNode.parentNode.parentNode.parentNode.nodeName === "TABLE") {
+            return selection.anchorNode.parentNode.parentNode.parentNode.parentNode;
+        }
+    }
+    getColumns(table) {
+        let maxColumns = 0;
+
+        for (let i = 0; i < table.rows.length; i++) {
+            const row = table.rows[i];
+            let numColumns = row.cells.length;
+            if (numColumns > maxColumns) {
+                maxColumns = numColumns;
+            }
+        }
+
+        return maxColumns;
+    }
+    resetTableDialog = () => {
+        this.table = null;
+        this.tableSelection = null;
+
+        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+        rows.value = null;
+        rows.disabled = false;
+
+        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+        columns.value = null;
+        columns.disabled = false;
+
+        const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
+        if (classes != null) {
+            classes.value = null;
+        }
+    }
+
+    insertTable = () => {
+        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
+        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+        const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
+
+        if (rows.value.length == 0 || columns.value.length == 0) {
+            this.Utilities.closeDialog("rich-text-box-table-modal");
+            this.content.focus();
+            return;
+        }
+
+        /* Get the link selection or element */
+        if (this.table != null) {
+            if (classes != null) {
+                this.Utilities.addClasses(classes.value, this.table);
+            }
+        }
+        else {
+            if (this.tableSelection != null) {
+                const range = this.tableSelection;
+                const table = this.createTable(rows.value, columns.value);
+                if (classes != null) {
+                    this.Utilities.addClasses(classes.value, table);
+                }
+                range.deleteContents();
+                range.insertNode(table);
+            }
+        }
+
+        this.Utilities.closeDialog("rich-text-box-table-modal");
+    }
+    createTable = (r, c) => {
+        // Convert rows and columns to integers
+        const rows = parseInt(r, 10);
+        const columns = parseInt(c, 10);
+
+        // Create the table element
+        const table = document.createElement('table');
+        table.style.setProperty('margin', 'auto');
+
+        // Loop through the number of rows
+        for (let i = 0; i < rows; i++) {
+            // Create a row element
+            const tr = document.createElement('tr');
+
+            // Loop through the number of columns
+            for (let j = 0; j < columns; j++) {
+                // Create a cell element
+                const td = document.createElement('td');
+                td.textContent = ` `;
+                tr.appendChild(td);
+            }
+
+            // Append the row to the table
+            table.appendChild(tr);
+        }
+
+        return table;
     }
 }
 class RTBlazorfiedMediaDialog {
