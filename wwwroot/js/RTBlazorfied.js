@@ -53,7 +53,7 @@ class RTBlazorfied {
         this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
         
         /* Initialize Action Options (e.g., cut, copy, paste) */
-        this.ActionOptions = new RTBlazorfiedActionOptions(this.shadowRoot);
+        this.ActionOptions = new RTBlazorfiedActionOptions(this.shadowRoot, this.content);
 
         /* Initialize List Provider */
         this.ListProvider = new RTBlazorfiedListProvider(this.shadowRoot, this.content);
@@ -1995,8 +1995,9 @@ class RTBlazorfiedListProvider {
 }
 
 class RTBlazorfiedActionOptions {
-    constructor(shadowRoot) {
+    constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
+        this.content = content;
     }
 
     copy = () => {
@@ -2227,17 +2228,30 @@ class RTBlazorfiedActionOptions {
         const range = selection.getRangeAt(0);
         range.deleteContents();
 
-        /* Create a div and insert the text node into it */
-        const div = document.createElement('div');
-        const textNode = document.createTextNode(text);
-        div.appendChild(textNode);
-        range.insertNode(div);
+        if (this.content.innerHTML.trim() === '') {
+            /* Create a div and insert the text node into it */
+            const div = document.createElement('div');
+            const textNode = document.createTextNode(text);
+            div.appendChild(textNode);
+            range.insertNode(div);
 
-        /* Move the cursor to the end of the newly pasted text */
-        range.setStartAfter(div);
-        range.setEndAfter(div);
-        selection.removeAllRanges();
-        selection.addRange(range);
+            /* Move the cursor to the end of the newly pasted text */
+            range.setStartAfter(div);
+            range.setEndAfter(div);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        else {
+            /* Default: Insert a text node */
+            const textNode = document.createTextNode(text);
+            range.insertNode(textNode);
+
+            /* Move the cursor to the end of the newly pasted text */
+            range.setStartAfter(textNode);
+            range.setEndAfter(textNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
 }
 class RTBlazorfiedUtilities {
