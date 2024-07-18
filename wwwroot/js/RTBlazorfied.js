@@ -47,38 +47,7 @@ class RTBlazorfied {
         contentContainer.appendChild(this.content);
         contentContainer.appendChild(this.source);
         this.container.appendChild(contentContainer);
-
-        this.shadowRoot.appendChild(this.container);
-
-        /* Listen for selection change event to select buttons */
-        document.addEventListener('selectionchange', (event) => {
-            const selection = this.shadowRoot.getSelection();
-            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
-                this.clearSettings(selection.anchorNode);
-            }
-        });
-
-        /* Prevent certain clicks */
-        this.content.addEventListener('click', (event) => {
-            /* Prevent the default link click */
-            if (event.target.tagName === 'A') {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-        });
-
-        /* Shortcut keys */
-        this.content.addEventListener('keydown', (event) => {
-            this.keyEvents(event);
-        });
-
-        /* Prevent the dropdowns from causing the text box from losing focus. */
-        const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
-        dropdowns.forEach((dropdown) => {
-            dropdown.addEventListener('mousedown', (event) => {
-                event.preventDefault();
-            });
-        });
+        this.shadowRoot.appendChild(this.container);      
 
         /* Initialize a Node Manager */
         this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
@@ -118,6 +87,36 @@ class RTBlazorfied {
         this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot);
 
         this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content);
+
+        /* Listen for selection change event to select buttons */
+        document.addEventListener('selectionchange', (event) => {
+            const selection = this.shadowRoot.getSelection();
+            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
+                this.clearSettings(selection.anchorNode);
+            }
+        });
+
+        /* Prevent certain clicks */
+        this.content.addEventListener('click', (event) => {
+            /* Prevent the default link click */
+            if (event.target.tagName === 'A') {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+
+        /* Shortcut keys */
+        this.content.addEventListener('keydown', (event) => {
+            this.keyEvents(event);
+        });
+
+        /* Prevent the dropdowns from causing the text box from losing focus. */
+        const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
+        dropdowns.forEach((dropdown) => {
+            dropdown.addEventListener('mousedown', (event) => {
+                event.preventDefault();
+            });
+        });
     }
     /* History */
     goBack = () => {
@@ -138,12 +137,7 @@ class RTBlazorfied {
     /* Shortcuts */
     keyEvents = (event) => {
         /* Create an element if one doesn't alreay exist */
-        if (this.content.innerHTML.trim() === '') {
-            const div = document.createElement('div');
-            const br = document.createElement('br');
-            div.appendChild(br);
-            this.content.appendChild(div);
-        }
+        this.NodeManager.createDefaultElement();
         if (this.EditMode === false) {
             if (event.ctrlKey && event.key === 'z') {
                 event.preventDefault();
@@ -420,6 +414,9 @@ class RTBlazorfied {
         this.NodeManager.refreshUI();
     };
     paste = () => {
+        if (this.NodeManager.allSelected) {
+            this.delete();
+        }
         this.ActionOptions.paste();
         this.NodeManager.refreshUI();
     };
@@ -1289,6 +1286,35 @@ class RTBlazorfiedNodeManager {
         this.content.focus();        
     };
 
+    createDefaultElement = () => {
+        /* Create an element if one doesn't alreay exist */
+        if (this.content.innerHTML.trim() === '') {
+            const div = document.createElement('div');
+            const br = document.createElement('br');
+            div.appendChild(br);
+            this.content.appendChild(div);
+        }
+    }
+
+    allSelected = () => {
+        /* Get the current selection */
+        const selection = this.shadowRoot.getSelection();
+        if (selection.rangeCount === 0) {
+            return false;
+        }
+
+        /* Get the range of the current selection */
+        const selectionRange = selection.getRangeAt(0);
+        const nodeRange = document.createRange();
+        nodeRange.selectNodeContents(this.content);
+
+        // Compare the start and end points of both ranges
+        return selectionRange.startContainer === nodeRange.startContainer &&
+            selectionRange.startOffset === nodeRange.startOffset &&
+            selectionRange.endContainer === nodeRange.endContainer &&
+            selectionRange.endOffset === nodeRange.endOffset;
+    }
+
     clearButtons = () => {
         this.closeDropdowns();
 
@@ -2098,7 +2124,6 @@ class RTBlazorfiedActionOptions {
             });
 
             range.insertNode(fragment);
-            range.setStartBefore(fragment);
             range.collapse(true);
             selection.removeAllRanges();
             selection.addRange(range);
@@ -2202,13 +2227,15 @@ class RTBlazorfiedActionOptions {
         const range = selection.getRangeAt(0);
         range.deleteContents();
 
-        /* Default: Insert a text node */
-        const newNode = document.createTextNode(text);
-        range.insertNode(newNode);
+        /* Create a div and insert the text node into it */
+        const div = document.createElement('div');
+        const textNode = document.createTextNode(text);
+        div.appendChild(textNode);
+        range.insertNode(div);
 
         /* Move the cursor to the end of the newly pasted text */
-        range.setStartAfter(newNode);
-        range.setEndAfter(newNode);
+        range.setStartAfter(div);
+        range.setEndAfter(div);
         selection.removeAllRanges();
         selection.addRange(range);
     }

@@ -5,10 +5,7 @@ Updated: July, 2024
 
 ## About
 
-**RT Blazorfied** is a free .NET library available from the [NuGet Package Manager](https://www.nuget.org/packages/RTBlazorfied) that allows Blazor developers to easily add a rich text box / html editor to their blazor application.
-
-
-The editor also uses [Google's Font Icons](https://fonts.google.com/icons). It does not reference the icon library. However, it does embed .svg versions of those icons so they are customizable.
+**RT Blazorfied** is a free .NET library available from the [NuGet Package Manager](https://www.nuget.org/packages/RTBlazorfied) that allows Blazor developers to easily add a rich text box / html editor to their Blazor application. The editor uses [Google's Font Icons](https://fonts.google.com/icons). It does not reference the icon library. However, it does embed .svg versions of those icons so they are customizable. It also uses the shadow DOM to isolate the styles from being polluted by existing page styles. Because of that, it applies some of its own styling to help the user to visualize the components. Users are also able to add CSS classes to many components allowing them to customize their appearance.
 
 ### Targets:
 - .NET 8
