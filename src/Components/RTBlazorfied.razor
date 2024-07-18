@@ -362,10 +362,10 @@ else
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-table-modal" Title="Table" OnClick="InsertTable">
-            <label for="rows">Rows</label>
-            <input type="text" id="rich-text-box-table-rows" name="rows">
             <label for="columns">Columns</label>
             <input type="text" id="rich-text-box-table-columns" name="columns">
+            <label for="rows">Rows</label>
+            <input type="text" id="rich-text-box-table-rows" name="rows">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>

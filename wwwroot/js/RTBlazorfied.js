@@ -2276,16 +2276,16 @@ class RTBlazorfiedTableDialog {
             }
         }
         else {
-            if (selection != null) {
+            if (selection != null && selection.rangeCount > 0) {
                 this.tableSelection = selection.getRangeAt(0).cloneRange();
             }
         }
 
         this.shadowRoot.getElementById("rich-text-box-table-modal").show();
 
-        const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
-        if (rows) {
-            rows.focus();
+        const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+        if (columns) {
+            columns.focus();
         }
     }
     getTable = (selection) => {
