@@ -2238,8 +2238,6 @@ class RTBlazorfiedActionOptions {
             /* Move the cursor to the end of the newly pasted text */
             range.setStartAfter(div);
             range.setEndAfter(div);
-            selection.removeAllRanges();
-            selection.addRange(range);
         }
         else {
             /* Default: Insert a text node */
@@ -2249,9 +2247,9 @@ class RTBlazorfiedActionOptions {
             /* Move the cursor to the end of the newly pasted text */
             range.setStartAfter(textNode);
             range.setEndAfter(textNode);
-            selection.removeAllRanges();
-            selection.addRange(range);
         }
+        selection.removeAllRanges();
+        selection.addRange(range);
     }
 }
 class RTBlazorfiedUtilities {
