@@ -2022,16 +2022,16 @@ class RTBlazorfiedActionOptions {
 
     paste = () => {
         navigator.clipboard.readText().then(text => {
-            if (this.checkParagraphs(text)) {
+            if (this.checkParagraphs(text.trim())) {
                 return;
             }
-            if (this.checkTables(text)) {
+            if (this.checkTables(text.trim())) {
                 return;
             }
-            if (this.checkLines(text)) {
+            if (this.checkLines(text.trim())) {
                 return;
             }
-            this.checkText(text);
+            this.checkText(text.trim());
 
         }).catch(err => {
             console.error('Failed to read clipboard contents: ', err);
