@@ -228,14 +228,12 @@ class RTBlazorfied {
             this.goForward();
         }
         if (event.key === 'Tab') {
-           
             const selection = this.shadowRoot.getSelection();
             if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
-                
                 switch (selection.anchorNode.parentNode.nodeName) {
                     case "TD":
                         event.preventDefault();
-                        this.tableTab();
+                        this.TableDialog.tableTab();
                         break;
                 }
             }
@@ -260,42 +258,7 @@ class RTBlazorfied {
             }
         }
     }
-    tableTab = () => {
-        const selection = this.shadowRoot.getSelection();
-        if (!selection.rangeCount) return;
-
-        const activeElement = selection.anchorNode.parentNode;
-
-        // Find the next focusable <td>
-        const nextElement = this.getNextElement(activeElement);
-
-        // Focus the next element if it exists
-        if (nextElement) {
-            nextElement.focus();
-            const range = document.createRange();
-            range.selectNodeContents(nextElement);
-            if (nextElement.innerText === '\u200B') {
-                range.collapse();
-            }
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-        this.content.focus();
-    }
-    getNextElement = (currentElement) => {
-        let nextElement = currentElement.nextElementSibling;
-
-        // If there is no next sibling, try to find the next <td> in the next row
-        if (!nextElement) {
-            let nextRow = currentElement.parentElement.nextElementSibling;
-            if (nextRow) {
-                nextElement = nextRow.querySelector('td');
-            }
-        }
-
-        return nextElement;
-    }
-        
+            
     changeFontSize = (increment) => {     
         /* Get the current selection. */
         if (this.fontSize === undefined) {
@@ -744,7 +707,7 @@ class RTBlazorfiedNodeManager {
             if it does, change or remove it */
             let element;
             if (sel.toString().length == 0) {
-                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
+                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode !== this.content) {
                     element = this.getElementByType(sel.anchorNode.parentNode, "Format");
                 }
             }
@@ -761,7 +724,7 @@ class RTBlazorfiedNodeManager {
                 }
             }
 
-            if (element != null && element != this.content && element.parentNode != null && this.content.contains(element.parentNode)) {
+            if (element != null && element != this.content && element.parentNode != null && element.parentNode != this.content) {
 
                 if (type == "none") {
                     // Create a new div element
@@ -881,7 +844,7 @@ class RTBlazorfiedNodeManager {
             }
 
             /* If that node does not exist, style the parent node */
-            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
+            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
                 element = sel.anchorNode.parentNode;
             }
         }
@@ -1182,7 +1145,7 @@ class RTBlazorfiedNodeManager {
             this.fontSizeSelected = false;
         }
 
-        while (el !== this.content && el.parentNode !== null && this.content.contains(el.parentNode)) {
+        while (el !== this.content && el.parentNode !== null && el.parentNode !== this.content) {
 
             /* Prevent selecting unwanted elements */
             if (el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
@@ -2483,6 +2446,40 @@ class RTBlazorfiedTableDialog {
         table.appendChild(tbody);
 
         return table;
+    }
+    tableTab = () => {
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return;
+
+        const activeElement = selection.anchorNode.parentNode;
+
+        // Find the next focusable <td>
+        const nextElement = this.getNextElement(activeElement);
+
+        // Focus the next element if it exists
+        if (nextElement) {
+            nextElement.focus();
+            const range = document.createRange();
+            range.selectNodeContents(nextElement);
+            if (nextElement.innerText === '\u200B') {
+                range.collapse();
+            }
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        this.content.focus();
+    }
+    getNextElement = (currentElement) => {
+        let nextElement = currentElement.nextElementSibling;
+
+        // If there is no next sibling, try to find the next <td> in the next row
+        if (!nextElement) {
+            let nextRow = currentElement.parentElement.nextElementSibling;
+            if (nextRow) {
+                nextElement = nextRow.querySelector('td');
+            }
+        }
+        return nextElement;
     }
 }
 class RTBlazorfiedMediaDialog {
