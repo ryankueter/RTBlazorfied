@@ -227,9 +227,22 @@ class RTBlazorfied {
             event.preventDefault();
             this.goForward();
         }
+        if (event.key === 'Tab') {
+           
+            const selection = this.shadowRoot.getSelection();
+            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
+                
+                switch (selection.anchorNode.parentNode.nodeName) {
+                    case "TD":
+                        event.preventDefault();
+                        this.tableTab();
+                        break;
+                }
+            }
+        }
         if (event.key === 'Enter') {
             const selection = this.shadowRoot.getSelection();
-            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode)) {
+            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
                 switch (selection.anchorNode.parentNode.nodeName) {
                     case "BLOCKQUOTE":
                         event.preventDefault();
@@ -247,7 +260,42 @@ class RTBlazorfied {
             }
         }
     }
-    
+    tableTab = () => {
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return;
+
+        const activeElement = selection.anchorNode.parentNode;
+
+        // Find the next focusable <td>
+        const nextElement = this.getNextElement(activeElement);
+
+        // Focus the next element if it exists
+        if (nextElement) {
+            nextElement.focus();
+            const range = document.createRange();
+            range.selectNodeContents(nextElement);
+            if (nextElement.innerText === '\u200B') {
+                range.collapse();
+            }
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        this.content.focus();
+    }
+    getNextElement = (currentElement) => {
+        let nextElement = currentElement.nextElementSibling;
+
+        // If there is no next sibling, try to find the next <td> in the next row
+        if (!nextElement) {
+            let nextRow = currentElement.parentElement.nextElementSibling;
+            if (nextRow) {
+                nextElement = nextRow.querySelector('td');
+            }
+        }
+
+        return nextElement;
+    }
+        
     changeFontSize = (increment) => {     
         /* Get the current selection. */
         if (this.fontSize === undefined) {
@@ -2166,13 +2214,15 @@ class RTBlazorfiedActionOptions {
         /* Split the text by lines */
         let lines = text.split('\n');
 
-        lines.forEach(line => {
+        /* Create thead and tbody elements */
+        let tbody = document.createElement('tbody');
+
+        lines.forEach((line, index) => {
             if (line.trim().length > 0) {
                 /* Split each line by tabs */
                 let cells = line.split('\t');
-
-                /*  Create table row element */
                 let row = document.createElement('tr');
+
                 cells.forEach(cell => {
                     /* Create table cell element */
                     let cellElement = document.createElement('td');
@@ -2182,10 +2232,13 @@ class RTBlazorfiedActionOptions {
                     row.appendChild(cellElement);
                 });
 
-                /* Append row to the fragment */
-                table.appendChild(row);
+                /* Append row to the thead or tbody based on index */
+                tbody.appendChild(row);
             }
         });
+
+        /* Append thead and tbody to the table */
+        table.appendChild(tbody);
         return table;
     }
 
@@ -2406,6 +2459,9 @@ class RTBlazorfiedTableDialog {
         const table = document.createElement('table');
         table.style.setProperty('margin', 'auto');
 
+        // Create the table body element
+        const tbody = document.createElement('tbody');
+
         // Loop through the number of rows
         for (let i = 0; i < rows; i++) {
             // Create a row element
@@ -2415,13 +2471,16 @@ class RTBlazorfiedTableDialog {
             for (let j = 0; j < columns; j++) {
                 // Create a cell element
                 const td = document.createElement('td');
-                td.textContent = ` `;
+                td.innerHTML = `&#8203;`;
                 tr.appendChild(td);
             }
 
-            // Append the row to the table
-            table.appendChild(tr);
+            // Append the row to the tbody
+            tbody.appendChild(tr);
         }
+
+        // Append the tbody to the table
+        table.appendChild(tbody);
 
         return table;
     }
