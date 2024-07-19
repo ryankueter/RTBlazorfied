@@ -707,7 +707,7 @@ class RTBlazorfiedNodeManager {
             if it does, change or remove it */
             let element;
             if (sel.toString().length == 0) {
-                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode !== this.content) {
+                if (sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && this.content.contains(sel.anchorNode.parentNode)) {
                     element = this.getElementByType(sel.anchorNode.parentNode, "Format");
                 }
             }
@@ -724,7 +724,7 @@ class RTBlazorfiedNodeManager {
                 }
             }
 
-            if (element != null && element != this.content && element.parentNode != null && element.parentNode != this.content) {
+            if (element != null && element != this.content && element.parentNode != null && this.content.contains(element.parentNode)) {
 
                 if (type == "none") {
                     // Create a new div element
@@ -844,7 +844,7 @@ class RTBlazorfiedNodeManager {
             }
 
             /* If that node does not exist, style the parent node */
-            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content) {
+            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
                 element = sel.anchorNode.parentNode;
             }
         }
@@ -1145,7 +1145,7 @@ class RTBlazorfiedNodeManager {
             this.fontSizeSelected = false;
         }
 
-        while (el !== this.content && el.parentNode !== null && el.parentNode !== this.content) {
+        while (el !== this.content && el.parentNode !== null && this.content.contains(el.parentNode)) {
 
             /* Prevent selecting unwanted elements */
             if (el.parentNode.nodeName == "#text" || el.parentNode.nodeName == "#document") {
