@@ -72,7 +72,7 @@ class RTBlazorfied {
         this.LinkDialog = new RTBlazorfiedLinkDialog(this.shadowRoot, this.content);
 
         /* Initialize utilities class */
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
 
         /* Initialize Image Dialog */
         this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot);
@@ -90,8 +90,8 @@ class RTBlazorfied {
 
         /* Listen for selection change event to select buttons */
         document.addEventListener('selectionchange', (event) => {
-            const selection = this.shadowRoot.getSelection();
-            if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
                 this.clearSettings(selection.anchorNode);
             }
         });
@@ -177,10 +177,13 @@ class RTBlazorfied {
         }
         if (event.key === 'Delete' || event.keyCode === 46) {
             /* Only do this is something is selected */
-            const selection = this.shadowRoot.getSelection();
-            if (selection && selection.toString().length > 0) {
-                event.preventDefault();
-                this.delete();
+
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (selection.toString().length > 0) {
+                    event.preventDefault();
+                    this.delete();
+                }
             }
         }
         if (event.ctrlKey && event.key === '=') {
@@ -228,32 +231,36 @@ class RTBlazorfied {
             this.goForward();
         }
         if (event.key === 'Tab') {
-            const selection = this.shadowRoot.getSelection();
-            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
-                switch (selection.anchorNode.parentNode.nodeName) {
-                    case "TD":
-                        event.preventDefault();
-                        this.TableDialog.tableTab();
-                        break;
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
+                    switch (selection.anchorNode.parentNode.nodeName) {
+                        case "TD":
+                            event.preventDefault();
+                            this.TableDialog.tableTab();
+                            break;
+                    }
                 }
             }
         }
         if (event.key === 'Enter') {
-            const selection = this.shadowRoot.getSelection();
-            if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
-                switch (selection.anchorNode.parentNode.nodeName) {
-                    case "BLOCKQUOTE":
-                        event.preventDefault();
-                        this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
-                        break;
-                    case "CODE":
-                        event.preventDefault();
-                        this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
-                        break;
-                    case "SPAN":
-                        event.preventDefault();
-                        this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
-                        break;
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
+                    switch (selection.anchorNode.parentNode.nodeName) {
+                        case "BLOCKQUOTE":
+                            event.preventDefault();
+                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
+                            break;
+                        case "CODE":
+                            event.preventDefault();
+                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
+                            break;
+                        case "SPAN":
+                            event.preventDefault();
+                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
+                            break;
+                    }
                 }
             }
         }
@@ -262,11 +269,13 @@ class RTBlazorfied {
     changeFontSize = (increment) => {     
         /* Get the current selection. */
         if (this.fontSize === undefined) {
-            const selection = this.shadowRoot.getSelection();
-            if (selection && selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
-                const computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
-                this.fontSize = parseFloat(computedStyle.fontSize);
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (selection && selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const computedStyle = window.getComputedStyle(range.commonAncestorContainer.parentElement);
+                    this.fontSize = parseFloat(computedStyle.fontSize);
+                }
             }
         }
        
@@ -297,12 +306,12 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
         
-        /* Get the selection */
-        const selection = this.shadowRoot.getSelection();
-
         /* Open the color picker */
-        const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
-        this.selection = colorPicker.openColorPicker(selection, this.content);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
+            this.selection = colorPicker.openColorPicker(selection, this.content);
+        }
     }
     selectTextColor = (color) => {
         const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
@@ -333,12 +342,12 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
-        /* Get the selection */
-        const selection = this.shadowRoot.getSelection();
-
         /* Open the color picker */
-        const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
-        this.selection = colorPicker.openColorPicker(selection, this.content);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
+            this.selection = colorPicker.openColorPicker(selection, this.content);
+        }
     }
 
     selectTextBackgroundColor = (color) => {
@@ -365,10 +374,10 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
-        /* Get the selection */
-        const selection = this.shadowRoot.getSelection();
-
-        this.TableDialog.openTableDialog(selection);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.TableDialog.openTableDialog(selection);
+        }
     }
    
     insertTable = () => {
@@ -439,17 +448,22 @@ class RTBlazorfied {
         this.content.focus();
     }
     delete = () => {
-        this.shadowRoot.getSelection().deleteFromDocument();
-        this.NodeManager.refreshUI();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            selection.deleteFromDocument();
+            this.NodeManager.refreshUI();
+        }
     };
     selectall = () => {
         const range = document.createRange();
         range.selectNodeContents(this.content)
 
-        const sel = this.shadowRoot.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-        this.content.focus();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+            this.content.focus();
+        }
     };
 
     orderedlist = () => {
@@ -696,12 +710,14 @@ class RTBlazorfiedNodeManager {
     constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
         this.content = content;
+
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
     formatNode = (type) => {
         let sel, range;
 
-        if (this.shadowRoot.getSelection()) {
-            sel = this.shadowRoot.getSelection();
+        sel = this.Utilities.getSelection();
+        if (sel !== null) {
 
             /* See if an element with matching content exists
             if it does, change or remove it */
@@ -746,7 +762,7 @@ class RTBlazorfiedNodeManager {
                     }
                 }
                 else {
-                    let caretPos = this.saveCaretPosition(element);
+                    let caretPos = this.saveCaretPosition();
 
                     const newElement = document.createElement(type);
                     newElement.innerHTML = element.innerHTML;
@@ -808,272 +824,274 @@ class RTBlazorfiedNodeManager {
     updateNode = (type, value, selection) => {
         let sel, range;
 
-        sel = this.shadowRoot.getSelection();
+        sel = this.Utilities.getSelection();
+        if (sel !== null) {
 
-        /* Get the color selection if one exists */
-        if (selection != null) {
-            sel.removeAllRanges();
-            sel.addRange(selection);
-        }
-
-        let element;
-        this.isCommonAncestor = false;
-        if (sel.toString().length == 0) {
-            
-            /* Check if a node exists with this style and get it */
-            element = this.getElementByStyle(sel.anchorNode, type);
-
-            /* See if it's an image */
-            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
-                const image = sel.anchorNode.querySelector('img');
-                if (image != null) {
-                    element = sel.anchorNode;
-                }
-                const embed = sel.anchorNode.querySelector('embed');
-                if (embed != null) {
-                    element = sel.anchorNode;
-                }
-                const object = sel.anchorNode.querySelector('object');
-                if (object != null) {
-                    element = sel.anchorNode;
-                }
-                //const table = sel.anchorNode.querySelector('table');
-                //if (table != null) {
-                //    element = table;
-                //}
+            /* Get the color selection if one exists */
+            if (selection != null) {
+                sel.removeAllRanges();
+                sel.addRange(selection);
             }
 
-            /* If that node does not exist, style the parent node */
-            if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
-                element = sel.anchorNode.parentNode;
-            }
-        }
-        else {
-            /* See if this is an outer element */
-            if (this.hasCommonAncestor(sel) == true) {
-                const range = sel.getRangeAt(0);
-                element = range.commonAncestorContainer;
-                this.isCommonAncestor = true;
+            let element;
+            this.isCommonAncestor = false;
+            if (sel.toString().length == 0) {
+
+                /* Check if a node exists with this style and get it */
+                element = this.getElementByStyle(sel.anchorNode, type);
+
+                /* See if it's an image */
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
+                    const image = sel.anchorNode.querySelector('img');
+                    if (image != null) {
+                        element = sel.anchorNode;
+                    }
+                    const embed = sel.anchorNode.querySelector('embed');
+                    if (embed != null) {
+                        element = sel.anchorNode;
+                    }
+                    const object = sel.anchorNode.querySelector('object');
+                    if (object != null) {
+                        element = sel.anchorNode;
+                    }
+                    //const table = sel.anchorNode.querySelector('table');
+                    //if (table != null) {
+                    //    element = table;
+                    //}
+                }
+
+                /* If that node does not exist, style the parent node */
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && sel.anchorNode.parentNode != null && sel.anchorNode.parentNode != this.content && this.content.contains(sel.anchorNode.parentNode)) {
+                    element = sel.anchorNode.parentNode;
+                }
             }
             else {
-                /* Get the element by the selected content */
-                element = this.getElementByContent(sel.anchorNode, type, sel);
+                /* See if this is an outer element */
+                if (this.hasCommonAncestor(sel) == true) {
+                    const range = sel.getRangeAt(0);
+                    element = range.commonAncestorContainer;
+                    this.isCommonAncestor = true;
+                }
+                else {
+                    /* Get the element by the selected content */
+                    element = this.getElementByContent(sel.anchorNode, type, sel);
+                }
             }
-        }
-        
-        if (element != null) {
-            let e;
-            switch (type) {
-                case "textcolor":
-                    if (value == "None") {
-                        e = this.getElementByStyle(element, type);
-                        if (e != null) {
-                            this.removeProperty(e, "color", e.style.getPropertyValue("color"));
+
+            if (element != null) {
+                let e;
+                switch (type) {
+                    case "textcolor":
+                        if (value == "None") {
+                            e = this.getElementByStyle(element, type);
+                            if (e != null) {
+                                this.removeProperty(e, "color", e.style.getPropertyValue("color"));
+                            }
                         }
-                    }
-                    else {
-                        element.style.setProperty("color", value);
-                    }
-                    break;
-                case "textbgcolor":
-                    if (value == "None") {
-                        e = this.getElementByStyle(element, type);
-                        if (e != null) {
-                            this.removeProperty(e, "background-color", e.style.getPropertyValue("background-color"));
+                        else {
+                            element.style.setProperty("color", value);
                         }
-                    }
-                    else {
-                        element.style.setProperty("background-color", value);
-                    }
-                    break;
-                case "font":
-                    if (value == "None") {
-                        this.removeProperty(element, "font-family", value);
-                    }
-                    else {
-                        element.style.setProperty("font-family", value);
-                    }
-                    break;
-                case "size":
-                    if (value == "None") {
-                        this.removeProperty(element, "font-size");
-                    }
-                    else {
-                        element.style.setProperty("font-size", value);
-                    }
-                    break;
-                case "bold":
-                    if (element.style.fontWeight == "bold") {
-                        this.removeProperty(element, "font-weight", "bold");
-                    }
-                    else {
-                        element.style.setProperty("font-weight", "bold");
-                    }
-                    break;
-                case "italic":
-                    if (element.style.fontStyle == "italic") {
-                        this.removeProperty(element, "font-style", "italic");
-                    }
-                    else {
-                        element.style.setProperty("font-style", "italic");
-                    }
-                    break;
-                case "underline":
-                    if (element.style.textDecoration.includes("underline")) {
-                        this.removeTextDecoration(element, "underline");
-                    }
-                    else {
-                        this.addTextDecoration(element, "underline");
-                    }
-                    break;
-                case "line-through":
-                    if (element.style.textDecoration.includes("line-through")) {
-                        this.removeTextDecoration(element, "line-through");
-                    }
-                    else {
-                        this.addTextDecoration(element, "line-through");
-                    }
-                    break;
-                case "subscript":
-                    if (element.style.verticalAlign == "sub") {
-                        this.removeProperty(element, "vertical-align", "sub");
-                    }
-                    else {
-                        element.style.setProperty("vertical-align", "sub");
-                    }
-                    break;
-                case "superscript":
-                    if (element.style.verticalAlign == "super") {
-                        this.removeProperty(element, "vertical-align", "super");
-                    }
-                    else {
-                        element.style.setProperty("vertical-align", "super");
-                    }
-                    break;
-                case "alignleft":
-                    if (element.style.textAlign == "left") {
-                        this.removeProperty(element, "text-align", "left");
-                    }
-                    else {
-                        element.style.setProperty("text-align", "left");
-                    }
-                    break;
-                case "aligncenter":
-                    if (element.style.textAlign == "center") {
-                        this.removeProperty(element, "text-align", "center");
-                    }
-                    else {
-                        element.style.setProperty("text-align", "center");
-                    }
-                    break;
-                case "alignright":
-                    if (element.style.textAlign == "right") {
-                        this.removeProperty(element, "text-align", "right");
-                    }
-                    else {
-                        element.style.setProperty("text-align", "right");
-                    }
-                    break;
-                case "alignjustify":
-                    if (element.style.textAlign == "justify") {
-                        this.removeProperty(element, "text-align", "justify");
-                    }
-                    else {
-                        element.style.setProperty("text-align", "justify");
-                    }
-                    break;
-                case "indent":
-                    if (element.style.textIndent == "40px") {
-                        this.removeProperty(element, "text-indent", "40px");
-                    }
-                    else {
-                        element.style.setProperty("text-indent", "40px");
-                    }
-                    break;
-                default:
-            }
-            this.selection = null;
-            this.refreshUI();
-            return;
-        }
-        
-        /* Insert a new node */
-        /* Make certain the element has content */
-        if (sel.toString().length > 0 && value != "None" && !this.isExcluded(sel)) {
-            let newElement;
-            switch (type) {
-                case "textcolor":
-                    newElement = this.createElement(sel);
-                    newElement.style.color = value;
-                    break;
-                case "textbgcolor":
-                    newElement = this.createElement(sel);
-                    newElement.style.backgroundColor = value;
-                    break;
-                case "font":
-                    newElement = this.createElement(sel);
-                    newElement.style.fontFamily = value;
-                    break;
-                case "size":
-                    newElement = this.createElement(sel);
-                    newElement.style.fontSize = value;
-                    break;
-                case "bold":
-                    newElement = this.createElement(sel);
-                    newElement.style.fontWeight = "bold";
-                    break;
-                case "italic":
-                    newElement = this.createElement(sel);
-                    newElement.style.fontStyle = "italic";
-                    break;
-                case "underline":
-                    newElement = this.createElement(sel);
-                    this.addTextDecoration(newElement, "underline");
-                    break;
-                case "line-through":
-                    newElement = this.createElement(sel);
-                    this.addTextDecoration(newElement, "line-through");
-                    break;
-                case "subscript":
-                    newElement = this.createElement(sel);
-                    newElement.style.verticalAlign = "sub";
-                    break;
-                case "superscript":
-                    newElement = this.createElement(sel);
-                    newElement.style.verticalAlign = "super";
-                    break;
-                case "alignleft":
-                    newElement = document.createElement("div");
-                    newElement.style.textAlign = "left";
-                    break;
-                case "aligncenter":
-                    newElement = document.createElement("div");
-                    newElement.style.textAlign = "center";
-                    break;
-                case "alignright":
-                    newElement = document.createElement("div");
-                    newElement.style.textAlign = "right";
-                    break;
-                case "alignjustify":
-                    newElement = document.createElement("div");
-                    newElement.style.textAlign = "justify";
-                    break;
-                case "indent":
-                    newElement = document.createElement("div");
-                    newElement.style.textIndent = "40px";
-                    break;
-                default:
-            }
-            if (newElement != null && sel.rangeCount != 0) {
-                range = sel.getRangeAt(0);
-                newElement.appendChild(range.cloneContents());
-                range.deleteContents();
-                range.insertNode(newElement);
-                range.selectNodeContents(newElement);
-                sel.removeAllRanges();
-                sel.addRange(range);
+                        break;
+                    case "textbgcolor":
+                        if (value == "None") {
+                            e = this.getElementByStyle(element, type);
+                            if (e != null) {
+                                this.removeProperty(e, "background-color", e.style.getPropertyValue("background-color"));
+                            }
+                        }
+                        else {
+                            element.style.setProperty("background-color", value);
+                        }
+                        break;
+                    case "font":
+                        if (value == "None") {
+                            this.removeProperty(element, "font-family", value);
+                        }
+                        else {
+                            element.style.setProperty("font-family", value);
+                        }
+                        break;
+                    case "size":
+                        if (value == "None") {
+                            this.removeProperty(element, "font-size");
+                        }
+                        else {
+                            element.style.setProperty("font-size", value);
+                        }
+                        break;
+                    case "bold":
+                        if (element.style.fontWeight == "bold") {
+                            this.removeProperty(element, "font-weight", "bold");
+                        }
+                        else {
+                            element.style.setProperty("font-weight", "bold");
+                        }
+                        break;
+                    case "italic":
+                        if (element.style.fontStyle == "italic") {
+                            this.removeProperty(element, "font-style", "italic");
+                        }
+                        else {
+                            element.style.setProperty("font-style", "italic");
+                        }
+                        break;
+                    case "underline":
+                        if (element.style.textDecoration.includes("underline")) {
+                            this.removeTextDecoration(element, "underline");
+                        }
+                        else {
+                            this.addTextDecoration(element, "underline");
+                        }
+                        break;
+                    case "line-through":
+                        if (element.style.textDecoration.includes("line-through")) {
+                            this.removeTextDecoration(element, "line-through");
+                        }
+                        else {
+                            this.addTextDecoration(element, "line-through");
+                        }
+                        break;
+                    case "subscript":
+                        if (element.style.verticalAlign == "sub") {
+                            this.removeProperty(element, "vertical-align", "sub");
+                        }
+                        else {
+                            element.style.setProperty("vertical-align", "sub");
+                        }
+                        break;
+                    case "superscript":
+                        if (element.style.verticalAlign == "super") {
+                            this.removeProperty(element, "vertical-align", "super");
+                        }
+                        else {
+                            element.style.setProperty("vertical-align", "super");
+                        }
+                        break;
+                    case "alignleft":
+                        if (element.style.textAlign == "left") {
+                            this.removeProperty(element, "text-align", "left");
+                        }
+                        else {
+                            element.style.setProperty("text-align", "left");
+                        }
+                        break;
+                    case "aligncenter":
+                        if (element.style.textAlign == "center") {
+                            this.removeProperty(element, "text-align", "center");
+                        }
+                        else {
+                            element.style.setProperty("text-align", "center");
+                        }
+                        break;
+                    case "alignright":
+                        if (element.style.textAlign == "right") {
+                            this.removeProperty(element, "text-align", "right");
+                        }
+                        else {
+                            element.style.setProperty("text-align", "right");
+                        }
+                        break;
+                    case "alignjustify":
+                        if (element.style.textAlign == "justify") {
+                            this.removeProperty(element, "text-align", "justify");
+                        }
+                        else {
+                            element.style.setProperty("text-align", "justify");
+                        }
+                        break;
+                    case "indent":
+                        if (element.style.textIndent == "40px") {
+                            this.removeProperty(element, "text-indent", "40px");
+                        }
+                        else {
+                            element.style.setProperty("text-indent", "40px");
+                        }
+                        break;
+                    default:
+                }
                 this.selection = null;
                 this.refreshUI();
+                return;
+            }
+
+            /* Insert a new node */
+            /* Make certain the element has content */
+            if (sel.toString().length > 0 && value != "None" && !this.isExcluded(sel)) {
+                let newElement;
+                switch (type) {
+                    case "textcolor":
+                        newElement = this.createElement(sel);
+                        newElement.style.color = value;
+                        break;
+                    case "textbgcolor":
+                        newElement = this.createElement(sel);
+                        newElement.style.backgroundColor = value;
+                        break;
+                    case "font":
+                        newElement = this.createElement(sel);
+                        newElement.style.fontFamily = value;
+                        break;
+                    case "size":
+                        newElement = this.createElement(sel);
+                        newElement.style.fontSize = value;
+                        break;
+                    case "bold":
+                        newElement = this.createElement(sel);
+                        newElement.style.fontWeight = "bold";
+                        break;
+                    case "italic":
+                        newElement = this.createElement(sel);
+                        newElement.style.fontStyle = "italic";
+                        break;
+                    case "underline":
+                        newElement = this.createElement(sel);
+                        this.addTextDecoration(newElement, "underline");
+                        break;
+                    case "line-through":
+                        newElement = this.createElement(sel);
+                        this.addTextDecoration(newElement, "line-through");
+                        break;
+                    case "subscript":
+                        newElement = this.createElement(sel);
+                        newElement.style.verticalAlign = "sub";
+                        break;
+                    case "superscript":
+                        newElement = this.createElement(sel);
+                        newElement.style.verticalAlign = "super";
+                        break;
+                    case "alignleft":
+                        newElement = document.createElement("div");
+                        newElement.style.textAlign = "left";
+                        break;
+                    case "aligncenter":
+                        newElement = document.createElement("div");
+                        newElement.style.textAlign = "center";
+                        break;
+                    case "alignright":
+                        newElement = document.createElement("div");
+                        newElement.style.textAlign = "right";
+                        break;
+                    case "alignjustify":
+                        newElement = document.createElement("div");
+                        newElement.style.textAlign = "justify";
+                        break;
+                    case "indent":
+                        newElement = document.createElement("div");
+                        newElement.style.textIndent = "40px";
+                        break;
+                    default:
+                }
+                if (newElement != null && sel.rangeCount != 0) {
+                    range = sel.getRangeAt(0);
+                    newElement.appendChild(range.cloneContents());
+                    range.deleteContents();
+                    range.insertNode(newElement);
+                    range.selectNodeContents(newElement);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    this.selection = null;
+                    this.refreshUI();
+                }
             }
         }
     }
@@ -1293,7 +1311,10 @@ class RTBlazorfiedNodeManager {
         }
 
         /* Select Buttons */
-        this.selectButtons(this.shadowRoot.getSelection().anchorNode);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.selectButtons(selection.anchorNode);
+        }
         this.content.focus();        
     };
 
@@ -1309,21 +1330,26 @@ class RTBlazorfiedNodeManager {
 
     allSelected = () => {
         /* Get the current selection */
-        const selection = this.shadowRoot.getSelection();
-        if (selection.rangeCount === 0) {
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (selection.rangeCount === 0) {
+                return false;
+            }
+
+            /* Get the range of the current selection */
+            const selectionRange = selection.getRangeAt(0);
+            const nodeRange = document.createRange();
+            nodeRange.selectNodeContents(this.content);
+
+            // Compare the start and end points of both ranges
+            return selectionRange.startContainer === nodeRange.startContainer &&
+                selectionRange.startOffset === nodeRange.startOffset &&
+                selectionRange.endContainer === nodeRange.endContainer &&
+                selectionRange.endOffset === nodeRange.endOffset;
+        }
+        else {
             return false;
         }
-
-        /* Get the range of the current selection */
-        const selectionRange = selection.getRangeAt(0);
-        const nodeRange = document.createRange();
-        nodeRange.selectNodeContents(this.content);
-
-        // Compare the start and end points of both ranges
-        return selectionRange.startContainer === nodeRange.startContainer &&
-            selectionRange.startOffset === nodeRange.startOffset &&
-            selectionRange.endContainer === nodeRange.endContainer &&
-            selectionRange.endOffset === nodeRange.endOffset;
     }
 
     clearButtons = () => {
@@ -1416,25 +1442,31 @@ class RTBlazorfiedNodeManager {
         return false;
     }
 
-    saveCaretPosition = (el) => {
-        let range = document.createRange();
-        let sel = this.shadowRoot.getSelection();
-        let startOffset = sel.getRangeAt(0).startOffset;
-        let endOffset = sel.getRangeAt(0).endOffset;
+    saveCaretPosition = () => {
+        const sel = this.Utilities.getSelection();
+        if (sel !== null) {
+            let startOffset = sel.getRangeAt(0).startOffset;
+            let endOffset = sel.getRangeAt(0).endOffset;
 
-        return { startOffset, endOffset };
+            return { startOffset, endOffset };
+        }
+        return null;
     }
 
     restoreCaretPosition = (el, savedPos) => {
-        let range = document.createRange();
-        let sel = this.shadowRoot.getSelection();
-        range.setStart(el.firstChild, savedPos.startOffset);
-        range.setEnd(el.firstChild, savedPos.endOffset);
-        sel.removeAllRanges();
-        sel.addRange(range);
+        const sel = this.Utilities.getSelection();
+        if (sel !== null && savedPos !== null) {
+            let range = document.createRange();
+            range.setStart(el.firstChild, savedPos.startOffset);
+            range.setEnd(el.firstChild, savedPos.endOffset);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
     }
     
     hasCommonAncestor(selection) {
+        if (!selection.rangeCount) return false;
+
         const range = selection.getRangeAt(0);
 
         /* This is used to compare the html contents
@@ -1675,7 +1707,7 @@ class RTBlazorfiedNodeManager {
                 }
 
                 /* Match the text, or get the element by the style */
-                if (this.shadowRoot.getSelection().toString().trim() == el.textContent.trim()) {
+                if (selection !== null && selection.toString().trim() == el.textContent.trim()) {
                     return el;
                 }
             }
@@ -1883,9 +1915,11 @@ class RTBlazorfiedNodeManager {
         range.setStartBefore(br);
         range.collapse(true);
 
-        const sel = this.shadowRoot.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
 }
 
@@ -1896,65 +1930,67 @@ class RTBlazorfiedListProvider {
 
         /* Initialize a Node Manager */
         this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
-
     addlist = (type) => {
-        /* Get the selected text */
-        const selection = this.shadowRoot.getSelection();
 
-        /* Check if the element is already an OL and replace it */
-        if (type == "UL") {
-            const list = this.NodeManager.getElementByType(selection.anchorNode, "OL");
-            if (list != null) {
-                this.replaceList(list, "UL");
-                return;
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+
+            /* Check if the element is already an OL and replace it */
+            if (type == "UL") {
+                const list = this.NodeManager.getElementByType(selection.anchorNode, "OL");
+                if (list != null) {
+                    this.replaceList(list, "UL");
+                    return;
+                }
             }
-        }
-        else {
-            const list = this.NodeManager.getElementByType(selection.anchorNode, "UL");
-            if (list != null) {
-                this.replaceList(list, "OL");
-                return;
+            else {
+                const list = this.NodeManager.getElementByType(selection.anchorNode, "UL");
+                if (list != null) {
+                    this.replaceList(list, "OL");
+                    return;
+                }
             }
-        }
 
-        const list = this.NodeManager.getElementByType(selection.anchorNode, type);
-        if (list != null) {
-            this.removelist(list);
-        }
-        else {
-            const selectedText = selection.toString().trim();
-            if (selectedText) {
-                const ulElement = document.createElement(type);
+            const list = this.NodeManager.getElementByType(selection.anchorNode, type);
+            if (list != null) {
+                this.removelist(list);
+            }
+            else {
+                const selectedText = selection.toString().trim();
+                if (selectedText) {
+                    const ulElement = document.createElement(type);
 
-                if (selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    const selectedNodes = range.cloneContents().childNodes;
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        const selectedNodes = range.cloneContents().childNodes;
 
-                    /* Convert NodeList to Array for easier iteration */
-                    const selectedElements = Array.from(selectedNodes);
+                        /* Convert NodeList to Array for easier iteration */
+                        const selectedElements = Array.from(selectedNodes);
 
-                    /* Iterate over selected elements */
-                    selectedElements.forEach((node) => {
-                        if (node.nodeType === Node.ELEMENT_NODE
-                            || node.nodeType === Node.TEXT_NODE) {
+                        /* Iterate over selected elements */
+                        selectedElements.forEach((node) => {
+                            if (node.nodeType === Node.ELEMENT_NODE
+                                || node.nodeType === Node.TEXT_NODE) {
 
-                            let liElement = document.createElement('li');
+                                let liElement = document.createElement('li');
 
-                            let clonedContent = node.cloneNode(true);
-                            liElement.appendChild(clonedContent);
+                                let clonedContent = node.cloneNode(true);
+                                liElement.appendChild(clonedContent);
 
-                            ulElement.appendChild(liElement);
+                                ulElement.appendChild(liElement);
 
-                            node.remove();
-                        }
-                    });
+                                node.remove();
+                            }
+                        });
 
-                    range.deleteContents();
-                    range.insertNode(ulElement);
-                    range.selectNodeContents(ulElement);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
+                        range.deleteContents();
+                        range.insertNode(ulElement);
+                        range.selectNodeContents(ulElement);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
                 }
             }
         }
@@ -1967,9 +2003,9 @@ class RTBlazorfiedListProvider {
             element.appendChild(list.firstChild);
         }
         list.parentNode.replaceChild(element, list);
-        
-        const selection = this.shadowRoot.getSelection();
-        if (selection != null && selection.rangeCount > 0) {
+
+        const selection = this.Utilities.getSelection();
+        if (selection !== null && selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             range.selectNodeContents(element);
             range.collapse(true);
@@ -1996,11 +2032,13 @@ class RTBlazorfiedListProvider {
         /* Remove the ordered list element */
         list.parentNode.removeChild(list);
 
-        const selection = this.shadowRoot.getSelection();
-        if (selection != null && selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            selection.removeAllRanges();
-            selection.addRange(range);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (selection !== null && selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
         }
     }
 }
@@ -2009,24 +2047,29 @@ class RTBlazorfiedActionOptions {
     constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-    }
 
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+    }
     copy = () => {
-        const selection = window.getSelection();
-        if (selection != null) {
-            if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(selection);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (selection !== null) {
+                if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(selection);
+                }
             }
         }
     };
     cut = () => {
-        const selection = window.getSelection();
-        if (selection != null) {
-            if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(selection);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (selection !== null) {
+                if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(selection);
 
-                /* Remove the selection */
-                selection.deleteFromDocument();
+                    /* Remove the selection */
+                    selection.deleteFromDocument();
+                }
             }
         }
     };
@@ -2054,30 +2097,33 @@ class RTBlazorfiedActionOptions {
         let paragraphs = text.split(/\n\s*\n/);
         if (paragraphs.length > 1) {
             /* Insert the pasted text at the cursor position */
-            const selection = this.shadowRoot.getSelection();
-            if (!selection.rangeCount) { return false; }
 
-            const range = selection.getRangeAt(0);
-            range.deleteContents();
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (!selection.rangeCount) { return false; }
 
-            let fragment = document.createDocumentFragment();
-            paragraphs.forEach(para => {
-                let checked = this.checkParagraphTable(para, fragment);
-                if (!checked) {
-                    checked = this.checkParagraphLines(para, fragment);
-                }
-                if (!checked) {
-                    let p = document.createElement('p');
-                    p.textContent = para.trim();
-                    fragment.appendChild(p);
-                }
-            });
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
 
-            range.insertNode(fragment);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-            return true;
+                let fragment = document.createDocumentFragment();
+                paragraphs.forEach(para => {
+                    let checked = this.checkParagraphTable(para, fragment);
+                    if (!checked) {
+                        checked = this.checkParagraphLines(para, fragment);
+                    }
+                    if (!checked) {
+                        let p = document.createElement('p');
+                        p.textContent = para.trim();
+                        fragment.appendChild(p);
+                    }
+                });
+
+                range.insertNode(fragment);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                return true;
+            }
         }
         return false;
     }
@@ -2121,25 +2167,27 @@ class RTBlazorfiedActionOptions {
         let lines = text.trim().split(/\n+/);
 
         if (lines.length > 1) {
-            /* Insert the pasted text at the cursor position */
-            const selection = this.shadowRoot.getSelection();
-            if (!selection.rangeCount) { return false; }
 
-            const range = selection.getRangeAt(0);
-            range.deleteContents();
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (!selection.rangeCount) { return false; }
 
-            let fragment = document.createDocumentFragment();
-            lines.forEach(line => {
-                let div = document.createElement('div');
-                div.textContent = line.trim(); // Set text content of the div
-                fragment.appendChild(div);
-            });
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
 
-            range.insertNode(fragment);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-            return true;
+                let fragment = document.createDocumentFragment();
+                lines.forEach(line => {
+                    let div = document.createElement('div');
+                    div.textContent = line.trim(); // Set text content of the div
+                    fragment.appendChild(div);
+                });
+
+                range.insertNode(fragment);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                return true;
+            }
         }
     }
 
@@ -2148,24 +2196,26 @@ class RTBlazorfiedActionOptions {
         if (this.isTable(text)) {
 
             /* Insert the pasted text at the cursor position */
-            const selection = this.shadowRoot.getSelection();
-            if (!selection.rangeCount) { return false; }
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                if (!selection.rangeCount) { return false; }
 
-            const range = selection.getRangeAt(0);
-            range.deleteContents();
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
 
-            let fragment = document.createDocumentFragment();
+                let fragment = document.createDocumentFragment();
 
-            let table = this.buildTable(text);
+                let table = this.buildTable(text);
 
-            /* Create table element */
-            fragment.appendChild(table);
+                /* Create table element */
+                fragment.appendChild(table);
 
-            range.insertNode(fragment);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-            return true;
+                range.insertNode(fragment);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                return true;
+            }
         }
     }
 
@@ -2238,39 +2288,42 @@ class RTBlazorfiedActionOptions {
 
     checkText = (text) => {
         /* Insert the pasted text at the cursor position */
-        const selection = this.shadowRoot.getSelection();
-        if (!selection.rangeCount) { return false; }
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (!selection.rangeCount) { return false; }
 
-        const range = selection.getRangeAt(0);
-        range.deleteContents();
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
 
-        if (this.content.innerHTML.trim() === '') {
-            /* Create a div and insert the text node into it */
-            const div = document.createElement('div');
-            const textNode = document.createTextNode(text);
-            div.appendChild(textNode);
-            range.insertNode(div);
+            if (this.content.innerHTML.trim() === '') {
+                /* Create a div and insert the text node into it */
+                const div = document.createElement('div');
+                const textNode = document.createTextNode(text);
+                div.appendChild(textNode);
+                range.insertNode(div);
 
-            /* Move the cursor to the end of the newly pasted text */
-            range.setStartAfter(div);
-            range.setEndAfter(div);
+                /* Move the cursor to the end of the newly pasted text */
+                range.setStartAfter(div);
+                range.setEndAfter(div);
+            }
+            else {
+                /* Default: Insert a text node */
+                const textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+
+                /* Move the cursor to the end of the newly pasted text */
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+            }
+            selection.removeAllRanges();
+            selection.addRange(range);
         }
-        else {
-            /* Default: Insert a text node */
-            const textNode = document.createTextNode(text);
-            range.insertNode(textNode);
-
-            /* Move the cursor to the end of the newly pasted text */
-            range.setStartAfter(textNode);
-            range.setEndAfter(textNode);
-        }
-        selection.removeAllRanges();
-        selection.addRange(range);
     }
 }
 class RTBlazorfiedUtilities {
-    constructor(shadowRoot) {
+    constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
+        this.content = content;
     }
 
     closeDialog = (id) => {
@@ -2297,13 +2350,21 @@ class RTBlazorfiedUtilities {
             });
         }
     }
+    
+    getSelection = () => {
+        const selection = this.shadowRoot.getSelection();
+        if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
+            return selection;
+        }
+        return null;
+    }
 }
 class RTBlazorfiedTableDialog {
     constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
         this.content = content;
 
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openTableDialog = (selection) => {
@@ -2331,7 +2392,7 @@ class RTBlazorfiedTableDialog {
             }
         }
         else {
-            if (selection != null && selection.rangeCount > 0) {
+            if (selection !== null && selection.rangeCount > 0) {
                 this.tableSelection = selection.getRangeAt(0).cloneRange();
             }
         }
@@ -2448,26 +2509,28 @@ class RTBlazorfiedTableDialog {
         return table;
     }
     tableTab = () => {
-        const selection = this.shadowRoot.getSelection();
-        if (!selection.rangeCount) return;
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (!selection.rangeCount) return;
 
-        const activeElement = selection.anchorNode.parentNode;
+            const activeElement = selection.anchorNode.parentNode;
 
-        // Find the next focusable <td>
-        const nextElement = this.getNextElement(activeElement);
+            // Find the next focusable <td>
+            const nextElement = this.getNextElement(activeElement);
 
-        // Focus the next element if it exists
-        if (nextElement) {
-            nextElement.focus();
-            const range = document.createRange();
-            range.selectNodeContents(nextElement);
-            if (nextElement.innerText === '\u200B') {
-                range.collapse();
+            // Focus the next element if it exists
+            if (nextElement) {
+                nextElement.focus();
+                const range = document.createRange();
+                range.selectNodeContents(nextElement);
+                if (nextElement.innerText === '\u200B') {
+                    range.collapse();
+                }
+                selection.removeAllRanges();
+                selection.addRange(range);
             }
-            selection.removeAllRanges();
-            selection.addRange(range);
+            this.content.focus();
         }
-        this.content.focus();
     }
     getNextElement = (currentElement) => {
         let nextElement = currentElement.nextElementSibling;
@@ -2485,24 +2548,25 @@ class RTBlazorfiedTableDialog {
 class RTBlazorfiedMediaDialog {
     constructor(shadowRoot) {
         this.shadowRoot = shadowRoot;
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openMediaDialog = () => {
         this.resetMediaDialog();
 
         /* Get the selection */
-        const selection = this.shadowRoot.getSelection();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            if (selection.rangeCount > 0) {
+                this.embedSelection = selection.getRangeAt(0).cloneRange();
+            }
 
-        if (selection != null && selection.rangeCount > 0) {
-            this.embedSelection = selection.getRangeAt(0).cloneRange();
-        }
+            this.shadowRoot.getElementById("rich-text-box-embed-modal").show();
 
-        this.shadowRoot.getElementById("rich-text-box-embed-modal").show();
-
-        const source = this.shadowRoot.getElementById("rich-text-box-embed-source");
-        if (source) {
-            source.focus();
+            const source = this.shadowRoot.getElementById("rich-text-box-embed-source");
+            if (source) {
+                source.focus();
+            }
         }
     }
     resetMediaDialog = () => {
@@ -2557,9 +2621,11 @@ class RTBlazorfiedMediaDialog {
             range.setEndAfter(object);
 
             /* Get the selection from the shadowRoot */
-            const selection = this.shadowRoot.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
         }
 
         this.Utilities.closeDialog("rich-text-box-embed-modal");
@@ -2569,43 +2635,44 @@ class RTBlazorfiedCodeBlockDialog {
     constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openCodeBlockDialog = () => {
-        this.resetCodeBlockDialog();
-
         /* Get the selection */
-        const selection = this.shadowRoot.getSelection();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.resetCodeBlockDialog();          
 
-        const code = this.shadowRoot.getElementById('rich-text-box-code');
-        const classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
+            const code = this.shadowRoot.getElementById('rich-text-box-code');
+            const classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
+            if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "CODE") {
 
-            const clone = selection.anchorNode.parentNode.cloneNode(true);
-            code.value = clone.textContent;
+                const clone = selection.anchorNode.parentNode.cloneNode(true);
+                code.value = clone.textContent;
 
-            if (classes != null) {
-                const classList = selection.anchorNode.parentNode.classList;
-                classes.value = Array.from(classList).join(' ');
-            }
+                if (classes != null) {
+                    const classList = selection.anchorNode.parentNode.classList;
+                    classes.value = Array.from(classList).join(' ');
+                }
 
-            this.codeSelection = selection.getRangeAt(0).cloneRange();
-            this.code = selection.anchorNode.parentNode;
-        }
-        else {
-            if (selection != null && selection.rangeCount > 0) {
                 this.codeSelection = selection.getRangeAt(0).cloneRange();
+                this.code = selection.anchorNode.parentNode;
             }
-        }
+            else {
+                if (selection.rangeCount > 0) {
+                    this.codeSelection = selection.getRangeAt(0).cloneRange();
+                }
+            }
 
-        this.shadowRoot.getElementById("rich-text-box-code-block-modal").show();
+            this.shadowRoot.getElementById("rich-text-box-code-block-modal").show();
 
-        if (code) {
-            code.focus();
-            code.scrollTop = 0;
-            code.scrollLeft = 0;
+            if (code) {
+                code.focus();
+                code.scrollTop = 0;
+                code.scrollLeft = 0;
+            }
         }
     }
     resetCodeBlockDialog = () => {
@@ -2658,10 +2725,12 @@ class RTBlazorfiedCodeBlockDialog {
                 range.setStartAfter(pre);
                 range.setEndAfter(pre);
 
-                /* Get the selection from the shadowRoot */
-                const selection = this.shadowRoot.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                /* Reset the selection from the shadowRoot */
+                const selection = this.Utilities.getSelection();
+                if (selection !== null) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
             }
         }
         this.Utilities.closeDialog("rich-text-box-code-block-modal");
@@ -2671,47 +2740,49 @@ class RTBlazorfiedBlockQuoteDialog {
     constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openBlockQuoteDialog = () => {
-        this.resetBlockQuoteDialog();
-
         /* Get the selection */
-        const selection = this.shadowRoot.getSelection();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.resetBlockQuoteDialog();
 
-        const quote = this.shadowRoot.getElementById('rich-text-box-quote');
-        const cite = this.shadowRoot.getElementById('rich-text-box-cite');
-        const classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
+            const quote = this.shadowRoot.getElementById('rich-text-box-quote');
+            const cite = this.shadowRoot.getElementById('rich-text-box-cite');
+            const classes = this.shadowRoot.getElementById('rich-text-box-quote-css-classes');
 
 
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
-            quote.value = selection.anchorNode.parentNode.textContent;
+            if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName == "BLOCKQUOTE") {
+                quote.value = selection.anchorNode.parentNode.textContent;
 
-            if (selection.anchorNode.parentNode.cite != null) {
-                cite.value = selection.anchorNode.parentNode.cite;
-            }
+                if (selection.anchorNode.parentNode.cite != null) {
+                    cite.value = selection.anchorNode.parentNode.cite;
+                }
 
-            if (classes != null) {
-                const classList = selection.anchorNode.parentNode.classList;
-                classes.value = Array.from(classList).join(' ');
-            }
+                if (classes != null) {
+                    const classList = selection.anchorNode.parentNode.classList;
+                    classes.value = Array.from(classList).join(' ');
+                }
 
-            this.quoteSelection = selection.getRangeAt(0).cloneRange();
-            this.quote = selection.anchorNode.parentNode;
-        }
-        else {
-            if (selection != null && selection.rangeCount > 0) {
                 this.quoteSelection = selection.getRangeAt(0).cloneRange();
+                this.quote = selection.anchorNode.parentNode;
+            }
+            else {
+                if (selection.rangeCount > 0) {
+                    this.quoteSelection = selection.getRangeAt(0).cloneRange();
+                }
+            }
+
+            this.shadowRoot.getElementById("rich-text-box-block-quote-modal").show();
+            if (quote) {
+                quote.focus();
+                quote.scrollTop = 0;
+                quote.scrollLeft = 0;
             }
         }
-
-        this.shadowRoot.getElementById("rich-text-box-block-quote-modal").show();
-        if (quote) {
-            quote.focus();
-            quote.scrollTop = 0;
-            quote.scrollLeft = 0;
-        }
+        
     }
     resetBlockQuoteDialog = () => {
         this.quote = null;
@@ -2750,10 +2821,12 @@ class RTBlazorfiedBlockQuoteDialog {
             /* Move the cursor after the inserted element */
             range.setStartAfter(element);
             range.setEndAfter(element);
-
-            const selection = this.shadowRoot.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
+            
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
         }
         else {
             if (this.quoteSelection != null && quote.value.length > 0) {
@@ -2777,9 +2850,11 @@ class RTBlazorfiedBlockQuoteDialog {
                 range.setEndAfter(blockquote);
 
                 /* Get the selection from the shadowRoot */
-                const selection = this.shadowRoot.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                const selection = this.Utilities.getSelection();
+                if (selection !== null) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
             }
         }
         this.Utilities.closeDialog("rich-text-box-block-quote-modal");
@@ -2788,22 +2863,24 @@ class RTBlazorfiedBlockQuoteDialog {
 class RTBlazorfiedImageDialog {
     constructor(shadowRoot) {
         this.shadowRoot = shadowRoot;
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openImageDialog = () => {
-        this.resetImageDialog();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.resetImageDialog();
+            
+            if (selection && selection.rangeCount > 0) {
+                this.imageSelection = selection.getRangeAt(0).cloneRange();
+            }
 
-        const selection = this.shadowRoot.getSelection();
-        if (selection && selection.rangeCount > 0) {
-            this.imageSelection = selection.getRangeAt(0).cloneRange();
-        }
+            this.shadowRoot.getElementById("rich-text-box-image-modal").show();
 
-        this.shadowRoot.getElementById("rich-text-box-image-modal").show();
-
-        const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
-        if (address) {
-            address.focus();
+            const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+            if (address) {
+                address.focus();
+            }
         }
     }
     resetImageDialog = () => {
@@ -2860,10 +2937,12 @@ class RTBlazorfiedImageDialog {
             range.setEndAfter(img);
 
             /* Get the selection from the shadowRoot */
-            const selection = this.shadowRoot.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+                        
             /* Update the stored cursor position to the new position */
             this.imageSelection = range.cloneRange();
         }
@@ -2875,49 +2954,49 @@ class RTBlazorfiedLinkDialog {
         this.shadowRoot = shadowRoot;
         this.content = content;
 
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot);
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
-
     openLinkDialog = () => {
-        this.resetLinkDialog();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.resetLinkDialog();
 
-        const selection = this.shadowRoot.getSelection();
+            if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
 
-        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
+                const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+                linktext.value = selection.anchorNode.parentNode.textContent;
 
-            const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
-            linktext.value = selection.anchorNode.parentNode.textContent;
+                const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
+                link.value = selection.anchorNode.parentNode.getAttribute("href");
 
-            const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
-            link.value = selection.anchorNode.parentNode.getAttribute("href");
+                const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
+                if (classes != null) {
+                    const classList = selection.anchorNode.parentNode.classList;
+                    classes.value = Array.from(classList).join(' ');
+                }
 
-            const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
-            if (classes != null) {
-                const classList = selection.anchorNode.parentNode.classList;
-                classes.value = Array.from(classList).join(' ');
+                const target = selection.anchorNode.parentNode.getAttribute('target');
+                if (target === '_blank') {
+                    const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
+                    newtab.checked = true;
+                }
+
+                this.linkNode = selection.anchorNode.parentNode;
+            }
+            else {
+                const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
+                if (selection.toString().length > 0) {
+                    this.linkSelection = selection.getRangeAt(0).cloneRange();
+                    linktext.value = this.linkSelection.toString();
+                }
             }
 
-            const target = selection.anchorNode.parentNode.getAttribute('target');
-            if (target === '_blank') {
-                const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
-                newtab.checked = true;
+            this.shadowRoot.getElementById("rich-text-box-link-modal").show();
+
+            const address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
+            if (address) {
+                address.focus();
             }
-
-            this.linkNode = selection.anchorNode.parentNode;
-        }
-        else {
-            const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
-            if (selection != null && selection.toString().length > 0) {
-                this.linkSelection = selection.getRangeAt(0).cloneRange();
-                linktext.value = this.linkSelection.toString();
-            }
-        }
-
-        this.shadowRoot.getElementById("rich-text-box-link-modal").show();
-
-        const address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
-        if (address) {
-            address.focus();
         }
     }
     resetLinkDialog = () => {
@@ -2985,22 +3064,24 @@ class RTBlazorfiedLinkDialog {
     }
 
     removeLink = () => {
-        const selection = this.shadowRoot.getSelection();
-        const savedSelection = this.saveSelection(selection);
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            const savedSelection = this.saveSelection(selection);
 
-        if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
-            const element = selection.anchorNode.parentNode;
-            const fragment = document.createDocumentFragment();
+            if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
+                const element = selection.anchorNode.parentNode;
+                const fragment = document.createDocumentFragment();
 
-            while (element.firstChild) {
-                fragment.appendChild(element.firstChild);
+                while (element.firstChild) {
+                    fragment.appendChild(element.firstChild);
+                }
+                element.parentNode.insertBefore(fragment, element);
+                element.parentNode.removeChild(element);
             }
-            element.parentNode.insertBefore(fragment, element);
-            element.parentNode.removeChild(element);
-        }
 
-        // Restore the selection after the operation
-        this.restoreSelection(selection, savedSelection);
+            // Restore the selection after the operation
+            this.restoreSelection(selection, savedSelection);
+        }
     }
 
     saveSelection = (selection) => {
@@ -3079,7 +3160,7 @@ class RTBlazorfiedColorDialog {
 
     openColorPicker = (selection, content) => {
         this.resetColorDialog();
-        if (selection != null && selection.anchorNode != null && selection.anchorNode != content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != content && content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null) {
+        if (selection !== null && selection.anchorNode != null && selection.anchorNode != content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != content && content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null) {
             this.selection = selection.getRangeAt(0).cloneRange();
 
             /* Get the type of color dialog and the type of color */
@@ -3099,7 +3180,7 @@ class RTBlazorfiedColorDialog {
             this.selection = selection.getRangeAt(0).cloneRange();
         }
         else {
-            if (selection != null && selection.rangeCount > 0) {
+            if (selection !== null && selection.rangeCount > 0) {
                 this.selection = selection.getRangeAt(0).cloneRange();
             }
         }
