@@ -363,9 +363,9 @@ else
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-table-modal" Title="Table" OnClick="InsertTable">
             <label for="columns">Columns</label>
-            <input type="text" id="rich-text-box-table-columns" name="columns">
+            <input type="text" id="rich-text-box-table-columns" name="columns" autocomplete="off">
             <label for="rows">Rows</label>
-            <input type="text" id="rich-text-box-table-rows" name="rows">
+            <input type="text" id="rich-text-box-table-rows" name="rows" autocomplete="off">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
@@ -375,13 +375,13 @@ else
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Media" OnClick="InsertMedia">
             <label for="source">Source</label>
-            <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf">
+            <input type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" autocomplete="off">
             <label for="width">Width</label>
-            <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450">
+            <input type="text" id="rich-text-box-embed-width" name="width" placeholder="450" autocomplete="off">
             <label for="height">Height</label>
-            <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250">
+            <input type="text" id="rich-text-box-embed-height" name="height" placeholder="250" autocomplete="off">
             <label for="type">Type</label>
-            <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html">
+            <input type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" autocomplete="off">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
@@ -403,7 +403,7 @@ else
             <label for="quote">Quote</label>
             <textarea rows="5" cols="50" class="rich-text-box-scroll" id="rich-text-box-quote" name="quote" />
             <label for="cite">Cite</label>
-            <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www...">
+            <input type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." autocomplete="off">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
@@ -413,13 +413,13 @@ else
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
             <label for="webaddress">Web Address</label>
-            <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www...">
+            <input type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
             <label for="imagewidth">Image Width</label>
-            <input type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400">
+            <input type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" autocomplete="off">
             <label for="imageheight">Image Height</label>
-            <input type="text" id="rich-text-box-image-height" name="imageheight">
+            <input type="text" id="rich-text-box-image-height" name="imageheight" autocomplete="off">
             <label for="alttext">Alternative Text</label>
-            <input type="text" id="rich-text-box-image-alt-text" name="alttext">
+            <input type="text" id="rich-text-box-image-alt-text" name="alttext" autocomplete="off">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>
@@ -429,9 +429,9 @@ else
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
             <label for="webaddress">Web Address</label>
-            <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www...">
+            <input type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
             <label for="linktext">Link Text</label>
-            <input type="text" id="rich-text-box-linktext" name="linktext">
+            <input type="text" id="rich-text-box-linktext" name="linktext" autocomplete="off">
             @if (!_modalRemoveCSSClassInputs)
             {
                 <label for="classes">CSS Classes</label>

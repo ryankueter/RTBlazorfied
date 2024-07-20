@@ -75,7 +75,7 @@ class RTBlazorfied {
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
 
         /* Initialize Image Dialog */
-        this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot);
+        this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content);
 
         /* Initialize Blockquote Dialog */
         this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content);
@@ -84,7 +84,7 @@ class RTBlazorfied {
         this.CodeBlockDialog = new RTBlazorfiedCodeBlockDialog(this.shadowRoot, this.content);
 
         /* Initialize the Media Dialog */
-        this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot);
+        this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot, this.content);
 
         this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content);
 
@@ -2546,17 +2546,18 @@ class RTBlazorfiedTableDialog {
     }
 }
 class RTBlazorfiedMediaDialog {
-    constructor(shadowRoot) {
+    constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
+        this.content = content;
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openMediaDialog = () => {
-        this.resetMediaDialog();
-
         /* Get the selection */
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
+            this.resetMediaDialog();
+
             if (selection.rangeCount > 0) {
                 this.embedSelection = selection.getRangeAt(0).cloneRange();
             }
@@ -2861,8 +2862,9 @@ class RTBlazorfiedBlockQuoteDialog {
     }
 }
 class RTBlazorfiedImageDialog {
-    constructor(shadowRoot) {
+    constructor(shadowRoot, content) {
         this.shadowRoot = shadowRoot;
+        this.content = content;
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
