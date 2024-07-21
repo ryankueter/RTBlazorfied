@@ -180,6 +180,10 @@ public partial class RTBlazorfied
             word-wrap: break-word;
             outline: 0px solid transparent;
         }
+        //.rich-text-box-content::selection {
+        //    background-color: green !important;
+        //    color: black !important;
+        //}
         .rich-text-box-source {
             padding: 10px;
             width: 100%;
@@ -194,14 +198,8 @@ public partial class RTBlazorfied
             margin: 0;
             line-height: 1.6;
             font-size: 16px;
+            outline: 0px solid transparent;
         }
-        /*
-        ::selection {
-            background-color: green;
-            color: black;
-        }
-        */
-
         .rich-text-box-divider-btn {
             background-color: inherit;
             align-items: center;
@@ -339,7 +337,8 @@ public partial class RTBlazorfied
         .rich-text-box-modal-body {
           padding: 2px 8px;
         }
-        input[type=text], select, textarea {
+
+        .rich-text-box-form-element {
           width: 100%;
           padding: 10px;
           font-size: 14px;
@@ -356,14 +355,14 @@ public partial class RTBlazorfied
           resize: vertical;
         }
 
-        input[type="checkbox"] {
+        .rich-text-box-form-checkbox {
           outline: 0;
           width: 20px;
           height: 20px;
           margin-right: 8px;
           accent-color: {{_modalCheckboxAccentColor}}; 
         }
-        input[type="checkbox"]:focus {
+        .rich-text-box-form-checkbox:focus {
           border-style: solid;
           border-color: {{_modalTextboxBorderColor}};
           border-width: 1px;
@@ -442,39 +441,53 @@ public partial class RTBlazorfied
             margin-right: 10px;
             color: {{_modalTextColor}};
         }
-        input[type="range"] {
+        .rich-text-box-range {
             width: 100%;
             -webkit-appearance: none;
         }
-        input[type="range"]:focus {
+        .rich-text-box-range:focus {
             outline: none;
         }
-        input[type="range"]::-webkit-slider-runnable-track {
-             background: {{_modalTextColor}};
-             height: 5px;
-             border-radius: 10px;
-        }
-        input[type="range"]::-moz-range-track {
+        .rich-text-box-range::-webkit-slider-runnable-track {
              background: {{_modalTextColor}};
              height: 5px;
         }
-        input[type="range"]::-webkit-slider-thumb {
+        .rich-text-box-red-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, rgb(0,0,0) 0%, rgb(255,0,0) 100%) !important;
+        }
+        .rich-text-box-green-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, rgb(0,0,0) 0%, rgb(0,255,0) 100%) !important;
+        }
+        .rich-text-box-blue-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, rgb(0,0,0) 0%, rgb(0,0,255) 100%) !important;
+        }
+        .rich-text-box-range::-moz-range-track {
+             background: {{_modalTextColor}};
+             height: 5px;
+        }
+        .rich-text-box-range::-webkit-slider-thumb {
              -webkit-appearance: none;
              height: 15px;
              width: 15px;
-             background: {{_modalTextColor}};
+             background: {{_modalBackgroundColor}};
              margin-top: -5px;
+             border-style: solid;
+             border-width: 3px;
+             border-color: {{_modalTextColor}};
              border-radius: 50%;
         }
-
-        input[type="range"]::-moz-range-thumb {
+        .rich-text-box-range::-moz-range-thumb {
+             -webkit-appearance: none;
              height: 15px;
              width: 15px;
-             background: {{_modalTextColor}};
+             background: {{_modalBackgroundColor}};
              margin-top: -5px;
+             border-style: solid;
+             border-width: 3px;
+             border-color: {{_modalTextColor}};
              border-radius: 50%;
         }
-        input[type="number"] {
+        .rich-text-box-number {
             width: 50px;
             margin-left: 10px;
             width: 100px;
@@ -502,7 +515,7 @@ public partial class RTBlazorfied
         /* Editor Styles */
         blockquote {
           background: #f9f9f9;
-          border-left: 10px solid #ccc;
+          border-left: 5px solid #ccc;
           margin: 1.5em 10px;
           padding: 0.5em 10px;
         }
