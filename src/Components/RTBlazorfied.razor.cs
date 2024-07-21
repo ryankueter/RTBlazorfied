@@ -52,7 +52,6 @@ public partial class RTBlazorfied
             transform: translateY(0);
             transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
             pointer-events: auto;
-            z-index: 10010;
         }
 
         .rich-text-box-message-bar.rich-text-box-message-hidden {
@@ -245,7 +244,6 @@ public partial class RTBlazorfied
         .rich-text-box-dropdown {
           position: relative;
           display: inline-block;
-          z-index: 10001;
         }
 
         .rich-text-box-dropdown-content {
@@ -313,7 +311,6 @@ public partial class RTBlazorfied
           box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
           border-radius: 5px;
           user-select: none;
-          z-index: 2000;
         }
         @media screen and (max-width: 768px) {
             .rich-text-box-modal {
