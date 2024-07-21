@@ -160,6 +160,7 @@ public partial class RTBlazorfied
             height: {{_editorHeight}};
             display: flex;
             flex-direction: column;
+            z-index: 1;
         }
         .rich-text-box-content-container {
             width: 100%;
@@ -258,6 +259,7 @@ public partial class RTBlazorfied
           overflow: auto;
           box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
           font-family: Arial, sans-serif !important;
+          z-index: 2;
         }
 
         .rich-text-box-dropdown-btn {
@@ -311,6 +313,7 @@ public partial class RTBlazorfied
           box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
           border-radius: 5px;
           user-select: none;
+          z-index: 2;
         }
         @media screen and (max-width: 768px) {
             .rich-text-box-modal {
