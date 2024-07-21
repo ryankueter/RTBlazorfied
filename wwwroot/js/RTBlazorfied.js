@@ -381,7 +381,6 @@ class RTBlazorfied {
     }
    
     insertTable = () => {
-
         this.TableDialog.insertTable();
     }
     font = (style) => {
@@ -744,15 +743,21 @@ class RTBlazorfiedNodeManager {
             if (element != null && element != this.content && element.parentNode != null && this.content.contains(element.parentNode)) {
 
                 if (type == "none") {
-                    // Create a new div element
+                    /* Create a new div element */
                     const div = document.createElement('div');
 
-                    // Move all child nodes from the original element to the new div
+                    /* Copy inline styles from the original element to the new div */
+                    for (let i = 0; i < element.style.length; i++) {
+                        const styleName = element.style[i];
+                        div.style[styleName] = element.style[styleName];
+                    }
+
+                    /* Move all child nodes from the original element to the new div */
                     while (element.firstChild) {
                         div.appendChild(element.firstChild);
                     }
 
-                    // Replace the original element with the new div
+                    /* Replace the original element with the new div */
                     element.parentNode.replaceChild(div, element);
 
                     if (sel.anchorNode != null && sel.rangeCount != 0) {
@@ -763,7 +768,7 @@ class RTBlazorfiedNodeManager {
                     }
                 }
                 else {
-                    let caretPos = this.saveCaretPosition();
+                    let caretPos = this.Utilities.saveCaretPosition();
 
                     const newElement = document.createElement(type);
                     newElement.innerHTML = element.innerHTML;
@@ -779,7 +784,7 @@ class RTBlazorfiedNodeManager {
                     }
                     element.parentNode.replaceChild(newElement, element);
 
-                    this.restoreCaretPosition(newElement, caretPos);
+                    this.Utilities.restoreCaretPosition(newElement, caretPos);
                 }
                 return;
             }
@@ -1441,28 +1446,6 @@ class RTBlazorfiedNodeManager {
                 break;
         }
         return false;
-    }
-
-    saveCaretPosition = () => {
-        const sel = this.Utilities.getSelection();
-        if (sel !== null) {
-            let startOffset = sel.getRangeAt(0).startOffset;
-            let endOffset = sel.getRangeAt(0).endOffset;
-
-            return { startOffset, endOffset };
-        }
-        return null;
-    }
-
-    restoreCaretPosition = (el, savedPos) => {
-        const sel = this.Utilities.getSelection();
-        if (sel !== null && savedPos !== null) {
-            let range = document.createRange();
-            range.setStart(el.firstChild, savedPos.startOffset);
-            range.setEnd(el.firstChild, savedPos.endOffset);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
     }
     
     hasCommonAncestor(selection) {
@@ -2339,7 +2322,7 @@ class RTBlazorfiedUtilities {
         /* Clear the classes */
         element.classList.remove(...element.classList);
 
-        /* Readd classes, if necessary */
+        /* Read classes, if necessary */
         if (classlist.length > 0) {
             const classNames = classlist.split(' ').map(className => className.trim());
 
@@ -2358,6 +2341,28 @@ class RTBlazorfiedUtilities {
             return selection;
         }
         return null;
+    }
+
+    saveCaretPosition = () => {
+        const selection = this.getSelection();
+        if (selection !== null) {
+            let startOffset = selection.getRangeAt(0).startOffset;
+            let endOffset = selection.getRangeAt(0).endOffset;
+
+            return { startOffset, endOffset };
+        }
+        return null;
+    }
+
+    restoreCaretPosition = (element, savedPos) => {
+        const selection = this.getSelection();
+        if (selection !== null && savedPos !== null) {
+            let range = document.createRange();
+            range.setStart(element.firstChild, savedPos.startOffset);
+            range.setEnd(element.firstChild, savedPos.endOffset);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
 }
 class RTBlazorfiedTableDialog {
@@ -2965,7 +2970,6 @@ class RTBlazorfiedLinkDialog {
             this.resetLinkDialog();
 
             if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
-
                 const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
                 linktext.value = selection.anchorNode.parentNode.textContent;
 
@@ -2993,7 +2997,6 @@ class RTBlazorfiedLinkDialog {
                     linktext.value = this.linkSelection.toString();
                 }
             }
-
             this.shadowRoot.getElementById("rich-text-box-link-modal").show();
 
             const address = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
@@ -3144,7 +3147,7 @@ class RTBlazorfiedColorDialog {
 
     addValueEventListener = (value) => {
         value.addEventListener('input', (event) => {
-            let correspondingSlider = colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
+            let correspondingSlider = this.colorPicker.querySelector(`.${event.target.className.replace('value', 'slider')}`);
             correspondingSlider.value = event.target.value;
             this.updateColor();
         });
