@@ -42,23 +42,24 @@ public partial class RTBlazorfied
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            box-shadow: 0 -2px 3px rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
             opacity: 1;
             transform: translateY(0);
             transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
             pointer-events: auto;
+            z-index: 10010;
         }
 
         .rich-text-box-message-bar.rich-text-box-message-hidden {
             opacity: 0;
             height: 0;
             padding: 0;
+            color: transparent;
             pointer-events: none;
         }
 
@@ -149,7 +150,6 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-container {
-            z-index: 1000;
             resize: both;
             overflow: hidden;
             border-style: {{_editorBorderStyle}};
@@ -245,6 +245,7 @@ public partial class RTBlazorfied
         .rich-text-box-dropdown {
           position: relative;
           display: inline-block;
+          z-index: 10001;
         }
 
         .rich-text-box-dropdown-content {
@@ -258,7 +259,6 @@ public partial class RTBlazorfied
           max-height: 200px;
           overflow: auto;
           box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
-          z-index: 10001;
           font-family: Arial, sans-serif !important;
         }
 

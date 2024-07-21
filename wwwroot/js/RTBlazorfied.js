@@ -62,10 +62,12 @@ class RTBlazorfied {
         const toolbar = document.getElementById(this.toolbar_id);
         this.container.appendChild(toolbar);
 
+        //contentContainer.appendChild(fadingBar);
         contentContainer.appendChild(this.content);
         contentContainer.appendChild(this.source);
-        this.container.appendChild(contentContainer);
         this.container.appendChild(fadingBar);
+        this.container.appendChild(contentContainer);
+        
         this.shadowRoot.appendChild(this.container);      
 
         /* Initialize a Node Manager */
@@ -355,7 +357,7 @@ class RTBlazorfied {
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
     selectTextColor = (color) => {
@@ -386,7 +388,7 @@ class RTBlazorfied {
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
 
@@ -410,7 +412,7 @@ class RTBlazorfied {
             this.TableDialog.openTableDialog(selection);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
    
@@ -518,7 +520,7 @@ class RTBlazorfied {
             this.LinkDialog.openLinkDialog(selection);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
     insertLink = () => {
@@ -539,7 +541,7 @@ class RTBlazorfied {
             this.BlockQuoteDialog.openBlockQuoteDialog(selection);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
     insertBlockQuote = () => {
@@ -555,7 +557,7 @@ class RTBlazorfied {
             this.CodeBlockDialog.openCodeBlockDialog(selection);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
     insertCodeBlock = () => {
@@ -571,7 +573,7 @@ class RTBlazorfied {
             this.MediaDialog.openMediaDialog(selection);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
     insertMedia = () => {
@@ -587,7 +589,7 @@ class RTBlazorfied {
             this.ImageDialog.openImageDialog(selection);
         }
         else {
-            this.showFadingBar("Nothing selected.");
+            this.showFadingBar("No content selected.");
         }
     }
     insertImage = () => {
