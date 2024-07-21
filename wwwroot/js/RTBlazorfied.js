@@ -68,7 +68,7 @@ class RTBlazorfied {
         this.container.appendChild(fadingBar);
         this.container.appendChild(contentContainer);
         
-        this.shadowRoot.appendChild(this.container);      
+        this.shadowRoot.appendChild(this.container);
 
         /* Initialize a Node Manager */
         this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);

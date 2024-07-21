@@ -150,7 +150,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-container {
             resize: both;
-            overflow: hidden;
+            overflow: visible;
             border-style: {{_editorBorderStyle}};
             border-width: {{_editorBorderWidth}};
             border-color: {{_editorBorderColor}};
@@ -163,6 +163,7 @@ public partial class RTBlazorfied
             z-index: 1;
         }
         .rich-text-box-content-container {
+        
             width: 100%;
             height: 100%;
             overflow: auto;
