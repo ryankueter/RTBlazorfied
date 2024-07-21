@@ -37,6 +37,43 @@ public partial class RTBlazorfied
 
     private string GetStyles() =>
         $$"""
+        .rich-text-box-message-bar {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            box-shadow: 0 -2px 3px rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+            pointer-events: auto;
+        }
+
+        .rich-text-box-message-bar.rich-text-box-message-hidden {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            pointer-events: none;
+        }
+
+        .rich-text-box-message {
+            margin-right: 10px;
+        }
+
+        .rich-text-box-message-close-button {
+            background: none;
+            border: none;
+            color: white;
+            margin-right: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
         .rich-text-box-tool-bar {
             background-color: {{_toolbarBackgroundColor}};
             border-bottom-style: {{_toolbarBorderStyle}};
@@ -112,7 +149,7 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-container {
-            z-index: 10000;
+            z-index: 1000;
             resize: both;
             overflow: hidden;
             border-style: {{_editorBorderStyle}};

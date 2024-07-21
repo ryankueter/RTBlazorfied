@@ -39,6 +39,24 @@ class RTBlazorfied {
         this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
         this.source.style.display = "none";
         this.source.spellcheck = false;
+
+        /* Create the fading bar */
+        const fadingBar = document.createElement('div');
+        fadingBar.setAttribute('class', 'rich-text-box-message-bar rich-text-box-message-hidden');
+        fadingBar.setAttribute('id', 'rich-text-box-message-bar');
+
+        const message = document.createElement('span');
+        message.setAttribute('class', 'rich-text-box-message');
+
+        const closeButton = document.createElement('button');
+        closeButton.setAttribute('class', 'rich-text-box-message-close-button');
+        closeButton.textContent = '×';
+        closeButton.onclick = () => {
+            this.closeFadingBar();
+        };
+
+        fadingBar.appendChild(message);
+        fadingBar.appendChild(closeButton);
         
         /* Assemble everything into the container */
         const toolbar = document.getElementById(this.toolbar_id);
@@ -47,6 +65,7 @@ class RTBlazorfied {
         contentContainer.appendChild(this.content);
         contentContainer.appendChild(this.source);
         this.container.appendChild(contentContainer);
+        this.container.appendChild(fadingBar);
         this.shadowRoot.appendChild(this.container);      
 
         /* Initialize a Node Manager */
@@ -117,6 +136,29 @@ class RTBlazorfied {
                 event.preventDefault();
             });
         });
+    }
+    showFadingBar = (message) => {
+        const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
+        const messageElement = fadingBar.querySelector('.rich-text-box-message');
+
+        /* Check if fadingBar and messageElement exist */
+        if (fadingBar && messageElement) {
+
+            /* Set the custom message */
+            messageElement.textContent = message;
+
+            /* Remove the hidden class to show the fading bar */
+            fadingBar.classList.remove('rich-text-box-message-hidden');
+
+            /* Hide the fading bar after a delay */
+            setTimeout(() => {
+                this.closeFadingBar();
+            }, 2000);
+        } 
+    }
+    closeFadingBar = () => {
+        const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
+        fadingBar.classList.add('rich-text-box-message-hidden');
     }
     /* History */
     goBack = () => {
@@ -312,6 +354,9 @@ class RTBlazorfied {
             const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
     selectTextColor = (color) => {
         const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
@@ -348,6 +393,9 @@ class RTBlazorfied {
             const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
 
     selectTextBackgroundColor = (color) => {
@@ -377,6 +425,9 @@ class RTBlazorfied {
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.TableDialog.openTableDialog(selection);
+        }
+        else {
+            this.showFadingBar("Nothing selected.");
         }
     }
    
@@ -478,7 +529,14 @@ class RTBlazorfied {
     openLinkDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.LinkDialog.openLinkDialog();
+
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.LinkDialog.openLinkDialog(selection);
+        }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
     insertLink = () => {
         this.LinkDialog.insertLink();
@@ -492,7 +550,14 @@ class RTBlazorfied {
     openBlockQuoteDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.BlockQuoteDialog.openBlockQuoteDialog();
+
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.BlockQuoteDialog.openBlockQuoteDialog(selection);
+        }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
     insertBlockQuote = () => {
         this.BlockQuoteDialog.insertBlockQuote();
@@ -501,7 +566,14 @@ class RTBlazorfied {
     openCodeBlockDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.CodeBlockDialog.openCodeBlockDialog();
+
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.CodeBlockDialog.openCodeBlockDialog(selection);
+        }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
     insertCodeBlock = () => {
         this.CodeBlockDialog.insertCodeBlock();
@@ -510,7 +582,14 @@ class RTBlazorfied {
     openMediaDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.MediaDialog.openMediaDialog();
+        
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.MediaDialog.openMediaDialog(selection);
+        }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
     insertMedia = () => {
         this.MediaDialog.insertMedia();
@@ -519,7 +598,14 @@ class RTBlazorfied {
     openImageDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        this.ImageDialog.openImageDialog();
+        
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.ImageDialog.openImageDialog(selection);
+        }
+        else {
+            this.showFadingBar("Nothing selected.");
+        }
     }
     insertImage = () => {
         this.ImageDialog.insertImage();
@@ -2558,9 +2644,7 @@ class RTBlazorfiedMediaDialog {
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
-    openMediaDialog = () => {
-        /* Get the selection */
-        const selection = this.Utilities.getSelection();
+    openMediaDialog = (selection) => {
         if (selection !== null) {
             this.resetMediaDialog();
 
@@ -2645,9 +2729,7 @@ class RTBlazorfiedCodeBlockDialog {
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
-    openCodeBlockDialog = () => {
-        /* Get the selection */
-        const selection = this.Utilities.getSelection();
+    openCodeBlockDialog = (selection) => {
         if (selection !== null) {
             this.resetCodeBlockDialog();          
 
@@ -2750,9 +2832,7 @@ class RTBlazorfiedBlockQuoteDialog {
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
-    openBlockQuoteDialog = () => {
-        /* Get the selection */
-        const selection = this.Utilities.getSelection();
+    openBlockQuoteDialog = (selection) => {
         if (selection !== null) {
             this.resetBlockQuoteDialog();
 
@@ -2874,8 +2954,7 @@ class RTBlazorfiedImageDialog {
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
-    openImageDialog = () => {
-        const selection = this.Utilities.getSelection();
+    openImageDialog = (selection) => {
         if (selection !== null) {
             this.resetImageDialog();
             
@@ -2964,11 +3043,10 @@ class RTBlazorfiedLinkDialog {
 
         this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
-    openLinkDialog = () => {
-        const selection = this.Utilities.getSelection();
+    openLinkDialog = (selection) => {
         if (selection !== null) {
             this.resetLinkDialog();
-
+            
             if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
                 const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
                 linktext.value = selection.anchorNode.parentNode.textContent;
