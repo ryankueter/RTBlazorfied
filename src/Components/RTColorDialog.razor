@@ -2,14 +2,14 @@
 
 <dialog id="@DialogId" class="rich-text-box-modal rich-text-box-scroll">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <div style="align-self: flex-start; margin-left: 10px;">
+        <div style="align-self: flex-start;">
             <h2>@Title</h2>
         </div>
-        <div style="align-self: flex-start; margin: 15px 10px 0 0;">
+        <div style="align-self: flex-start;">
             <span @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-modal-close">&times;</span>
         </div>
     </div>
-    <div style="padding: 10px;">
+    <div>
         <!-- Gray -->
         <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#FFFFFF")' style="background-color: #FFFFFF;"></div>
         <div class="blazing-rich-text-color-option" @onclick='() => SelectTextColor("#DCDCDC")' style="background-color: #DCDCDC;"></div>
@@ -100,9 +100,9 @@
             </div>
         </div>
 
-        <div style="margin-top: 20px; text-align: right;">
-            <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button" tabindex="100">Close</button>
-            <button id="rich-text-box-ok-button" @onclick="OnClick" class="rich-text-box-form-button" tabindex="101">OK</button>
+        <div style="margin-top: 5px; text-align: right;">
+            <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button">Close</button>
+            <button id="rich-text-box-ok-button" @onclick="OnClick" class="rich-text-box-form-button">OK</button>
         </div>
     </div>
 </dialog>

@@ -530,6 +530,7 @@ class RTBlazorfied {
     closeDialog = (id) => {
         this.Utilities.closeDialog(id);
         this.lockToolbar = false;
+        this.content.focus();
     }
     enableButtons = () => {
         

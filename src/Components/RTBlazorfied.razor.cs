@@ -77,7 +77,7 @@ public partial class RTBlazorfied
             cursor: default;
         }
 
-         .rich-text-box-tool-bar button svg {
+        .rich-text-box-tool-bar button svg {
             fill: {{_buttonTextColor}};
             width: {{_buttonTextSize}};
             height: {{_buttonTextSize}};
@@ -141,6 +141,7 @@ public partial class RTBlazorfied
             color: {{_contentTextColor}};
             white-space: pre-wrap; 
             word-wrap: break-word;
+            outline: 0px solid transparent;
         }
         .rich-text-box-source {
             padding: 10px;
@@ -163,10 +164,6 @@ public partial class RTBlazorfied
             color: black;
         }
         */
-
-        [contenteditable="true"] {
-            outline: 0px solid transparent;
-        }
 
         .rich-text-box-divider-btn {
             background-color: inherit;
@@ -272,19 +269,19 @@ public partial class RTBlazorfied
 
         .rich-text-box-show {display: block;}
 
-        dialog {
+        .rich-text-box-modal {
           background-color: {{_modalBackgroundColor}};
           color: {{_modalTextColor}};
           margin: auto;
           border: 1px solid #888;
-          width: 600px;
+          width: 400px;
           box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
           border-radius: 5px;
           user-select: none;
           z-index: 2000;
         }
         @media screen and (max-width: 768px) {
-            dialog {
+            .rich-text-box-modal {
                 width: 100%;
             }
         }
@@ -303,7 +300,7 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-modal-body {
-          padding: 2px 16px;
+          padding: 2px 8px;
         }
         input[type=text], select, textarea {
           width: 100%;
@@ -464,6 +461,8 @@ public partial class RTBlazorfied
             width: 100px !important;
             margin-left: 10px;
         }
+
+        /* Editor Styles */
         blockquote {
           background: #f9f9f9;
           border-left: 10px solid #ccc;
