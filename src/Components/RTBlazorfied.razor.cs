@@ -296,9 +296,6 @@ public partial class RTBlazorfied
             float: right; 
             width: 380px;
         }
-        .rich-text-box-classes-margin {
-            margin-top: 0;
-        }
         @media screen and (max-width: 850px) {
             .rich-text-box-form-left {
                 float: none; 
@@ -308,9 +305,6 @@ public partial class RTBlazorfied
             }
             .rich-text-box-modal {
                 width: 400px;
-            }
-            .rich-text-box-classes-margin {
-                margin-top: 12px;
             }
         }
         @media screen and (max-width: 450px) {
@@ -365,7 +359,7 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-form-checkbox {
-          outline: 0;
+          outline: none;
           width: 20px;
           height: 20px;
           margin-right: 8px;
@@ -375,6 +369,7 @@ public partial class RTBlazorfied
           border-style: solid;
           border-color: {{_modalTextboxBorderColor}};
           border-width: 1px;
+          box-shadow: 0 0 5px 2px rgba(169, 169, 169, 0.8);          
         }
         
         .rich-text-box-form-button {

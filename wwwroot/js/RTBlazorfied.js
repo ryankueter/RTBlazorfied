@@ -13,62 +13,8 @@ class RTBlazorfied {
         this.init();
     }
     init = () => {
-        /* Load elements into the shadow DOM */
-        const isolatedContainer = document.getElementById(this.shadow_id);
-        this.shadowRoot = isolatedContainer.attachShadow({ mode: 'open' });
-
-        const style = document.createElement('style');
-        style.textContent = this.styles;
-        this.shadowRoot.appendChild(style);
-
-        const contentContainer = document.createElement('div');
-        contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
-
-        this.container = document.createElement('div');
-        this.container.setAttribute('class', 'rich-text-box-container');
-        
-        /* The main content that is referenced throughout */
-        this.content = document.createElement('div');
-        this.content.setAttribute('id', this.id);
-        this.content.setAttribute('class', 'rich-text-box-content');
-        this.content.setAttribute('contenteditable', 'true');
-        this.content.style.display = "block";
-
-        this.source = document.createElement('textarea');
-        this.source.setAttribute('id', 'rich-text-box-source');
-        this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
-        this.source.style.display = "none";
-        this.source.spellcheck = false;
-
-        /* Create the fading bar */
-        const fadingBar = document.createElement('div');
-        fadingBar.setAttribute('class', 'rich-text-box-message-bar rich-text-box-message-hidden');
-        fadingBar.setAttribute('id', 'rich-text-box-message-bar');
-
-        const message = document.createElement('span');
-        message.setAttribute('class', 'rich-text-box-message');
-
-        const closeButton = document.createElement('button');
-        closeButton.setAttribute('class', 'rich-text-box-message-close-button');
-        closeButton.textContent = '×';
-        closeButton.onclick = () => {
-            this.closeFadingBar();
-        };
-
-        fadingBar.appendChild(message);
-        fadingBar.appendChild(closeButton);
-        
-        /* Assemble everything into the container */
-        const toolbar = document.getElementById(this.toolbar_id);
-        this.container.appendChild(toolbar);
-
-        //contentContainer.appendChild(fadingBar);
-        contentContainer.appendChild(this.content);
-        contentContainer.appendChild(this.source);
-        this.container.appendChild(fadingBar);
-        this.container.appendChild(contentContainer);
-        
-        this.shadowRoot.appendChild(this.container);
+        /* Give the shadow tree needed resources */
+        this.hydrateShadowTree();
 
         /* Initialize a Node Manager */
         this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
@@ -107,8 +53,71 @@ class RTBlazorfied {
         /* Initialize the Media Dialog */
         this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot, this.content);
 
+        /* Table Dialog */ 
         this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content);
 
+        /* Add the event listeners */
+        this.addEventListeners();
+    }
+    hydrateShadowTree = () => {
+        /* Load elements into the shadow DOM */
+        const isolatedContainer = document.getElementById(this.shadow_id);
+        this.shadowRoot = isolatedContainer.attachShadow({ mode: 'open' });
+
+        const style = document.createElement('style');
+        style.textContent = this.styles;
+        this.shadowRoot.appendChild(style);
+
+        const contentContainer = document.createElement('div');
+        contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
+
+        this.container = document.createElement('div');
+        this.container.setAttribute('class', 'rich-text-box-container');
+
+        /* The main content that is referenced throughout */
+        this.content = document.createElement('div');
+        this.content.setAttribute('id', this.id);
+        this.content.setAttribute('class', 'rich-text-box-content');
+        this.content.setAttribute('contenteditable', 'true');
+        this.content.style.display = "block";
+
+        this.source = document.createElement('textarea');
+        this.source.setAttribute('id', 'rich-text-box-source');
+        this.source.classList.add('rich-text-box-source', 'rich-text-box-scroll');
+        this.source.style.display = "none";
+        this.source.spellcheck = false;
+
+        /* Create the fading bar */
+        const fadingBar = document.createElement('div');
+        fadingBar.setAttribute('class', 'rich-text-box-message-bar rich-text-box-message-hidden');
+        fadingBar.setAttribute('id', 'rich-text-box-message-bar');
+
+        const message = document.createElement('span');
+        message.setAttribute('class', 'rich-text-box-message');
+
+        const closeButton = document.createElement('button');
+        closeButton.setAttribute('class', 'rich-text-box-message-close-button');
+        closeButton.textContent = '×';
+        closeButton.onclick = () => {
+            this.closeFadingBar();
+        };
+
+        fadingBar.appendChild(message);
+        fadingBar.appendChild(closeButton);
+
+        /* Assemble everything into the container */
+        const toolbar = document.getElementById(this.toolbar_id);
+        this.container.appendChild(toolbar);
+
+        //contentContainer.appendChild(fadingBar);
+        contentContainer.appendChild(this.content);
+        contentContainer.appendChild(this.source);
+        this.container.appendChild(fadingBar);
+        this.container.appendChild(contentContainer);
+
+        this.shadowRoot.appendChild(this.container);
+    }
+    addEventListeners = () => {
         /* Listen for selection change event to select buttons */
         document.addEventListener('selectionchange', (event) => {
             const selection = this.Utilities.getSelection();
@@ -2451,6 +2460,12 @@ class RTBlazorfiedTableDialog {
                 event.preventDefault();
                 this.insertTable();
                 this.dialog.close();
+                this.content.focus();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
             }
         });
 
@@ -2646,6 +2661,12 @@ class RTBlazorfiedMediaDialog {
                 event.preventDefault();
                 this.insertMedia();
                 this.dialog.close();
+                this.content.focus();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
             }
         });
 
@@ -2745,7 +2766,13 @@ class RTBlazorfiedCodeBlockDialog {
                     event.stopPropagation();
                     this.insertCodeBlock();
                     this.dialog.close();
+                    this.content.focus();
                 } 
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
             }
         });
 
@@ -2863,7 +2890,13 @@ class RTBlazorfiedBlockQuoteDialog {
                     event.stopPropagation();
                     this.insertBlockQuote();
                     this.dialog.close();
+                    this.content.focus();
                 }
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
             }
         });
 
@@ -2996,6 +3029,12 @@ class RTBlazorfiedImageDialog {
                 event.preventDefault();
                 this.insertImage();
                 this.dialog.close();
+                this.content.focus();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
             }
         });
 
@@ -3095,6 +3134,12 @@ class RTBlazorfiedLinkDialog {
                 event.preventDefault();
                 this.insertLink();
                 this.dialog.close();
+                this.content.focus();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
             }
         });
 
@@ -3257,6 +3302,12 @@ class RTBlazorfiedColorDialog {
                 event.preventDefault();
                 this.insertColor();
                 this.colorPickerDialog.close();
+                this.content.focus();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.colorPickerDialog.close();
+                this.content.focus();
             }
         });
 
