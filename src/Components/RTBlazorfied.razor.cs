@@ -37,43 +37,6 @@ public partial class RTBlazorfied
 
     private string GetStyles() =>
         $$"""
-        .rich-text-box-message-bar {
-            position: relative;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 10px;
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-            pointer-events: auto;
-        }
-
-        .rich-text-box-message-bar.rich-text-box-message-hidden {
-            opacity: 0;
-            height: 0;
-            padding: 0;
-            color: transparent;
-            pointer-events: none;
-        }
-
-        .rich-text-box-message {
-            margin-right: 10px;
-        }
-
-        .rich-text-box-message-close-button {
-            background: none;
-            border: none;
-            color: white;
-            margin-right: 20px;
-            font-size: 18px;
-            cursor: pointer;
-        }
         .rich-text-box-tool-bar {
             background-color: {{_toolbarBackgroundColor}};
             border-bottom-style: {{_toolbarBorderStyle}};
@@ -310,16 +273,44 @@ public partial class RTBlazorfied
           color: {{_modalTextColor}};
           margin: auto;
           border: 1px solid #888;
-          width: 400px;
+          width: 800px;
           box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
           border-radius: 5px;
           user-select: none;
           z-index: 2;
         }
-        @media screen and (max-width: 768px) {
+        .rich-text-box-form-left {
+            float: left; 
+            width: 380px;
+        }
+        .rich-text-box-form-right {
+            float: right; 
+            width: 380px;
+        }
+        @media screen and (max-width: 850px) {
+            .rich-text-box-form-left {
+                float: none; 
+            }
+            .rich-text-box-form-right {
+                float: none; 
+            }
+            .rich-text-box-modal {
+                width: 400px;
+            }
+        }
+        @media screen and (max-width: 450px) {
             .rich-text-box-modal {
                 width: 100%;
             }
+        }
+        .clearfix {
+          overflow: auto;
+        }
+
+        .clearfix::after {
+          content: "";
+          clear: both;
+          display: table;
         }
         
         .rich-text-box-modal-close {
@@ -421,6 +412,42 @@ public partial class RTBlazorfied
           overflow: auto !important;
           white-space: pre;
         }
+
+        /* Message Bar */
+        .rich-text-box-message-bar {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+            pointer-events: auto;
+        }
+        
+        .rich-text-box-message-bar.rich-text-box-message-hidden {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            color: transparent;
+            pointer-events: none;
+        }
+        
+        .rich-text-box-message {
+            margin-right: 10px;
+        }
+        
+        .rich-text-box-message-close-button {
+            background: none;
+            border: none;
+            color: white;
+            margin-right: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        /* End Message Bar */
 
         /* Color Picker */
         .rich-text-box-color-picker {

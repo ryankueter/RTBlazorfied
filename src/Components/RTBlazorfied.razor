@@ -362,85 +362,122 @@ else
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-table-modal" Title="Table" OnClick="InsertTable">
-            <label for="columns">Columns</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-table-columns" name="columns" autocomplete="off">
-            <label for="rows">Rows</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-table-rows" name="rows" autocomplete="off">
-            @if (!_modalRemoveCSSClassInputs)
-            {
-                <label for="classes">CSS Classes</label>
-                <input class="rich-text-box-form-element" type="text" id="rich-text-box-table-classes" placeholder="class1 class2 class3" name="classes">
-            }
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <label for="columns">Columns</label>
+                    <input type="number" id="rich-text-box-table-columns" class="rich-text-box-form-element" name="columns" min="0" max="10000" value="0">
+
+                    <label for="rows">Rows</label>
+                    <input type="number" id="rich-text-box-table-rows" class="rich-text-box-form-element" name="rows" min="0" max="10000" value="0">
+                </div>
+                <div class="rich-text-box-form-right">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-table-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>            
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-embed-modal" Title="Media" OnClick="InsertMedia">
-            <label for="source">Source</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" autocomplete="off">
-            <label for="width">Width</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-width" name="width" placeholder="450" autocomplete="off">
-            <label for="height">Height</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-height" name="height" placeholder="250" autocomplete="off">
-            <label for="type">Type</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" autocomplete="off">
-            @if (!_modalRemoveCSSClassInputs)
-            {
-                <label for="classes">CSS Classes</label>
-                <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes">
-            }
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <label for="source">Source</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" autocomplete="off">
+                    <label for="width">Width</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-width" name="width" placeholder="450" autocomplete="off">
+                    <label for="height">Height</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-height" name="height" placeholder="250" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-right">
+                    <label for="type">Type</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" autocomplete="off">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>            
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
-            <label for="code">Code Block</label>
-            <textarea rows="10" cols="50" class="rich-text-box-form-element rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" spellcheck="false" />
-            @if (!_modalRemoveCSSClassInputs)
-            {
-                <label for="classes">CSS Classes</label>
-                <input class="rich-text-box-form-element" type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes">
-            }
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <label for="code">Code Block</label>
+                    <textarea rows="10" cols="50" class="rich-text-box-form-element rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" spellcheck="false" />
+                </div>
+                <div class="rich-text-box-form-right">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-code-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>           
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-block-quote-modal" Title="Block Quote" OnClick="InsertQuote">
-            <label for="quote">Quote</label>
-            <textarea rows="5" cols="50" class="rich-text-box-form-element rich-text-box-scroll" id="rich-text-box-quote" name="quote" />
-            <label for="cite">Cite</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." autocomplete="off">
-            @if (!_modalRemoveCSSClassInputs)
-            {
-                <label for="classes">CSS Classes</label>
-                <input class="rich-text-box-form-element" type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes">
-            }
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <label for="quote">Quote</label>
+                    <textarea rows="5" cols="50" class="rich-text-box-form-element rich-text-box-scroll" id="rich-text-box-quote" name="quote" />
+                </div>
+                <div class="rich-text-box-form-right">
+                    <label for="cite">Cite</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-cite" name="cite" placeholder="https://www..." autocomplete="off">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-quote-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>            
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-image-modal" Title="Image" OnClick="InsertImage">
-            <label for="webaddress">Web Address</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
-            <label for="imagewidth">Image Width</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" autocomplete="off">
-            <label for="imageheight">Image Height</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-height" name="imageheight" autocomplete="off">
-            <label for="alttext">Alternative Text</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-alt-text" name="alttext" autocomplete="off">
-            @if (!_modalRemoveCSSClassInputs)
-            {
-                <label for="classes">CSS Classes</label>
-                <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes">
-            }
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <label for="webaddress">Web Address</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
+                    <label for="imagewidth">Image Width</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" autocomplete="off">
+                    <label for="imageheight">Image Height</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-height" name="imageheight" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-right">
+                    <label for="alttext">Alternative Text</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-alt-text" name="alttext" autocomplete="off">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>
         </RTDialog>
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
-            <label for="webaddress">Web Address</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
-            <label for="linktext">Link Text</label>
-            <input class="rich-text-box-form-element" type="text" id="rich-text-box-linktext" name="linktext" autocomplete="off">
-            @if (!_modalRemoveCSSClassInputs)
-            {
-                <label for="classes">CSS Classes</label>
-                <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes">
-            }
-            <label style="display: flex; align-items: center;">
-                <input class="rich-text-box-form-checkbox" id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" />
-                Open in New Tab
-            </label>
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <label for="webaddress">Web Address</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
+                    <label for="linktext">Link Text</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-linktext" name="linktext" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-right">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                    <label style="display: flex; align-items: center;">
+                        <input class="rich-text-box-form-checkbox" id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" />
+                        Open in New Tab
+                    </label>
+                </div>
+            </div>            
         </RTDialog>
     </div>
     <div id="@($"{id}_Shadow")"></div>
