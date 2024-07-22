@@ -68,7 +68,9 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.RemoveCSSClassInputs();
         o.BackgroundColor = "#333333";
         o.TextColor = "#FFFFAA";
-        o.TextboxBackgroundColor = "#333333";
+        o.TextSize = "20px";
+        o.TextFont = "Comic Sans MS";
+        o.TextboxBackgroundColor = "#333333"; // Texbox refers to inputs
         o.TextboxTextColor = "#FFFFAA";
         o.TextboxBorderColor = "#FFFFAA";
         o.CheckboxAccentColor = "#FFFFAA";
@@ -77,6 +79,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
     {
         o.TextColor = "#ff0000";
         o.TextSize = "30px";
+        o.TextFont = "Comic Sans MS";
         o.BackgroundColor = "#0000FF";
         o.BackgroundColorHover = "inherit";
         o.BackgroundColorSelected = "inherit";
@@ -101,7 +104,9 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
     {
         o.ContentBoxShadow = "inset 0 0 7px #eee";
         o.BackgroundColor = "#FFFF99";
-        o.TextColor = "#333";
+        o.TextColor = "#FFFFAA";
+        o.TextSize = "30px";
+        o.TextFont = "Comic Sans MS";
     });
     o.ScrollbarStyles(o =>
     {

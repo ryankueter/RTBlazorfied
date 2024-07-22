@@ -11,8 +11,10 @@ public class RichTextboxModalOptions
     public void RemoveCSSClassInputs() {
         removeCSSClassInputs = true;
     }
-    public string? BackgroundColor { get; set; }
     public string? TextColor { get; set; }
+    public string? TextSize { get; set; }
+    public string? TextFont { get; set; }
+    public string? BackgroundColor { get; set; }
     public string? TextboxBackgroundColor { get; set; }
     public string? TextboxTextColor { get; set; }
     public string? TextboxBorderColor { get; set; }

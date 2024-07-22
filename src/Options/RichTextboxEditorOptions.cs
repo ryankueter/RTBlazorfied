@@ -6,7 +6,7 @@
 namespace RichTextBlazorfied;
 
 public class RichTextboxEditorOptions
-{
+{    
     public string? Width { get; set; }
     public string? Height { get; set; }
     public string? BorderStyle { get; set; }

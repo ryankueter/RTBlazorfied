@@ -938,10 +938,6 @@ class RTBlazorfiedNodeManager {
                     if (object != null) {
                         element = sel.anchorNode;
                     }
-                    //const table = sel.anchorNode.querySelector('table');
-                    //if (table != null) {
-                    //    element = table;
-                    //}
                 }
 
                 /* If that node does not exist, style the parent node */
@@ -1180,6 +1176,7 @@ class RTBlazorfiedNodeManager {
         }
     }
     isExcluded = (selection) => {
+        /* Try the parent node. */
         switch (selection.anchorNode.parentNode.nodeName) {
             case "TD":
                 return true;
@@ -2738,12 +2735,17 @@ class RTBlazorfiedCodeBlockDialog {
         this.shadowRoot = shadowRoot;
         this.content = content;
 
+        const code = this.shadowRoot.getElementById('rich-text-box-code');
         this.dialog = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
         this.dialog.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault();
-                this.insertCodeBlock();
-                this.dialog.close();
+                /* Make certain the user is not pressing enter in the code block */
+                if (event.target !== code) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.insertCodeBlock();
+                    this.dialog.close();
+                } 
             }
         });
 
@@ -2851,12 +2853,17 @@ class RTBlazorfiedBlockQuoteDialog {
         this.shadowRoot = shadowRoot;
         this.content = content;
 
+        const quote = this.shadowRoot.getElementById('rich-text-box-quote');
         this.dialog = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
         this.dialog.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault();
-                this.insertBlockQuote();
-                this.dialog.close();
+                /* Make certain the user is not pressing enter in the quote block */
+                if (event.target !== quote) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.insertBlockQuote();
+                    this.dialog.close();
+                }
             }
         });
 

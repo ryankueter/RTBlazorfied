@@ -12,6 +12,7 @@ public class RichTextboxButtonOptions
     public string? BackgroundColorSelected { get; set; }
     public string? TextColor { get; set; }
     public string? TextSize { get; set; }
+    public string? TextFont { get; set; }
     public string? BorderStyle { get; set; }
     public string? BorderWidth { get; set; }
     public string? BorderColor { get; set; }

@@ -59,6 +59,7 @@ public partial class RTBlazorfied
             cursor: pointer;
             transition: 0.3s;
             min-height: calc({{_buttonTextSize}} + 14px);
+            font-family: {{_buttonTextFont}};
             margin: 4px 1px;
         }
         .rich-text-box-tool-bar button:hover {
@@ -126,7 +127,6 @@ public partial class RTBlazorfied
             z-index: 1;
         }
         .rich-text-box-content-container {
-        
             width: 100%;
             height: 100%;
             overflow: auto;
@@ -136,23 +136,26 @@ public partial class RTBlazorfied
             box-shadow: {{_contentBoxShadow}};
         }
         .rich-text-box-content {
+            color: {{_contentTextColor}} !important;
+            font-size: {{_contentTextSize}} !important;
+            font-family: {{_contentTextFont}} !important;
             padding: 5px 10px;
             width: 100%;
             min-height: 25px;
-            color: {{_contentTextColor}};
             white-space: pre-wrap; 
             word-wrap: break-word;
             outline: 0px solid transparent;
         }
         //.rich-text-box-content::selection {
-        //    background-color: green !important;
-        //    color: black !important;
+        //    background-color: green;
+        //    color: black;
         //}
         .rich-text-box-source {
             padding: 10px;
             width: 100%;
             min-height: 25px;
-            color: {{_contentTextColor}};
+            color: {{_contentTextColor}} !important;
+            font-size: {{_contentTextSize}} !important;
             white-space: pre-wrap; 
             background-color: {{_contentBackgroundColor}};
             box-shadow: {{_contentBoxShadow}};
@@ -255,7 +258,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-dropdown-content a {
           color: {{_toolbarDropdownTextColor}};
-          font-size: 15px;
+          font-size: 18px;
           padding: 10px 14px;
           text-decoration: none;
           display: block;
@@ -271,6 +274,8 @@ public partial class RTBlazorfied
         .rich-text-box-modal {
           background-color: {{_modalBackgroundColor}};
           color: {{_modalTextColor}};
+          font-size: {{_modalTextSize}};
+          font-family: {{_modalTextFont}};
           margin: auto;
           border: 1px solid #888;
           width: 800px;
@@ -279,6 +284,10 @@ public partial class RTBlazorfied
           user-select: none;
           z-index: 2;
         }
+        .rich-text-box-modal-title {
+            font-weight: bold; 
+            font-size: calc({{_modalTextSize}} + 2);
+        }
         .rich-text-box-form-left {
             float: left; 
             width: 380px;
@@ -286,6 +295,9 @@ public partial class RTBlazorfied
         .rich-text-box-form-right {
             float: right; 
             width: 380px;
+        }
+        .rich-text-box-classes-margin {
+            margin-top: 0;
         }
         @media screen and (max-width: 850px) {
             .rich-text-box-form-left {
@@ -296,6 +308,9 @@ public partial class RTBlazorfied
             }
             .rich-text-box-modal {
                 width: 400px;
+            }
+            .rich-text-box-classes-margin {
+                margin-top: 12px;
             }
         }
         @media screen and (max-width: 450px) {
@@ -336,6 +351,8 @@ public partial class RTBlazorfied
           font-size: 14px;
           background-color: {{_modalTextboxBackgroundColor}};
           color: {{_modalTextboxTextColor}};
+          font-size: {{_modalTextSize}};
+          font-family: {{_modalTextFont}};
           border-width: 1px;
           border-style: solid;
           border-color: {{_modalTextboxBorderColor}};
@@ -362,7 +379,8 @@ public partial class RTBlazorfied
         
         .rich-text-box-form-button {
           padding: 10px 20px !important;
-          font-size: 16px !important;
+          font-size: {{_modalTextSize}};
+          font-family: {{_modalTextFont}};
           transition: 0.3s;
         }
 
@@ -406,7 +424,7 @@ public partial class RTBlazorfied
             display: inline-block;
         }
         .rich-text-box-quote {
-          font-family: Arial, sans-serif !important;
+          font-family: {{_modalTextFont}};
         }
         .rich-text-box-code {
           overflow: auto !important;
@@ -415,6 +433,7 @@ public partial class RTBlazorfied
 
         /* Message Bar */
         .rich-text-box-message-bar {
+            font-size: {{_contentTextSize}};
             background-color: rgba(0, 0, 0, 0.6);
             color: white;
             display: flex;
@@ -436,14 +455,12 @@ public partial class RTBlazorfied
         }
         
         .rich-text-box-message {
-            margin-right: 10px;
         }
         
         .rich-text-box-message-close-button {
             background: none;
             border: none;
             color: white;
-            margin-right: 10px;
             font-size: 18px;
             cursor: pointer;
         }
@@ -561,9 +578,9 @@ public partial class RTBlazorfied
 
         td, th {
           border: 1px solid #ccc;
-          padding: 8px;
-          min-height: 25px;
-          min-width: 45px;
+          padding: 4px 6px;
+          height: 25px;
+          width: 100px;
         }
         """;
 
@@ -582,6 +599,7 @@ public partial class RTBlazorfied
     // Buttons
     private string? _buttonTextColor { get; set; } = "#000";
     private string? _buttonTextSize { get; set; } = "16px";
+    private string? _buttonTextFont { get; set; } = "Arial, sans-serif";
     private string? _buttonBackgroundColor { get; set; } = "inherit";
     private string? _buttonBackgroundColorHover { get; set; } = "#DDD";
     private string? _buttonBackgroundColorSelected { get; set; } = "#CCC";
@@ -592,8 +610,10 @@ public partial class RTBlazorfied
     private string? _buttonBorderColorHover { get; set; } = "inherit";
     private string? _buttonBorderColorSelected { get; set; } = "inherit";
     // Content
+    private string? _contentTextColor { get; set; } = "#333";
+    private string? _contentTextSize { get; set; } = "16px";
+    private string? _contentTextFont { get; set; } = "Arial, sans-serif";
     private string? _contentBackgroundColor { get; set; } = "#FFF";
-    private string? _contentTextColor { get; set; } = "#000";
     private string? _contentBoxShadow { get; set; } = "none";
 
     // Editor
@@ -616,7 +636,9 @@ public partial class RTBlazorfied
     // Modal
     private bool _modalRemoveCSSClassInputs { get; set; }
     private string? _modalBackgroundColor { get; set; } = "#fefefe";
-    private string? _modalTextColor { get; set; } = "#000";
+    private string? _modalTextColor { get; set; } = "#333";
+    private string? _modalTextSize { get; set; } = "16px";
+    private string? _modalTextFont { get; set; } = "Arial, sans-serif";
     private string? _modalTextboxBackgroundColor { get; set; } = "#fff";
     private string? _modalTextboxTextColor { get; set; } = "#000";
     private string? _modalCheckboxAccentColor { get; set; } = "#007bff";
@@ -1107,6 +1129,14 @@ public partial class RTBlazorfied
             {
                 _contentTextColor = styleOptions.TextColor;
             }
+            if (styleOptions.TextSize is not null)
+            {
+                _contentTextSize = styleOptions.TextSize;
+            }
+            if (styleOptions.TextFont is not null)
+            {
+                _contentTextFont = styleOptions.TextFont;
+            }
             if (styleOptions.ContentBoxShadow is not null)
             {
                 _contentBoxShadow = styleOptions.ContentBoxShadow;
@@ -1171,6 +1201,10 @@ public partial class RTBlazorfied
             if (buttonOptions.TextSize is not null)
             {
                 _buttonTextSize = buttonOptions.TextSize;
+            }
+            if (buttonOptions.TextFont is not null)
+            {
+                _buttonTextFont = buttonOptions.TextFont;
             }
             if (buttonOptions.BackgroundColor is not null)
             {
@@ -1264,13 +1298,21 @@ public partial class RTBlazorfied
             {
                 _modalRemoveCSSClassInputs = Convert.ToBoolean(modalOptions.removeCSSClassInputs);
             }
-            if (modalOptions.BackgroundColor is not null)
-            {
-                _modalBackgroundColor = modalOptions.BackgroundColor;
-            }
             if (modalOptions.TextColor is not null)
             {
                 _modalTextColor = modalOptions.TextColor;
+            }
+            if (modalOptions.TextSize is not null)
+            {
+                _modalTextSize = modalOptions.TextSize;
+            }
+            if (modalOptions.TextFont is not null)
+            {
+                _modalTextFont = modalOptions.TextFont;
+            }
+            if (modalOptions.BackgroundColor is not null)
+            {
+                _modalBackgroundColor = modalOptions.BackgroundColor;
             }
             if (modalOptions.TextboxBackgroundColor is not null)
             {

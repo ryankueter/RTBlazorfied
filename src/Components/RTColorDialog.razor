@@ -3,7 +3,7 @@
 <dialog id="@DialogId" class="rich-text-box-modal rich-text-box-scroll">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="align-self: flex-start;">
-            <h2>@Title</h2>
+            <div class="rich-text-box-modal-title">@Title</div>
         </div>
         <div style="align-self: flex-start;">
             <span @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-modal-close">&times;</span>

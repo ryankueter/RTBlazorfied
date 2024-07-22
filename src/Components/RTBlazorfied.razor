@@ -365,12 +365,13 @@ else
             <div class="clearfix">
                 <div class="rich-text-box-form-left">
                     <label for="columns">Columns</label>
-                    <input type="number" id="rich-text-box-table-columns" class="rich-text-box-form-element" name="columns" min="0" max="10000" value="0">
-
+                    <input type="number" id="rich-text-box-table-columns" class="rich-text-box-form-element" name="columns" min="0" max="10000" value="0">                    
+                </div>
+                <div class="rich-text-box-form-right">
                     <label for="rows">Rows</label>
                     <input type="number" id="rich-text-box-table-rows" class="rich-text-box-form-element" name="rows" min="0" max="10000" value="0">
                 </div>
-                <div class="rich-text-box-form-right">
+                <div class="rich-text-box-form-left">
                     @if (!_modalRemoveCSSClassInputs)
                     {
                         <label for="classes">CSS Classes</label>
@@ -385,14 +386,16 @@ else
                 <div class="rich-text-box-form-left">
                     <label for="source">Source</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-source" name="source" placeholder="e.g., /videos/sample.mp4, /videos/sample.mp3, files/id_card.pdf" autocomplete="off">
-                    <label for="width">Width</label>
-                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-width" name="width" placeholder="450" autocomplete="off">
                     <label for="height">Height</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-height" name="height" placeholder="250" autocomplete="off">
                 </div>
                 <div class="rich-text-box-form-right">
+                    <label for="width">Width</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-width" name="width" placeholder="450" autocomplete="off">
                     <label for="type">Type</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-embed-type" name="type" placeholder="e.g., video/mp4, audio/mp3, application/pdf, or text/html" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-left">
                     @if (!_modalRemoveCSSClassInputs)
                     {
                         <label for="classes">CSS Classes</label>
@@ -404,11 +407,9 @@ else
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-code-block-modal" Title="Code Block" OnClick="InsertCodeBlock">
             <div class="clearfix">
+                <label for="code">Code Block</label>
+                <textarea rows="6" cols="50" class="rich-text-box-form-element rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" spellcheck="false" />
                 <div class="rich-text-box-form-left">
-                    <label for="code">Code Block</label>
-                    <textarea rows="10" cols="50" class="rich-text-box-form-element rich-text-box-code rich-text-box-scroll" id="rich-text-box-code" name="code" spellcheck="false" />
-                </div>
-                <div class="rich-text-box-form-right">
                     @if (!_modalRemoveCSSClassInputs)
                     {
                         <label for="classes">CSS Classes</label>
@@ -422,7 +423,7 @@ else
             <div class="clearfix">
                 <div class="rich-text-box-form-left">
                     <label for="quote">Quote</label>
-                    <textarea rows="5" cols="50" class="rich-text-box-form-element rich-text-box-scroll" id="rich-text-box-quote" name="quote" />
+                    <textarea rows="6" cols="50" class="rich-text-box-form-element rich-text-box-scroll" id="rich-text-box-quote" name="quote" />
                 </div>
                 <div class="rich-text-box-form-right">
                     <label for="cite">Cite</label>
@@ -441,14 +442,16 @@ else
                 <div class="rich-text-box-form-left">
                     <label for="webaddress">Web Address</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
-                    <label for="imagewidth">Image Width</label>
-                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" autocomplete="off">
                     <label for="imageheight">Image Height</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-height" name="imageheight" autocomplete="off">
                 </div>
                 <div class="rich-text-box-form-right">
+                    <label for="imagewidth">Image Width</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-width" name="imagewidth" placeholder="400" autocomplete="off">
                     <label for="alttext">Alternative Text</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-alt-text" name="alttext" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-left">
                     @if (!_modalRemoveCSSClassInputs)
                     {
                         <label for="classes">CSS Classes</label>
@@ -463,21 +466,23 @@ else
                 <div class="rich-text-box-form-left">
                     <label for="webaddress">Web Address</label>
                     <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-webaddress" name="webaddress" placeholder="https://www..." autocomplete="off">
-                    <label for="linktext">Link Text</label>
-                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-linktext" name="linktext" autocomplete="off">
                 </div>
                 <div class="rich-text-box-form-right">
-                    @if (!_modalRemoveCSSClassInputs)
-                    {
-                        <label for="classes">CSS Classes</label>
-                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes">
-                    }
+                    <label for="linktext">Link Text</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-linktext" name="linktext" autocomplete="off">
                     <label style="display: flex; align-items: center;">
                         <input class="rich-text-box-form-checkbox" id="rich-text-box-link-modal-newtab" type="checkbox" name="opentab" />
                         Open in New Tab
                     </label>
                 </div>
-            </div>            
+                <div class="rich-text-box-form-left rich-text-box-classes-margin">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-link-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>
         </RTDialog>
     </div>
     <div id="@($"{id}_Shadow")"></div>
