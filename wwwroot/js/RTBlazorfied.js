@@ -396,6 +396,7 @@ class RTBlazorfied {
         this.lockToolbar = true;
         
         /* Open the color picker */
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
@@ -427,6 +428,7 @@ class RTBlazorfied {
         this.lockToolbar = true;
 
         /* Open the color picker */
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
@@ -452,6 +454,7 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.TableDialog.openTableDialog(selection);
@@ -538,6 +541,7 @@ class RTBlazorfied {
         const range = document.createRange();
         range.selectNodeContents(this.content)
 
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             selection.removeAllRanges();
@@ -560,6 +564,7 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.LinkDialog.openLinkDialog(selection);
@@ -581,6 +586,7 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.BlockQuoteDialog.openBlockQuoteDialog(selection);
@@ -597,6 +603,7 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.CodeBlockDialog.openCodeBlockDialog(selection);
@@ -612,7 +619,8 @@ class RTBlazorfied {
     openMediaDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        
+
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.MediaDialog.openMediaDialog(selection);
@@ -628,7 +636,8 @@ class RTBlazorfied {
     openImageDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        
+
+        this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.ImageDialog.openImageDialog(selection);
