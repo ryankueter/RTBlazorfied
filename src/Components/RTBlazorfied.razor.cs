@@ -575,7 +575,7 @@ public partial class RTBlazorfied
           border: 1px solid #ccc;
           padding: 4px 6px;
           height: 25px;
-          width: 100px;
+          min-width: 100px;
         }
         """;
 
