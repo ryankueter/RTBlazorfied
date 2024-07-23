@@ -32,7 +32,7 @@ else
         @if (_size == true)
         {
             <div class="rich-text-box-dropdown">
-                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + >)" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn">
+                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + [< | >])" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn">
                     Size
                 </button>
                 <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
@@ -46,7 +46,7 @@ else
         @if (_format == true)
         {
             <div class="rich-text-box-dropdown">
-                <button id="blazing-rich-text-format-button" title="Format" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn">
+                <button id="blazing-rich-text-format-button" title="Format Ctrl + Shift + [D, P, 1, 2...]" @onclick='() => OpenDropdown("blazing-rich-text-format-button-dropdown")' class="rich-text-box-format-button rich-text-box-dropdown-btn">
                     Format
                 </button>
                 <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
@@ -320,7 +320,7 @@ else
             <RTButton Id="blazing-rich-text-code-block-button"
                       OnClick="OpenCodeBlockDialog"
                       Icon="@Icons.CodeBlocks"
-                      Title="Code Block (Ctrl + Shift + P)"
+                      Title="Code Block (Ctrl + Shift + *)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }

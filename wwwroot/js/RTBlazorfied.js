@@ -267,14 +267,6 @@ class RTBlazorfied {
             event.preventDefault();
             this.selectall();
         }
-        if (event.ctrlKey && event.shiftKey && event.key === '>') {
-            event.preventDefault();
-            this.changeFontSize(true);
-        }
-        if (event.ctrlKey && event.shiftKey && event.key === '<') {
-            event.preventDefault();
-            this.changeFontSize(false);
-        }
         if (event.ctrlKey && event.key === 'z') {
             event.preventDefault();
             this.goBack();
@@ -282,6 +274,14 @@ class RTBlazorfied {
         if (event.ctrlKey && event.key === 'y') {
             event.preventDefault();
             this.goForward();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '>') {
+            event.preventDefault();
+            this.changeFontSize(true);
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '<') {
+            event.preventDefault();
+            this.changeFontSize(false);
         }
         if (event.ctrlKey && event.shiftKey && event.key === 'C') {
             event.preventDefault();
@@ -295,7 +295,7 @@ class RTBlazorfied {
             event.preventDefault();
             this.openLinkDialog();
         }
-        if (event.ctrlKey && event.shiftKey && event.key === 'P') {
+        if (event.ctrlKey && event.shiftKey && event.key === '*') {
             event.preventDefault();
             this.openCodeBlockDialog();
         }
@@ -315,9 +315,37 @@ class RTBlazorfied {
             event.preventDefault();
             this.openTableDialog();
         }
-        if (event.ctrlKey && event.shiftKey && event.key === 'X') {
+        if (event.ctrlKey && event.shiftKey && event.key === 'D') {
             event.preventDefault();
-            // TODO
+            this.format("none");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'P') {
+            event.preventDefault();
+            this.format("p");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '!') {
+            event.preventDefault();
+            this.format("h1");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '@') {
+            event.preventDefault();
+            this.format("h2");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '#') {
+            event.preventDefault();
+            this.format("h3");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '$') {
+            event.preventDefault();
+            this.format("h4");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '%') {
+            event.preventDefault();
+            this.format("h5");
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === '^') {
+            event.preventDefault();
+            this.format("h6");
         }
         if (event.key === 'Tab') {
             const selection = this.Utilities.getSelection();
@@ -472,6 +500,7 @@ class RTBlazorfied {
         this.closeDropdown("blazing-rich-text-font-button-dropdown");
     }
     size = (size) => {
+        this.clearSettings();
         this.NodeManager.updateNode("size", size);
         this.closeDropdown("blazing-rich-text-size-button-dropdown");
     }
