@@ -282,7 +282,43 @@ class RTBlazorfied {
         if (event.ctrlKey && event.key === 'y') {
             event.preventDefault();
             this.goForward();
-        }                
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'C') {
+            event.preventDefault();
+            this.openTextColorDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'B') {
+            event.preventDefault();
+            this.openTextBackgroundColorDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'K') {
+            event.preventDefault();
+            this.openLinkDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'P') {
+            event.preventDefault();
+            this.openCodeBlockDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'Q') {
+            event.preventDefault();
+            this.openBlockQuoteDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'I') {
+            event.preventDefault();
+            this.openImageDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'M') {
+            event.preventDefault();
+            this.openMediaDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'L') {
+            event.preventDefault();
+            this.openTableDialog();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'X') {
+            event.preventDefault();
+            // TODO
+        }
         if (event.key === 'Tab') {
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
