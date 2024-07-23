@@ -1468,6 +1468,8 @@ public partial class RTBlazorfied
     private async Task OpenDropdown(string dropdown_id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "dropdown", id, dropdown_id);
     private async Task OpenTableDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openTableDialog", id);
     private async Task InsertTable() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTable", id);
+    private async Task IncreaseIndent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "increaseIndent", id);
+    private async Task DecreaseIndent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "decreaseIndent", id);
 
     private async Task OpenCode()
     {

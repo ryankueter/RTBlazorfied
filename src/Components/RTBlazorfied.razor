@@ -259,6 +259,19 @@ else
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
+        <RTButton Id="blazing-rich-text-increase-indent-button"
+                  OnClick="IncreaseIndent"
+                  Icon="@Icons.IncreaseIndent"
+                  Title="Increase Indent"
+                  TextSize="@_buttonTextSize"
+                  TextColor="@_buttonTextColor"></RTButton>
+        <RTButton Id="blazing-rich-text-decrease-indent-button"
+                  OnClick="DecreaseIndent"
+                      Icon="@Icons.DecreaseIndent"
+                      Title="Decrease Indent"
+                      TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"></RTButton>
+        
         @if (_listdivider == true)
         {
             <RTDivider />

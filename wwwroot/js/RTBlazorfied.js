@@ -148,29 +148,6 @@ class RTBlazorfied {
             });
         });
     }
-    showFadingBar = (message) => {
-        const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
-        const messageElement = fadingBar.querySelector('.rich-text-box-message');
-
-        /* Check if fadingBar and messageElement exist */
-        if (fadingBar && messageElement) {
-
-            /* Set the custom message */
-            messageElement.textContent = message;
-
-            /* Remove the hidden class to show the fading bar */
-            fadingBar.classList.remove('rich-text-box-message-hidden');
-
-            /* Hide the fading bar after a delay */
-            setTimeout(() => {
-                this.closeFadingBar();
-            }, 2000);
-        } 
-    }
-    closeFadingBar = () => {
-        const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
-        fadingBar.classList.add('rich-text-box-message-hidden');
-    }
     /* History */
     goBack = () => {
         this.StateManager.goBack();
@@ -419,6 +396,22 @@ class RTBlazorfied {
             element.classList.add("rich-text-box-show")
         }
     }
+    increaseIndent = () => {
+        this.content.focus();
+        const selection = this.Utilities.getSelection();
+        const list = this.ListProvider.getList(selection.anchorNode);
+        if (list !== null) {
+            this.ListProvider.increaseIndent(selection, list);
+        }
+    }
+    decreaseIndent = () => {
+        this.content.focus();
+        const selection = this.Utilities.getSelection();
+        const list = this.ListProvider.getList(selection.anchorNode);
+        if (list !== null) {
+            this.ListProvider.decreaseIndent(list);
+        }
+    }
     openTextColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
@@ -431,7 +424,7 @@ class RTBlazorfied {
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
     selectTextColor = (color) => {
@@ -463,7 +456,7 @@ class RTBlazorfied {
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
 
@@ -488,7 +481,7 @@ class RTBlazorfied {
             this.TableDialog.openTableDialog(selection);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
    
@@ -599,7 +592,7 @@ class RTBlazorfied {
             this.LinkDialog.openLinkDialog(selection);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
     insertLink = () => {
@@ -621,7 +614,7 @@ class RTBlazorfied {
             this.BlockQuoteDialog.openBlockQuoteDialog(selection);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
     insertBlockQuote = () => {
@@ -638,7 +631,7 @@ class RTBlazorfied {
             this.CodeBlockDialog.openCodeBlockDialog(selection);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
     insertCodeBlock = () => {
@@ -649,13 +642,13 @@ class RTBlazorfied {
         /* Lock the toolbar */
         this.lockToolbar = true;
 
-        this.content.focus();
+        //this.content.focus();
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             this.MediaDialog.openMediaDialog(selection);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
     insertMedia = () => {
@@ -672,7 +665,7 @@ class RTBlazorfied {
             this.ImageDialog.openImageDialog(selection);
         }
         else {
-            this.showFadingBar("No content selected.");
+            this.Utilities.showFadingBar("No content selected.");
         }
     }
     insertImage = () => {
@@ -2101,7 +2094,28 @@ class RTBlazorfiedListProvider {
             }
             else {
                 const selectedText = selection.toString().trim();
-                if (selectedText) {
+                /* If an entire node is not selected */
+                if (selectedText.length === 0) {
+                    const range = selection.getRangeAt(0);
+                                        
+                    const ulElement = document.createElement(type);
+                    const node = selection.anchorNode.parentNode;
+                    if (node.nodeType === Node.ELEMENT_NODE
+                        || node.nodeType === Node.TEXT_NODE) {
+
+                        let liElement = document.createElement('li');
+
+                        let clonedContent = node.cloneNode(true);
+                        liElement.appendChild(clonedContent);
+
+                        ulElement.appendChild(liElement);
+
+                        node.remove();
+                    }
+                    range.deleteContents();
+                    range.insertNode(ulElement);
+                }
+                else {
                     const ulElement = document.createElement(type);
 
                     if (selection.rangeCount > 0) {
@@ -2140,23 +2154,56 @@ class RTBlazorfiedListProvider {
     replaceList = (list, type) => {
         if (list === null || list === this.content || !this.content.contains(list)) { return; }
 
+        /* Save the current selection range */
+        const selection = this.Utilities.getSelection();
+        let range, startContainer, startOffset, endContainer, endOffset;
+        if (selection !== null && selection.rangeCount > 0) {
+            range = selection.getRangeAt(0);
+            startContainer = range.startContainer;
+            startOffset = range.startOffset;
+            endContainer = range.endContainer;
+            endOffset = range.endOffset;
+        }
+
+        /* Replace the list element */
         const element = document.createElement(type);
         while (list.firstChild) {
             element.appendChild(list.firstChild);
         }
         list.parentNode.replaceChild(element, list);
 
-        const selection = this.Utilities.getSelection();
-        if (selection !== null && selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            range.selectNodeContents(element);
-            range.collapse(true);
+        /* Restore the selection range */
+        if (range) {
+            const newRange = document.createRange();
+
+            /* Update the containers and offsets if they were inside the replaced list */
+            if (list.contains(startContainer)) {
+                newRange.setStart(element, startOffset);
+            } else {
+                newRange.setStart(startContainer, startOffset);
+            }
+
+            if (list.contains(endContainer)) {
+                newRange.setEnd(element, endOffset);
+            } else {
+                newRange.setEnd(endContainer, endOffset);
+            }
+
             selection.removeAllRanges();
-            selection.addRange(range);
+            selection.addRange(newRange);
         }
     }
     removelist = (list) => {
         if (list == null || list == this.content || !this.content.contains(list)) { return; }
+
+        const childList = list.querySelector('ul, ol');
+        if (childList !== null) {
+            this.Utilities.showFadingBar("The list contains childnodes and cannot be removed.");
+            return;
+        }
+
+        /* Variable to store the first node moved out of the list */
+        let firstNode = null;
 
         /* Remove the list */
         while (list.firstChild) {
@@ -2164,7 +2211,11 @@ class RTBlazorfiedListProvider {
 
             /* Move each child node of listItem to before list */
             while (listItem.firstChild) {
-                list.parentNode.insertBefore(listItem.firstChild, list);
+                const child = listItem.firstChild;
+                if (!firstNode) {
+                    firstNode = child; // Store the first node
+                }
+                list.parentNode.insertBefore(child, list);
             }
 
             /* Remove the now empty listItem */
@@ -2174,14 +2225,113 @@ class RTBlazorfiedListProvider {
         /* Remove the ordered list element */
         list.parentNode.removeChild(list);
 
-        const selection = this.Utilities.getSelection();
-        if (selection !== null) {
-            if (selection !== null && selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
+        /* Set the cursor to the beginning of the first node */
+        if (firstNode) {
+            const selection = this.Utilities.getSelection();
+            if (selection !== null) {
+                const range = document.createRange();
+                range.setStart(firstNode, 0);
+                range.collapse(true);
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
         }
+    }
+    increaseIndent = (selection, list) => {
+        // Get selected nodes
+        let selectedNodes = this.getSelectedNodes(selection, list);
+
+        // Create a new <ul> and append the selected <li> elements to it
+        const newList = document.createElement(list.nodeName);
+        selectedNodes.forEach(item => {
+            const clonedItem = item.cloneNode(true); // Clone the node and its descendants
+            newList.appendChild(clonedItem);
+        });
+
+        // Insert the new <ul> in place of the first <li> element
+        const firstItem = selectedNodes[0];
+        list.insertBefore(newList, firstItem);
+
+        // Remove the original selected nodes from the original list
+        selectedNodes.forEach(item => list.removeChild(item));
+
+        // Restore the selection
+        const newRange = document.createRange();
+        newRange.setStart(newList, 0); // Adjust the start position if needed
+        newRange.collapse(true);
+
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+    }
+    decreaseIndent = (list) => {
+        /* Check if the list is a <ul> or <ol> and has at least one child */
+        if (list.nodeName !== 'UL' && list.nodeName !== 'OL' || list.children.length === 0) {
+            return;
+        }
+
+        /* Find the parent list element and the child list element */
+        const parentList = list.parentElement;
+        if (parentList.nodeName !== 'UL' && parentList.nodeName !== 'OL' || parentList.children.length === 0) {
+            this.removelist(list);
+            return;
+        }
+
+        const childList = parentList.querySelector('ul, ol');
+        if (!childList) {
+            return;
+        }
+
+        /* Collect the nodes to be moved from the child list */
+        const nodesToMove = Array.from(childList.children);
+
+        /* Insert the nodes from the child list into the parent list */
+        nodesToMove.forEach(item => {
+            parentList.insertBefore(item, list.nextSibling);
+        });
+
+        /* Remove the child list from the parent */
+        parentList.removeChild(list);
+    }
+    getSelectedNodes = (selection, list) => {
+        const selectedNodes = [];
+
+        if (!selection.rangeCount) {
+            return null;
+        }
+
+        const range = selection.getRangeAt(0);
+        if (list !== null) {
+            const listItems = list.children; // Get the children directly
+
+            for (let i = 0; i < listItems.length; i++) {
+                const li = listItems[i];
+                if (range.intersectsNode(li)) {
+                    selectedNodes.push(li);
+                }
+            }
+            return selectedNodes;
+        }
+        return null;
+    }
+    getList = (el) => {
+        while (el) {
+            /* Prevent recursion outside the editor */
+            if (el === this.content || !this.content.contains(el)) { return; }
+
+            /* Recurse into the closest node and return it */
+            if (el.nodeName != "#text" && el.nodeName != "#document") {
+                switch (el.nodeName) {
+                    case "OL":
+                        return el;
+                        break;
+                    case "UL":
+                        return el;
+                        break;
+                }
+            }
+            el = el.parentNode;
+        }
+        return null;
     }
 }
 
@@ -2499,6 +2649,29 @@ class RTBlazorfiedUtilities {
             return selection;
         }
         return null;
+    }
+    showFadingBar = (message) => {
+        const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
+        const messageElement = fadingBar.querySelector('.rich-text-box-message');
+
+        /* Check if fadingBar and messageElement exist */
+        if (fadingBar && messageElement) {
+
+            /* Set the custom message */
+            messageElement.textContent = message;
+
+            /* Remove the hidden class to show the fading bar */
+            fadingBar.classList.remove('rich-text-box-message-hidden');
+
+            /* Hide the fading bar after a delay */
+            setTimeout(() => {
+                this.closeFadingBar();
+            }, 2000);
+        }
+    }
+    closeFadingBar = () => {
+        const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
+        fadingBar.classList.add('rich-text-box-message-hidden');
     }
 
     saveCaretPosition = () => {
