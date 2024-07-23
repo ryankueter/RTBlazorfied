@@ -50,14 +50,14 @@ else
                     Format
                 </button>
                 <div id="blazing-rich-text-format-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-format-content rich-text-box-scroll">
-                    <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("none")'>None</a>
-                    <a class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("p")'>Paragraph</a>
-                    <a class="rich-text-box-menu-item" style="font-size: 34px; cursor: pointer" @onclick='() => FormatText("h1")'>Header 1</a>
-                    <a class="rich-text-box-menu-item" style="font-size: 30px; cursor: pointer" @onclick='() => FormatText("h2")'>Header 2</a>
-                    <a class="rich-text-box-menu-item" style="font-size: 24px; cursor: pointer" @onclick='() => FormatText("h3")'>Header 3</a>
-                    <a class="rich-text-box-menu-item" style="font-size: 20px; cursor: pointer" @onclick='() => FormatText("h4")'>Header 4</a>
-                    <a class="rich-text-box-menu-item" style="font-size: 18px; cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
-                    <a class="rich-text-box-menu-item" style="font-size: 16px; cursor: pointer" @onclick='() => FormatText("h6")'>Header 6</a>
+                    <a id="none" class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("none")'>None</a>
+                    <a id="p" class="rich-text-box-menu-item" style="cursor: pointer" @onclick='() => FormatText("p")'>Paragraph</a>
+                    <a id="h1" class="rich-text-box-menu-item" style="font-size: 34px; cursor: pointer" @onclick='() => FormatText("h1")'>Header 1</a>
+                    <a id="h2" class="rich-text-box-menu-item" style="font-size: 30px; cursor: pointer" @onclick='() => FormatText("h2")'>Header 2</a>
+                    <a id="h3" class="rich-text-box-menu-item" style="font-size: 24px; cursor: pointer" @onclick='() => FormatText("h3")'>Header 3</a>
+                    <a id="h4" class="rich-text-box-menu-item" style="font-size: 20px; cursor: pointer" @onclick='() => FormatText("h4")'>Header 4</a>
+                    <a id="h5" class="rich-text-box-menu-item" style="font-size: 18px; cursor: pointer" @onclick='() => FormatText("h5")'>Header 5</a>
+                    <a id="h6" class="rich-text-box-menu-item" style="font-size: 16px; cursor: pointer" @onclick='() => FormatText("h6")'>Header 6</a>
                 </div>
             </div>
         }

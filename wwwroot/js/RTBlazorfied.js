@@ -282,7 +282,7 @@ class RTBlazorfied {
         if (event.ctrlKey && event.key === 'y') {
             event.preventDefault();
             this.goForward();
-        }
+        }                
         if (event.key === 'Tab') {
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
@@ -2574,6 +2574,16 @@ class RTBlazorfiedTableDialog {
                 }
                 range.deleteContents();
                 range.insertNode(table);
+
+                /* Set the cursor position to the first cell of the table */
+                let firstCell = table.querySelector('td, th');
+                let newRange = document.createRange();
+                newRange.setStart(firstCell, 0);
+                newRange.setEnd(firstCell, 0);
+
+                let selection = document.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(newRange);
             }
         }
 

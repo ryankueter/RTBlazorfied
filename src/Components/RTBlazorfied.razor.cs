@@ -264,7 +264,7 @@ public partial class RTBlazorfied
           display: block;
         }
 
-        .rich-text-box-dropdown a:hover {
+        .rich-text-box-dropdown a:hover, .rich-text-box-menu-item.active {
           background-color: {{_toolbarDropdownBackgroundColorHover}};
           color: {{_toolbarDropdownTextColorHover}};
          }
@@ -605,7 +605,7 @@ public partial class RTBlazorfied
     private string? _buttonBorderColorHover { get; set; } = "inherit";
     private string? _buttonBorderColorSelected { get; set; } = "inherit";
     // Content
-    private string? _contentTextColor { get; set; } = "#333";
+    private string? _contentTextColor { get; set; } = "#000";
     private string? _contentTextSize { get; set; } = "16px";
     private string? _contentTextFont { get; set; } = "Arial, sans-serif";
     private string? _contentBackgroundColor { get; set; } = "#FFF";
@@ -631,7 +631,7 @@ public partial class RTBlazorfied
     // Modal
     private bool _modalRemoveCSSClassInputs { get; set; }
     private string? _modalBackgroundColor { get; set; } = "#fefefe";
-    private string? _modalTextColor { get; set; } = "#333";
+    private string? _modalTextColor { get; set; } = "#000";
     private string? _modalTextSize { get; set; } = "16px";
     private string? _modalTextFont { get; set; } = "Arial, sans-serif";
     private string? _modalTextboxBackgroundColor { get; set; } = "#fff";
