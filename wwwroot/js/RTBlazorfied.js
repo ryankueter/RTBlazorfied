@@ -400,16 +400,22 @@ class RTBlazorfied {
         this.content.focus();
         const selection = this.Utilities.getSelection();
         const list = this.ListProvider.getList(selection.anchorNode);
-        if (list !== null) {
+        if (list) {
             this.ListProvider.increaseIndent(selection, list);
+        }
+        else {
+            this.NodeManager.indentBlock(selection, true);
         }
     }
     decreaseIndent = () => {
         this.content.focus();
         const selection = this.Utilities.getSelection();
         const list = this.ListProvider.getList(selection.anchorNode);
-        if (list !== null) {
+        if (list) {
             this.ListProvider.decreaseIndent(list);
+        }
+        else {
+            this.NodeManager.indentBlock(selection, false);
         }
     }
     openTextColorDialog = () => {
@@ -419,7 +425,7 @@ class RTBlazorfied {
         /* Open the color picker */
         this.content.focus();
         const selection = this.Utilities.getSelection();
-        if (selection !== null) {
+        if (selection) {
             const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
             this.selection = colorPicker.openColorPicker(selection, this.content);
         }
@@ -526,9 +532,6 @@ class RTBlazorfied {
     };
     alignjustify = () => {
         this.NodeManager.updateNode("alignjustify");
-    };
-    indent = () => {
-        this.NodeManager.updateNode("indent");
     };
     copy = () => {
         this.ActionOptions.copy();
@@ -1155,14 +1158,6 @@ class RTBlazorfiedNodeManager {
                             element.style.setProperty("text-align", "justify");
                         }
                         break;
-                    case "indent":
-                        if (element.style.textIndent == "40px") {
-                            this.removeProperty(element, "text-indent", "40px");
-                        }
-                        else {
-                            element.style.setProperty("text-indent", "40px");
-                        }
-                        break;
                     default:
                 }
                 this.selection = null;
@@ -1231,10 +1226,6 @@ class RTBlazorfiedNodeManager {
                         newElement = document.createElement("div");
                         newElement.style.textAlign = "justify";
                         break;
-                    case "indent":
-                        newElement = document.createElement("div");
-                        newElement.style.textIndent = "40px";
-                        break;
                     default:
                 }
                 if (newElement != null && sel.rangeCount != 0) {
@@ -1267,6 +1258,49 @@ class RTBlazorfiedNodeManager {
         return false;
     }
 
+    /* Used by the indent buttons */
+    indentBlock = (selection, increase) => {
+        let currentNode = selection.anchorNode;
+        /* Traverse up the DOM tree */
+        while (currentNode) {
+            if (this.applyMargin(currentNode, increase)) {
+                break;
+            }
+            currentNode = currentNode.parentNode;
+        }
+    }
+
+    applyMargin = (currentNode, increase) => {
+        /* List of block-level elements */
+        const blockLevelElements = ['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL', 'SECTION', 'ARTICLE', 'HEADER', 'FOOTER'];
+
+        /* Check if the current node is an element and is a block-level element */
+        if (currentNode.nodeType === Node.ELEMENT_NODE && blockLevelElements.includes(currentNode.nodeName)) {
+
+            /* Increase or decrease margin-left */
+            const currentMarginLeft = window.getComputedStyle(currentNode).marginLeft;
+            const marginLeftValue = parseFloat(currentMarginLeft) || 0;
+            if (increase) {
+                currentNode.style.marginLeft = (marginLeftValue + 20) + 'px';
+            }
+            else {
+                if (marginLeftValue <= 20) {
+                    currentNode.style.marginLeft = '';
+
+                    /* Remove the style attribute if no other styles exist */
+                    if (!currentNode.getAttribute('style')) {
+                        currentNode.removeAttribute('style');
+                    }
+                }
+                else {
+                    currentNode.style.marginLeft = (marginLeftValue - 20) + 'px';
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     /* Search up the elements */
     selectButtons = (el) => {
         if (el == null || el == this.content || !this.content.contains(el) || this.lockToolbar == true) { return; }
@@ -1290,7 +1324,6 @@ class RTBlazorfiedNodeManager {
         const ol = this.getButton("blazing-rich-text-orderedlist-button");
         const ul = this.getButton("blazing-rich-text-unorderedlist-button");
 
-        const indent = this.getButton("blazing-rich-text-indent-button");
         const link = this.getButton("blazing-rich-text-link-button");
         const linkRemove = this.getButton("blazing-rich-text-remove-link-button");
         const textColor = this.getButton("blazing-rich-text-textcolor-button");
@@ -1375,9 +1408,6 @@ class RTBlazorfiedNodeManager {
             if (compStyles.getPropertyValue("text-align") == "justify" && !this.textAlign) {
                 alignjustify.classList.add("selected");
                 this.textAlign = true;
-            }
-            if (compStyles.getPropertyValue("text-indent") == "40px") {
-                indent.classList.add("selected");
             }
             if (el != null && el.style != null && el.style.fontFamily && !this.fontSelected) {
                 fontButton.innerText = el.style.fontFamily.replace(/^"(.*)"$/, '$1');
@@ -1993,12 +2023,6 @@ class RTBlazorfiedNodeManager {
                             if (el.style.textAlign == "justify") {
                                 return el;
                             }
-                        }
-                        break;
-                    case "indent":
-                        style = el.getAttribute("style");
-                        if (style != null && style.includes("text-indent:")) {
-                            return el;
                         }
                         break;
                 }

@@ -26,7 +26,6 @@ public class RichTextboxButtonVisibilityOptions
     public bool? AlignCenter { get; set; }
     public bool? AlignRight { get; set; }
     public bool? AlignJustify { get; set; }
-    //public bool? Indent { get; set; }
     public bool? Copy { get; set; }
     public bool? Cut { get; set; }
     public bool? Paste { get; set; }
@@ -38,6 +37,7 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Image { get; set; }
     public bool? OrderedList { get; set; }
     public bool? UnorderedList { get; set; }
+    public bool? Indent { get; set; }
     public bool? Quote { get; set; }
     public bool? CodeBlock { get; set; }
     public bool? EmbedMedia { get; set; }

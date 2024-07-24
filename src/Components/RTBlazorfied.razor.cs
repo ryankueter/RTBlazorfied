@@ -756,9 +756,14 @@ public partial class RTBlazorfied
             {
                 _unorderedlist = buttons.UnorderedList;
             }
+            if (buttons.Indent is not null)
+            {
+                _indent = buttons.Indent;
+            }
             // If the user did not specify false, keep the button
             if (buttons.OrderedList == true
-                || buttons.UnorderedList == true)
+                || buttons.UnorderedList == true
+                || buttons.Indent == true)
             {
                 if (buttons.ListDivider is not null)
                 {
@@ -1051,7 +1056,6 @@ public partial class RTBlazorfied
         _aligncenter = setting;
         _alignright = setting;
         _alignjustify = setting;
-        _indent = setting;
         _copy = setting;
         _cut = setting;
         _paste = setting;
@@ -1063,6 +1067,7 @@ public partial class RTBlazorfied
         _image = setting;
         _orderedlist = setting;
         _unorderedlist = setting;
+        _indent = setting;
         _quote = setting;
         _codeBlock = setting;
         _embedMedia = setting;
