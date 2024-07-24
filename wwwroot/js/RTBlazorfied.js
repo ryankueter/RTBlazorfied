@@ -324,19 +324,30 @@ class RTBlazorfied {
             event.preventDefault();
             this.format("h6");
         }
-        if (event.key === 'Tab') {
-            const selection = this.Utilities.getSelection();
-            if (selection !== null) {
-                if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
-                    switch (selection.anchorNode.parentNode.nodeName) {
-                        case "TD":
-                            event.preventDefault();
-                            this.TableDialog.tableTab();
-                            break;
+        if (event.shiftKey && event.key === 'Tab') {
+            event.preventDefault();
+            this.decreaseIndent();
+        }
+        else {
+            if (event.key === 'Tab') {
+                const selection = this.Utilities.getSelection();
+                if (selection !== null) {
+                    if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
+                        switch (selection.anchorNode.parentNode.nodeName) {
+                            case "TD":
+                                event.preventDefault();
+                                this.TableDialog.tableTab();
+                                break;
+                            default:
+                                event.preventDefault();
+                                this.increaseIndent();
+                                break;
+                        }
                     }
                 }
             }
         }
+        
         if (event.key === 'Enter') {
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
@@ -409,6 +420,7 @@ class RTBlazorfied {
     }
     decreaseIndent = () => {
         this.content.focus();
+        
         const selection = this.Utilities.getSelection();
         const list = this.ListProvider.getList(selection.anchorNode);
         if (list) {
@@ -1271,6 +1283,7 @@ class RTBlazorfiedNodeManager {
     }
 
     applyMargin = (currentNode, increase) => {
+
         /* List of block-level elements */
         const blockLevelElements = ['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL', 'SECTION', 'ARTICLE', 'HEADER', 'FOOTER'];
 
@@ -2281,11 +2294,22 @@ class RTBlazorfiedListProvider {
 
         // Restore the selection
         const newRange = document.createRange();
-        newRange.setStart(newList, 0); // Adjust the start position if needed
-        newRange.collapse(true);
 
-        selection.removeAllRanges();
-        selection.addRange(newRange);
+        /* Reselect the nodes */
+        if (newList.firstChild !== newList.lastChild) {
+            newRange.setStartBefore(newList.firstChild);
+            newRange.setEndAfter(newList.lastChild);
+
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+        }
+        else {
+            newRange.setStart(newList, 0);
+            newRange.collapse(true);
+
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+        }
     }
     decreaseIndent = (list) => {
         /* Check if the list is a <ul> or <ol> and has at least one child */
