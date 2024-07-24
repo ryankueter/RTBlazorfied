@@ -301,8 +301,18 @@ else
                       Icon="@Icons.Image"
                       Title="Insert Image (Ctrl + Shift + I)"
                       TextSize="@_buttonTextSize"
+                      TextColor="@_buttonTextColor"></RTButton>       
+        }
+        @if (_imageUpload == true)
+        {
+            <RTButton Id="blazing-rich-text-link-button"
+                      OnClick="UploadImageDialog"
+                      Icon="@Icons.UploadImage"
+                      Title="Upload Image"
+                      TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
+
         @if (_quote == true)
         {
             <RTButton Id="blazing-rich-text-quote-button"
@@ -471,6 +481,33 @@ else
                     {
                         <label for="classes">CSS Classes</label>
                         <input class="rich-text-box-form-element" type="text" id="rich-text-box-image-css-classes" placeholder="class1 class2 class3" name="classes">
+                    }
+                </div>
+            </div>
+        </RTDialog>
+
+        <RTDialog InstanceId="@id" DialogId="rich-text-box-upload-image-modal" Title="Upload/Embed Image" OnClick="UploadImage">
+            <div class="clearfix">
+                <div class="rich-text-box-form-left">
+                    <div style="height: 40px; padding: 20px 0 10px 0;">
+                        <input type="file" id="rich-text-box-upload-image-file" @onchange="HandleFileSelected" hidden />
+                        <label for="rich-text-box-upload-image-file" class="rich-text-box-upload-btn">Choose File</label>
+                        <span id="rich-text-box-upload-image-file-chosen">No file chosen</span><br />
+                    </div>
+                    <label for="imageheight">Image Height</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-upload-image-height" name="imageheight" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-right">
+                    <label for="imagewidth">Image Width</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-upload-image-width" name="imagewidth" placeholder="400" autocomplete="off">
+                    <label for="alttext">Alternative Text</label>
+                    <input class="rich-text-box-form-element" type="text" id="rich-text-box-upload-image-alt-text" name="alttext" autocomplete="off">
+                </div>
+                <div class="rich-text-box-form-left">
+                    @if (!_modalRemoveCSSClassInputs)
+                    {
+                        <label for="classes">CSS Classes</label>
+                        <input class="rich-text-box-form-element" type="text" id="rich-text-box-upload-image-css-classes" placeholder="class1 class2 class3" name="classes">
                     }
                 </div>
             </div>

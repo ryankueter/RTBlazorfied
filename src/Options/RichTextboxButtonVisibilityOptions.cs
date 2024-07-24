@@ -35,6 +35,7 @@ public class RichTextboxButtonVisibilityOptions
     public bool? Redo { get; set; }
     public bool? Link { get; set; }
     public bool? Image { get; set; }
+    public bool? ImageUpload { get; set; }
     public bool? OrderedList { get; set; }
     public bool? UnorderedList { get; set; }
     public bool? Indent { get; set; }

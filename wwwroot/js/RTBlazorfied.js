@@ -44,6 +44,9 @@ class RTBlazorfied {
         /* Initialize Image Dialog */
         this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content);
 
+        /* Initialize Upload Image Dialog */
+        this.UploadImageDialog = new RTBlazorfiedUploadImageDialog(this.shadowRoot, this.content);
+
         /* Initialize Blockquote Dialog */
         this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content);
 
@@ -699,6 +702,22 @@ class RTBlazorfied {
         this.MediaDialog.insertMedia();
         this.NodeManager.refreshUI();
     }
+    uploadImageDialog = () => {
+        /* Lock the toolbar */
+        this.lockToolbar = true;
+
+        this.content.focus();
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.UploadImageDialog.openUploadImageDialog(selection);
+        }
+        else {
+            this.Utilities.showFadingBar("No content selected.");
+        }
+    }
+    uploadImage = () => {
+        this.UploadImageDialog.insertUploadedImage();
+    }
     openImageDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
@@ -1058,6 +1077,10 @@ class RTBlazorfiedNodeManager {
                     if (object != null) {
                         element = sel.anchorNode;
                     }
+                    const table = sel.anchorNode.querySelector('table');
+                    if (table != null) {
+                        element = table;
+                    }
                 }
 
                 /* If that node does not exist, style the parent node */
@@ -1168,27 +1191,40 @@ class RTBlazorfiedNodeManager {
                         }
                         break;
                     case "alignleft":
-                        if (element.style.textAlign == "left") {
-                            this.removeProperty(element, "text-align", "left");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "left");
+                        if (element.nodeName === "TABLE") {
+                            this.alignTable(element, "alignleft");
+                        } else {
+                            if (element.style.textAlign == "left") {
+                                this.removeProperty(element, "text-align", "left");
+                            }
+                            else {
+                                element.style.setProperty("text-align", "left");
+                            }
                         }
                         break;
                     case "aligncenter":
-                        if (element.style.textAlign == "center") {
-                            this.removeProperty(element, "text-align", "center");
+                        if (element.nodeName === "TABLE") {
+                            this.alignTable(element, "aligncenter");
                         }
                         else {
-                            element.style.setProperty("text-align", "center");
-                        }
+                            if (element.style.textAlign == "center") {
+                                this.removeProperty(element, "text-align", "center");
+                            }
+                            else {
+                                element.style.setProperty("text-align", "center");
+                            }
+                        }                        
                         break;
                     case "alignright":
-                        if (element.style.textAlign == "right") {
-                            this.removeProperty(element, "text-align", "right");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "right");
+                        if (element.nodeName === "TABLE") {
+                            this.alignTable(element, "alignright");
+                        } else {
+                            if (element.style.textAlign == "right") {
+                                this.removeProperty(element, "text-align", "right");
+                            }
+                            else {
+                                element.style.setProperty("text-align", "right");
+                            }
                         }
                         break;
                     case "alignjustify":
@@ -1283,18 +1319,43 @@ class RTBlazorfiedNodeManager {
             }
         }
     }
-    isExcluded = (selection) => {
-        /* Try the parent node. */
-        switch (selection.anchorNode.parentNode.nodeName) {
-            case "TD":
+
+    alignTable = (element, alignment) => {
+        if (element.style.margin == "auto") {
+            this.removeProperty(element, "margin", "auto");
+        }
+        if (element.style.marginLeft == "auto") {
+            this.removeProperty(element, "margin-left", "auto");
+        }
+        if (alignment === 'aligncenter') {
+            element.style.setProperty("margin", "auto");
+        }
+
+        if (alignment === 'alignright') {
+            element.style.setProperty("margin-left", "auto");
+        }
+    }
+
+    isExcluded = (selection) => {       
+        const table = selection.anchorNode.querySelector('table');
+        if (table != null) {
+            if (selection.anchorNode.parentNode !== this.content && selection.anchorNode.parentNode.nodeName !== 'TABLE') {
                 return true;
-                break;
-            case "CODE":
-                return true;
-                break;
-            case "PRE":
-                return true;
-                break;
+            }
+        }
+
+        if (selection.anchorNode.parentNode !== this.content) {
+            switch (selection.anchorNode.parentNode.nodeName) {
+                case "TD":
+                    return true;
+                    break;
+                case "CODE":
+                    return true;
+                    break;
+                case "PRE":
+                    return true;
+                    break;
+            }
         }
         return false;
     }
@@ -2599,7 +2660,7 @@ class RTBlazorfiedActionOptions {
     buildTable = (text) => {
         /* Create table element */
         let table = document.createElement('table');
-        table.style.setProperty('margin', 'auto');
+        //table.style.setProperty('margin', 'auto');
 
         /* Split the text by lines */
         let lines = text.split('\n');
@@ -2928,7 +2989,7 @@ class RTBlazorfiedTableDialog {
 
         // Create the table element
         const table = document.createElement('table');
-        table.style.setProperty('margin', 'auto');
+        //table.style.setProperty('margin', 'auto');
 
         // Create the table body element
         const tbody = document.createElement('tbody');
@@ -3358,6 +3419,117 @@ class RTBlazorfiedBlockQuoteDialog {
             }
         }
         this.Utilities.closeDialog("rich-text-box-block-quote-modal");
+    }
+}
+
+class RTBlazorfiedUploadImageDialog {
+    constructor(shadowRoot, content) {
+        this.shadowRoot = shadowRoot;
+        this.content = content;
+
+        this.dialog = this.shadowRoot.getElementById("rich-text-box-upload-image-modal");
+        this.dialog.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.insertUploadedImage();
+                this.dialog.close();
+                this.content.focus();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.dialog.close();
+                this.content.focus();
+            }
+        });
+
+        const actualBtn = this.shadowRoot.getElementById('rich-text-box-upload-image-file');
+        actualBtn.addEventListener('change', this.handleFileSelect);
+
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+    }
+    handleFileSelect = (event) => {
+        const file = event.target.files[0]; // Get the selected file
+
+        const fileChosen = this.shadowRoot.getElementById('rich-text-box-upload-image-file-chosen');
+        fileChosen.textContent = file.name
+
+        /* Unfortunately no better way to do this */
+        const image = document.createElement("img");
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                /* Get the base-64 encoded string from the data URL */
+                this.base64String = reader.result.split(',')[1];
+                image.src = `data:image/jpg;base64,${this.base64String}`;
+            };
+            /* Read the file as a data URL */
+            reader.readAsDataURL(file);
+            this.image = image;
+        }
+    }
+
+    openUploadImageDialog = (selection) => {
+        if (selection !== null) {
+            this.resetUploadImageDialog();
+
+            this.range = selection.getRangeAt(0).cloneRange();
+            this.shadowRoot.getElementById("rich-text-box-upload-image-modal").show();
+
+            const address = this.shadowRoot.getElementById("rich-text-box-upload-image-file");
+            if (address) {
+                address.focus();
+            }
+        }
+    }
+    resetUploadImageDialog = () => {
+        this.image = null;
+        this.range = null;
+
+        const fileChosen = this.shadowRoot.getElementById('rich-text-box-upload-image-file-chosen');
+        fileChosen.textContent = null;
+
+        const address = this.shadowRoot.getElementById("rich-text-box-upload-image-file");
+        address.value = null;
+
+        const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
+        width.value = null;
+
+        const height = this.shadowRoot.getElementById("rich-text-box-upload-image-height");
+        height.value = null;
+
+        const alt = this.shadowRoot.getElementById("rich-text-box-upload-image-alt-text");
+        alt.value = null;
+
+        const classes = this.shadowRoot.getElementById("rich-text-box-upload-image-css-classes");
+        if (classes != null) {
+            classes.value = null;
+        }
+    }
+    insertUploadedImage = () => {
+
+        const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
+        const height = this.shadowRoot.getElementById("rich-text-box-upload-image-height");
+        const alt = this.shadowRoot.getElementById("rich-text-box-upload-image-alt-text");
+        const classes = this.shadowRoot.getElementById("rich-text-box-upload-image-css-classes");
+
+        if (this.image) {
+            if (width.value.length > 0) {
+                this.image.width = width.value;
+            }
+            if (height.value.length > 0) {
+                this.image.height = height.value;
+            }
+            if (alt.value.length > 0) {
+                this.image.alt = alt.value;
+            }
+            if (classes != null) {
+                this.Utilities.addClasses(classes.value, this.image);
+            }
+
+            this.range.deleteContents();
+            this.range.insertNode(this.image);
+        }
+        this.Utilities.closeDialog("rich-text-box-upload-image-modal");
     }
 }
 class RTBlazorfiedImageDialog {

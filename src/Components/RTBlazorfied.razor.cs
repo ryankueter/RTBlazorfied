@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 
 /**
@@ -372,6 +373,30 @@ public partial class RTBlazorfied
           box-shadow: 0 0 5px 2px rgba(169, 169, 169, 0.8);          
         }
         
+        .rich-text-box-upload-btn {
+          padding: 10px 20px !important;
+          font-size: {{_modalTextSize}};
+          font-family: {{_modalTextFont}};
+          transition: 0.3s;
+          background-color: {{_buttonBackgroundColor}};
+          border-style: {{_buttonBorderStyle}};
+          border-width: {{_buttonBorderWidth}};
+          border-color: {{_buttonBorderColor}};
+          border-radius: {{_buttonBorderRadius}};
+          color: {{_buttonTextColor}};
+          outline: none;
+          cursor: pointer;
+          transition: 0.3s;
+          min-height: calc({{_buttonTextSize}} + 14px);
+          font-family: {{_buttonTextFont}};
+          margin: 4px 1px;
+        }
+
+        .rich-text-box-upload-btn:hover {
+            background-color: {{_buttonBackgroundColorHover}};
+            border-color: {{_buttonBorderColorHover}};
+        }
+
         .rich-text-box-form-button {
           padding: 10px 20px !important;
           font-size: {{_modalTextSize}};
@@ -710,6 +735,7 @@ public partial class RTBlazorfied
     private bool? _table;
     private bool? _embedMedia;
     private bool? _image;
+    private bool? _imageUpload;
     private bool? _mediadivider;
     private bool? _orderedlist;
     private bool? _unorderedlist;
@@ -805,13 +831,18 @@ public partial class RTBlazorfied
             {
                 _image = buttons.Image;
             }
+            if (buttons.ImageUpload is not null)
+            {
+                _imageUpload = buttons.ImageUpload;
+            }
             // If the user did not specify false, keep the button
             if (buttons.Link == true
                 || buttons.Image == true
                 || buttons.Quote == true
                 || buttons.CodeBlock == true
                 || buttons.EmbedMedia == true
-                || buttons.InsertTable == true)
+                || buttons.InsertTable == true
+                || buttons.ImageUpload == true)
             {
                 if (buttons.MediaDivider is not null)
                 {
@@ -1065,6 +1096,7 @@ public partial class RTBlazorfied
         _redo = setting;
         _link = setting;
         _image = setting;
+        _imageUpload = setting;
         _orderedlist = setting;
         _unorderedlist = setting;
         _indent = setting;
@@ -1454,7 +1486,26 @@ public partial class RTBlazorfied
     private async Task InsertLink() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertLink", id);
     private async Task CloseDialog(string dialog_id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "closeDialog", id, dialog_id);
     private async Task OpenImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openImageDialog", id);
+    private async Task UploadImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImageDialog", id);
     private async Task InsertImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertImage", id);
+    private async Task UploadImage()
+    {
+        await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImage", id);
+    }
+    private async Task HandleFileSelected(ChangeEventArgs e)
+    {
+        var file = e.Value as IBrowserFile;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream();
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+
+            var imageBytes = memoryStream.ToArray();
+            var Base64Image = Convert.ToBase64String(imageBytes);
+            Console.WriteLine(Base64Image);
+        }
+    }
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goBack", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goForward", id);
     private async Task OpenBlockQuoteDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openBlockQuoteDialog", id);
