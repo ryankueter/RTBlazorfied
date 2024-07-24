@@ -163,39 +163,39 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
 ```
 ### Shortcut Keys
 
-|     Action                     |     Keys                                 |
-|--------------------------------|------------------------------------------|
-|     Bold                       |     Ctrl + B                             |
-|     Italic                     |     Ctrl + I                             |
-|     Underline                  |     Ctrl + U                             |
-|     Strikethrough              |     Ctrl + D                             |
-|     Subscript                  |     Ctrl + =                             |
-|     Superscript                |     Ctrl + Shift   + [+]                 |
-|     Text Color                 |     Ctrl + Shift   + C                   |
-|     Text   Background Color    |     Ctrl + shift   + B                   |
-|     Align Left                 |     Ctrl + L                             |
-|     Align Center               |     Ctrl + E                             |
-|     Align Right                |     Ctrl + R                             |
-|     Align Justify              |     Ctrl + J                             |
-|     Cut                        |     Ctrl + X                             |
-|     Copy                       |     Ctrl + C                             |
-|     Paste                      |     Ctrl + V                             |
-|     Select All                 |     Ctrl  + A                            |
-|     Ordered List               |     Ctrl + Shift   + O                   |
-|     Unordered   List           |     Ctrl + Shift   + U                   |
-|     Increase Indent            |     Tab                                  |
-|     Decrease   Indent          |     Shift + Tab                          |
-|     Insert Link                |     Ctrl + Shift   + K                   |
-|     Insert Image               |     Ctrl + Shift   + I                   |
-|     Insert Quote               |     Ctrl + Shift   + Q                   |
-|     Insert Media               |     Ctrl + Shift   + M                   |
-|     Insert Table               |     Ctrl + Shift   + L                   |
-|     Insert Code   Block        |     Ctrl + Shift   + [*]                 |
-|     Undo                       |     Ctrl + Z                             |
-|     Redo                       |     Ctrl + Y                             |
-|     Format                     |     Ctrl + Shift   + [D, P, 1, 2, 3…]    |
-|     Size                       |     Ctrl + Shift   + [<, >]              |
-|     Toggle Code   and HTML     |     Ctrl + Shift   + A                   |
+|     Action    |     Keys    |
+|---|---|
+|     Bold    |     Ctrl + B    |
+|     Italic    |     Ctrl + I    |
+|     Underline    |     Ctrl + U    |
+|     Strikethrough    |     Ctrl + D    |
+|     Subscript    |     Ctrl + =    |
+|     Superscript    |     Ctrl + Shift   + [+]    |
+|     Text Color    |     Ctrl + Shift   + C    |
+|     Text   Background Color    |     Ctrl + shift   + B    |
+|     Align Left    |     Ctrl + L    |
+|     Align Center    |     Ctrl + E    |
+|     Align Right    |     Ctrl + R    |
+|     Align Justify    |     Ctrl + J    |
+|     Cut    |     Ctrl + X    |
+|     Copy    |     Ctrl + C    |
+|     Paste    |     Ctrl + V    |
+|     Select All    |     Ctrl  + A    |
+|     Ordered List    |     Ctrl + Shift   + O    |
+|     Unordered   List    |     Ctrl + Shift   + U    |
+|     Increase Indent    |     Tab    |
+|     Decrease   Indent    |     Shift + Tab    |
+|     Insert Link    |     Ctrl + Shift   + K    |
+|     Insert Image    |     Ctrl + Shift   + I    |
+|     Insert Quote    |     Ctrl + Shift   + Q    |
+|     Insert Media    |     Ctrl + Shift   + M    |
+|     Insert Table    |     Ctrl + Shift   + L    |
+|     Insert Code   Block    |     Ctrl + Shift   + [*]    |
+|     Undo    |     Ctrl + Z    |
+|     Redo    |     Ctrl + Y    |
+|     Format    |     Ctrl + Shift   + [D, P, 1, 2, 3…]    |
+|     Size    |     Ctrl + Shift   + [<, >]    |
+|     Toggle Code   and HTML    |     Ctrl + Shift   + A    |
 
 ###
 ## Contributions

@@ -2138,7 +2138,6 @@ class RTBlazorfiedListProvider {
 
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
-
             /* Check if the element is already an OL and replace it */
             if (type == "UL") {
                 const list = this.NodeManager.getElementByType(selection.anchorNode, "OL");
@@ -2154,7 +2153,6 @@ class RTBlazorfiedListProvider {
                     return;
                 }
             }
-
             const list = this.NodeManager.getElementByType(selection.anchorNode, type);
             if (list != null) {
                 this.removelist(list);
@@ -2164,9 +2162,15 @@ class RTBlazorfiedListProvider {
                 /* If an entire node is not selected */
                 if (selectedText.length === 0) {
                     const range = selection.getRangeAt(0);
-                                        
+
+                    let node;
                     const ulElement = document.createElement(type);
-                    const node = selection.anchorNode.parentNode;
+                    if (selection.anchorNode.parentNode !== this.content) {
+                        node = selection.anchorNode.parentNode;
+                    }
+                    if (selection.anchorNode !== this.content) {
+                        node = selection.anchorNode;
+                    }
                     if (node.nodeType === Node.ELEMENT_NODE
                         || node.nodeType === Node.TEXT_NODE) {
 
@@ -2181,6 +2185,9 @@ class RTBlazorfiedListProvider {
                     }
                     range.deleteContents();
                     range.insertNode(ulElement);
+
+                    console.log(node);
+                    console.log(ulElement);
                 }
                 else {
                     const ulElement = document.createElement(type);
