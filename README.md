@@ -142,6 +142,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Link = true;
         o.OrderedList = true;
         o.UnorderedList = true;
+        o.Indent = true;
         o.Undo = true;
         o.Redo = true;
         o.Quote = true;

@@ -32,7 +32,7 @@ else
         @if (_size == true)
         {
             <div class="rich-text-box-dropdown">
-                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + [< | >])" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn">
+                <button id="blazing-rich-text-size-button" title="Size (Ctrl + Shift + [<, >])" @onclick='() => OpenDropdown("blazing-rich-text-size-button-dropdown")' class="rich-text-box-size-button rich-text-box-dropdown-btn">
                     Size
                 </button>
                 <div id="blazing-rich-text-size-button-dropdown" class="rich-text-box-dropdown-content rich-text-box-size-content rich-text-box-scroll">
@@ -232,7 +232,7 @@ else
             <RTButton Id="blazing-rich-text-selectall-button"
                       OnClick="Selectall"
                       Icon="@Icons.Selectall"
-                      Title="Select All"
+                      Title="Select All (Ctrl + A)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
@@ -246,7 +246,7 @@ else
             <RTButton Id="blazing-rich-text-orderedlist-button"
                       OnClick="OrderedList"
                       Icon="@Icons.OrderedList"
-                      Title="Ordered List"
+                      Title="Ordered List (Ctrl + Shift + O)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
@@ -255,7 +255,7 @@ else
             <RTButton Id="blazing-rich-text-unorderedlist-button"
                       OnClick="UnorderedList"
                       Icon="@Icons.UnorderedList"
-                      Title="Unordered List"
+                      Title="Unordered List (Ctrl + Shift + U)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
@@ -264,13 +264,13 @@ else
             <RTButton Id="blazing-rich-text-increase-indent-button"
                       OnClick="IncreaseIndent"
                       Icon="@Icons.IncreaseIndent"
-                      Title="Increase Indent"
+                      Title="Increase Indent (Tab)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
             <RTButton Id="blazing-rich-text-decrease-indent-button"
                       OnClick="DecreaseIndent"
                       Icon="@Icons.DecreaseIndent"
-                      Title="Decrease Indent"
+                      Title="Decrease Indent (Shift + Tab)"
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>
         }
@@ -366,7 +366,7 @@ else
             <RTDivider />
         }
 
-        <button id="blazing-rich-text-source" title="Html Code" class="rich-text-box-menu-item-special" @onclick="OpenCode">
+        <button id="blazing-rich-text-source" title="Html Code (Ctrl + Shift + A)" class="rich-text-box-menu-item-special" @onclick="OpenCode">
             <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
                 <path d="@Icons.Code" />
             </svg>

@@ -140,6 +140,18 @@ class RTBlazorfied {
             this.keyEvents(event);
         });
 
+        this.source.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+                event.preventDefault();
+                if (this.EditMode === true) {
+                    this.getHtml();
+                }
+                else {
+                    this.getCode();
+                }
+            }
+        });
+
         /* Prevent the dropdowns from causing the text box from losing focus. */
         const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-content');
         dropdowns.forEach((dropdown) => {
@@ -251,6 +263,23 @@ class RTBlazorfied {
         if (event.ctrlKey && event.key === 'y') {
             event.preventDefault();
             this.goForward();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+            event.preventDefault();
+            if (this.EditMode === true) {
+                this.getHtml();
+            }
+            else {
+                this.getCode();
+            }            
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'U') {
+            event.preventDefault();
+            this.unorderedlist();
+        }
+        if (event.ctrlKey && event.shiftKey && event.key === 'O') {
+            event.preventDefault();
+            this.orderedlist();
         }
         if (event.ctrlKey && event.shiftKey && event.key === '>') {
             event.preventDefault();
@@ -1293,11 +1322,12 @@ class RTBlazorfiedNodeManager {
             /* Increase or decrease margin-left */
             const currentMarginLeft = window.getComputedStyle(currentNode).marginLeft;
             const marginLeftValue = parseFloat(currentMarginLeft) || 0;
+            const marginValue = 40;
             if (increase) {
-                currentNode.style.marginLeft = (marginLeftValue + 20) + 'px';
+                currentNode.style.marginLeft = `${marginLeftValue + marginValue}px`;
             }
             else {
-                if (marginLeftValue <= 20) {
+                if (marginLeftValue <= marginValue) {
                     currentNode.style.marginLeft = '';
 
                     /* Remove the style attribute if no other styles exist */
@@ -1306,7 +1336,7 @@ class RTBlazorfiedNodeManager {
                     }
                 }
                 else {
-                    currentNode.style.marginLeft = (marginLeftValue - 20) + 'px';
+                    currentNode.style.marginLeft = `${marginLeftValue - marginValue}px`;
                 }
             }
             return true;
@@ -2275,24 +2305,24 @@ class RTBlazorfiedListProvider {
         }
     }
     increaseIndent = (selection, list) => {
-        // Get selected nodes
+        /* Get selected nodes */
         let selectedNodes = this.getSelectedNodes(selection, list);
 
-        // Create a new <ul> and append the selected <li> elements to it
+        /* Create a new <ul> and append the selected <li> elements to it */
         const newList = document.createElement(list.nodeName);
         selectedNodes.forEach(item => {
             const clonedItem = item.cloneNode(true); // Clone the node and its descendants
             newList.appendChild(clonedItem);
         });
 
-        // Insert the new <ul> in place of the first <li> element
+        /* Insert the new <ul> in place of the first <li> element */
         const firstItem = selectedNodes[0];
         list.insertBefore(newList, firstItem);
 
-        // Remove the original selected nodes from the original list
+        /* Remove the original selected nodes from the original list */
         selectedNodes.forEach(item => list.removeChild(item));
 
-        // Restore the selection
+        /*  Restore the selection */
         const newRange = document.createRange();
 
         /* Reselect the nodes */
