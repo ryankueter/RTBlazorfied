@@ -29,7 +29,7 @@ class RTBlazorfied {
         this.ListProvider = new RTBlazorfiedListProvider(this.shadowRoot, this.content, this.Utilities, this.NodeManager);
 
         /* Create a state manager */
-        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.dotNetObjectReference);
+        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.Utilities, this.dotNetObjectReference);
 
         /* Initialize the color pickers */
         this.ColorPickers = {};
@@ -704,7 +704,6 @@ class RTBlazorfied {
     }
     insertMedia = () => {
         this.MediaDialog.insertMedia();
-        this.NodeManager.refreshUI();
     }
     uploadImageDialog = () => {
         /* Lock the toolbar */
@@ -819,15 +818,17 @@ class RTBlazorfied {
 }
 
 class RTBlazorfiedStateManager {
-    constructor(content, source, dotNetObjectReference) {
+    constructor(content, source, utilities, dotNetObjectReference) {
         this.content = content;
         this.source = source;
+        this.Utilities = utilities;
         this.dotNetObjectReference = dotNetObjectReference;
 
         /* Initialize history */
         this.history = [];
         this.currentIndex = -1;
         this.currentIndex = -1;
+        this.isNavigating = false;
 
         this.mutationObserver();
     }
@@ -835,7 +836,7 @@ class RTBlazorfiedStateManager {
     mutationObserver = () => {
         /* Save the state when mutations to the state occur */
         const richtextbox = (mutationsList, observer) => {
-            if (this.content.style.display === "block") {
+            if (this.content.style.display === "block" && !this.isNavigating) {
                 for (let mutation of mutationsList) {
                     switch (mutation.type) {
                         case 'childList':
@@ -852,6 +853,9 @@ class RTBlazorfiedStateManager {
                             break;
                     }
                 }
+            }
+            else {
+                this.isNavigating = false;
             }
         };
 
@@ -901,19 +905,21 @@ class RTBlazorfiedStateManager {
                 this.history.shift();
                 this.currentIndex--;
             }
+            this.updateBinding();
         }
-        this.updateBinding();
+        
     };
-
     /* History */
     goBack = () => {
         if (this.currentIndex > 0) {
+            this.isNavigating = true;
             this.currentIndex--;
             this.content.innerHTML = this.history[this.currentIndex];
         }
     };
     goForward = () => {
         if (this.currentIndex < this.history.length - 1) {
+            this.isNavigating = true;
             this.currentIndex++;
             this.content.innerHTML = this.history[this.currentIndex];
         }
