@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Removed a feature that embeds an image in the document using base-64 to prevent abuse and performance optimizations to improve the usability of the editor.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.202</Version>
-	  <AssemblyVersion>1.0.202</AssemblyVersion>
-	  <FileVersion>1.0.202</FileVersion>
+	  <Version>1.0.203</Version>
+	  <AssemblyVersion>1.0.203</AssemblyVersion>
+	  <FileVersion>1.0.203</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

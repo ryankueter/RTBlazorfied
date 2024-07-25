@@ -1231,11 +1231,15 @@ class RTBlazorfiedNodeManager {
                         }
                         break;
                     case "alignjustify":
-                        if (element.style.textAlign == "justify") {
-                            this.removeProperty(element, "text-align", "justify");
-                        }
-                        else {
-                            element.style.setProperty("text-align", "justify");
+                        if (element.nodeName === "TABLE") {
+                            this.alignTable(element, "alignjustify");
+                        } else {
+                            if (element.style.textAlign == "justify") {
+                                this.removeProperty(element, "text-align", "justify");
+                            }
+                            else {
+                                element.style.setProperty("text-align", "justify");
+                            }
                         }
                         break;
                     default:
@@ -1324,18 +1328,34 @@ class RTBlazorfiedNodeManager {
     }
 
     alignTable = (element, alignment) => {
-        if (element.style.margin == "auto") {
-            this.removeProperty(element, "margin", "auto");
+        if (alignment === 'alignleft' || alignment === 'alignjustify') {
+            if (element.style.margin == "auto") {
+                this.removeProperty(element, "margin", "auto");
+            }
+            if (element.style.marginLeft == "auto") {
+                this.removeProperty(element, "margin-left", "auto");
+            }
         }
-        if (element.style.marginLeft == "auto") {
-            this.removeProperty(element, "margin-left", "auto");
-        }
+        
         if (alignment === 'aligncenter') {
-            element.style.setProperty("margin", "auto");
+            if (element.style.margin && element.style.margin === "auto") {
+                this.removeProperty(element, "margin", "auto");
+            }
+            else {
+                element.style.setProperty("margin", "auto");
+            }
         }
 
         if (alignment === 'alignright') {
-            element.style.setProperty("margin-left", "auto");
+            if (element.style.margin == "auto") {
+                this.removeProperty(element, "margin", "auto");
+            }
+            if (element.style.marginLeft == "auto") {
+                this.removeProperty(element, "margin-left", "auto");
+            }
+            else {
+                element.style.setProperty("margin-left", "auto");
+            }
         }
     }
 
