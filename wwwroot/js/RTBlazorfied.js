@@ -16,14 +16,17 @@ class RTBlazorfied {
         /* Give the shadow tree needed resources */
         this.hydrateShadowTree();
 
+        /* Initialize utilities class */
+        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+
         /* Initialize a Node Manager */
-        this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
+        this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content, this.Utilities);
         
         /* Initialize Action Options (e.g., cut, copy, paste) */
-        this.ActionOptions = new RTBlazorfiedActionOptions(this.shadowRoot, this.content);
+        this.ActionOptions = new RTBlazorfiedActionOptions(this.shadowRoot, this.content, this.Utilities);
 
         /* Initialize List Provider */
-        this.ListProvider = new RTBlazorfiedListProvider(this.shadowRoot, this.content);
+        this.ListProvider = new RTBlazorfiedListProvider(this.shadowRoot, this.content, this.Utilities, this.NodeManager);
 
         /* Create a state manager */
         this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.dotNetObjectReference);
@@ -32,33 +35,29 @@ class RTBlazorfied {
         this.ColorPickers = {};
         const colorModal = "rich-text-box-text-color-modal";
         const bgColorModal = "rich-text-box-text-bg-color-modal";
-        this.ColorPickers[colorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, colorModal);
-        this.ColorPickers[bgColorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, bgColorModal);
+        this.ColorPickers[colorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, colorModal, this.NodeManager);
+        this.ColorPickers[bgColorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, bgColorModal, this.NodeManager);
 
         /* Initialize the Link Dialog */
-        this.LinkDialog = new RTBlazorfiedLinkDialog(this.shadowRoot, this.content);
-
-        /* Initialize utilities class */
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+        this.LinkDialog = new RTBlazorfiedLinkDialog(this.shadowRoot, this.content, this.Utilities);       
 
         /* Initialize Image Dialog */
-        this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content);
+        this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content, this.Utilities);
 
-        /* Initialize Upload Image Dialog */
-        /* Removed to prevent abuse. */
+        /* Initialize Upload Image Dialog - removed to prevent abuse. */
         /* this.UploadImageDialog = new RTBlazorfiedUploadImageDialog(this.shadowRoot, this.content); */
 
         /* Initialize Blockquote Dialog */
-        this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content);
+        this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Initialize Code Block Dialog */
-        this.CodeBlockDialog = new RTBlazorfiedCodeBlockDialog(this.shadowRoot, this.content);
+        this.CodeBlockDialog = new RTBlazorfiedCodeBlockDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Initialize the Media Dialog */
-        this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot, this.content);
+        this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Table Dialog */ 
-        this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content);
+        this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Add the event listeners */
         this.addEventListeners();
@@ -922,11 +921,10 @@ class RTBlazorfiedStateManager {
 }
 
 class RTBlazorfiedNodeManager {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+        this.Utilities = utilities;
     }
     formatNode = (type) => {
         let sel, range;
@@ -2196,13 +2194,11 @@ class RTBlazorfiedNodeManager {
 }
 
 class RTBlazorfiedListProvider {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities, nodeManager) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
-        /* Initialize a Node Manager */
-        this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+        this.Utilities = utilities;
+        this.NodeManager = nodeManager;
     }
     addlist = (type) => {
 
@@ -2255,9 +2251,6 @@ class RTBlazorfiedListProvider {
                     }
                     range.deleteContents();
                     range.insertNode(ulElement);
-
-                    console.log(node);
-                    console.log(ulElement);
                 }
                 else {
                     const ulElement = document.createElement(type);
@@ -2491,11 +2484,10 @@ class RTBlazorfiedListProvider {
 }
 
 class RTBlazorfiedActionOptions {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
+        this.Utilities = utilities;
     }
     copy = () => {
         const selection = this.Utilities.getSelection();
@@ -2852,10 +2844,14 @@ class RTBlazorfiedUtilities {
     }
 }
 class RTBlazorfiedTableDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
 
+    addEventListeners = () => {
         this.dialog = this.shadowRoot.getElementById("rich-text-box-table-modal");
         this.dialog.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
@@ -2870,8 +2866,6 @@ class RTBlazorfiedTableDialog {
                 this.content.focus();
             }
         });
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openTableDialog = (selection) => {
@@ -3063,10 +3057,14 @@ class RTBlazorfiedTableDialog {
     }
 }
 class RTBlazorfiedMediaDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
 
+    addEventListeners = () => {
         this.dialog = this.shadowRoot.getElementById("rich-text-box-embed-modal");
         this.dialog.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
@@ -3081,8 +3079,6 @@ class RTBlazorfiedMediaDialog {
                 this.content.focus();
             }
         });
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openMediaDialog = (selection) => {
@@ -3164,10 +3160,14 @@ class RTBlazorfiedMediaDialog {
     }
 }
 class RTBlazorfiedCodeBlockDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
 
+    addEventListeners = () => {
         const code = this.shadowRoot.getElementById('rich-text-box-code');
         this.dialog = this.shadowRoot.getElementById("rich-text-box-code-block-modal");
         this.dialog.addEventListener('keydown', (event) => {
@@ -3179,7 +3179,7 @@ class RTBlazorfiedCodeBlockDialog {
                     this.insertCodeBlock();
                     this.dialog.close();
                     this.content.focus();
-                } 
+                }
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
@@ -3187,8 +3187,6 @@ class RTBlazorfiedCodeBlockDialog {
                 this.content.focus();
             }
         });
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openCodeBlockDialog = (selection) => {
@@ -3288,10 +3286,13 @@ class RTBlazorfiedCodeBlockDialog {
     }
 }
 class RTBlazorfiedBlockQuoteDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
+    addEventListeners = () => {
         const quote = this.shadowRoot.getElementById('rich-text-box-quote');
         this.dialog = this.shadowRoot.getElementById("rich-text-box-block-quote-modal");
         this.dialog.addEventListener('keydown', (event) => {
@@ -3311,10 +3312,7 @@ class RTBlazorfiedBlockQuoteDialog {
                 this.content.focus();
             }
         });
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
-
     openBlockQuoteDialog = (selection) => {
         if (selection !== null) {
             this.resetBlockQuoteDialog();
@@ -3542,10 +3540,13 @@ class RTBlazorfiedUploadImageDialog {
     }
 }
 class RTBlazorfiedImageDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
+    addEventListeners = () => {
         this.dialog = this.shadowRoot.getElementById("rich-text-box-image-modal");
         this.dialog.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
@@ -3560,8 +3561,6 @@ class RTBlazorfiedImageDialog {
                 this.content.focus();
             }
         });
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
 
     openImageDialog = (selection) => {
@@ -3647,10 +3646,13 @@ class RTBlazorfiedImageDialog {
     }
 }
 class RTBlazorfiedLinkDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
+    addEventListeners = () => {
         this.dialog = this.shadowRoot.getElementById("rich-text-box-link-modal");
         this.dialog.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
@@ -3665,8 +3667,6 @@ class RTBlazorfiedLinkDialog {
                 this.content.focus();
             }
         });
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
     openLinkDialog = (selection) => {
         if (selection !== null) {
@@ -3808,13 +3808,12 @@ class RTBlazorfiedLinkDialog {
     }
 }
 class RTBlazorfiedColorDialog {
-    constructor(shadowRoot, content, id) {
+    constructor(shadowRoot, content, id, nodeManager) {
         this.shadowRoot = shadowRoot;
         this.content = content;
         this.id = id;
-        this.init();
-
-        this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content);
+        this.NodeManager = nodeManager;
+        this.init();        
     }
     
     init = () => {
