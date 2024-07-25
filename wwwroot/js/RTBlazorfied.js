@@ -704,6 +704,7 @@ class RTBlazorfied {
     }
     insertMedia = () => {
         this.MediaDialog.insertMedia();
+        //this.NodeManager.refreshUI();
     }
     uploadImageDialog = () => {
         /* Lock the toolbar */
@@ -1615,7 +1616,6 @@ class RTBlazorfiedNodeManager {
         return this.shadowRoot.getElementById(id);
     }
     refreshUI = () => {
-
         /* Remove Empty Nodes */
         const div = this.content;
         if (div) {
@@ -1641,7 +1641,7 @@ class RTBlazorfiedNodeManager {
         }
         this.content.focus();        
     };
-
+    
     createDefaultElement = () => {
         /* Create an element if one doesn't alreay exist */
         if (this.content.innerHTML.trim() === '') {
@@ -3175,11 +3175,14 @@ class RTBlazorfiedMediaDialog {
             range.setEndAfter(object);
 
             /* Get the selection from the shadowRoot */
-            const selection = this.Utilities.getSelection();
+            const selection = document.getSelection();
             if (selection !== null) {
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
+
+            /* Update the stored cursor position to the new position */
+            this.embedSelection = range.cloneRange();
         }
 
         this.Utilities.closeDialog("rich-text-box-embed-modal");
