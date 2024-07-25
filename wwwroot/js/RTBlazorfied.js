@@ -704,7 +704,7 @@ class RTBlazorfied {
     }
     insertMedia = () => {
         this.MediaDialog.insertMedia();
-        //this.NodeManager.refreshUI();
+        this.NodeManager.refreshUI();
     }
     uploadImageDialog = () => {
         /* Lock the toolbar */
@@ -758,7 +758,7 @@ class RTBlazorfied {
         const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
         buttons.forEach(button => button.disabled = true);
     }
-    getHtml = () => {
+    getHtml = async () => {
         const html = this.html();
         this.loadInnerText(html);
         this.content.style.display = "none";
@@ -768,7 +768,7 @@ class RTBlazorfied {
         this.source.scrollLeft = 0;
         this.disableButtons();
     };
-    getCode = () => {
+    getCode = async () => {
         const plaintext = this.source.value;
         this.loadHtml(plaintext);
         this.content.style.display = "block";
@@ -857,6 +857,7 @@ class RTBlazorfiedStateManager {
             }
             else {
                 this.isNavigating = false;
+                this.updateBinding();
             }
         };
 
@@ -873,7 +874,7 @@ class RTBlazorfiedStateManager {
         observer.observe(this.content, config);
     }
 
-    updateBinding = () => {
+    updateBinding = async () => {
         if (this.content.style.display === "block") {
             if (this.dotNetObjectReference) {
                 this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
@@ -887,7 +888,7 @@ class RTBlazorfiedStateManager {
     }
 
     /* History */
-    saveState = () => {
+    saveState = async () => {
         const currentState = this.content.innerHTML;
 
         /* If there is any change in the content */
@@ -908,17 +909,16 @@ class RTBlazorfiedStateManager {
             }
             this.updateBinding();
         }
-        
     };
     /* History */
-    goBack = () => {
+    goBack = async () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;
             this.currentIndex--;
             this.content.innerHTML = this.history[this.currentIndex];
         }
     };
-    goForward = () => {
+    goForward = async () => {
         if (this.currentIndex < this.history.length - 1) {
             this.isNavigating = true;
             this.currentIndex++;
@@ -3889,11 +3889,11 @@ class RTBlazorfiedColorDialog {
         this.colorDisplay = this.colorPicker.querySelector('.rich-text-box-color-display');
     }
 
-    addSliderEventListener = (slider) => {
+    addSliderEventListener = async (slider) => {
         slider.addEventListener('input', () => this.updateColor());
     }
 
-    addValueEventListener = (value) => {
+    addValueEventListener = async (value) => {
         value.addEventListener('input', (event) => {
             let valueClass = Array.from(event.target.classList).find(cls => cls.includes('value'));
             let slider = this.colorPicker.querySelector(`.${valueClass.replace('value', 'slider')}`);
@@ -3907,7 +3907,7 @@ class RTBlazorfiedColorDialog {
         });
     }
 
-    addHexEventListener = (hexInput) => {
+    addHexEventListener = async (hexInput) => {
         hexInput.addEventListener('keyup', (event) => {
             /* Only update if the input is a valid hex color */
             if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
