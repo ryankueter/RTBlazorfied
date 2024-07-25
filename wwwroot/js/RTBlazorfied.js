@@ -276,6 +276,10 @@ class RTBlazorfied {
                 this.getCode();
             }            
         }
+        if (event.ctrlKey && event.shiftKey && event.key === '&') {
+            event.preventDefault();
+            this.uploadImageDialog();
+        }
         if (event.ctrlKey && event.shiftKey && event.key === 'U') {
             event.preventDefault();
             this.unorderedlist();
