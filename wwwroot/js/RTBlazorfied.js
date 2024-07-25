@@ -1336,14 +1336,18 @@ class RTBlazorfiedNodeManager {
         }
     }
 
-    isExcluded = (selection) => {       
-        const table = selection.anchorNode.querySelector('table');
-        if (table != null) {
-            if (selection.anchorNode.parentNode !== this.content && selection.anchorNode.parentNode.nodeName !== 'TABLE') {
-                return true;
+    isExcluded = (selection) => {
+        /* Make certain the user cannot select table
+        cells from the left */
+        if (selection.anchorNode.nodeType === Node.ELEMENT_NODE) {
+            const table = selection.anchorNode.querySelector('table');
+            if (table != null) {
+                if (selection.toString().trim() !== table.innerText.trim()) {
+                    return true;
+                }
             }
         }
-
+        
         if (selection.anchorNode.parentNode !== this.content) {
             switch (selection.anchorNode.parentNode.nodeName) {
                 case "TD":
