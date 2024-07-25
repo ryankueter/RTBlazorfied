@@ -45,7 +45,8 @@ class RTBlazorfied {
         this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content);
 
         /* Initialize Upload Image Dialog */
-        this.UploadImageDialog = new RTBlazorfiedUploadImageDialog(this.shadowRoot, this.content);
+        /* Removed to prevent abuse. */
+        /* this.UploadImageDialog = new RTBlazorfiedUploadImageDialog(this.shadowRoot, this.content); */
 
         /* Initialize Blockquote Dialog */
         this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content);

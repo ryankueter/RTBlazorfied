@@ -831,18 +831,17 @@ public partial class RTBlazorfied
             {
                 _image = buttons.Image;
             }
-            if (buttons.ImageUpload is not null)
-            {
-                _imageUpload = buttons.ImageUpload;
-            }
+            //if (buttons.ImageUpload is not null)
+            //{
+            //    _imageUpload = buttons.ImageUpload;
+            //}
             // If the user did not specify false, keep the button
             if (buttons.Link == true
                 || buttons.Image == true
                 || buttons.Quote == true
                 || buttons.CodeBlock == true
                 || buttons.EmbedMedia == true
-                || buttons.InsertTable == true
-                || buttons.ImageUpload == true)
+                || buttons.InsertTable == true)
             {
                 if (buttons.MediaDivider is not null)
                 {
@@ -1488,24 +1487,26 @@ public partial class RTBlazorfied
     private async Task OpenImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openImageDialog", id);
     private async Task UploadImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImageDialog", id);
     private async Task InsertImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertImage", id);
-    private async Task UploadImage()
-    {
-        await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImage", id);
-    }
-    private async Task HandleFileSelected(ChangeEventArgs e)
-    {
-        var file = e.Value as IBrowserFile;
-        if (file != null)
-        {
-            using var stream = file.OpenReadStream();
-            using var memoryStream = new MemoryStream();
-            await stream.CopyToAsync(memoryStream);
 
-            var imageBytes = memoryStream.ToArray();
-            var Base64Image = Convert.ToBase64String(imageBytes);
-            Console.WriteLine(Base64Image);
-        }
-    }
+    // This feature embeds an image in the document using base-64 and was removed to prevent abuse.
+    //private async Task UploadImage()
+    //{
+    //    await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImage", id);
+    //}
+    //private async Task HandleFileSelected(ChangeEventArgs e)
+    //{
+    //    var file = e.Value as IBrowserFile;
+    //    if (file != null)
+    //    {
+    //        using var stream = file.OpenReadStream();
+    //        using var memoryStream = new MemoryStream();
+    //        await stream.CopyToAsync(memoryStream);
+
+    //        var imageBytes = memoryStream.ToArray();
+    //        var Base64Image = Convert.ToBase64String(imageBytes);
+    //        Console.WriteLine(Base64Image);
+    //    }
+    //}
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goBack", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goForward", id);
     private async Task OpenBlockQuoteDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openBlockQuoteDialog", id);

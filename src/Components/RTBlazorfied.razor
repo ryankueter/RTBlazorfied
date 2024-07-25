@@ -303,15 +303,17 @@ else
                       TextSize="@_buttonTextSize"
                       TextColor="@_buttonTextColor"></RTButton>       
         }
-        @if (_imageUpload == true)
+
+        <!-- Removed to prevent abuse. -->
+        @* @if (_imageUpload == true)
         {
-            <RTButton Id="blazing-rich-text-link-button"
+            <!-- <RTButton Id="blazing-rich-text-link-button"
                       OnClick="UploadImageDialog"
                       Icon="@Icons.UploadImage"
                       Title="Upload Image (Ctrl + Shift + &)"
                       TextSize="@_buttonTextSize"
-                      TextColor="@_buttonTextColor"></RTButton>
-        }
+                      TextColor="@_buttonTextColor"></RTButton> -->
+        } *@
 
         @if (_quote == true)
         {
@@ -486,7 +488,8 @@ else
             </div>
         </RTDialog>
 
-        <RTDialog InstanceId="@id" DialogId="rich-text-box-upload-image-modal" Title="Upload/Embed Image" OnClick="UploadImage">
+        <!--This feature embeds an image in the document using base-64 and was removed to prevent abuse.-->
+        @* <RTDialog InstanceId="@id" DialogId="rich-text-box-upload-image-modal" Title="Upload/Embed Image" OnClick="UploadImage">
             <div class="clearfix">
                 <div class="rich-text-box-form-left">
                     <div style="height: 40px; padding: 20px 0 10px 0;">
@@ -511,7 +514,7 @@ else
                     }
                 </div>
             </div>
-        </RTDialog>
+        </RTDialog> *@
 
         <RTDialog InstanceId="@id" DialogId="rich-text-box-link-modal" Title="Link" OnClick="InsertLink">
             <div class="clearfix">
