@@ -166,11 +166,11 @@ class RTBlazorfied {
     /* History */
     goBack = () => {
         this.StateManager.goBack();
-        this.NodeManager.refreshUI();
+        
     };
     goForward = () => {
         this.StateManager.goForward();
-        this.NodeManager.refreshUI();
+        
     };
 
     clearSettings = (node) => {
@@ -583,18 +583,18 @@ class RTBlazorfied {
     };
     copy = () => {
         this.ActionOptions.copy();
-        this.NodeManager.refreshUI();
+        
     };
     cut = () => {
         this.ActionOptions.cut();
-        this.NodeManager.refreshUI();
+        
     };
     paste = () => {
         if (this.NodeManager.allSelected) {
             this.delete();
         }
         this.ActionOptions.paste();
-        this.NodeManager.refreshUI();
+        
     };
 
     closeDropdown = (id) => {
@@ -607,7 +607,6 @@ class RTBlazorfied {
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             selection.deleteFromDocument();
-            this.NodeManager.refreshUI();
         }
     };
     selectall = () => {
@@ -625,12 +624,12 @@ class RTBlazorfied {
 
     orderedlist = () => {
         this.ListProvider.addlist("OL");
-        this.NodeManager.refreshUI();
+        
     };
 
     unorderedlist = () => {
         this.ListProvider.addlist("UL");
-        this.NodeManager.refreshUI();
+        
     };
     
     openLinkDialog = () => {
@@ -648,7 +647,7 @@ class RTBlazorfied {
     }
     insertLink = () => {
         this.LinkDialog.insertLink();
-        this.NodeManager.refreshUI();
+        
     }
     
     removeLink = () => {
@@ -670,7 +669,7 @@ class RTBlazorfied {
     }
     insertBlockQuote = () => {
         this.BlockQuoteDialog.insertBlockQuote();
-        this.NodeManager.refreshUI();
+        
     }
     openCodeBlockDialog = () => {
         /* Lock the toolbar */
@@ -687,7 +686,7 @@ class RTBlazorfied {
     }
     insertCodeBlock = () => {
         this.CodeBlockDialog.insertCodeBlock();
-        this.NodeManager.refreshUI();
+        
     }
     openMediaDialog = () => {
         /* Lock the toolbar */
@@ -704,7 +703,7 @@ class RTBlazorfied {
     }
     insertMedia = () => {
         this.MediaDialog.insertMedia();
-        this.NodeManager.refreshUI();
+        
     }
     uploadImageDialog = () => {
         /* Lock the toolbar */
@@ -737,7 +736,6 @@ class RTBlazorfied {
     }
     insertImage = () => {
         this.ImageDialog.insertImage();
-        this.NodeManager.refreshUI();
     }
 
     closeDialog = (id) => {
@@ -758,7 +756,7 @@ class RTBlazorfied {
         const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
         buttons.forEach(button => button.disabled = true);
     }
-    getHtml = async () => {
+    getHtml = () => {
         const html = this.html();
         this.loadInnerText(html);
         this.content.style.display = "none";
@@ -768,7 +766,7 @@ class RTBlazorfied {
         this.source.scrollLeft = 0;
         this.disableButtons();
     };
-    getCode = async () => {
+    getCode = () => {
         const plaintext = this.source.value;
         this.loadHtml(plaintext);
         this.content.style.display = "block";
@@ -777,6 +775,7 @@ class RTBlazorfied {
         this.enableButtons();
     };
     html = () => {
+        this.NodeManager.removeEmptyNodes();
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
@@ -874,7 +873,7 @@ class RTBlazorfiedStateManager {
         observer.observe(this.content, config);
     }
 
-    updateBinding = async () => {
+    updateBinding = () => {
         if (this.content.style.display === "block") {
             if (this.dotNetObjectReference) {
                 this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
@@ -888,7 +887,7 @@ class RTBlazorfiedStateManager {
     }
 
     /* History */
-    saveState = async () => {
+    saveState = () => {
         const currentState = this.content.innerHTML;
 
         /* If there is any change in the content */
@@ -911,14 +910,14 @@ class RTBlazorfiedStateManager {
         }
     };
     /* History */
-    goBack = async () => {
+    goBack = () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;
             this.currentIndex--;
             this.content.innerHTML = this.history[this.currentIndex];
         }
     };
-    goForward = async () => {
+    goForward = () => {
         if (this.currentIndex < this.history.length - 1) {
             this.isNavigating = true;
             this.currentIndex++;
@@ -1615,7 +1614,7 @@ class RTBlazorfiedNodeManager {
     getButton = (id) => {
         return this.shadowRoot.getElementById(id);
     }
-    refreshUI = () => {
+    removeEmptyNodes = () => {
         /* Remove Empty Nodes */
         const div = this.content;
         if (div) {
@@ -1632,14 +1631,7 @@ class RTBlazorfiedNodeManager {
                     }
                 }
             });
-        }
-
-        /* Select Buttons */
-        const selection = this.Utilities.getSelection();
-        if (selection !== null) {
-            this.selectButtons(selection.anchorNode);
-        }
-        this.content.focus();        
+        }       
     };
     
     createDefaultElement = () => {
@@ -3889,11 +3881,11 @@ class RTBlazorfiedColorDialog {
         this.colorDisplay = this.colorPicker.querySelector('.rich-text-box-color-display');
     }
 
-    addSliderEventListener = async (slider) => {
+    addSliderEventListener = (slider) => {
         slider.addEventListener('input', () => this.updateColor());
     }
 
-    addValueEventListener = async (value) => {
+    addValueEventListener = (value) => {
         value.addEventListener('input', (event) => {
             let valueClass = Array.from(event.target.classList).find(cls => cls.includes('value'));
             let slider = this.colorPicker.querySelector(`.${valueClass.replace('value', 'slider')}`);
@@ -3907,7 +3899,7 @@ class RTBlazorfiedColorDialog {
         });
     }
 
-    addHexEventListener = async (hexInput) => {
+    addHexEventListener = (hexInput) => {
         hexInput.addEventListener('keyup', (event) => {
             /* Only update if the input is a valid hex color */
             if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
