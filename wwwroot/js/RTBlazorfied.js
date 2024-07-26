@@ -1251,7 +1251,6 @@ class RTBlazorfiedNodeManager {
                     default:
                 }
                 this.selection = null;
-                this.refreshUI();
                 return;
             }
 
@@ -1327,7 +1326,6 @@ class RTBlazorfiedNodeManager {
                     sel.removeAllRanges();
                     sel.addRange(range);
                     this.selection = null;
-                    this.refreshUI();
                 }
             }
         }
