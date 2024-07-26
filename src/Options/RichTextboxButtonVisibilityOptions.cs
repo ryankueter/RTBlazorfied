@@ -43,6 +43,7 @@ public class RichTextboxButtonVisibilityOptions
     public bool? CodeBlock { get; set; }
     public bool? EmbedMedia { get; set; }
     public bool? InsertTable { get; set; }
+    public bool? HtmlView { get; set; }
     public bool? TextStylesDivider { get; set; }
     public bool? FormatDivider { get; set; }
     public bool? TextColorDivider { get; set; }

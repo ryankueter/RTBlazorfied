@@ -740,6 +740,7 @@ public partial class RTBlazorfied
     private bool? _orderedlist;
     private bool? _unorderedlist;
     private bool? _listdivider;
+    private bool? _htmlView;
     #endregion
     private void GetButtons()
     {
@@ -759,6 +760,7 @@ public partial class RTBlazorfied
                 SetButtonDefaults();
             }
 
+            GetToggleButton(buttons);
             GetTextStyleButtons(buttons);
             GetTextFormatButtons(buttons);
             GetTextColorButtons(buttons);
@@ -767,6 +769,17 @@ public partial class RTBlazorfied
             GetUndoRedoButtons(buttons);
             GetInsertButtons(buttons);
             GetListButtons(buttons);
+        }
+    }
+
+    private void GetToggleButton(RichTextboxButtonVisibilityOptions? buttons)
+    {
+        if (buttons is not null)
+        {
+            if (buttons.HtmlView is not null)
+            {
+                _htmlView = buttons.HtmlView;
+            }
         }
     }
 
@@ -1103,6 +1116,7 @@ public partial class RTBlazorfied
         _codeBlock = setting;
         _embedMedia = setting;
         _table = setting;
+        _htmlView = setting;
 
         // Dividers
         _textstylesdivider = setting;

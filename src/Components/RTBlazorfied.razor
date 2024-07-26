@@ -378,12 +378,15 @@ else
             <RTDivider />
         }
 
-        <button id="blazing-rich-text-source" title="Html Code (Ctrl + Shift + A)" class="rich-text-box-menu-item-special" @onclick="OpenCode">
-            <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
-                <path d="@Icons.Code" />
-            </svg>
-        </button>       
-
+        @if (_htmlView == true)
+        {
+            <button id="blazing-rich-text-source" title="Html Code (Ctrl + Shift + A)" class="rich-text-box-menu-item-special" @onclick="OpenCode">
+                <svg xmlns="http://www.w3.org/2000/svg" height="@_buttonTextSize" width="@_buttonTextSize" fill="@_buttonTextColor" viewBox="0 -960 960 960">
+                    <path d="@Icons.Code" />
+                </svg>
+            </button>
+        }
+        
         <!-- Dialogs -->
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-color-modal" Title="Text Color" OnClick="InsertTextColor" />
         <RTColorDialog InstanceId="@id" DialogId="rich-text-box-text-bg-color-modal" Title="Text Background Color" OnClick="InsertTextBackgroundColor" />

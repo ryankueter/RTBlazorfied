@@ -148,6 +148,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
         o.Quote = true;
         o.CodeBlock = true;
         o.EmbedMedia = true;
+        o.HtmlView = true;
 
         // Dividers
         o.TextStylesDivider = false;
