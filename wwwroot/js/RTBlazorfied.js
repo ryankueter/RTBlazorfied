@@ -746,7 +746,6 @@ class RTBlazorfied {
         this.content.focus();
     }
     enableButtons = () => {
-
         const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-btn');
         dropdowns.forEach(button => button.disabled = false);
         const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
@@ -777,6 +776,7 @@ class RTBlazorfied {
         this.enableButtons();
     };
     html = () => {
+        this.NodeManager.removeEmptyNodes();
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
@@ -1616,6 +1616,15 @@ class RTBlazorfiedNodeManager {
         return this.shadowRoot.getElementById(id);
     }
     refreshUI = () => {
+        /* Select Buttons */
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.selectButtons(selection.anchorNode);
+        }
+        this.content.focus();
+    };
+
+    removeEmptyNodes = () => {
         /* Remove Empty Nodes */
         const div = this.content;
         if (div) {
@@ -1633,14 +1642,7 @@ class RTBlazorfiedNodeManager {
                 }
             });
         }
-
-        /* Select Buttons */
-        const selection = this.Utilities.getSelection();
-        if (selection !== null) {
-            this.selectButtons(selection.anchorNode);
-        }
-        this.content.focus();
-    };
+    }
 
     createDefaultElement = () => {
         /* Create an element if one doesn't alreay exist */
