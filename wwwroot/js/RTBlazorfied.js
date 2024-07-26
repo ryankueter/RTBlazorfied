@@ -1,8 +1,8 @@
 ﻿/**
- * Author: Ryan A. Kueter
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+* Author: Ryan A. Kueter
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 class RTBlazorfied {
     constructor(id, shadow_id, toolbar_id, styles, dotNetObjectReference) {
         this.id = id;
@@ -21,7 +21,7 @@ class RTBlazorfied {
 
         /* Initialize a Node Manager */
         this.NodeManager = new RTBlazorfiedNodeManager(this.shadowRoot, this.content, this.Utilities);
-        
+
         /* Initialize Action Options (e.g., cut, copy, paste) */
         this.ActionOptions = new RTBlazorfiedActionOptions(this.shadowRoot, this.content, this.Utilities);
 
@@ -39,7 +39,7 @@ class RTBlazorfied {
         this.ColorPickers[bgColorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, bgColorModal, this.NodeManager);
 
         /* Initialize the Link Dialog */
-        this.LinkDialog = new RTBlazorfiedLinkDialog(this.shadowRoot, this.content, this.Utilities);       
+        this.LinkDialog = new RTBlazorfiedLinkDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Initialize Image Dialog */
         this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content, this.Utilities);
@@ -56,7 +56,7 @@ class RTBlazorfied {
         /* Initialize the Media Dialog */
         this.MediaDialog = new RTBlazorfiedMediaDialog(this.shadowRoot, this.content, this.Utilities);
 
-        /* Table Dialog */ 
+        /* Table Dialog */
         this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Add the event listeners */
@@ -166,11 +166,11 @@ class RTBlazorfied {
     /* History */
     goBack = () => {
         this.StateManager.goBack();
-        
+        this.NodeManager.refreshUI();
     };
     goForward = () => {
         this.StateManager.goForward();
-        
+        this.NodeManager.refreshUI();
     };
 
     clearSettings = (node) => {
@@ -274,7 +274,7 @@ class RTBlazorfied {
             }
             else {
                 this.getCode();
-            }            
+            }
         }
         if (event.ctrlKey && event.shiftKey && event.key === '&') {
             event.preventDefault();
@@ -383,7 +383,7 @@ class RTBlazorfied {
                 }
             }
         }
-        
+
         if (event.key === 'Enter') {
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
@@ -406,8 +406,8 @@ class RTBlazorfied {
             }
         }
     }
-            
-    changeFontSize = (increment) => {     
+
+    changeFontSize = (increment) => {
         /* Get the current selection. */
         if (this.fontSize === undefined) {
             const selection = this.Utilities.getSelection();
@@ -419,7 +419,7 @@ class RTBlazorfied {
                 }
             }
         }
-       
+
         /* Increment the font size. */
         if (increment) {
             this.fontSize += 1;
@@ -456,7 +456,7 @@ class RTBlazorfied {
     }
     decreaseIndent = () => {
         this.content.focus();
-        
+
         const selection = this.Utilities.getSelection();
         const list = this.ListProvider.getList(selection.anchorNode);
         if (list) {
@@ -469,7 +469,7 @@ class RTBlazorfied {
     openTextColorDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
-        
+
         /* Open the color picker */
         this.content.focus();
         const selection = this.Utilities.getSelection();
@@ -538,7 +538,7 @@ class RTBlazorfied {
             this.Utilities.showFadingBar("No content selected.");
         }
     }
-   
+
     insertTable = () => {
         this.TableDialog.insertTable();
     }
@@ -583,18 +583,18 @@ class RTBlazorfied {
     };
     copy = () => {
         this.ActionOptions.copy();
-        
+        this.NodeManager.refreshUI();
     };
     cut = () => {
         this.ActionOptions.cut();
-        
+        this.NodeManager.refreshUI();
     };
     paste = () => {
         if (this.NodeManager.allSelected) {
             this.delete();
         }
         this.ActionOptions.paste();
-        
+        this.NodeManager.refreshUI();
     };
 
     closeDropdown = (id) => {
@@ -607,6 +607,7 @@ class RTBlazorfied {
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             selection.deleteFromDocument();
+            this.NodeManager.refreshUI();
         }
     };
     selectall = () => {
@@ -624,14 +625,14 @@ class RTBlazorfied {
 
     orderedlist = () => {
         this.ListProvider.addlist("OL");
-        
+        this.NodeManager.refreshUI();
     };
 
     unorderedlist = () => {
         this.ListProvider.addlist("UL");
-        
+        this.NodeManager.refreshUI();
     };
-    
+
     openLinkDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
@@ -647,13 +648,13 @@ class RTBlazorfied {
     }
     insertLink = () => {
         this.LinkDialog.insertLink();
-        
+        this.NodeManager.refreshUI();
     }
-    
+
     removeLink = () => {
         this.LinkDialog.removeLink();
     }
-    
+
     openBlockQuoteDialog = () => {
         /* Lock the toolbar */
         this.lockToolbar = true;
@@ -669,7 +670,7 @@ class RTBlazorfied {
     }
     insertBlockQuote = () => {
         this.BlockQuoteDialog.insertBlockQuote();
-        
+        this.NodeManager.refreshUI();
     }
     openCodeBlockDialog = () => {
         /* Lock the toolbar */
@@ -686,7 +687,7 @@ class RTBlazorfied {
     }
     insertCodeBlock = () => {
         this.CodeBlockDialog.insertCodeBlock();
-        
+        this.NodeManager.refreshUI();
     }
     openMediaDialog = () => {
         /* Lock the toolbar */
@@ -703,7 +704,7 @@ class RTBlazorfied {
     }
     insertMedia = () => {
         this.MediaDialog.insertMedia();
-        
+        this.NodeManager.refreshUI();
     }
     uploadImageDialog = () => {
         /* Lock the toolbar */
@@ -736,6 +737,7 @@ class RTBlazorfied {
     }
     insertImage = () => {
         this.ImageDialog.insertImage();
+        this.NodeManager.refreshUI();
     }
 
     closeDialog = (id) => {
@@ -744,7 +746,7 @@ class RTBlazorfied {
         this.content.focus();
     }
     enableButtons = () => {
-        
+
         const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-btn');
         dropdowns.forEach(button => button.disabled = false);
         const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
@@ -756,7 +758,7 @@ class RTBlazorfied {
         const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
         buttons.forEach(button => button.disabled = true);
     }
-    getHtml = () => {
+    getHtml = async () => {
         const html = this.html();
         this.loadInnerText(html);
         this.content.style.display = "none";
@@ -766,7 +768,7 @@ class RTBlazorfied {
         this.source.scrollLeft = 0;
         this.disableButtons();
     };
-    getCode = () => {
+    getCode = async () => {
         const plaintext = this.source.value;
         this.loadHtml(plaintext);
         this.content.style.display = "block";
@@ -775,7 +777,6 @@ class RTBlazorfied {
         this.enableButtons();
     };
     html = () => {
-        this.NodeManager.removeEmptyNodes();
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
@@ -873,7 +874,7 @@ class RTBlazorfiedStateManager {
         observer.observe(this.content, config);
     }
 
-    updateBinding = () => {
+    updateBinding = async () => {
         if (this.content.style.display === "block") {
             if (this.dotNetObjectReference) {
                 this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
@@ -887,7 +888,7 @@ class RTBlazorfiedStateManager {
     }
 
     /* History */
-    saveState = () => {
+    saveState = async () => {
         const currentState = this.content.innerHTML;
 
         /* If there is any change in the content */
@@ -910,14 +911,14 @@ class RTBlazorfiedStateManager {
         }
     };
     /* History */
-    goBack = () => {
+    goBack = async () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;
             this.currentIndex--;
             this.content.innerHTML = this.history[this.currentIndex];
         }
     };
-    goForward = () => {
+    goForward = async () => {
         if (this.currentIndex < this.history.length - 1) {
             this.isNavigating = true;
             this.currentIndex++;
@@ -1222,7 +1223,7 @@ class RTBlazorfiedNodeManager {
                             else {
                                 element.style.setProperty("text-align", "center");
                             }
-                        }                        
+                        }
                         break;
                     case "alignright":
                         if (element.nodeName === "TABLE") {
@@ -1251,6 +1252,7 @@ class RTBlazorfiedNodeManager {
                     default:
                 }
                 this.selection = null;
+                this.refreshUI();
                 return;
             }
 
@@ -1326,6 +1328,7 @@ class RTBlazorfiedNodeManager {
                     sel.removeAllRanges();
                     sel.addRange(range);
                     this.selection = null;
+                    this.refreshUI();
                 }
             }
         }
@@ -1340,7 +1343,7 @@ class RTBlazorfiedNodeManager {
                 this.removeProperty(element, "margin-left", "auto");
             }
         }
-        
+
         if (alignment === 'aligncenter') {
             if (element.style.margin && element.style.margin === "auto") {
                 this.removeProperty(element, "margin", "auto");
@@ -1374,7 +1377,7 @@ class RTBlazorfiedNodeManager {
                 }
             }
         }
-        
+
         if (selection.anchorNode.parentNode !== this.content) {
             switch (selection.anchorNode.parentNode.nodeName) {
                 case "TD":
@@ -1612,7 +1615,7 @@ class RTBlazorfiedNodeManager {
     getButton = (id) => {
         return this.shadowRoot.getElementById(id);
     }
-    removeEmptyNodes = () => {
+    refreshUI = () => {
         /* Remove Empty Nodes */
         const div = this.content;
         if (div) {
@@ -1629,9 +1632,16 @@ class RTBlazorfiedNodeManager {
                     }
                 }
             });
-        }       
+        }
+
+        /* Select Buttons */
+        const selection = this.Utilities.getSelection();
+        if (selection !== null) {
+            this.selectButtons(selection.anchorNode);
+        }
+        this.content.focus();
     };
-    
+
     createDefaultElement = () => {
         /* Create an element if one doesn't alreay exist */
         if (this.content.innerHTML.trim() === '') {
@@ -1755,7 +1765,7 @@ class RTBlazorfiedNodeManager {
         }
         return false;
     }
-    
+
     hasCommonAncestor(selection) {
         if (!selection.rangeCount) return false;
 
@@ -1791,7 +1801,7 @@ class RTBlazorfiedNodeManager {
                 "table", "ul", "button", "input", "textarea", "select", "form",
                 "h1", "h2", "h3", "h4", "h5", "h6"
             ];
-            
+
             /* Get the range of the selection */
             const range = selection.getRangeAt(0);
 
@@ -2733,7 +2743,7 @@ class RTBlazorfiedActionOptions {
                         }
                     }
                 }
-                
+
                 return true;
             }
         }
@@ -2805,7 +2815,7 @@ class RTBlazorfiedUtilities {
             });
         }
     }
-    
+
     getSelection = () => {
         const selection = this.shadowRoot.getSelection();
         if (this.content.contains(selection.anchorNode) && this.content.contains(selection.focusNode)) {
@@ -3210,7 +3220,7 @@ class RTBlazorfiedCodeBlockDialog {
 
     openCodeBlockDialog = (selection) => {
         if (selection !== null) {
-            this.resetCodeBlockDialog();          
+            this.resetCodeBlockDialog();
 
             const code = this.shadowRoot.getElementById('rich-text-box-code');
             const classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
@@ -3369,7 +3379,7 @@ class RTBlazorfiedBlockQuoteDialog {
                 quote.scrollLeft = 0;
             }
         }
-        
+
     }
     resetBlockQuoteDialog = () => {
         this.quote = null;
@@ -3408,7 +3418,7 @@ class RTBlazorfiedBlockQuoteDialog {
             /* Move the cursor after the inserted element */
             range.setStartAfter(element);
             range.setEndAfter(element);
-            
+
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
                 selection.removeAllRanges();
@@ -3585,7 +3595,7 @@ class RTBlazorfiedImageDialog {
     openImageDialog = (selection) => {
         if (selection !== null) {
             this.resetImageDialog();
-            
+
             if (selection && selection.rangeCount > 0) {
                 this.imageSelection = selection.getRangeAt(0).cloneRange();
             }
@@ -3657,7 +3667,7 @@ class RTBlazorfiedImageDialog {
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
-                        
+
             /* Update the stored cursor position to the new position */
             this.imageSelection = range.cloneRange();
         }
@@ -3690,7 +3700,7 @@ class RTBlazorfiedLinkDialog {
     openLinkDialog = (selection) => {
         if (selection !== null) {
             this.resetLinkDialog();
-            
+
             if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
                 const linktext = this.shadowRoot.getElementById("rich-text-box-linktext");
                 linktext.value = selection.anchorNode.parentNode.textContent;
@@ -3750,7 +3760,7 @@ class RTBlazorfiedLinkDialog {
         const link = this.shadowRoot.getElementById("rich-text-box-link-webaddress");
         const newtab = this.shadowRoot.getElementById("rich-text-box-link-modal-newtab");
         const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
-        
+
         if (link.value.length == 0 || linktext.value.length == 0) {
             this.Utilities.closeDialog("rich-text-box-link-modal");
             this.content.focus();
@@ -3832,9 +3842,9 @@ class RTBlazorfiedColorDialog {
         this.content = content;
         this.id = id;
         this.NodeManager = nodeManager;
-        this.init();        
+        this.init();
     }
-    
+
     init = () => {
         /* Get the dialog and color picker */
         this.colorPickerDialog = this.shadowRoot.getElementById(this.id);
@@ -3879,11 +3889,11 @@ class RTBlazorfiedColorDialog {
         this.colorDisplay = this.colorPicker.querySelector('.rich-text-box-color-display');
     }
 
-    addSliderEventListener = (slider) => {
+    addSliderEventListener = async (slider) => {
         slider.addEventListener('input', () => this.updateColor());
     }
 
-    addValueEventListener = (value) => {
+    addValueEventListener = async (value) => {
         value.addEventListener('input', (event) => {
             let valueClass = Array.from(event.target.classList).find(cls => cls.includes('value'));
             let slider = this.colorPicker.querySelector(`.${valueClass.replace('value', 'slider')}`);
@@ -3897,7 +3907,7 @@ class RTBlazorfiedColorDialog {
         });
     }
 
-    addHexEventListener = (hexInput) => {
+    addHexEventListener = async (hexInput) => {
         hexInput.addEventListener('keyup', (event) => {
             /* Only update if the input is a valid hex color */
             if (/^#?[0-9A-Fa-f]{6}$/.test(event.target.value)) {
@@ -3928,7 +3938,7 @@ class RTBlazorfiedColorDialog {
                 case "rich-text-box-text-bg-color-modal":
                     if (selection.anchorNode.parentNode.style.backgroundColor.toString().length > 0) {
                         this.hexInput.value = this.colorToHex(selection.anchorNode.parentNode.style.backgroundColor);
-                    }                    
+                    }
                     break;
             }
             this.updateFromHex();
@@ -3979,7 +3989,7 @@ class RTBlazorfiedColorDialog {
         this.hexInput.value = color;
         this.updateFromHex();
     }
-    
+
     updateColor = () => {
         let r = parseInt(this.redSlider.value);
         let g = parseInt(this.greenSlider.value);
@@ -3999,7 +4009,7 @@ class RTBlazorfiedColorDialog {
     }
 
     updateFromHex = () => {
-        
+
         let hex = this.hexInput.value.trim();
         if (hex.charAt(0) !== '#') {
             hex = '#' + hex;
