@@ -893,12 +893,13 @@ class RTBlazorfiedStateManager {
 
         /* If there is any change in the content */
         if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
-
+            
             /* Remove all future states */
             this.history = this.history.slice(0, this.currentIndex + 1);
-
+            
             /* Add the new state */
             this.history.push(currentState);
+            
             this.currentIndex++;
 
             /* Remove the oldest state if history exceeds 20 entries */
@@ -908,7 +909,7 @@ class RTBlazorfiedStateManager {
                 this.currentIndex--;
             }
             this.updateBinding();
-        }
+        }        
     };
     /* History */
     goBack = async () => {
@@ -916,6 +917,7 @@ class RTBlazorfiedStateManager {
             this.isNavigating = true;
             this.currentIndex--;
             this.content.innerHTML = this.history[this.currentIndex];
+            window.getSelection().removeAllRanges();
         }
     };
     goForward = async () => {
@@ -923,6 +925,7 @@ class RTBlazorfiedStateManager {
             this.isNavigating = true;
             this.currentIndex++;
             this.content.innerHTML = this.history[this.currentIndex];
+            window.getSelection().removeAllRanges();
         }
     };
 }
