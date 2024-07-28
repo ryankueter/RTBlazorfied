@@ -359,6 +359,12 @@ public partial class RTBlazorfied
           resize: vertical;
         }
 
+        .rich-text-box-form-element:disabled {
+            color: #999;
+            border-color: #DDD;
+            cursor: default;
+        }
+
         .rich-text-box-form-checkbox {
           outline: none;
           width: 20px;

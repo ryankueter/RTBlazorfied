@@ -2966,6 +2966,9 @@ class RTBlazorfiedTableDialog {
                 columns.value = this.getColumns(table);
                 columns.disabled = true;
 
+                const width = this.shadowRoot.getElementById("rich-text-box-table-width");
+                width.value = table.style.width;
+
                 const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
                 if (classes != null) {
                     const classList = table.classList;
@@ -3021,6 +3024,9 @@ class RTBlazorfiedTableDialog {
         columns.value = null;
         columns.disabled = false;
 
+        const width = this.shadowRoot.getElementById("rich-text-box-table-width");
+        width.value = null;
+
         const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
         if (classes != null) {
             classes.value = null;
@@ -3030,6 +3036,7 @@ class RTBlazorfiedTableDialog {
     insertTable = () => {
         const rows = this.shadowRoot.getElementById("rich-text-box-table-rows");
         const columns = this.shadowRoot.getElementById("rich-text-box-table-columns");
+        const width = this.shadowRoot.getElementById("rich-text-box-table-width");
         const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
 
         if (rows.value.length == 0 || columns.value.length == 0) {
@@ -3039,15 +3046,18 @@ class RTBlazorfiedTableDialog {
         }
 
         /* Get the link selection or element */
-        if (this.table != null) {
-            if (classes != null) {
+        if (this.table !== null) {
+            if (width !== null) {
+                this.table.style.width = width.value;
+            }
+            if (classes !== null) {
                 this.Utilities.addClasses(classes.value, this.table);
             }
         }
         else {
             if (this.tableSelection != null) {
                 const range = this.tableSelection;
-                const table = this.createTable(rows.value, columns.value);
+                const table = this.createTable(rows.value, columns.value, width.value);
                 if (classes != null) {
                     this.Utilities.addClasses(classes.value, table);
                 }
@@ -3068,32 +3078,29 @@ class RTBlazorfiedTableDialog {
 
         this.Utilities.closeDialog("rich-text-box-table-modal");
     }
-    createTable = (r, c) => {
-        // Convert rows and columns to integers
+    createTable = (r, c, w) => {
         const rows = parseInt(r, 10);
         const columns = parseInt(c, 10);
 
-        // Create the table element
+        /* Create the table element */
         const table = document.createElement('table');
-        //table.style.setProperty('margin', 'auto');
-
-        // Create the table body element
+        if (w) {
+            table.style.width = w;
+        }
         const tbody = document.createElement('tbody');
 
-        // Loop through the number of rows
+        /* Iterate the rows */
         for (let i = 0; i < rows; i++) {
-            // Create a row element
             const tr = document.createElement('tr');
 
-            // Loop through the number of columns
+            /* Iterate the columns */
             for (let j = 0; j < columns; j++) {
-                // Create a cell element
                 const td = document.createElement('td');
                 td.innerHTML = `&#8203;`;
                 tr.appendChild(td);
             }
 
-            // Append the row to the tbody
+            /* Append the row to the tbody */
             tbody.appendChild(tr);
         }
 
