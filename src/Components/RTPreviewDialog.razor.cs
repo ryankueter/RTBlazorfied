@@ -22,7 +22,7 @@ public partial class RTPreviewDialog
 
     protected override void OnInitialized()
     {
-        _instance = Global.Instances[InstanceId];
+        _instance = RTBlazorfiedGlobal.Instances[InstanceId];
     }
     private async Task CloseDialog(string dialog_id) => await js.InvokeVoidAsync("RTBlazorfied_Method", "closePreview", InstanceId, _instance.GetPreviewId());
 }

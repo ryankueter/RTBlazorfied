@@ -676,7 +676,7 @@ public partial class RTBlazorfied
     protected override void OnInitialized()
     {
         // Invoke the Options
-        Global.Instances.Add(id, this);
+        RTBlazorfiedGlobal.Instances.Add(id, this);
         if (Options is not null)
         {
             Options(_options!);
