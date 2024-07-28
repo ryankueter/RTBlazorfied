@@ -39,38 +39,38 @@ public partial class RTBlazorfied
     private string GetStyles() =>
         $$"""
         .rich-text-box-tool-bar {
-            background-color: {{_toolbarBackgroundColor}};
-            border-bottom-style: {{_toolbarBorderStyle}};
-            border-bottom-width: {{_toolbarBorderWidth}};
-            border-bottom-color: {{_toolbarBorderColor}};
-            border-bottom-radius: {{_toolbarBorderRadius}};
+            background-color: {{ToolbarBackgroundColor}};
+            border-bottom-style: {{ToolbarBorderStyle}};
+            border-bottom-width: {{ToolbarBorderWidth}};
+            border-bottom-color: {{ToolbarBorderColor}};
+            border-bottom-radius: {{ToolbarBorderRadius}};
             padding-left: 3px;
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
         }
         .rich-text-box-tool-bar button {
-            background-color: {{_buttonBackgroundColor}};
-            border-style: {{_buttonBorderStyle}};
-            border-width: {{_buttonBorderWidth}};
-            border-color: {{_buttonBorderColor}};
-            border-radius: {{_buttonBorderRadius}};
-            color: {{_buttonTextColor}};
+            background-color: {{ButtonBackgroundColor}};
+            border-style: {{ButtonBorderStyle}};
+            border-width: {{ButtonBorderWidth}};
+            border-color: {{ButtonBorderColor}};
+            border-radius: {{ButtonBorderRadius}};
+            color: {{ButtonTextColor}};
             outline: none;
             cursor: pointer;
             transition: 0.3s;
-            min-height: calc({{_buttonTextSize}} + 14px);
-            font-family: {{_buttonTextFont}};
+            min-height: calc({{ButtonTextSize}} + 14px);
+            font-family: {{ButtonTextFont}};
             margin: 4px 1px;
         }
         .rich-text-box-tool-bar button:hover {
-            background-color: {{_buttonBackgroundColorHover}};
-            border-color: {{_buttonBorderColorHover}};
+            background-color: {{ButtonBackgroundColorHover}};
+            border-color: {{ButtonBorderColorHover}};
         }
 
         .rich-text-box-tool-bar button.selected {
-            background-color: {{_buttonBackgroundColorSelected}};
-            border-color: {{_buttonBorderColorSelected}};
+            background-color: {{ButtonBackgroundColorSelected}};
+            border-color: {{ButtonBorderColorSelected}};
         }
 
         .rich-text-box-tool-bar button:disabled {
@@ -80,13 +80,13 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-tool-bar button svg {
-            fill: {{_buttonTextColor}};
-            width: {{_buttonTextSize}};
-            height: {{_buttonTextSize}};
+            fill: {{ButtonTextColor}};
+            width: {{ButtonTextSize}};
+            height: {{ButtonTextSize}};
         }
 
         .rich-text-box-tool-bar button:hover svg {
-            fill: {{_buttonTextColor}};
+            fill: {{ButtonTextColor}};
         }
 
         .rich-text-box-tool-bar button:disabled svg {
@@ -116,13 +116,13 @@ public partial class RTBlazorfied
         .rich-text-box-container {
             resize: both;
             overflow: visible;
-            border-style: {{_editorBorderStyle}};
-            border-width: {{_editorBorderWidth}};
-            border-color: {{_editorBorderColor}};
-            border-radius: {{_editorBorderRadius}};
-            box-shadow: {{_editorBoxShadow}};
-            max-width: {{_editorWidth}};
-            height: {{_editorHeight}};
+            border-style: {{EditorBorderStyle}};
+            border-width: {{EditorBorderWidth}};
+            border-color: {{EditorBorderColor}};
+            border-radius: {{EditorBorderRadius}};
+            box-shadow: {{EditorBoxShadow}};
+            max-width: {{EditorWidth}};
+            height: {{EditorHeight}};
             display: flex;
             flex-direction: column;
             z-index: 1;
@@ -133,13 +133,13 @@ public partial class RTBlazorfied
             overflow: auto;
             display: flex;
             flex-direction: row;
-            background-color: {{_contentBackgroundColor}};
-            box-shadow: {{_contentBoxShadow}};
+            background-color: {{ContentBackgroundColor}};
+            box-shadow: {{ContentBoxShadow}};
         }
         .rich-text-box-content {
-            color: {{_contentTextColor}} !important;
-            font-size: {{_contentTextSize}} !important;
-            font-family: {{_contentTextFont}} !important;
+            color: {{ContentTextColor}} !important;
+            font-size: {{ContentTextSize}} !important;
+            font-family: {{ContentTextFont}} !important;
             padding: 5px 10px;
             width: 100%;
             min-height: 25px;
@@ -155,11 +155,11 @@ public partial class RTBlazorfied
             padding: 10px;
             width: 100%;
             min-height: 25px;
-            color: {{_contentTextColor}} !important;
-            font-size: {{_contentTextSize}} !important;
+            color: {{ContentTextColor}} !important;
+            font-size: {{ContentTextSize}} !important;
             white-space: pre-wrap; 
-            background-color: {{_contentBackgroundColor}};
-            box-shadow: {{_contentBoxShadow}};
+            background-color: {{ContentBackgroundColor}};
+            box-shadow: {{ContentBoxShadow}};
             border-style: none;
             display: none;
             resize: none;
@@ -187,26 +187,26 @@ public partial class RTBlazorfied
         }
         .rich-text-box-divider {
             min-height: 25px;
-            height: {{_buttonTextSize}};
-            background-color: {{_buttonTextColor}};
+            height: {{ButtonTextSize}};
+            background-color: {{ButtonTextColor}};
             display: block;
             border-left: .5px solid rgba(255, 255, 255, 0.6);
             opacity: .5;
         }
         .rich-text-box-scroll::-webkit-scrollbar {
-            height: {{_scrollWidth}};
-            width: {{_scrollWidth}};
-            opacity: {{_scrollOpacity}};
+            height: {{ScrollWidth}};
+            width: {{ScrollWidth}};
+            opacity: {{ScrollOpacity}};
         }
         .rich-text-box-scroll::-webkit-scrollbar-track {
-            background-color: {{_scrollBackgroundColor}};
+            background-color: {{ScrollBackgroundColor}};
         }
         .rich-text-box-scroll::-webkit-scrollbar-thumb {
-            background: {{_scrollThumbBackgroundHover}};
-            border-radius: {{_scrollThumbBorderRadius}};
+            background: {{ScrollThumbBackgroundHover}};
+            border-radius: {{ScrollThumbBorderRadius}};
         }
         .rich-text-box-scroll::-webkit-scrollbar-thumb:hover {
-            background: {{_scrollThumbBackgroundHover}};
+            background: {{ScrollThumbBackgroundHover}};
             cursor: default;
         }
 
@@ -218,10 +218,10 @@ public partial class RTBlazorfied
         .rich-text-box-dropdown-content {
           display: none;
           position: absolute;
-          background-color: {{_toolbarDropdownBackgroundColor}};
-          border-style: {{_buttonBorderStyle}};
-          border-width: {{_buttonBorderWidth}};
-          border-color: {{_buttonBorderColor}};
+          background-color: {{ToolbarDropdownBackgroundColor}};
+          border-style: {{ButtonBorderStyle}};
+          border-width: {{ButtonBorderWidth}};
+          border-color: {{ButtonBorderColor}};
           border-radius: 5px;
           max-height: 200px;
           overflow: auto;
@@ -231,8 +231,8 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-dropdown-btn {
-            font-size: {{_buttonTextSize}};
-            min-height: calc({{_buttonTextSize}} + 14px);
+            font-size: {{ButtonTextSize}};
+            min-height: calc({{ButtonTextSize}} + 14px);
             padding: 0 10px;
         }
 
@@ -258,7 +258,7 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-dropdown-content a {
-          color: {{_toolbarDropdownTextColor}};
+          color: {{ToolbarDropdownTextColor}};
           font-size: 18px;
           padding: 10px 14px;
           text-decoration: none;
@@ -266,17 +266,17 @@ public partial class RTBlazorfied
         }
 
         .rich-text-box-dropdown a:hover, .rich-text-box-menu-item.active {
-          background-color: {{_toolbarDropdownBackgroundColorHover}};
-          color: {{_toolbarDropdownTextColorHover}};
+          background-color: {{ToolbarDropdownBackgroundColorHover}};
+          color: {{ToolbarDropdownTextColorHover}};
          }
 
         .rich-text-box-show {display: block;}
 
         .rich-text-box-modal {
-          background-color: {{_modalBackgroundColor}};
-          color: {{_modalTextColor}};
-          font-size: {{_modalTextSize}};
-          font-family: {{_modalTextFont}};
+          background-color: {{ModalBackgroundColor}};
+          color: {{ModalTextColor}};
+          font-size: {{ModalTextSize}};
+          font-family: {{ModalTextFont}};
           margin: auto;
           border: 1px solid #888;
           width: 800px;
@@ -287,7 +287,7 @@ public partial class RTBlazorfied
         }
         .rich-text-box-modal-title {
             font-weight: bold; 
-            font-size: calc({{_modalTextSize}} + 2);
+            font-size: calc({{ModalTextSize}} + 2);
         }
         .rich-text-box-form-left {
             float: left; 
@@ -308,7 +308,7 @@ public partial class RTBlazorfied
                 width: 400px;
             }
         }
-        @media screen and (max-width: 450px) {
+        @media screen and (max-width: 500px) {
             .rich-text-box-modal {
                 width: 100%;
             }
@@ -324,14 +324,14 @@ public partial class RTBlazorfied
         }
         
         .rich-text-box-modal-close {
-          color: {{_modalTextColor}};
+          color: {{ModalTextColor}};
           font-size: 24px;
           cursor: pointer;
         }
 
         .rich-text-box-modal-close:hover,
         .rich-text-box-modal-close:focus {
-          color: {{_modalTextColor}};
+          color: {{ModalTextColor}};
           text-decoration: none;
           cursor: pointer;
         }
@@ -344,13 +344,13 @@ public partial class RTBlazorfied
           width: 100%;
           padding: 10px;
           font-size: 14px;
-          background-color: {{_modalTextboxBackgroundColor}};
-          color: {{_modalTextboxTextColor}};
-          font-size: {{_modalTextSize}};
-          font-family: {{_modalTextFont}};
+          background-color: {{ModalTextboxBackgroundColor}};
+          color: {{ModalTextboxTextColor}};
+          font-size: {{ModalTextSize}};
+          font-family: {{ModalTextFont}};
           border-width: 1px;
           border-style: solid;
-          border-color: {{_modalTextboxBorderColor}};
+          border-color: {{ModalTextboxBorderColor}};
           outline: 0;
           border-radius: 0px;
           box-sizing: border-box;
@@ -364,49 +364,49 @@ public partial class RTBlazorfied
           width: 20px;
           height: 20px;
           margin-right: 8px;
-          accent-color: {{_modalCheckboxAccentColor}}; 
+          accent-color: {{ModalCheckboxAccentColor}}; 
         }
         .rich-text-box-form-checkbox:focus {
           border-style: solid;
-          border-color: {{_modalTextboxBorderColor}};
+          border-color: {{ModalTextboxBorderColor}};
           border-width: 1px;
           box-shadow: 0 0 5px 2px rgba(169, 169, 169, 0.8);          
         }
         
         .rich-text-box-upload-btn {
           padding: 10px 20px !important;
-          font-size: {{_modalTextSize}};
-          font-family: {{_modalTextFont}};
+          font-size: {{ModalTextSize}};
+          font-family: {{ModalTextFont}};
           transition: 0.3s;
-          background-color: {{_buttonBackgroundColor}};
-          border-style: {{_buttonBorderStyle}};
-          border-width: {{_buttonBorderWidth}};
-          border-color: {{_buttonBorderColor}};
-          border-radius: {{_buttonBorderRadius}};
-          color: {{_buttonTextColor}};
+          background-color: {{ButtonBackgroundColor}};
+          border-style: {{ButtonBorderStyle}};
+          border-width: {{ButtonBorderWidth}};
+          border-color: {{ButtonBorderColor}};
+          border-radius: {{ButtonBorderRadius}};
+          color: {{ButtonTextColor}};
           outline: none;
           cursor: pointer;
           transition: 0.3s;
-          min-height: calc({{_buttonTextSize}} + 14px);
-          font-family: {{_buttonTextFont}};
+          min-height: calc({{ButtonTextSize}} + 14px);
+          font-family: {{ButtonTextFont}};
           margin: 4px 1px;
         }
 
         .rich-text-box-upload-btn:hover {
-            background-color: {{_buttonBackgroundColorHover}};
-            border-color: {{_buttonBorderColorHover}};
+            background-color: {{ButtonBackgroundColorHover}};
+            border-color: {{ButtonBorderColorHover}};
         }
 
         .rich-text-box-form-button {
           padding: 10px 20px !important;
-          font-size: {{_modalTextSize}};
-          font-family: {{_modalTextFont}};
+          font-size: {{ModalTextSize}};
+          font-family: {{ModalTextFont}};
           transition: 0.3s;
         }
 
         .rich-text-box-form-button:focus {
-          background-color: {{_buttonBackgroundColorHover}};
-          border-color: {{_buttonBorderColorHover}};
+          background-color: {{ButtonBackgroundColorHover}};
+          border-color: {{ButtonBorderColorHover}};
         }
 
         .blazing-rich-text-color-picker-container {
@@ -414,7 +414,7 @@ public partial class RTBlazorfied
         }
 
         .blazing-rich-text-color-picker-button {
-            min-height: calc({{_buttonTextSize}} + 14px);
+            min-height: calc({{ButtonTextSize}} + 14px);
         }
 
         .blazing-rich-text-color-picker-dropdown {
@@ -444,7 +444,7 @@ public partial class RTBlazorfied
             display: inline-block;
         }
         .rich-text-box-quote {
-          font-family: {{_modalTextFont}};
+          font-family: {{ModalTextFont}};
         }
         .rich-text-box-code {
           overflow: auto !important;
@@ -453,7 +453,7 @@ public partial class RTBlazorfied
 
         /* Message Bar */
         .rich-text-box-message-bar {
-            font-size: {{_contentTextSize}};
+            font-size: {{ContentTextSize}};
             background-color: rgba(0, 0, 0, 0.6);
             color: white;
             display: flex;
@@ -504,7 +504,7 @@ public partial class RTBlazorfied
         .rich-text-box-slider-container label {
             width: 20px;
             margin-right: 10px;
-            color: {{_modalTextColor}};
+            color: {{ModalTextColor}};
         }
         .rich-text-box-range {
             width: 100%;
@@ -514,7 +514,7 @@ public partial class RTBlazorfied
             outline: none;
         }
         .rich-text-box-range::-webkit-slider-runnable-track {
-             background: {{_modalTextColor}};
+             background: {{ModalTextColor}};
              height: 5px;
         }
         .rich-text-box-red-slider::-webkit-slider-runnable-track {
@@ -527,29 +527,29 @@ public partial class RTBlazorfied
             background: linear-gradient(to right, rgb(0,0,0) 0%, rgb(0,0,255) 100%) !important;
         }
         .rich-text-box-range::-moz-range-track {
-             background: {{_modalTextColor}};
+             background: {{ModalTextColor}};
              height: 5px;
         }
         .rich-text-box-range::-webkit-slider-thumb {
              -webkit-appearance: none;
              height: 15px;
              width: 15px;
-             background: {{_modalBackgroundColor}};
+             background: {{ModalBackgroundColor}};
              margin-top: -5px;
              border-style: solid;
              border-width: 3px;
-             border-color: {{_modalTextColor}};
+             border-color: {{ModalTextColor}};
              border-radius: 50%;
         }
         .rich-text-box-range::-moz-range-thumb {
              -webkit-appearance: none;
              height: 15px;
              width: 15px;
-             background: {{_modalBackgroundColor}};
+             background: {{ModalBackgroundColor}};
              margin-top: -5px;
              border-style: solid;
              border-width: 3px;
-             border-color: {{_modalTextColor}};
+             border-color: {{ModalTextColor}};
              border-radius: 50%;
         }
         .rich-text-box-number {
@@ -558,11 +558,11 @@ public partial class RTBlazorfied
             width: 100px;
             padding: 5px;
             font-size: 14px;
-            background-color: {{_modalTextboxBackgroundColor}};
-            color: {{_modalTextboxTextColor}};
+            background-color: {{ModalTextboxBackgroundColor}};
+            color: {{ModalTextboxTextColor}};
             border-width: 1px;
             border-style: solid;
-            border-color: {{_modalTextboxBorderColor}};
+            border-color: {{ModalTextboxBorderColor}};
             outline: 0;
             border-radius: 0px;
             box-sizing: border-box;
@@ -606,63 +606,63 @@ public partial class RTBlazorfied
 
     #region Styles
     // Toolbar
-    private string? _toolbarBackgroundColor { get; set; } = "#FFF";
-    private string? _toolbarBorderStyle { get; set; } = "solid";
-    private string? _toolbarBorderWidth { get; set; } = "1px";
-    private string? _toolbarBorderColor { get; set; } = "#EEE";
-    private string? _toolbarBorderRadius { get; set; } = "0px";
-    private string? _toolbarDropdownBackgroundColor { get; set; } = "#FFF";
-    private string? _toolbarDropdownTextColor { get; set; } = "#000";
-    private string? _toolbarDropdownBackgroundColorHover { get; set; } = "#e5e5e5";
-    private string? _toolbarDropdownTextColorHover { get; set; } = "#000";
+    public string? ToolbarBackgroundColor { get; set; } = "#FFF";
+    public string? ToolbarBorderStyle { get; set; } = "solid";
+    public string? ToolbarBorderWidth { get; set; } = "1px";
+    public string? ToolbarBorderColor { get; set; } = "#EEE";
+    public string? ToolbarBorderRadius { get; set; } = "0px";
+    public string? ToolbarDropdownBackgroundColor { get; set; } = "#FFF";
+    public string? ToolbarDropdownTextColor { get; set; } = "#000";
+    public string? ToolbarDropdownBackgroundColorHover { get; set; } = "#e5e5e5";
+    public string? ToolbarDropdownTextColorHover { get; set; } = "#000";
 
     // Buttons
-    private string? _buttonTextColor { get; set; } = "#000";
-    private string? _buttonTextSize { get; set; } = "16px";
-    private string? _buttonTextFont { get; set; } = "Arial, sans-serif";
-    private string? _buttonBackgroundColor { get; set; } = "inherit";
-    private string? _buttonBackgroundColorHover { get; set; } = "#DDD";
-    private string? _buttonBackgroundColorSelected { get; set; } = "#CCC";
-    private string? _buttonBorderRadius { get; set; } = "5px";
-    private string? _buttonBorderStyle { get; set; } = "none";
-    private string? _buttonBorderWidth { get; set; } = "0px";
-    private string? _buttonBorderColor { get; set; } = "#AAA";
-    private string? _buttonBorderColorHover { get; set; } = "inherit";
-    private string? _buttonBorderColorSelected { get; set; } = "inherit";
+    public string? ButtonTextColor { get; set; } = "#000";
+    public string? ButtonTextSize { get; set; } = "16px";
+    public string? ButtonTextFont { get; set; } = "Arial, sans-serif";
+    public string? ButtonBackgroundColor { get; set; } = "inherit";
+    public string? ButtonBackgroundColorHover { get; set; } = "#DDD";
+    public string? ButtonBackgroundColorSelected { get; set; } = "#CCC";
+    public string? ButtonBorderRadius { get; set; } = "5px";
+    public string? ButtonBorderStyle { get; set; } = "none";
+    public string? ButtonBorderWidth { get; set; } = "0px";
+    public string? ButtonBorderColor { get; set; } = "#AAA";
+    public string? ButtonBorderColorHover { get; set; } = "inherit";
+    public string? ButtonBorderColorSelected { get; set; } = "inherit";
     // Content
-    private string? _contentTextColor { get; set; } = "#000";
-    private string? _contentTextSize { get; set; } = "16px";
-    private string? _contentTextFont { get; set; } = "Arial, sans-serif";
-    private string? _contentBackgroundColor { get; set; } = "#FFF";
-    private string? _contentBoxShadow { get; set; } = "none";
+    public string? ContentTextColor { get; set; } = "#000";
+    public string? ContentTextSize { get; set; } = "16px";
+    public string? ContentTextFont { get; set; } = "Arial, sans-serif";
+    public string? ContentBackgroundColor { get; set; } = "#FFF";
+    public string? ContentBoxShadow { get; set; } = "none";
 
     // Editor
-    private string? _editorWidth { get; set; } = "100%";
-    private string? _editorHeight { get; set; } = "300px";
-    private string? _editorBorderRadius { get; set; } = "0px";
-    private string? _editorBorderStyle { get; set; } = "solid";
-    private string? _editorBorderWidth { get; set; } = "1px";
-    private string? _editorBorderColor { get; set; } = "#EEE";
-    private string? _editorBoxShadow { get; set; } = "none";
+    public string? EditorWidth { get; set; } = "100%";
+    public string? EditorHeight { get; set; } = "300px";
+    public string? EditorBorderRadius { get; set; } = "0px";
+    public string? EditorBorderStyle { get; set; } = "solid";
+    public string? EditorBorderWidth { get; set; } = "1px";
+    public string? EditorBorderColor { get; set; } = "#EEE";
+    public string? EditorBoxShadow { get; set; } = "none";
 
     // Scroll
-    private string? _scrollWidth { get; set; } = "10px";
-    private string? _scrollOpacity { get; set; } = "1";
-    private string? _scrollBackgroundColor { get; set; } = "transparent";
-    private string? _scrollThumbBackgroundHover { get; set; } = "#DDD";
-    private string? _scrollThumbBackground { get; set; } = "#AAA";
-    private string? _scrollThumbBorderRadius { get; set; } = "0";
+    public string? ScrollWidth { get; set; } = "10px";
+    public string? ScrollOpacity { get; set; } = "1";
+    public string? ScrollBackgroundColor { get; set; } = "transparent";
+    public string? ScrollThumbBackgroundHover { get; set; } = "#DDD";
+    public string? ScrollThumbBackground { get; set; } = "#AAA";
+    public string? ScrollThumbBorderRadius { get; set; } = "0";
 
     // Modal
-    private bool _modalRemoveCSSClassInputs { get; set; }
-    private string? _modalBackgroundColor { get; set; } = "#fefefe";
-    private string? _modalTextColor { get; set; } = "#000";
-    private string? _modalTextSize { get; set; } = "16px";
-    private string? _modalTextFont { get; set; } = "Arial, sans-serif";
-    private string? _modalTextboxBackgroundColor { get; set; } = "#fff";
-    private string? _modalTextboxTextColor { get; set; } = "#000";
-    private string? _modalCheckboxAccentColor { get; set; } = "#007bff";
-    private string? _modalTextboxBorderColor { get; set; } = "#CCC";
+    public bool MmodalRemoveCSSClassInputs { get; set; }
+    public string? ModalBackgroundColor { get; set; } = "#fefefe";
+    public string? ModalTextColor { get; set; } = "#000";
+    public string? ModalTextSize { get; set; } = "16px";
+    public string? ModalTextFont { get; set; } = "Arial, sans-serif";
+    public string? ModalTextboxBackgroundColor { get; set; } = "#fff";
+    public string? ModalTextboxTextColor { get; set; } = "#000";
+    public string? ModalCheckboxAccentColor { get; set; } = "#007bff";
+    public string? ModalTextboxBorderColor { get; set; } = "#CCC";
     #endregion
 
     public async Task<string?> GetPlainTextAsync() =>
@@ -676,6 +676,7 @@ public partial class RTBlazorfied
     protected override void OnInitialized()
     {
         // Invoke the Options
+        Global.Instances.Add(id, this);
         if (Options is not null)
         {
             Options(_options!);
@@ -741,6 +742,7 @@ public partial class RTBlazorfied
     private bool? _unorderedlist;
     private bool? _listdivider;
     private bool? _htmlView;
+    private bool? _preview;
     #endregion
     private void GetButtons()
     {
@@ -779,6 +781,10 @@ public partial class RTBlazorfied
             if (buttons.HtmlView is not null)
             {
                 _htmlView = buttons.HtmlView;
+            }
+            if (buttons.Preview is not null)
+            {
+                _preview = buttons.Preview;
             }
         }
     }
@@ -1117,6 +1123,7 @@ public partial class RTBlazorfied
         _embedMedia = setting;
         _table = setting;
         _htmlView = setting;
+        _preview = setting;
 
         // Dividers
         _textstylesdivider = setting;
@@ -1136,27 +1143,27 @@ public partial class RTBlazorfied
         {
             if (scrollOptions.Width is not null)
             {
-                _scrollWidth = scrollOptions.Width;
+                ScrollWidth = scrollOptions.Width;
             }
             if (scrollOptions.Opacity is not null)
             {
-                _scrollOpacity = scrollOptions.Opacity;
+                ScrollOpacity = scrollOptions.Opacity;
             }
             if (scrollOptions.BackgroundColor is not null)
             {
-                _scrollBackgroundColor = scrollOptions.BackgroundColor;
+                ScrollBackgroundColor = scrollOptions.BackgroundColor;
             }
             if (scrollOptions.ThumbBackgroundHover is not null)
             {
-                _scrollThumbBackgroundHover = scrollOptions.ThumbBackgroundHover;
+                ScrollThumbBackgroundHover = scrollOptions.ThumbBackgroundHover;
             }
             if (scrollOptions.ThumbBackground is not null)
             {
-                _scrollThumbBackground = scrollOptions.ThumbBackground;
+                ScrollThumbBackground = scrollOptions.ThumbBackground;
             }
             if (scrollOptions.ThumbBorderRadius is not null)
             {
-                _scrollThumbBorderRadius = scrollOptions.ThumbBorderRadius;
+                ScrollThumbBorderRadius = scrollOptions.ThumbBorderRadius;
             }
         }
     }
@@ -1168,23 +1175,23 @@ public partial class RTBlazorfied
         {
             if (styleOptions.BackgroundColor is not null)
             {
-                _contentBackgroundColor = styleOptions.BackgroundColor;
+                ContentBackgroundColor = styleOptions.BackgroundColor;
             }
             if (styleOptions.TextColor is not null)
             {
-                _contentTextColor = styleOptions.TextColor;
+                ContentTextColor = styleOptions.TextColor;
             }
             if (styleOptions.TextSize is not null)
             {
-                _contentTextSize = styleOptions.TextSize;
+                ContentTextSize = styleOptions.TextSize;
             }
             if (styleOptions.TextFont is not null)
             {
-                _contentTextFont = styleOptions.TextFont;
+                ContentTextFont = styleOptions.TextFont;
             }
             if (styleOptions.ContentBoxShadow is not null)
             {
-                _contentBoxShadow = styleOptions.ContentBoxShadow;
+                ContentBoxShadow = styleOptions.ContentBoxShadow;
             }
         }
     }
@@ -1196,41 +1203,41 @@ public partial class RTBlazorfied
         {
             if (styleOptions.Width is not null)
             {
-                _editorWidth = styleOptions.Width;
+                EditorWidth = styleOptions.Width;
             }
             if (styleOptions.Height is not null)
             {
-                _editorHeight = styleOptions.Height;
+                EditorHeight = styleOptions.Height;
             }
             if (styleOptions.BorderRadius is not null)
             {
-                _editorBorderRadius = styleOptions.BorderRadius;
+                EditorBorderRadius = styleOptions.BorderRadius;
             }
             if (styleOptions.BorderStyle is not null)
             {
-                _editorBorderStyle = styleOptions.BorderStyle;
+                EditorBorderStyle = styleOptions.BorderStyle;
             }
             if (styleOptions.BorderWidth is not null)
             {
-                _editorBorderWidth = styleOptions.BorderWidth;
+                EditorBorderWidth = styleOptions.BorderWidth;
             }
             if (styleOptions.BorderColor is not null)
             {
-                _editorBorderColor = styleOptions.BorderColor;
+                EditorBorderColor = styleOptions.BorderColor;
             }
             if (styleOptions.BoxShadow is not null)
             {
-                _editorBoxShadow = styleOptions.BoxShadow;
+                EditorBoxShadow = styleOptions.BoxShadow;
             }
         }
         // Allow the inline styles to override the options
         if (Width is not null)
         {
-            _editorWidth = Width;
+            EditorWidth = Width;
         }
         if (Height is not null)
         {
-            _editorHeight = Height;
+            EditorHeight = Height;
         }
     }
 
@@ -1241,51 +1248,51 @@ public partial class RTBlazorfied
         {
             if (buttonOptions.TextColor is not null)
             {
-                _buttonTextColor = buttonOptions.TextColor;
+                ButtonTextColor = buttonOptions.TextColor;
             }
             if (buttonOptions.TextSize is not null)
             {
-                _buttonTextSize = buttonOptions.TextSize;
+                ButtonTextSize = buttonOptions.TextSize;
             }
             if (buttonOptions.TextFont is not null)
             {
-                _buttonTextFont = buttonOptions.TextFont;
+                ButtonTextFont = buttonOptions.TextFont;
             }
             if (buttonOptions.BackgroundColor is not null)
             {
-                _buttonBackgroundColor = buttonOptions.BackgroundColor;
+                ButtonBackgroundColor = buttonOptions.BackgroundColor;
             }
             if (buttonOptions.BackgroundColorHover is not null)
             {
-                _buttonBackgroundColorHover = buttonOptions.BackgroundColorHover;
+                ButtonBackgroundColorHover = buttonOptions.BackgroundColorHover;
             }
             if (buttonOptions.BackgroundColorSelected is not null)
             {
-                _buttonBackgroundColorSelected = buttonOptions.BackgroundColorSelected;
+                ButtonBackgroundColorSelected = buttonOptions.BackgroundColorSelected;
             }
             if (buttonOptions.BorderStyle is not null)
             {
-                _buttonBorderStyle = buttonOptions.BorderStyle;
+                ButtonBorderStyle = buttonOptions.BorderStyle;
             }
             if (buttonOptions.BorderWidth is not null)
             {
-                _buttonBorderWidth = buttonOptions.BorderWidth;
+                ButtonBorderWidth = buttonOptions.BorderWidth;
             }
             if (buttonOptions.BorderColor is not null)
             {
-                _buttonBorderColor = buttonOptions.BorderColor;
+                ButtonBorderColor = buttonOptions.BorderColor;
             }
             if (buttonOptions.BorderColorHover is not null)
             {
-                _buttonBorderColorHover = buttonOptions.BorderColorHover;
+                ButtonBorderColorHover = buttonOptions.BorderColorHover;
             }
             if (buttonOptions.BorderColorSelected is not null)
             {
-                _buttonBorderColorSelected = buttonOptions.BorderColorSelected;
+                ButtonBorderColorSelected = buttonOptions.BorderColorSelected;
             }
             if (buttonOptions.BorderRadius is not null)
             {
-                _buttonBorderRadius = buttonOptions.BorderRadius;
+                ButtonBorderRadius = buttonOptions.BorderRadius;
             }
         }
     }
@@ -1297,40 +1304,40 @@ public partial class RTBlazorfied
         {
             if (toolbarOptions.BackgroundColor is not null)
             {
-                _toolbarBackgroundColor = toolbarOptions.BackgroundColor;
+                ToolbarBackgroundColor = toolbarOptions.BackgroundColor;
             }
             if (toolbarOptions.BorderStyle is not null)
             {
-                _toolbarBorderStyle = toolbarOptions.BorderStyle;
+                ToolbarBorderStyle = toolbarOptions.BorderStyle;
             }
             if (toolbarOptions.BorderWidth is not null)
             {
-                _toolbarBorderWidth = toolbarOptions.BorderWidth;
+                ToolbarBorderWidth = toolbarOptions.BorderWidth;
             }
             if (toolbarOptions.BorderColor is not null)
             {
-                _toolbarBorderColor = toolbarOptions.BorderColor;
+                ToolbarBorderColor = toolbarOptions.BorderColor;
             }
             if (toolbarOptions.BorderRadius is not null)
             {
-                _toolbarBorderRadius = toolbarOptions.BorderRadius;
+                ToolbarBorderRadius = toolbarOptions.BorderRadius;
             }
             if (toolbarOptions.DropdownBackgroundColor is not null)
             {
-                _toolbarDropdownBackgroundColor = toolbarOptions.DropdownBackgroundColor;
+                ToolbarDropdownBackgroundColor = toolbarOptions.DropdownBackgroundColor;
             }
             if (toolbarOptions.DropdownTextColor is not null)
             {
-                _toolbarDropdownTextColor = toolbarOptions.DropdownTextColor;
+                ToolbarDropdownTextColor = toolbarOptions.DropdownTextColor;
             }
 
             if (toolbarOptions.DropdownBackgroundColorHover is not null)
             {
-                _toolbarDropdownBackgroundColorHover = toolbarOptions.DropdownBackgroundColorHover;
+                ToolbarDropdownBackgroundColorHover = toolbarOptions.DropdownBackgroundColorHover;
             }
             if (toolbarOptions.DropdownTextColorHover is not null)
             {
-                _toolbarDropdownTextColorHover = toolbarOptions.DropdownTextColorHover;
+                ToolbarDropdownTextColorHover = toolbarOptions.DropdownTextColorHover;
             }
         }
     }
@@ -1341,39 +1348,39 @@ public partial class RTBlazorfied
         {
             if (modalOptions.removeCSSClassInputs is not null)
             {
-                _modalRemoveCSSClassInputs = Convert.ToBoolean(modalOptions.removeCSSClassInputs);
+                MmodalRemoveCSSClassInputs = Convert.ToBoolean(modalOptions.removeCSSClassInputs);
             }
             if (modalOptions.TextColor is not null)
             {
-                _modalTextColor = modalOptions.TextColor;
+                ModalTextColor = modalOptions.TextColor;
             }
             if (modalOptions.TextSize is not null)
             {
-                _modalTextSize = modalOptions.TextSize;
+                ModalTextSize = modalOptions.TextSize;
             }
             if (modalOptions.TextFont is not null)
             {
-                _modalTextFont = modalOptions.TextFont;
+                ModalTextFont = modalOptions.TextFont;
             }
             if (modalOptions.BackgroundColor is not null)
             {
-                _modalBackgroundColor = modalOptions.BackgroundColor;
+                ModalBackgroundColor = modalOptions.BackgroundColor;
             }
             if (modalOptions.TextboxBackgroundColor is not null)
             {
-                _modalTextboxBackgroundColor = modalOptions.TextboxBackgroundColor;
+                ModalTextboxBackgroundColor = modalOptions.TextboxBackgroundColor;
             }
             if (modalOptions.TextboxTextColor is not null)
             {
-                _modalTextboxTextColor = modalOptions.TextboxTextColor;
+                ModalTextboxTextColor = modalOptions.TextboxTextColor;
             }
             if (modalOptions.CheckboxAccentColor is not null)
             { 
-                _modalCheckboxAccentColor = modalOptions.CheckboxAccentColor;
+                ModalCheckboxAccentColor = modalOptions.CheckboxAccentColor;
             }
             if (modalOptions.TextboxBorderColor is not null)
             {
-                _modalTextboxBorderColor = modalOptions.TextboxBorderColor;
+                ModalTextboxBorderColor = modalOptions.TextboxBorderColor;
             }
         }
     }
@@ -1439,7 +1446,9 @@ public partial class RTBlazorfied
     }
 
     private bool _error;
-    private string id = Guid.NewGuid().ToString();
+    public string id = Guid.NewGuid().ToString();
+    public string GetShadowId() => $"{id}_Shadow";
+
     private DotNetObjectReference<RTBlazorfied>? objectReference;
     private async Task Initialize()
     {
@@ -1501,26 +1510,21 @@ public partial class RTBlazorfied
     private async Task OpenImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openImageDialog", id);
     private async Task UploadImageDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImageDialog", id);
     private async Task InsertImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertImage", id);
+    private async Task UploadImage() => await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImage", id);
+    private async Task HandleFileSelected(ChangeEventArgs e)
+    {
+        var file = e.Value as IBrowserFile;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream();
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
 
-    // This feature embeds an image in the document using base-64 and was removed to prevent abuse.
-    //private async Task UploadImage()
-    //{
-    //    await js.InvokeVoidAsync("RTBlazorfied_Method", "uploadImage", id);
-    //}
-    //private async Task HandleFileSelected(ChangeEventArgs e)
-    //{
-    //    var file = e.Value as IBrowserFile;
-    //    if (file != null)
-    //    {
-    //        using var stream = file.OpenReadStream();
-    //        using var memoryStream = new MemoryStream();
-    //        await stream.CopyToAsync(memoryStream);
-
-    //        var imageBytes = memoryStream.ToArray();
-    //        var Base64Image = Convert.ToBase64String(imageBytes);
-    //        Console.WriteLine(Base64Image);
-    //    }
-    //}
+            var imageBytes = memoryStream.ToArray();
+            var Base64Image = Convert.ToBase64String(imageBytes);
+            Console.WriteLine(Base64Image);
+        }
+    }
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goBack", id);
     private async Task Redo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goForward", id);
     private async Task OpenBlockQuoteDialog() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openBlockQuoteDialog", id);
@@ -1541,6 +1545,9 @@ public partial class RTBlazorfied
     private async Task InsertTable() => await js.InvokeVoidAsync("RTBlazorfied_Method", "insertTable", id);
     private async Task IncreaseIndent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "increaseIndent", id);
     private async Task DecreaseIndent() => await js.InvokeVoidAsync("RTBlazorfied_Method", "decreaseIndent", id);
+    public string GetPreviewId() => $"{id}_Preview";
+    private async Task OpenPreview() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openPreview", id);
+    private async Task ClosePreview() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closePreview", id);
 
     private async Task OpenCode()
     {

@@ -45,7 +45,7 @@ class RTBlazorfied {
         this.ImageDialog = new RTBlazorfiedImageDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Initialize Upload Image Dialog - removed to prevent abuse. */
-        /* this.UploadImageDialog = new RTBlazorfiedUploadImageDialog(this.shadowRoot, this.content); */
+        this.UploadImageDialog = new RTBlazorfiedUploadImageDialog(this.shadowRoot, this.content, this.Utilities); 
 
         /* Initialize Blockquote Dialog */
         this.BlockQuoteDialog = new RTBlazorfiedBlockQuoteDialog(this.shadowRoot, this.content, this.Utilities);
@@ -360,6 +360,10 @@ class RTBlazorfied {
             event.preventDefault();
             this.format("h6");
         }
+        if (event.ctrlKey && event.shiftKey && event.key === 'V') {
+            event.preventDefault();
+            this.openPreview();
+        }
         if (event.shiftKey && event.key === 'Tab') {
             event.preventDefault();
             this.decreaseIndent();
@@ -428,6 +432,61 @@ class RTBlazorfied {
             this.fontSize -= 1;
         }
         this.NodeManager.updateNode("size", `${this.fontSize}px`);
+    }
+    openPreview = () => {
+        this.EditMode = false;
+        let previewWindow;
+        this.preview = document.getElementById(`${this.id}_Preview`);
+        const allNodes = this.preview.querySelectorAll('*');
+        allNodes.forEach(node => {
+            if (node.id === 'rich-text-box-preview') {
+                previewWindow = node;
+            }
+        });
+
+        if (previewWindow) {
+            this.loadPreviewWindow(previewWindow);
+            this.preview.show();
+            previewWindow.scrollTop = 0;
+        }
+    }
+    loadPreviewWindow = (previewWindow) => {
+        if (this.content.style.display === "block") {
+            const html = this.html();
+            if (html) {
+                previewWindow.innerHTML = html;
+            }
+            else {
+                previewWindow.innerHTML = "";
+            }
+        }
+        else {
+            const html = this.source.value;
+            if (html) {
+                previewWindow.innerHTML = html;
+            }
+            else {
+                previewWindow.innerHTML = "";
+            }
+        }
+        
+        this.NodeManager.clearButtons();
+        this.enablePreview();
+    }
+    closePreview = () => {
+        this.EditMode = true;
+        this.disablePreview();
+        this.preview.close();
+    }
+    enablePreview = () => {
+        this.shadowRoot.getElementById('blazing-rich-text-source').disabled = true;
+        this.disableButtons();
+    }
+    disablePreview = () => {
+        this.shadowRoot.getElementById('blazing-rich-text-source').disabled = false;
+        if (this.content.style.display === "block") {
+            this.enableButtons();
+        }
     }
     format = (format) => {
         this.NodeManager.formatNode(format);
@@ -787,8 +846,6 @@ class RTBlazorfied {
         if (btn.classList.contains("selected")) {
             btn.classList.remove("selected");
         }
-
-        this.content.style.fontFamily = 'Arial, sans-serif';
         if (html != null) {
             this.content.innerHTML = html;
         }
@@ -803,8 +860,6 @@ class RTBlazorfied {
         /* Toggle the button */
         const btn = this.shadowRoot.getElementById("blazing-rich-text-source");
         btn.classList.add("selected");
-
-        this.source.style.fontFamily = 'Consolas, monospace';
         if (text != null) {
             this.source.value = text;
         }
@@ -847,9 +902,6 @@ class RTBlazorfiedStateManager {
                             this.saveState();
                             break;
                         case 'characterData':
-                            this.saveState();
-                            break;
-                        case 'subtree':
                             this.saveState();
                             break;
                     }
@@ -3464,29 +3516,33 @@ class RTBlazorfiedBlockQuoteDialog {
 }
 
 class RTBlazorfiedUploadImageDialog {
-    constructor(shadowRoot, content) {
+    constructor(shadowRoot, content, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
-
+        this.Utilities = utilities;
+        this.addEventListeners();
+    }
+    addEventListeners = () => {
         this.dialog = this.shadowRoot.getElementById("rich-text-box-upload-image-modal");
-        this.dialog.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                this.insertUploadedImage();
-                this.dialog.close();
-                this.content.focus();
-            }
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
-            }
-        });
+        if (this.dialog) {
+            this.dialog.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    this.insertUploadedImage();
+                    this.dialog.close();
+                    this.content.focus();
+                }
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    this.dialog.close();
+                    this.content.focus();
+                }
+            });
+        }
+        
 
         const actualBtn = this.shadowRoot.getElementById('rich-text-box-upload-image-file');
         actualBtn.addEventListener('change', this.handleFileSelect);
-
-        this.Utilities = new RTBlazorfiedUtilities(this.shadowRoot, this.content);
     }
     handleFileSelect = (event) => {
         const file = event.target.files[0]; // Get the selected file

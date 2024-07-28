@@ -1,0 +1,19 @@
+﻿@using RichTextBlazorfied;
+@namespace RichTextBlazorfied.Components
+
+<dialog id="@DialogId" class="rich-text-box-modal">
+    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div style="align-self: flex-start;">
+            <div class="rich-text-box-modal-title">@Title</div>
+        </div>
+        <div style="align-self: flex-start;">
+            <span @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-modal-close">&times;</span>
+        </div>
+    </div>
+    <div>
+        <div id="rich-text-box-preview" class="rich-text-box-preview-window rich-text-box-scroll"></div>
+        <div style="margin-top: 5px; text-align: right;">
+            <button @onclick='() => CloseDialog(DialogId!)' class="rich-text-box-form-button">Close</button>
+        </div>
+    </div>
+</dialog>
