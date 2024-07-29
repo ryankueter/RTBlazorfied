@@ -2929,6 +2929,19 @@ class RTBlazorfiedUtilities {
         const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
         fadingBar.classList.add('rich-text-box-message-hidden');
     }
+    reselectNode = (node) => {
+        /* Set the selection after the new link */
+        const newRange = document.createRange();
+        const selection = window.getSelection();
+        if (node.childNodes.length > 0) {
+            newRange.setStartAfter(node.childNodes[node.childNodes.length - 1]);
+        } else {
+            newRange.setStartAfter(node);
+        }
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+    }
     saveCaretPosition = () => {
         const selection = this.getSelection();
         if (selection !== null) {
@@ -3077,6 +3090,7 @@ class RTBlazorfiedTableDialog {
             if (classes !== null) {
                 this.Utilities.addClasses(classes.value, this.table);
             }
+            this.Utilities.reselectNode(this.table);
         }
         else {
             if (this.tableSelection != null) {
@@ -3258,16 +3272,7 @@ class RTBlazorfiedMediaDialog {
             range.deleteContents();
             range.insertNode(object);
 
-            /* Move the cursor after the inserted element */
-            range.setStartAfter(object);
-            range.setEndAfter(object);
-
-            /* Get the selection from the shadowRoot */
-            const selection = document.getSelection();
-            if (selection !== null) {
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+            this.Utilities.reselectNode(object);
 
             /* Update the stored cursor position to the new position */
             this.embedSelection = range.cloneRange();
@@ -3363,6 +3368,7 @@ class RTBlazorfiedCodeBlockDialog {
             if (classes != null) {
                 this.Utilities.addClasses(classes.value, element);
             }
+            this.Utilities.reselectNode(element);
         }
         else {
             if (this.codeSelection != null && codeText.value.length > 0) {
@@ -3387,16 +3393,7 @@ class RTBlazorfiedCodeBlockDialog {
                 range.deleteContents();
                 range.insertNode(pre);
 
-                /* Move the cursor after the inserted element */
-                range.setStartAfter(pre);
-                range.setEndAfter(pre);
-
-                /* Reset the selection from the shadowRoot */
-                const selection = this.Utilities.getSelection();
-                if (selection !== null) {
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
+                this.Utilities.reselectNode(pre);
             }
         }
         this.Utilities.closeDialog("rich-text-box-code-block-modal");
@@ -3502,16 +3499,7 @@ class RTBlazorfiedBlockQuoteDialog {
                 this.Utilities.addClasses(classes.value, element);
             }
 
-            const range = this.quoteSelection.cloneRange();
-            /* Move the cursor after the inserted element */
-            range.setStartAfter(element);
-            range.setEndAfter(element);
-
-            const selection = this.Utilities.getSelection();
-            if (selection !== null) {
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+            this.Utilities.reselectNode(element);
         }
         else {
             if (this.quoteSelection != null && quote.value.length > 0) {
@@ -3530,16 +3518,7 @@ class RTBlazorfiedBlockQuoteDialog {
                 range.deleteContents();
                 range.insertNode(blockquote);
 
-                /* Move the cursor after the inserted element */
-                range.setStartAfter(blockquote);
-                range.setEndAfter(blockquote);
-
-                /* Get the selection from the shadowRoot */
-                const selection = this.Utilities.getSelection();
-                if (selection !== null) {
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
+                this.Utilities.reselectNode(blockquote);
             }
         }
         this.Utilities.closeDialog("rich-text-box-block-quote-modal");
@@ -3656,6 +3635,8 @@ class RTBlazorfiedUploadImageDialog {
 
             this.range.deleteContents();
             this.range.insertNode(this.image);
+
+            this.Utilities.reselectNode(this.image);
         }
         this.Utilities.closeDialog("rich-text-box-upload-image-modal");
     }
@@ -3749,16 +3730,7 @@ class RTBlazorfiedImageDialog {
             range.deleteContents();
             range.insertNode(img);
 
-            /* Move the cursor after the inserted image */
-            range.setStartAfter(img);
-            range.setEndAfter(img);
-
-            /* Get the selection from the shadowRoot */
-            const selection = this.Utilities.getSelection();
-            if (selection !== null) {
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+            this.Utilities.reselectNode(img);
 
             /* Update the stored cursor position to the new position */
             this.imageSelection = range.cloneRange();
@@ -3873,6 +3845,7 @@ class RTBlazorfiedLinkDialog {
             else {
                 element.removeAttribute('target');
             }
+            this.Utilities.reselectNode(element);
         }
         else {
             if (this.linkSelection != null) {
@@ -3888,6 +3861,7 @@ class RTBlazorfiedLinkDialog {
                 }
                 range.deleteContents();
                 range.insertNode(anchor);
+                this.Utilities.reselectNode(anchor);
             }
         }
         this.Utilities.closeDialog("rich-text-box-link-modal");
