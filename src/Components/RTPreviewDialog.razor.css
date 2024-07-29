@@ -73,7 +73,7 @@
 
 .rich-text-box-preview-window {
     width: 640px;
-    height: 480px;
+    height: 380px;
     overflow: auto;
     background-color: #FFF;
     resize: both;
