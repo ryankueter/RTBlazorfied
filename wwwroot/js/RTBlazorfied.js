@@ -446,10 +446,26 @@ class RTBlazorfied {
 
         if (previewWindow) {
             this.loadPreviewWindow(previewWindow);
+            this.addPreviewEventListeners(this.preview);
             this.preview.show();
             previewWindow.scrollTop = 0;
+            previewWindow.focus();
         }
     }
+    addPreviewEventListeners = (dialog) => {
+        dialog.addEventListener('keydown', (event) => {
+            console.log(event.key);
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.closePreview();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                this.closePreview();
+            }
+        });
+    }
+
     loadPreviewWindow = (previewWindow) => {
         if (this.content.style.display === "block") {
             const html = this.html();
