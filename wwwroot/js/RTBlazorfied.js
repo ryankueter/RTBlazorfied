@@ -35,8 +35,8 @@ class RTBlazorfied {
         this.ColorPickers = {};
         const colorModal = "rich-text-box-text-color-modal";
         const bgColorModal = "rich-text-box-text-bg-color-modal";
-        this.ColorPickers[colorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, colorModal, this.NodeManager);
-        this.ColorPickers[bgColorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, bgColorModal, this.NodeManager);
+        this.ColorPickers[colorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, colorModal, this.NodeManager, this.Utilities);
+        this.ColorPickers[bgColorModal] = new RTBlazorfiedColorDialog(this.shadowRoot, this.content, bgColorModal, this.NodeManager, this.Utilities);
 
         /* Initialize the Link Dialog */
         this.LinkDialog = new RTBlazorfiedLinkDialog(this.shadowRoot, this.content, this.Utilities);
@@ -534,6 +534,7 @@ class RTBlazorfied {
         /* Open the color picker */
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.Utilities.saveSelection(selection);
         if (selection) {
             const colorPicker = this.ColorPickers["rich-text-box-text-color-modal"];
             this.selection = colorPicker.openColorPicker(selection, this.content);
@@ -550,9 +551,6 @@ class RTBlazorfied {
         const modal = "rich-text-box-text-color-modal";
         const colorPicker = this.ColorPickers[modal];
         colorPicker.insertColor();
-
-        /* Close the dialog */
-        this.closeDialog(modal);
     }
     removeTextColor = () => {
         this.currentColor = null;
@@ -566,6 +564,7 @@ class RTBlazorfied {
         /* Open the color picker */
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.Utilities.saveSelection(selection);
         if (selection !== null) {
             const colorPicker = this.ColorPickers["rich-text-box-text-bg-color-modal"];
             this.selection = colorPicker.openColorPicker(selection, this.content);
@@ -583,8 +582,6 @@ class RTBlazorfied {
         const modal = "rich-text-box-text-bg-color-modal";
         const colorPicker = this.ColorPickers[modal];
         colorPicker.insertColor();
-        /* Close the dialog */
-        this.closeDialog(modal);
     }
     openTableDialog = () => {
         /* Lock the toolbar */
@@ -809,12 +806,8 @@ class RTBlazorfied {
     }
 
     closeDialog = (id) => {
-        this.Utilities.closeDialog(id);
         this.lockToolbar = false;
-        if (this.savedSelection) {
-            this.Utilities.restoreSelection(window.getSelection(), this.savedSelection);
-        }
-        this.content.focus();
+        this.Utilities.closeDialog(id, this.savedSelection);
     }
     enableButtons = () => {
         const dropdowns = this.shadowRoot.querySelectorAll('.rich-text-box-dropdown-btn');
@@ -938,7 +931,7 @@ class RTBlazorfiedStateManager {
         observer.observe(this.content, config);
     }
 
-    updateBinding = async () => {
+    updateBinding = () => {
         if (this.content.style.display === "block") {
             if (this.dotNetObjectReference) {
                 this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
@@ -952,8 +945,11 @@ class RTBlazorfiedStateManager {
     }
 
     /* History */
-    saveState = async () => {
-        const currentState = this.content.innerHTML;
+    saveState = () => {
+        const currentState = {
+            html: this.content.innerHTML,
+            selection: this.saveSelection(),
+        };
 
         /* If there is any change in the content */
         if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
@@ -976,21 +972,74 @@ class RTBlazorfiedStateManager {
         }        
     };
     /* History */
-    goBack = async () => {
+    goBack = () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;
             this.currentIndex--;
-            this.content.innerHTML = this.history[this.currentIndex];
-            window.getSelection().removeAllRanges();
+            this.restoreState(this.history[this.currentIndex]);
         }
     };
-    goForward = async () => {
+    goForward = () => {
         if (this.currentIndex < this.history.length - 1) {
             this.isNavigating = true;
             this.currentIndex++;
-            this.content.innerHTML = this.history[this.currentIndex];
-            window.getSelection().removeAllRanges();
+            this.restoreState(this.history[this.currentIndex]);
         }
+    };
+
+    saveSelection = () => {
+        const selection = this.Utilities.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const preSelectionRange = range.cloneRange();
+            preSelectionRange.selectNodeContents(this.content);
+            preSelectionRange.setEnd(range.startContainer, range.startOffset);
+            const start = preSelectionRange.toString().length;
+
+            return {
+                start: start,
+                end: start + range.toString().length
+            };
+        }
+        return null;
+    };
+
+    restoreSelection = (savedSelection) => {
+        if (savedSelection) {
+            const charIndex = (node, index) => {
+                let currentIndex = 0;
+                if (node.nodeType === Node.TEXT_NODE) {
+                    return index <= node.length ? [node, index] : [null, index - node.length];
+                } else {
+                    for (let i = 0; i < node.childNodes.length; i++) {
+                        const childNode = node.childNodes[i];
+                        const [foundNode, remainingIndex] = charIndex(childNode, index - currentIndex);
+                        if (foundNode) {
+                            return [foundNode, remainingIndex];
+                        }
+                        currentIndex += childNode.textContent.length;
+                    }
+                }
+                return [null, index - currentIndex];
+            };
+
+            const range = document.createRange();
+            let [startNode, startOffset] = charIndex(this.content, savedSelection.start);
+            let [endNode, endOffset] = charIndex(this.content, savedSelection.end);
+
+            if (startNode && endNode) {
+                range.setStart(startNode, startOffset);
+                range.setEnd(endNode, endOffset);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+    };
+    restoreState = (state) => {
+        this.content.innerHTML = state.html;
+        this.restoreSelection(state.selection);
+        this.content.focus();
     };
 }
 
@@ -2860,11 +2909,15 @@ class RTBlazorfiedUtilities {
         this.content = content;
     }
 
-    closeDialog = (id) => {
+    closeDialog = (id, savedSelection) => {
         const e = this.shadowRoot.getElementById(id);
         if (e != null) {
             e.close();
         }
+        if (savedSelection) {
+            this.restoreSelection(window.getSelection(), savedSelection);
+        }
+        this.content.focus();
     }
     addClasses = (classlist, element) => {
         if (classlist == null || element == null) { return; }
@@ -2978,19 +3031,17 @@ class RTBlazorfiedTableDialog {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 this.insertTable();
-                this.dialog.close();
-                this.content.focus();
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
     }
 
     openTableDialog = (selection) => {
         this.resetTableDialog();
+        this.savedSelection = this.Utilities.saveSelection(selection);
 
         if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && selection.anchorNode.parentNode.nodeName === "TD") {
 
@@ -3078,8 +3129,7 @@ class RTBlazorfiedTableDialog {
         const classes = this.shadowRoot.getElementById("rich-text-box-table-classes");
 
         if (rows.value.length == 0 || columns.value.length == 0) {
-            this.Utilities.closeDialog("rich-text-box-table-modal");
-            this.content.focus();
+            this.closeDialog();
             return;
         }
 
@@ -3115,7 +3165,10 @@ class RTBlazorfiedTableDialog {
             }
         }
 
-        this.Utilities.closeDialog("rich-text-box-table-modal");
+        this.closeDialog();
+    }
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-table-modal", this.savedSelection);
     }
     createTable = (r, c, w) => {
         const rows = parseInt(r, 10);
@@ -3199,13 +3252,10 @@ class RTBlazorfiedMediaDialog {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 this.insertMedia();
-                this.dialog.close();
-                this.content.focus();
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
     }
@@ -3213,6 +3263,7 @@ class RTBlazorfiedMediaDialog {
     openMediaDialog = (selection) => {
         if (selection !== null) {
             this.resetMediaDialog();
+            this.savedSelection = this.Utilities.saveSelection(selection);
 
             if (selection.rangeCount > 0) {
                 this.embedSelection = selection.getRangeAt(0).cloneRange();
@@ -3279,7 +3330,11 @@ class RTBlazorfiedMediaDialog {
             this.embedSelection = range.cloneRange();
         }
 
-        this.Utilities.closeDialog("rich-text-box-embed-modal");
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-embed-modal", this.savedSelection);
     }
 }
 class RTBlazorfiedCodeBlockDialog {
@@ -3300,14 +3355,11 @@ class RTBlazorfiedCodeBlockDialog {
                     event.preventDefault();
                     event.stopPropagation();
                     this.insertCodeBlock();
-                    this.dialog.close();
-                    this.content.focus();
                 }
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
     }
@@ -3315,6 +3367,7 @@ class RTBlazorfiedCodeBlockDialog {
     openCodeBlockDialog = (selection) => {
         if (selection !== null) {
             this.resetCodeBlockDialog();
+            this.savedSelection = this.Utilities.saveSelection(selection);
 
             const code = this.shadowRoot.getElementById('rich-text-box-code');
             const classes = this.shadowRoot.getElementById('rich-text-box-code-css-classes');
@@ -3397,7 +3450,11 @@ class RTBlazorfiedCodeBlockDialog {
                 this.Utilities.reselectNode(pre);
             }
         }
-        this.Utilities.closeDialog("rich-text-box-code-block-modal");
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-code-block-modal", this.savedSelection);
     }
 }
 class RTBlazorfiedBlockQuoteDialog {
@@ -3417,20 +3474,18 @@ class RTBlazorfiedBlockQuoteDialog {
                     event.preventDefault();
                     event.stopPropagation();
                     this.insertBlockQuote();
-                    this.dialog.close();
-                    this.content.focus();
                 }
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
     }
     openBlockQuoteDialog = (selection) => {
         if (selection !== null) {
             this.resetBlockQuoteDialog();
+            this.savedSelection = this.Utilities.saveSelection(selection);
 
             const quote = this.shadowRoot.getElementById('rich-text-box-quote');
             const cite = this.shadowRoot.getElementById('rich-text-box-cite');
@@ -3522,7 +3577,11 @@ class RTBlazorfiedBlockQuoteDialog {
                 this.Utilities.reselectNode(blockquote);
             }
         }
-        this.Utilities.closeDialog("rich-text-box-block-quote-modal");
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-block-quote-modal", this.savedSelection);
     }
 }
 
@@ -3540,18 +3599,14 @@ class RTBlazorfiedUploadImageDialog {
                 if (event.key === 'Enter') {
                     event.preventDefault();
                     this.insertUploadedImage();
-                    this.dialog.close();
-                    this.content.focus();
                 }
                 if (event.key === 'Escape') {
                     event.preventDefault();
-                    this.dialog.close();
-                    this.content.focus();
+                    this.closeDialog();
                 }
             });
         }
         
-
         const actualBtn = this.shadowRoot.getElementById('rich-text-box-upload-image-file');
         actualBtn.addEventListener('change', this.handleFileSelect);
     }
@@ -3579,6 +3634,7 @@ class RTBlazorfiedUploadImageDialog {
     openUploadImageDialog = (selection) => {
         if (selection !== null) {
             this.resetUploadImageDialog();
+            this.savedSelection = this.Utilities.saveSelection(selection);
 
             this.range = selection.getRangeAt(0).cloneRange();
             this.shadowRoot.getElementById("rich-text-box-upload-image-modal").show();
@@ -3639,7 +3695,11 @@ class RTBlazorfiedUploadImageDialog {
 
             this.Utilities.reselectNode(this.image);
         }
-        this.Utilities.closeDialog("rich-text-box-upload-image-modal");
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-upload-image-modal", this.savedSelection);
     }
 }
 class RTBlazorfiedImageDialog {
@@ -3655,13 +3715,10 @@ class RTBlazorfiedImageDialog {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 this.insertImage();
-                this.dialog.close();
-                this.content.focus();
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
     }
@@ -3669,6 +3726,7 @@ class RTBlazorfiedImageDialog {
     openImageDialog = (selection) => {
         if (selection !== null) {
             this.resetImageDialog();
+            this.savedSelection = this.Utilities.saveSelection(selection);
 
             if (selection && selection.rangeCount > 0) {
                 this.imageSelection = selection.getRangeAt(0).cloneRange();
@@ -3736,7 +3794,11 @@ class RTBlazorfiedImageDialog {
             /* Update the stored cursor position to the new position */
             this.imageSelection = range.cloneRange();
         }
-        this.Utilities.closeDialog("rich-text-box-image-modal");
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-image-modal", this.savedSelection);
     }
 }
 class RTBlazorfiedLinkDialog {
@@ -3752,18 +3814,16 @@ class RTBlazorfiedLinkDialog {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 this.insertLink();
-                this.dialog.close();
-                this.content.focus();
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.dialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
     }
     openLinkDialog = (selection) => {
         if (selection !== null) {
+            this.savedSelection = this.Utilities.saveSelection(selection);
             this.resetLinkDialog();
 
             if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
@@ -3827,7 +3887,7 @@ class RTBlazorfiedLinkDialog {
         const classes = this.shadowRoot.getElementById("rich-text-box-link-css-classes");
 
         if (link.value.length == 0 || linktext.value.length == 0) {
-            this.Utilities.closeDialog("rich-text-box-link-modal");
+            this.closeDialog();
             return;
         }
 
@@ -3864,7 +3924,11 @@ class RTBlazorfiedLinkDialog {
                 this.Utilities.reselectNode(anchor);
             }
         }
-        this.Utilities.closeDialog("rich-text-box-link-modal");
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog("rich-text-box-link-modal", this.savedSelection);
     }
 
     removeLink = () => {
@@ -3889,11 +3953,12 @@ class RTBlazorfiedLinkDialog {
     }
 }
 class RTBlazorfiedColorDialog {
-    constructor(shadowRoot, content, id, nodeManager) {
+    constructor(shadowRoot, content, id, nodeManager, utilities) {
         this.shadowRoot = shadowRoot;
         this.content = content;
         this.id = id;
         this.NodeManager = nodeManager;
+        this.Utilities = utilities;
         this.init();
     }
 
@@ -3904,13 +3969,10 @@ class RTBlazorfiedColorDialog {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 this.insertColor();
-                this.colorPickerDialog.close();
-                this.content.focus();
             }
             if (event.key === 'Escape') {
                 event.preventDefault();
-                this.colorPickerDialog.close();
-                this.content.focus();
+                this.closeDialog();
             }
         });
 
@@ -3977,6 +4039,8 @@ class RTBlazorfiedColorDialog {
 
     openColorPicker = (selection, content) => {
         this.resetColorDialog();
+        this.savedSelection = this.Utilities.saveSelection(selection);
+
         if (selection !== null && selection.anchorNode != null && selection.anchorNode != content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != content && content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.style != null) {
             this.selection = selection.getRangeAt(0).cloneRange();
 
@@ -4027,6 +4091,12 @@ class RTBlazorfiedColorDialog {
                 this.NodeManager.updateNode(modaltype, this.currentColor, this.selection);
             }
         }
+
+        this.closeDialog();
+    }
+
+    closeDialog = () => {
+        this.Utilities.closeDialog(this.id, this.savedSelection);
     }
 
     resetColorDialog = () => {
