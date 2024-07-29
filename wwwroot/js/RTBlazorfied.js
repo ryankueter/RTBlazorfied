@@ -477,6 +477,8 @@ class RTBlazorfied {
         this.EditMode = true;
         this.disablePreview();
         this.preview.close();
+        this.source.focus();
+        this.content.focus();
     }
     enablePreview = () => {
         this.shadowRoot.getElementById('blazing-rich-text-source').disabled = true;
@@ -590,6 +592,7 @@ class RTBlazorfied {
 
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.TableDialog.openTableDialog(selection);
         }
@@ -698,12 +701,26 @@ class RTBlazorfied {
 
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.LinkDialog.openLinkDialog(selection);
         }
         else {
             this.Utilities.showFadingBar("No content selected.");
         }
+    }
+    saveSelection = (selection) => {
+        if (selection.rangeCount > 0) {
+            return selection.getRangeAt(0).cloneRange();
+        }
+        return null;
+    }
+    restoreSelection = (selection, savedSelection) => {
+        if (savedSelection) {
+            selection.removeAllRanges();
+            selection.addRange(savedSelection);
+        }
+        this.content.focus();
     }
     insertLink = () => {
         this.LinkDialog.insertLink();
@@ -720,6 +737,7 @@ class RTBlazorfied {
 
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.BlockQuoteDialog.openBlockQuoteDialog(selection);
         }
@@ -737,6 +755,7 @@ class RTBlazorfied {
 
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.CodeBlockDialog.openCodeBlockDialog(selection);
         }
@@ -754,6 +773,7 @@ class RTBlazorfied {
 
         //this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.MediaDialog.openMediaDialog(selection);
         }
@@ -771,6 +791,7 @@ class RTBlazorfied {
 
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.UploadImageDialog.openUploadImageDialog(selection);
         }
@@ -787,6 +808,7 @@ class RTBlazorfied {
 
         this.content.focus();
         const selection = this.Utilities.getSelection();
+        this.savedSelection = this.saveSelection(selection);
         if (selection !== null) {
             this.ImageDialog.openImageDialog(selection);
         }
@@ -802,6 +824,9 @@ class RTBlazorfied {
     closeDialog = (id) => {
         this.Utilities.closeDialog(id);
         this.lockToolbar = false;
+        if (this.savedSelection) {
+            this.restoreSelection(window.getSelection(), this.savedSelection);
+        }
         this.content.focus();
     }
     enableButtons = () => {
@@ -2880,6 +2905,7 @@ class RTBlazorfiedUtilities {
         }
         return null;
     }
+
     showFadingBar = (message) => {
         const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
         const messageElement = fadingBar.querySelector('.rich-text-box-message');
@@ -2903,7 +2929,6 @@ class RTBlazorfiedUtilities {
         const fadingBar = this.shadowRoot.getElementById('rich-text-box-message-bar');
         fadingBar.classList.add('rich-text-box-message-hidden');
     }
-
     saveCaretPosition = () => {
         const selection = this.getSelection();
         if (selection !== null) {
@@ -2914,7 +2939,6 @@ class RTBlazorfiedUtilities {
         }
         return null;
     }
-
     restoreCaretPosition = (element, savedPos) => {
         const selection = this.getSelection();
         if (selection !== null && savedPos !== null) {
