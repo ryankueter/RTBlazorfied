@@ -1,6 +1,98 @@
 ﻿@using RichTextBlazorfied;
 @namespace RichTextBlazorfied.Components
 
+<!-- CSS Isolation didn't work in every scenario :( -->
+<style>
+.rich-text-box-modal {
+    z-index: 2;
+    border: 0;
+    border-style: none;
+    background: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    border: 1px solid #888;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    user-select: none;
+}
+
+.rich-text-box-modal-title {
+    font-weight: bold;
+    font-size: 20px;
+    font-family: "Arial, sans-serif";
+    color: #FFF;
+}
+
+.rich-text-box-modal-close {
+    color: #DDD;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.rich-text-box-modal-close:hover,
+.rich-text-box-modal-close:focus {
+    color: #FFF;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.rich-text-box-scroll::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+    opacity: .8;
+}
+
+.rich-text-box-scroll::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.rich-text-box-scroll::-webkit-scrollbar-thumb {
+    background: #CCC;
+    border-radius: 5px;
+}
+
+.rich-text-box-scroll::-webkit-scrollbar-thumb:hover {
+    background: #DDD;
+    cursor: default;
+}
+
+.rich-text-box-form-button {
+    margin-top: 5px;
+    padding: 5px 30px !important;
+    font-size: 16px;
+    font-family: "Arial, sans-serif";
+    transition: 0.3s;
+    background-color: rgb(100, 100, 100, .8);
+    border-style: solid;
+    border-width: 1px;
+    border-color: #888;
+    border-radius: 5px;
+    color: #FFF;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.rich-text-box-form-button:hover {
+    background-color: rgb(150, 150, 150, .8);
+    border-color: #AAA;
+}
+
+.rich-text-box-preview-window {
+    width: 640px;
+    height: 380px;
+    overflow: auto;
+    background-color: #FFF;
+    resize: both;
+    padding: 15px;
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+@@media screen and (max-width: 700px) {
+    .rich-text-box-preview-window {
+        width: 100%;
+    }
+}
+
+</style>
 <dialog id="@DialogId" class="rich-text-box-modal">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="align-self: flex-start;">
