@@ -947,7 +947,7 @@ class RTBlazorfiedStateManager {
         observer.observe(this.content, config);
     }
 
-    updateBinding = () => {
+    updateBinding = async () => {
         if (this.content.style.display === "block") {
             if (this.dotNetObjectReference) {
                 this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
@@ -961,7 +961,7 @@ class RTBlazorfiedStateManager {
     }
 
     /* History */
-    saveState = () => {
+    saveState = async () => {
         const currentState = {
             html: this.content.innerHTML,
             selection: this.saveSelection(),
@@ -988,14 +988,14 @@ class RTBlazorfiedStateManager {
         }        
     };
     /* History */
-    goBack = () => {
+    goBack = async () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;
             this.currentIndex--;
             this.restoreState(this.history[this.currentIndex]);
         }
     };
-    goForward = () => {
+    goForward = async () => {
         if (this.currentIndex < this.history.length - 1) {
             this.isNavigating = true;
             this.currentIndex++;
