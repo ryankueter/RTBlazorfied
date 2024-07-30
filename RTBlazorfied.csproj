@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added a preview window, upload image functionality, and improved cursor positioning.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.225</Version>
-	  <AssemblyVersion>1.0.225</AssemblyVersion>
-	  <FileVersion>1.0.225</FileVersion>
+	  <Version>1.0.226</Version>
+	  <AssemblyVersion>1.0.226</AssemblyVersion>
+	  <FileVersion>1.0.226</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>

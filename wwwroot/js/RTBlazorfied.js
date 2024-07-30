@@ -855,7 +855,6 @@ class RTBlazorfied {
         this.enableButtons();
     };
     html = () => {
-        this.NodeManager.removeEmptyNodes();
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
@@ -919,6 +918,9 @@ class RTBlazorfiedStateManager {
                             this.saveState();
                             break;
                         case 'characterData':
+                            this.saveState();
+                            break;
+                        case 'subtree':
                             this.saveState();
                             break;
                         case 'childList':
@@ -1752,6 +1754,7 @@ class RTBlazorfiedNodeManager {
         if (selection !== null) {
             this.selectButtons(selection.anchorNode);
         }
+        this.removeEmptyNodes();
         this.content.focus();
     };
 
@@ -2410,6 +2413,15 @@ class RTBlazorfiedListProvider {
                     }
                     range.deleteContents();
                     range.insertNode(ulElement);
+
+                    /* Set the cursor position at the end of the newly inserted element */
+                    const newRange = document.createRange();
+                    newRange.selectNodeContents(ulElement);
+                    newRange.collapse(false); /* Move to the end of the ulElement */
+
+                    const newSelection = window.getSelection();
+                    newSelection.removeAllRanges();
+                    newSelection.addRange(newRange);
                 }
                 else {
                     const ulElement = document.createElement(type);
@@ -2436,7 +2448,7 @@ class RTBlazorfiedListProvider {
                                 node.remove();
                             }
                         });
-
+                        
                         range.deleteContents();
                         range.insertNode(ulElement);
                         range.selectNodeContents(ulElement);
@@ -3174,9 +3186,7 @@ class RTBlazorfiedTableDialog {
                 newRange.setStart(firstCell, 0);
                 newRange.setEnd(firstCell, 0);
 
-                let selection = document.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(newRange);
+                this.savedSelection = newRange;
             }
         }
 
@@ -3461,8 +3471,10 @@ class RTBlazorfiedCodeBlockDialog {
 
                 range.deleteContents();
                 range.insertNode(pre);
-
-                this.Utilities.reselectNode(pre);
+                range.setStartAfter(pre.lastChild);
+                range.setEndAfter(pre.lastChild);
+                
+                this.savedSelection = range;
             }
         }
         this.closeDialog();
@@ -3588,8 +3600,10 @@ class RTBlazorfiedBlockQuoteDialog {
 
                 range.deleteContents();
                 range.insertNode(blockquote);
+                range.setStartAfter(blockquote.lastChild);
+                range.setEndAfter(blockquote.lastChild);
 
-                this.Utilities.reselectNode(blockquote);
+                this.savedSelection = range;
             }
         }
         this.closeDialog();
@@ -3936,7 +3950,10 @@ class RTBlazorfiedLinkDialog {
                 }
                 range.deleteContents();
                 range.insertNode(anchor);
-                this.Utilities.reselectNode(anchor);
+                range.setStartAfter(anchor.lastChild);
+                range.setEndAfter(anchor.lastChild);
+
+                this.savedSelection = range;
             }
         }
         this.closeDialog();
