@@ -454,7 +454,6 @@ class RTBlazorfied {
     }
     addPreviewEventListeners = (dialog) => {
         dialog.addEventListener('keydown', (event) => {
-            console.log(event.key);
             if (event.key === 'Enter') {
                 event.preventDefault();
                 this.closePreview();
@@ -916,13 +915,13 @@ class RTBlazorfiedStateManager {
             if (this.content.style.display === "block" && !this.isNavigating) {
                 for (let mutation of mutationsList) {
                     switch (mutation.type) {
-                        case 'childList':
-                            this.saveState();
-                            break;
                         case 'attributes':
                             this.saveState();
                             break;
                         case 'characterData':
+                            this.saveState();
+                            break;
+                        case 'childList':
                             this.saveState();
                             break;
                     }
