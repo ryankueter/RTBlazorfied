@@ -964,9 +964,7 @@ class RTBlazorfiedStateManager {
 
     /* History */
     saveState = () => {
-        if (this.PreviousHtml === this.content.innerHTML) {
-            return;
-        }
+        if (this.PreviousHtml === this.content.innerHTML) { return; }
         const currentState = {
             html: this.content.innerHTML,
             selection: this.saveSelection(),
@@ -1103,6 +1101,8 @@ class RTBlazorfiedNodeManager {
             if (element != null && element != this.content && element.parentNode != null && this.content.contains(element.parentNode)) {
 
                 if (type == "none") {
+                    let caretPos = this.Utilities.saveCaretPosition();
+
                     /* Create a new div element */
                     const div = document.createElement('div');
 
@@ -1120,12 +1120,7 @@ class RTBlazorfiedNodeManager {
                     /* Replace the original element with the new div */
                     element.parentNode.replaceChild(div, element);
 
-                    if (sel.anchorNode != null && sel.rangeCount != 0) {
-                        const range = document.createRange();
-                        range.setStartAfter(sel.anchorNode);
-                        sel.removeAllRanges();
-                        sel.addRange(range);
-                    }
+                    this.Utilities.restoreCaretPosition(div, caretPos);
                 }
                 else {
                     let caretPos = this.Utilities.saveCaretPosition();
@@ -3957,7 +3952,7 @@ class RTBlazorfiedLinkDialog {
                 }
                 range.deleteContents();
                 range.insertNode(anchor);
-                range.setStartAfter(anchor.lastChild);
+                range.setStartBefore(anchor.firstChild);
                 range.setEndAfter(anchor.lastChild);
 
                 this.savedSelection = range;
@@ -3974,7 +3969,7 @@ class RTBlazorfiedLinkDialog {
         const selection = this.Utilities.getSelection();
         if (selection !== null) {
             const savedSelection = this.Utilities.saveSelection(selection);
-
+           
             if (selection.anchorNode != null && selection.anchorNode != this.content && selection.anchorNode.parentNode != null && this.content.contains(selection.anchorNode.parentNode) && selection.anchorNode.parentNode.nodeName === "A") {
                 const element = selection.anchorNode.parentNode;
                 const fragment = document.createDocumentFragment();
@@ -3984,7 +3979,7 @@ class RTBlazorfiedLinkDialog {
                 }
                 element.parentNode.insertBefore(fragment, element);
                 element.parentNode.removeChild(element);
-            }
+            }          
 
             // Restore the selection after the operation
             this.Utilities.restoreSelection(selection, savedSelection);
@@ -4123,6 +4118,7 @@ class RTBlazorfiedColorDialog {
         }
 
         if (this.selection !== null) {
+            this.savedSelection = this.Utilities.saveSelection(this.selection);
             if (this.currentColor === null) {
                 this.NodeManager.updateNode(modaltype, "None", this.selection);
             }
