@@ -28,9 +28,6 @@ class RTBlazorfied {
         /* Initialize List Provider */
         this.ListProvider = new RTBlazorfiedListProvider(this.shadowRoot, this.content, this.Utilities, this.NodeManager);
 
-        /* Create a state manager */
-        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.Utilities, this.dotNetObjectReference);
-
         /* Initialize the color pickers */
         this.ColorPickers = {};
         const colorModal = "rich-text-box-text-color-modal";
@@ -58,6 +55,9 @@ class RTBlazorfied {
 
         /* Table Dialog */
         this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content, this.Utilities);
+
+        /* Create a state manager */
+        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.Utilities, this.dotNetObjectReference);
 
         /* Add the event listeners */
         this.addEventListeners();
@@ -855,6 +855,7 @@ class RTBlazorfied {
         this.enableButtons();
     };
     html = () => {
+        this.NodeManager.removeEmptyNodes();
         return this.content.innerHTML;
     };
     loadHtml = (html) => {
@@ -948,7 +949,7 @@ class RTBlazorfiedStateManager {
         observer.observe(this.content, config);
     }
 
-    updateBinding = async () => {
+    updateBinding = () => {
         if (this.content.style.display === "block") {
             if (this.dotNetObjectReference) {
                 this.dotNetObjectReference.invokeMethodAsync('UpdateValue', this.content.innerHTML);
@@ -962,16 +963,22 @@ class RTBlazorfiedStateManager {
     }
 
     /* History */
-    saveState = async () => {
+    saveState = () => {
+        if (this.PreviousHtml === this.content.innerHTML) {
+            return;
+        }
         const currentState = {
             html: this.content.innerHTML,
             selection: this.saveSelection(),
         };
 
+        /* Prevent the editor from saving multiple copies */
+        this.PreviousHtml = this.content.innerHTML;
+
         /* If there is any change in the content */
         if (this.currentIndex === -1 || currentState !== this.history[this.currentIndex]) {
-            
-            /* Remove all future states */
+
+
             this.history = this.history.slice(0, this.currentIndex + 1);
             
             /* Add the new state */
@@ -989,14 +996,14 @@ class RTBlazorfiedStateManager {
         }        
     };
     /* History */
-    goBack = async () => {
+    goBack = () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;
             this.currentIndex--;
             this.restoreState(this.history[this.currentIndex]);
         }
     };
-    goForward = async () => {
+    goForward = () => {
         if (this.currentIndex < this.history.length - 1) {
             this.isNavigating = true;
             this.currentIndex++;
