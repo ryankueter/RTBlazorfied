@@ -985,7 +985,7 @@ class RTBlazorfiedStateManager {
             this.currentIndex++;
 
             /* Remove the oldest state if history exceeds 20 entries */
-            if (this.history.length > 40) {
+            if (this.history.length > 60) {
                 /* shift() removes the oldest entry */
                 this.history.shift();
                 this.currentIndex--;
