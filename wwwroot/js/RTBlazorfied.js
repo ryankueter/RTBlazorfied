@@ -2548,71 +2548,74 @@ class RTBlazorfiedListProvider {
         }
     }
     increaseIndent = (selection, list) => {
+
         /* Get selected nodes */
         let selectedNodes = this.getSelectedNodes(selection, list);
 
-        /* Create a new <ul> and append the selected <li> elements to it */
-        const newList = document.createElement(list.nodeName);
-        selectedNodes.forEach(item => {
-            const clonedItem = item.cloneNode(true); // Clone the node and its descendants
-            newList.appendChild(clonedItem);
-        });
-
-        /* Insert the new <ul> in place of the first <li> element */
+        /* Check if the previous sibling of the first selected node is a list */
         const firstItem = selectedNodes[0];
-        list.insertBefore(newList, firstItem);
+        const prevSibling = firstItem.previousElementSibling;
+        let targetList;
 
-        /* Remove the original selected nodes from the original list */
-        selectedNodes.forEach(item => list.removeChild(item));
+        if (prevSibling && prevSibling.nodeName === list.nodeName) {
+            // If the previous sibling is a list, use it as the target
+            targetList = prevSibling;
+        } else {
+            // Otherwise, create a new list
+            targetList = document.createElement(list.nodeName);
+            list.insertBefore(targetList, firstItem);
+        }
+
+        /* Move the selected nodes to the target list */
+        selectedNodes.forEach(item => {
+            targetList.appendChild(item);
+        });
 
         /*  Restore the selection */
         const newRange = document.createRange();
-
         /* Reselect the nodes */
-        if (newList.firstChild !== newList.lastChild) {
-            newRange.setStartBefore(newList.firstChild);
-            newRange.setEndAfter(newList.lastChild);
-
-            selection.removeAllRanges();
-            selection.addRange(newRange);
-        }
-        else {
-            newRange.setStart(newList, 0);
-            newRange.collapse(true);
-
-            selection.removeAllRanges();
-            selection.addRange(newRange);
-        }
+        newRange.setStartAfter(targetList.lastChild);
+        newRange.setEndAfter(targetList.lastChild);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
     }
     decreaseIndent = (list) => {
-        /* Check if the list is a <ul> or <ol> and has at least one child */
+        /* Check if the list has at least one child */
         if (list.nodeName !== 'UL' && list.nodeName !== 'OL' || list.children.length === 0) {
             return;
         }
 
-        /* Find the parent list element and the child list element */
+        /* Find the parent list element */
         const parentList = list.parentElement;
-        if (parentList.nodeName !== 'UL' && parentList.nodeName !== 'OL' || parentList.children.length === 0) {
+        if (parentList.nodeName !== 'UL' && parentList.nodeName !== 'OL') {
             this.removelist(list);
             return;
         }
 
-        const childList = parentList.querySelector('ul, ol');
-        if (!childList) {
-            return;
-        }
+        /* Collect the nodes to move and their nested lists */
+        const nodesToMove = Array.from(list.children);
+        const fragment = document.createDocumentFragment();
 
-        /* Collect the nodes to be moved from the child list */
-        const nodesToMove = Array.from(childList.children);
+        /* Move each node and its nested lists into the fragment */
+        nodesToMove.forEach(node => {
+            
+            fragment.appendChild(node);
 
-        /* Insert the nodes from the child list into the parent list */
-        nodesToMove.forEach(item => {
-            parentList.insertBefore(item, list.nextSibling);
+            /* Move nested lists into the fragment as well */
+            const nestedLists = node.querySelectorAll('ul, ol');
+            nestedLists.forEach(nestedList => {
+                fragment.appendChild(nestedList);
+            });
         });
+
+        /* Insert nodes from the fragment into the parent list */
+        const nextSibling = list.nextSibling;
+        parentList.insertBefore(fragment, nextSibling);
 
         /* Remove the child list from the parent */
         parentList.removeChild(list);
     }
+    
     getSelectedNodes = (selection, list) => {
         const selectedNodes = [];
 
