@@ -2555,9 +2555,14 @@ class RTBlazorfiedListProvider {
         /* Check if the previous sibling of the first selected node is a list */
         const firstItem = selectedNodes[0];
         const prevSibling = firstItem.previousElementSibling;
+        const nextSibling = firstItem.nextElementSibling;
         let targetList;
 
-        if (prevSibling && prevSibling.nodeName === list.nodeName) {
+        if (nextSibling && nextSibling.nodeName === list.nodeName) {
+            // If the previous sibling is a list, use it as the target
+            targetList = nextSibling;
+        }
+        else if (prevSibling && prevSibling.nodeName === list.nodeName) {
             // If the previous sibling is a list, use it as the target
             targetList = prevSibling;
         } else {
