@@ -392,23 +392,32 @@ class RTBlazorfied {
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
                 if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
-                    switch (selection.anchorNode.parentNode.nodeName) {
-                        case "BLOCKQUOTE":
-                            event.preventDefault();
-                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
-                            break;
-                        case "CODE":
-                            event.preventDefault();
-                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
-                            break;
-                        case "SPAN":
-                            event.preventDefault();
-                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
-                            break;
+                    if (this.isBreakable(selection.anchorNode.parentNode.nodeName)) {
+                        event.preventDefault();
+                        this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
                     }
                 }
             }
         }
+    }
+
+    isBreakable = (node) => {
+        let breakable = false;
+        switch (node) {
+            case "BLOCKQUOTE":
+                breakable = true;
+                break;
+            case "CODE":
+                breakable = true;
+                break;
+            case "P":
+                breakable = true;
+                break;
+            case "SPAN":
+                breakable = true;
+                break;
+        }
+        return breakable;
     }
 
     changeFontSize = (increment) => {
@@ -2529,6 +2538,7 @@ class RTBlazorfiedListProvider {
                     }
                     list.parentNode.insertBefore(child, list);
                 }
+
                 /* Remove the now empty listItem */
                 list.removeChild(listItem);
             }
