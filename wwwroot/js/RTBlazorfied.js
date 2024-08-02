@@ -2503,15 +2503,10 @@ class RTBlazorfiedListProvider {
             selection.addRange(newRange);
         }
     }
+    
     removelist = (list) => {
         if (list == null || list == this.content || !this.content.contains(list)) { return; }
-
-        const childList = list.querySelector('ul, ol');
-        if (childList !== null) {
-            this.Utilities.showFadingBar("The list contains childnodes and cannot be removed.");
-            return;
-        }
-
+        
         /* Variable to store the first node moved out of the list */
         let firstNode = null;
 
@@ -2519,17 +2514,24 @@ class RTBlazorfiedListProvider {
         while (list.firstChild) {
             const listItem = list.firstChild;
 
-            /* Move each child node of listItem to before list */
-            while (listItem.firstChild) {
-                const child = listItem.firstChild;
+            if (listItem.nodeName === "UL" || listItem.nodeName === "OL") {
+                /* If the list item is itself a list, preserve it entirely */
                 if (!firstNode) {
-                    firstNode = child; // Store the first node
+                    firstNode = listItem;
                 }
-                list.parentNode.insertBefore(child, list);
+                list.parentNode.insertBefore(listItem, list);
+            } else {
+                /* Move each child node of listItem to before list */
+                while (listItem.firstChild) {
+                    const child = listItem.firstChild;
+                    if (!firstNode) {
+                        firstNode = child;
+                    }
+                    list.parentNode.insertBefore(child, list);
+                }
+                /* Remove the now empty listItem */
+                list.removeChild(listItem);
             }
-
-            /* Remove the now empty listItem */
-            list.removeChild(listItem);
         }
 
         /* Remove the ordered list element */
@@ -2584,6 +2586,7 @@ class RTBlazorfiedListProvider {
         selection.removeAllRanges();
         selection.addRange(newRange);
     }
+
     decreaseIndent = (list) => {
         /* Check if the list has at least one child */
         if (list.nodeName !== 'UL' && list.nodeName !== 'OL' || list.children.length === 0) {
