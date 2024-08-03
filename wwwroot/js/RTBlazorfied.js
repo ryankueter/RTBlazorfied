@@ -57,7 +57,7 @@ class RTBlazorfied {
         this.TableDialog = new RTBlazorfiedTableDialog(this.shadowRoot, this.content, this.Utilities);
 
         /* Create a state manager */
-        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.Utilities, this.dotNetObjectReference);
+        this.StateManager = new RTBlazorfiedStateManager(this.content, this.source, this.Utilities, this.dotNetObjectReference, this.contentContainer);
 
         /* Add the event listeners */
         this.addEventListeners();
@@ -71,8 +71,8 @@ class RTBlazorfied {
         style.textContent = this.styles;
         this.shadowRoot.appendChild(style);
 
-        const contentContainer = document.createElement('div');
-        contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
+        this.contentContainer = document.createElement('div');
+        this.contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
 
         this.container = document.createElement('div');
         this.container.setAttribute('class', 'rich-text-box-container');
@@ -113,10 +113,10 @@ class RTBlazorfied {
         this.container.appendChild(toolbar);
 
         //contentContainer.appendChild(fadingBar);
-        contentContainer.appendChild(this.content);
-        contentContainer.appendChild(this.source);
+        this.contentContainer.appendChild(this.content);
+        this.contentContainer.appendChild(this.source);
         this.container.appendChild(fadingBar);
-        this.container.appendChild(contentContainer);
+        this.container.appendChild(this.contentContainer);
 
         this.shadowRoot.appendChild(this.container);
     }
@@ -458,6 +458,7 @@ class RTBlazorfied {
             this.addPreviewEventListeners(this.preview);
             this.preview.show();
             previewWindow.scrollTop = 0;
+            previewWindow.scrollLeft = 0;
             previewWindow.focus();
         }
     }
@@ -846,21 +847,23 @@ class RTBlazorfied {
         buttons.forEach(button => button.disabled = true);
     }
     getHtml = async () => {
+        this.contentScroll = this.Utilities.saveScroll(this.contentContainer);
         const html = this.html();
         this.loadInnerText(html);
         this.content.style.display = "none";
         this.source.style.display = "block";
         this.source.focus();
-        this.source.scrollTop = 0;
-        this.source.scrollLeft = 0;
+        this.Utilities.restoreScroll(this.source, this.sourceScroll);
         this.disableButtons();
     };
     getCode = async () => {
+        this.sourceScroll = this.Utilities.saveScroll(this.source);
         const plaintext = this.source.value;
         this.loadHtml(plaintext);
         this.content.style.display = "block";
-        this.source.style.display = "none";
+        this.source.style.display = "none";       
         this.content.focus();
+        this.Utilities.restoreScroll(this.contentContainer, this.contentScroll);
         this.enableButtons();
     };
     html = () => {
@@ -903,11 +906,12 @@ class RTBlazorfied {
 }
 
 class RTBlazorfiedStateManager {
-    constructor(content, source, utilities, dotNetObjectReference) {
+    constructor(content, source, utilities, dotNetObjectReference, contentContainer) {
         this.content = content;
         this.source = source;
         this.Utilities = utilities;
         this.dotNetObjectReference = dotNetObjectReference;
+        this.contentContainer = contentContainer;
 
         /* Initialize history */
         this.history = [];
@@ -977,6 +981,7 @@ class RTBlazorfiedStateManager {
         const currentState = {
             html: this.content.innerHTML,
             selection: this.saveSelection(),
+            scroll: this.Utilities.saveScroll(this.contentContainer)
         };
 
         /* Prevent the editor from saving multiple copies */
@@ -1070,6 +1075,7 @@ class RTBlazorfiedStateManager {
     restoreState = (state) => {
         this.content.innerHTML = state.html;
         this.restoreSelection(state.selection);
+        this.Utilities.restoreScroll(this.contentContainer, state.scroll);
         this.content.focus();
     };
 }
@@ -3066,6 +3072,12 @@ class RTBlazorfiedUtilities {
             selection.addRange(range);
         }
     }
+    saveScroll = (element) => {
+        return element.scrollTop;
+    };
+    restoreScroll = (element, scrollTop) => {
+        element.scrollTop = scrollTop;
+    };
 }
 class RTBlazorfiedTableDialog {
     constructor(shadowRoot, content, utilities) {
