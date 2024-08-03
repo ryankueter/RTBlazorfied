@@ -677,7 +677,6 @@ public partial class RTBlazorfied
     public async Task<string?> GetHtmlAsync() =>
         await js.InvokeAsync<string>("RTBlazorfied_Method", "html", id);
 
-    private string? Mode { get; set; }
     private bool Editable { get; set; } = true;
     protected override void OnInitialized()
     {
@@ -688,7 +687,6 @@ public partial class RTBlazorfied
             Options(_options!);
         }
         LoadOptions();
-        Mode = "html";
     }
 
     [Parameter]
@@ -1472,16 +1470,10 @@ public partial class RTBlazorfied
     {
         if (!_settingParameter)
         {
+            // Throw an error informing the user that a serious error occured.
             try
             {
-                if (Mode == "html")
-                {
-                    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadHtml", id, Value);
-                }
-                else
-                {
-                    await js.InvokeVoidAsync("RTBlazorfied_Method", "loadInnerText", id, Value);
-                }
+                await js.InvokeVoidAsync("RTBlazorfied_Method", "loadView", id, Value);
             }
             catch
             {
@@ -1528,7 +1520,6 @@ public partial class RTBlazorfied
 
             var imageBytes = memoryStream.ToArray();
             var Base64Image = Convert.ToBase64String(imageBytes);
-            Console.WriteLine(Base64Image);
         }
     }
     private async Task Undo() => await js.InvokeVoidAsync("RTBlazorfied_Method", "goBack", id);
@@ -1554,21 +1545,6 @@ public partial class RTBlazorfied
     public string GetPreviewId() => $"{id}_Preview";
     private async Task OpenPreview() => await js.InvokeVoidAsync("RTBlazorfied_Method", "openPreview", id);
     private async Task ClosePreview() => await js.InvokeVoidAsync("RTBlazorfied_Method", "closePreview", id);
-
-    private async Task OpenCode()
-    {
-        if (Mode == "html")
-        {
-            Mode = "code";
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "getHtml", id);
-        }
-        else
-        {
-            Mode = "html";
-            await js.InvokeVoidAsync("RTBlazorfied_Method", "getCode", id);
-        }
-    }
+    private async Task OpenCode() => await js.InvokeVoidAsync("RTBlazorfied_Method", "toggleView", id);
     #endregion
-
-    
 }

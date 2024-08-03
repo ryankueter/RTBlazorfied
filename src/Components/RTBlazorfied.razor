@@ -3,7 +3,7 @@
 <style>
     .rich-text-box-alert {
         padding: 30px;
-        background-color: #333;
+        background-color: #55AAFF;
         color: white;
         opacity: 1;
         transition: opacity 0.6s;
@@ -11,17 +11,18 @@
         border-radius: 8px;
         border-width: 3px;
         border-style: solid;
-        border-color: #222
+        border-color: #55AAFF
     }
+
 </style>
 
 @if (_error)
 {
     <div class="rich-text-box-alert">
         <h4>RT Blazorfied Encountered an Error</h4>
-        <div>
-            Make certain the site has the following reference:
-        </div>
+        <p>
+            Make certain the following reference is included:
+        </p>
         <div>
             &lt;script src="_content/RTBlazorfied/js/RTBlazorfied.js"&gt;&lt;/script&gt;
         </div>

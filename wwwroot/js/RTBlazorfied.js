@@ -269,12 +269,7 @@ class RTBlazorfied {
         }
         if (event.ctrlKey && event.shiftKey && event.key === 'A') {
             event.preventDefault();
-            if (this.EditMode === true) {
-                this.getHtml();
-            }
-            else {
-                this.getCode();
-            }
+            this.toggleView();
         }
         if (event.ctrlKey && event.shiftKey && event.key === '&') {
             event.preventDefault();
@@ -846,6 +841,14 @@ class RTBlazorfied {
         const buttons = this.shadowRoot.querySelectorAll('.rich-text-box-menu-item');
         buttons.forEach(button => button.disabled = true);
     }
+    toggleView = () => {
+        if (this.EditMode === true) {
+            this.getHtml();
+        }
+        else {
+            this.getCode();
+        }
+    }
     getHtml = async () => {
         this.contentScroll = this.Utilities.saveScroll(this.contentContainer);
         const html = this.html();
@@ -875,6 +878,14 @@ class RTBlazorfied {
         this.NodeManager.removeEmptyNodes();
         return this.content.innerHTML;
     };
+    loadView = (value) => {
+        if (this.EditMode === true) {
+            this.loadHtml(value);
+        }
+        else {
+            this.loadInnerText(value);
+        }
+    }
     loadHtml = (html) => {
         this.EditMode = true;
 
