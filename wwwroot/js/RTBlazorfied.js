@@ -861,8 +861,13 @@ class RTBlazorfied {
         const plaintext = this.source.value;
         this.loadHtml(plaintext);
         this.content.style.display = "block";
-        this.source.style.display = "none";       
+        this.source.style.display = "none";
         this.content.focus();
+
+        /* Restores the previous state with cursor */
+        this.StateManager.restoreLastState();
+
+        /* The user may have scrolled, so restore scroll */
         this.Utilities.restoreScroll(this.contentContainer, this.contentScroll);
         this.enableButtons();
     };
@@ -1008,6 +1013,12 @@ class RTBlazorfiedStateManager {
         }        
     };
     /* History */
+    restoreLastState = () => {
+        if (this.currentIndex > 0) {
+            this.isNavigating = true;
+            this.restoreState(this.history[this.currentIndex]);
+        }
+    };
     goBack = () => {
         if (this.currentIndex > 0) {
             this.isNavigating = true;

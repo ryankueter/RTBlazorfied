@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Added better scroll positioning and other minor fixes.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.235</Version>
-	  <AssemblyVersion>1.0.235</AssemblyVersion>
-	  <FileVersion>1.0.235</FileVersion>
+	  <Version>1.0.236</Version>
+	  <AssemblyVersion>1.0.236</AssemblyVersion>
+	  <FileVersion>1.0.236</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>
