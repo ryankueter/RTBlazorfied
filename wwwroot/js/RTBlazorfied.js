@@ -142,7 +142,7 @@ class RTBlazorfied {
         this.content.addEventListener('keydown', (event) => {
             this.keyEvents(event);
         });
-
+        
         this.source.addEventListener('keydown', (event) => {
             if (event.ctrlKey && event.shiftKey && event.key === 'A') {
                 event.preventDefault();
@@ -388,8 +388,11 @@ class RTBlazorfied {
             if (selection !== null) {
                 if (selection.anchorNode != null && selection.anchorNode !== this.content && selection.anchorNode.parentNode != null && selection.anchorNode.parentNode != this.content) {
                     if (this.isBreakable(selection.anchorNode.parentNode.nodeName)) {
-                        event.preventDefault();
-                        this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
+                        const range = selection.getRangeAt(0);
+                        if (range.endContainer === selection.anchorNode && range.endOffset === selection.anchorNode.textContent.length) {
+                            event.preventDefault();
+                            this.NodeManager.insertLineBreak(selection.anchorNode.parentNode);
+                        }
                     }
                 }
             }
