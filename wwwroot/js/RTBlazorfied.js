@@ -850,7 +850,11 @@ class RTBlazorfied {
         }
     }
     getHtml = async () => {
+        /* Save the scroll position and selection */
+        this.htmlSelection = this.StateManager.saveSelection();        
         this.contentScroll = this.Utilities.saveScroll(this.contentContainer);
+
+        /* Load the source */
         const html = this.html();
         this.loadInnerText(html);
         this.content.style.display = "none";
@@ -860,17 +864,17 @@ class RTBlazorfied {
         this.disableButtons();
     };
     getCode = async () => {
+        /* Save the scroll position */
         this.sourceScroll = this.Utilities.saveScroll(this.source);
+
+        /* Load the source */
         const plaintext = this.source.value;
         this.loadHtml(plaintext);
         this.content.style.display = "block";
         this.source.style.display = "none";
         this.content.focus();
 
-        /* Restores the previous state with cursor */
-        this.StateManager.restoreLastState();
-
-        /* The user may have scrolled, so restore scroll */
+        this.StateManager.restoreSelection(this.htmlSelection);
         this.Utilities.restoreScroll(this.contentContainer, this.contentScroll);
         this.enableButtons();
     };
@@ -1064,33 +1068,37 @@ class RTBlazorfiedStateManager {
 
     restoreSelection = (savedSelection) => {
         if (savedSelection) {
-            const charIndex = (node, index) => {
-                let currentIndex = 0;
-                if (node.nodeType === Node.TEXT_NODE) {
-                    return index <= node.length ? [node, index] : [null, index - node.length];
-                } else {
-                    for (let i = 0; i < node.childNodes.length; i++) {
-                        const childNode = node.childNodes[i];
-                        const [foundNode, remainingIndex] = charIndex(childNode, index - currentIndex);
-                        if (foundNode) {
-                            return [foundNode, remainingIndex];
+            try {
+                const charIndex = (node, index) => {
+                    let currentIndex = 0;
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        return index <= node.length ? [node, index] : [null, index - node.length];
+                    } else {
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            const childNode = node.childNodes[i];
+                            const [foundNode, remainingIndex] = charIndex(childNode, index - currentIndex);
+                            if (foundNode) {
+                                return [foundNode, remainingIndex];
+                            }
+                            currentIndex += childNode.textContent.length;
                         }
-                        currentIndex += childNode.textContent.length;
                     }
+                    return [null, index - currentIndex];
+                };
+
+                const range = document.createRange();
+                let [startNode, startOffset] = charIndex(this.content, savedSelection.start);
+                let [endNode, endOffset] = charIndex(this.content, savedSelection.end);
+
+                if (startNode && endNode) {
+                    range.setStart(startNode, startOffset);
+                    range.setEnd(endNode, endOffset);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
                 }
-                return [null, index - currentIndex];
-            };
-
-            const range = document.createRange();
-            let [startNode, startOffset] = charIndex(this.content, savedSelection.start);
-            let [endNode, endOffset] = charIndex(this.content, savedSelection.end);
-
-            if (startNode && endNode) {
-                range.setStart(startNode, startOffset);
-                range.setEnd(endNode, endOffset);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+            }
+            catch (ex) {
             }
         }
     };
@@ -3049,13 +3057,13 @@ class RTBlazorfiedUtilities {
     }
 
     saveSelection = (selection) => {
-        if (selection.rangeCount > 0) {
+        if (selection && selection.rangeCount > 0) {
             return selection.getRangeAt(0).cloneRange();
         }
         return null;
     }
     restoreSelection = (selection, savedSelection) => {
-        if (savedSelection) {
+        if (selection && savedSelection) {
             selection.removeAllRanges();
             selection.addRange(savedSelection);
         }
