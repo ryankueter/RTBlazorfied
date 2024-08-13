@@ -147,6 +147,9 @@ public partial class RTBlazorfied
             word-wrap: break-word;
             outline: 0px solid transparent;
         }
+        .rich-text-box-content img {
+            cursor: pointer;
+        }
         //.rich-text-box-content::selection {
         //    background-color: green;
         //    color: black;

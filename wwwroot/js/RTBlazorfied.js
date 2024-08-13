@@ -3814,7 +3814,6 @@ class RTBlazorfiedUploadImageDialog {
             if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
 
                 this.image = selection.anchorNode.querySelector('img');
-
                 if (this.image !== null) {
                     const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
                     width.value = this.image.width;
@@ -3925,7 +3924,6 @@ class RTBlazorfiedImageDialog {
             if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
 
                 this.image = selection.anchorNode.querySelector('img');
-
                 if (this.image !== null) {
                     const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
                     address.value = this.image.src;
@@ -3989,10 +3987,18 @@ class RTBlazorfiedImageDialog {
             const range = this.imageSelection.cloneRange();
 
             if (this.image !== null) {
-                this.image.src = address.value;
-                this.image.alt = alt.value;
-                this.image.width = width.value;
-                this.image.height = height.value;
+                if (address.value.trim().length > 0) {
+                    this.image.src = address.value;
+                }
+                if (alt.value.trim().length > 0) {
+                    this.image.alt = alt.value;
+                }
+                if (width.value.trim().length > 0) {
+                    this.image.width = width.value;
+                }
+                if (height.value.trim().length > 0) {
+                    this.image.height = height.value;
+                }
                 this.Utilities.addClasses(classes.value, this.image);
 
                 this.Utilities.reselectNode(this.image);
@@ -4002,13 +4008,13 @@ class RTBlazorfiedImageDialog {
 
                     const img = document.createElement("img");
                     img.src = address.value;
-                    if (width.value.length > 0) {
+                    if (width.value.trim().length > 0) {
                         img.width = width.value;
                     }
-                    if (height.value.length > 0) {
+                    if (height.value.trim().length > 0) {
                         img.height = height.value;
                     }
-                    if (alt.value.length > 0) {
+                    if (alt.value.trim().length > 0) {
                         img.alt = alt.value;
                     }
                     if (classes != null) {
