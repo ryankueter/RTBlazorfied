@@ -1,7 +1,7 @@
 # RT Blazorfied
 
 Author: Ryan Kueter  
-Updated: July, 2024
+Updated: August, 2024
 
 ## About
 
