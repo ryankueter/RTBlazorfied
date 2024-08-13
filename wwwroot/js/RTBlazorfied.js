@@ -102,7 +102,7 @@ class RTBlazorfied {
         closeButton.setAttribute('class', 'rich-text-box-message-close-button');
         closeButton.textContent = '×';
         closeButton.onclick = () => {
-            this.closeFadingBar();
+            this.Utilities.closeFadingBar();
         };
 
         fadingBar.appendChild(message);
@@ -129,12 +129,37 @@ class RTBlazorfied {
             }
         });
 
-        /* Prevent certain clicks */
+        /* Prevent some clicks */
         this.content.addEventListener('click', (event) => {
             /* Prevent the default link click */
             if (event.target.tagName === 'A') {
                 event.preventDefault();
                 event.stopPropagation();
+            }
+        });
+
+        this.content.addEventListener('dblclick', (event) => {
+            if (event.target.tagName === 'A') {
+                event.preventDefault();
+                this.openLinkDialog();
+            }
+            if (event.target.tagName === 'IMG') {
+                event.preventDefault();
+
+                /* Select the target if necessary */
+                const selection = this.Utilities.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(event.target);
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                /* Open the dialog */
+                if (!event.target.src.startsWith('data')) {
+                    this.openImageDialog();
+                }
+                else {
+                    this.uploadImageDialog();
+                }               
             }
         });
 
@@ -1655,6 +1680,10 @@ class RTBlazorfiedNodeManager {
         const codeBlock = this.getButton("blazing-rich-text-code-block-button");
         const table = this.getButton("blazing-rich-text-table-button");
 
+        const img = this.getButton("blazing-rich-text-image-button");
+        const imgUpload = this.getButton("blazing-rich-text-image-upload-button");
+        const media = this.getButton("blazing-rich-text-embed-button");
+        
         /* Menus */
         const formatButton = this.shadowRoot.getElementById("blazing-rich-text-format-button");
         if (formatButton != null) {
@@ -1781,6 +1810,22 @@ class RTBlazorfiedNodeManager {
             }
             if (el.parentNode.nodeName == "UL") {
                 ul.classList.add("selected");
+            }
+
+            if (el.nodeName == "DIV") {
+                const image = el.querySelector('img');
+                if (image) {
+                    if (image.src.startsWith('data')) {
+                        imgUpload.classList.add("selected");
+                    }
+                    else {
+                        img.classList.add("selected");
+                    }
+                }
+                const object = el.querySelector('object');
+                if (object) {
+                    media.classList.add("selected");
+                }
             }
             el = el.parentNode;
         }
@@ -3358,6 +3403,29 @@ class RTBlazorfiedMediaDialog {
             this.resetMediaDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
+            if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
+
+                this.embed = selection.anchorNode.querySelector('object');
+
+                if (this.embed !== null) {
+                    const source = this.shadowRoot.getElementById('rich-text-box-embed-source');
+                    source.value = this.embed.data;
+
+                    const width = this.shadowRoot.getElementById('rich-text-box-embed-width');
+                    width.value = this.embed.width;
+
+                    const height = this.shadowRoot.getElementById('rich-text-box-embed-height');
+                    height.value = this.embed.height;
+
+                    const type = this.shadowRoot.getElementById('rich-text-box-embed-type');
+                    type.value = this.embed.type;
+
+                    const classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
+                    classes.value = Array.from(this.embed.classList).join(' ');
+                }
+
+            }
+
             if (selection.rangeCount > 0) {
                 this.embedSelection = selection.getRangeAt(0).cloneRange();
             }
@@ -3398,30 +3466,40 @@ class RTBlazorfiedMediaDialog {
         const type = this.shadowRoot.getElementById('rich-text-box-embed-type');
         const classes = this.shadowRoot.getElementById('rich-text-box-embed-css-classes');
 
-        if (this.embedSelection != null && source.value.length > 0) {
-
-            const range = this.embedSelection.cloneRange();
-
-            /* Create the <code> element */
-            const object = document.createElement('object');
-
-            /* Set the content of the <code> element */
-            object.data = source.value;
-            object.type = type.value;
-            object.height = height.value;
-            object.width = width.value;
-            if (classes != null) {
-                this.Utilities.addClasses(classes.value, object);
-            }
-
-            range.deleteContents();
-            range.insertNode(object);
-
-            this.Utilities.reselectNode(object);
-
-            /* Update the stored cursor position to the new position */
-            this.embedSelection = range.cloneRange();
+        if (this.embed !== null) {
+            this.embed.data = source.value;
+            this.embed.type = type.value;
+            this.embed.width = width.value;
+            this.embed.height = height.value;
+            this.Utilities.addClasses(classes.value, this.embed);
         }
+        else {
+            if (this.embedSelection != null && source.value.length > 0) {
+
+                const range = this.embedSelection.cloneRange();
+
+                /* Create the <code> element */
+                const object = document.createElement('object');
+
+                /* Set the content of the <code> element */
+                object.data = source.value;
+                object.type = type.value;
+                object.height = height.value;
+                object.width = width.value;
+                if (classes != null) {
+                    this.Utilities.addClasses(classes.value, object);
+                }
+
+                range.deleteContents();
+                range.insertNode(object);
+
+                this.Utilities.reselectNode(object);
+
+                /* Update the stored cursor position to the new position */
+                this.embedSelection = range.cloneRange();
+            }
+        }
+        
 
         this.closeDialog();
     }
@@ -3733,6 +3811,25 @@ class RTBlazorfiedUploadImageDialog {
             this.resetUploadImageDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
+            if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
+
+                this.image = selection.anchorNode.querySelector('img');
+
+                if (this.image !== null) {
+                    const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
+                    width.value = this.image.width;
+
+                    const height = this.shadowRoot.getElementById("rich-text-box-upload-image-height");
+                    height.value = this.image.height;
+
+                    const alt = this.shadowRoot.getElementById("rich-text-box-upload-image-alt-text");
+                    alt.value = this.image.alt;
+
+                    const classes = this.shadowRoot.getElementById("rich-text-box-upload-image-css-classes");
+                    classes.value = Array.from(this.image.classList).join(' ');
+                }
+            }
+
             this.range = selection.getRangeAt(0).cloneRange();
             this.shadowRoot.getElementById("rich-text-box-upload-image-modal").show();
 
@@ -3825,6 +3922,29 @@ class RTBlazorfiedImageDialog {
             this.resetImageDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
+            if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
+
+                this.image = selection.anchorNode.querySelector('img');
+
+                if (this.image !== null) {
+                    const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
+                    address.value = this.image.src;
+
+                    const width = this.shadowRoot.getElementById("rich-text-box-image-width");
+                    width.value = this.image.width;
+
+                    const height = this.shadowRoot.getElementById("rich-text-box-image-height");
+                    height.value = this.image.height;
+
+                    const alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
+                    alt.value = this.image.alt;
+
+                    const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
+                    classes.value = Array.from(this.image.classList).join(' ');
+                }
+                
+            }
+            
             if (selection && selection.rangeCount > 0) {
                 this.imageSelection = selection.getRangeAt(0).cloneRange();
             }
@@ -3838,6 +3958,7 @@ class RTBlazorfiedImageDialog {
         }
     }
     resetImageDialog = () => {
+        this.image = null;
         this.imageSelection = null;
 
         const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
@@ -3864,32 +3985,41 @@ class RTBlazorfiedImageDialog {
         const alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
         const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
 
-        if (this.imageSelection != null && address.value.length > 0) {
+        if (this.image !== null) {
+            this.image.src = address.value;
+            this.image.alt = alt.value;
+            this.image.width = width.value;
+            this.image.height = height.value;
+            this.Utilities.addClasses(classes.value, this.image);
+        }
+        else {
+            if (this.imageSelection != null && address.value.length > 0) {
 
-            const range = this.imageSelection.cloneRange();
+                const range = this.imageSelection.cloneRange();
 
-            const img = document.createElement("img");
-            img.src = address.value;
-            if (width.value.length > 0) {
-                img.width = width.value;
+                const img = document.createElement("img");
+                img.src = address.value;
+                if (width.value.length > 0) {
+                    img.width = width.value;
+                }
+                if (height.value.length > 0) {
+                    img.height = height.value;
+                }
+                if (alt.value.length > 0) {
+                    img.alt = alt.value;
+                }
+                if (classes != null) {
+                    this.Utilities.addClasses(classes.value, img);
+                }
+
+                range.deleteContents();
+                range.insertNode(img);
+
+                this.Utilities.reselectNode(img);
+
+                /* Update the stored cursor position to the new position */
+                this.imageSelection = range.cloneRange();
             }
-            if (height.value.length > 0) {
-                img.height = height.value;
-            }
-            if (alt.value.length > 0) {
-                img.alt = alt.value;
-            }
-            if (classes != null) {
-                this.Utilities.addClasses(classes.value, img);
-            }
-
-            range.deleteContents();
-            range.insertNode(img);
-
-            this.Utilities.reselectNode(img);
-
-            /* Update the stored cursor position to the new position */
-            this.imageSelection = range.cloneRange();
         }
         this.closeDialog();
     }
