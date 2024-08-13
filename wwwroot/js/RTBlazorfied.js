@@ -3985,42 +3985,47 @@ class RTBlazorfiedImageDialog {
         const alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
         const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
 
-        if (this.image !== null) {
-            this.image.src = address.value;
-            this.image.alt = alt.value;
-            this.image.width = width.value;
-            this.image.height = height.value;
-            this.Utilities.addClasses(classes.value, this.image);
-        }
-        else {
-            if (this.imageSelection != null && address.value.length > 0) {
+        if (this.imageSelection !== null) {
+            const range = this.imageSelection.cloneRange();
 
-                const range = this.imageSelection.cloneRange();
+            if (this.image !== null) {
+                this.image.src = address.value;
+                this.image.alt = alt.value;
+                this.image.width = width.value;
+                this.image.height = height.value;
+                this.Utilities.addClasses(classes.value, this.image);
 
-                const img = document.createElement("img");
-                img.src = address.value;
-                if (width.value.length > 0) {
-                    img.width = width.value;
-                }
-                if (height.value.length > 0) {
-                    img.height = height.value;
-                }
-                if (alt.value.length > 0) {
-                    img.alt = alt.value;
-                }
-                if (classes != null) {
-                    this.Utilities.addClasses(classes.value, img);
-                }
-
-                range.deleteContents();
-                range.insertNode(img);
-
-                this.Utilities.reselectNode(img);
-
-                /* Update the stored cursor position to the new position */
-                this.imageSelection = range.cloneRange();
+                this.Utilities.reselectNode(this.image);
             }
+            else {
+                if (address.value.length > 0) {
+
+                    const img = document.createElement("img");
+                    img.src = address.value;
+                    if (width.value.length > 0) {
+                        img.width = width.value;
+                    }
+                    if (height.value.length > 0) {
+                        img.height = height.value;
+                    }
+                    if (alt.value.length > 0) {
+                        img.alt = alt.value;
+                    }
+                    if (classes != null) {
+                        this.Utilities.addClasses(classes.value, img);
+                    }
+
+                    range.deleteContents();
+                    range.insertNode(img);
+
+                    this.Utilities.reselectNode(img);
+                }
+            }           
+
+            /* Update the stored cursor position to the new position */
+            this.imageSelection = range.cloneRange();
         }
+        
         this.closeDialog();
     }
 
