@@ -3877,18 +3877,17 @@ class RTBlazorfiedUploadImageDialog {
             if (this.image && this.image.src.length > 0) {
                 this.currentImage.src = this.image.src;
             }
-            if (width.value.length > 0) {
+            if (width.value.trim().length > 0) {
                 this.currentImage.width = width.value;
             }
-            if (height.value.length > 0) {
+            if (height.value.trim().length > 0) {
                 this.currentImage.height = height.value;
             }
-            if (alt.value.length > 0) {
+            if (alt.value.trim().length > 0) {
                 this.currentImage.alt = alt.value;
             }
-            if (classes != null) {
-                this.Utilities.addClasses(classes.value, this.currentImage);
-            }
+            this.Utilities.addClasses(classes.value, this.currentImage);
+            this.Utilities.reselectNode(this.currentImage);
         }
         else {
             if (this.image) {
@@ -4025,7 +4024,6 @@ class RTBlazorfiedImageDialog {
                     this.image.height = height.value;
                 }
                 this.Utilities.addClasses(classes.value, this.image);
-
                 this.Utilities.reselectNode(this.image);
             }
             else {
