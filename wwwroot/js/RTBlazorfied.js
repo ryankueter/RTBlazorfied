@@ -139,27 +139,31 @@ class RTBlazorfied {
         });
 
         this.content.addEventListener('dblclick', (event) => {
-            if (event.target.tagName === 'A') {
-                event.preventDefault();
-                this.openLinkDialog();
-            }
-            if (event.target.tagName === 'IMG') {
-                event.preventDefault();
+            switch (event.target.tagName) {
+                case 'A':
+                    event.preventDefault();
+                    this.openLinkDialog();
+                    break;
+                case 'IMG':
+                    event.preventDefault();
 
-                /* Select the target if necessary */
-                const selection = this.Utilities.getSelection();
-                const range = document.createRange();
-                range.selectNodeContents(event.target);
-                selection.removeAllRanges();
-                selection.addRange(range);
+                    /* Select the target if necessary */
+                    const selection = this.Utilities.getSelection();
+                    const range = document.createRange();
+                    range.selectNodeContents(event.target);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
 
-                /* Open the dialog */
-                if (!event.target.src.startsWith('data')) {
-                    this.openImageDialog();
-                }
-                else {
-                    this.uploadImageDialog();
-                }               
+                    /* Open the dialog */
+                    if (!event.target.src.startsWith('data')) {
+                        this.openImageDialog();
+                    }
+                    else {
+                        this.uploadImageDialog();
+                    }
+                    break;
+                default:
+                    break;
             }
         });
 
@@ -3791,7 +3795,6 @@ class RTBlazorfiedUploadImageDialog {
         const fileChosen = this.shadowRoot.getElementById('rich-text-box-upload-image-file-chosen');
         fileChosen.textContent = file.name
 
-        /* Unfortunately no better way to do this */
         const image = document.createElement("img");
         if (file) {
             const reader = new FileReader();
@@ -3813,32 +3816,33 @@ class RTBlazorfiedUploadImageDialog {
 
             if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
 
-                this.image = selection.anchorNode.querySelector('img');
-                if (this.image !== null) {
+                this.currentImage = selection.anchorNode.querySelector('img');
+                if (this.currentImage !== null) {
                     const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
-                    width.value = this.image.width;
+                    width.value = this.currentImage.width;
 
                     const height = this.shadowRoot.getElementById("rich-text-box-upload-image-height");
-                    height.value = this.image.height;
+                    height.value = this.currentImage.height;
 
                     const alt = this.shadowRoot.getElementById("rich-text-box-upload-image-alt-text");
-                    alt.value = this.image.alt;
+                    alt.value = this.currentImage.alt;
 
                     const classes = this.shadowRoot.getElementById("rich-text-box-upload-image-css-classes");
-                    classes.value = Array.from(this.image.classList).join(' ');
+                    classes.value = Array.from(this.currentImage.classList).join(' ');
                 }
             }
 
             this.range = selection.getRangeAt(0).cloneRange();
             this.shadowRoot.getElementById("rich-text-box-upload-image-modal").show();
 
-            const address = this.shadowRoot.getElementById("rich-text-box-upload-image-file");
-            if (address) {
-                address.focus();
+            const fileBrowser = this.shadowRoot.getElementById("rich-text-box-upload-btn");
+            if (fileBrowser) {
+                fileBrowser.focus();
             }
         }
     }
     resetUploadImageDialog = () => {
+        this.currentImage = null;
         this.image = null;
         this.range = null;
 
@@ -3869,25 +3873,46 @@ class RTBlazorfiedUploadImageDialog {
         const alt = this.shadowRoot.getElementById("rich-text-box-upload-image-alt-text");
         const classes = this.shadowRoot.getElementById("rich-text-box-upload-image-css-classes");
 
-        if (this.image) {
+        if (this.currentImage) {
+            if (this.image && this.image.src.length > 0) {
+                this.currentImage.src = this.image.src;
+            }
             if (width.value.length > 0) {
-                this.image.width = width.value;
+                this.currentImage.width = width.value;
             }
             if (height.value.length > 0) {
-                this.image.height = height.value;
+                this.currentImage.height = height.value;
             }
             if (alt.value.length > 0) {
-                this.image.alt = alt.value;
+                this.currentImage.alt = alt.value;
             }
             if (classes != null) {
-                this.Utilities.addClasses(classes.value, this.image);
+                this.Utilities.addClasses(classes.value, this.currentImage);
             }
-
-            this.range.deleteContents();
-            this.range.insertNode(this.image);
-
-            this.Utilities.reselectNode(this.image);
         }
+        else {
+            if (this.image) {
+                if (width.value.length > 0) {
+                    this.image.width = width.value;
+                }
+                if (height.value.length > 0) {
+                    this.image.height = height.value;
+                }
+                if (alt.value.length > 0) {
+                    this.image.alt = alt.value;
+                }
+                if (classes != null) {
+                    this.Utilities.addClasses(classes.value, this.image);
+                }
+
+                this.range.deleteContents();
+                this.range.insertNode(this.image);
+
+                this.Utilities.reselectNode(this.image);
+            }
+        }
+
+        
         this.closeDialog();
     }
 
