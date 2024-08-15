@@ -182,6 +182,10 @@ class RTBlazorfied {
                     this.getCode();
                 }
             }
+            if (event.ctrlKey && event.shiftKey && event.key === 'V') {
+                event.preventDefault();
+                this.openPreview();
+            }
         });
 
         /* Prevent the dropdowns from causing the text box from losing focus. */
