@@ -470,7 +470,6 @@ class RTBlazorfied {
         this.NodeManager.updateNode("size", `${this.fontSize}px`);
     }
     openPreview = () => {
-        this.EditMode = false;
         let previewWindow;
         this.preview = document.getElementById(`${this.id}_Preview`);
         const allNodes = this.preview.querySelectorAll('*');
@@ -526,7 +525,6 @@ class RTBlazorfied {
         this.enablePreview();
     }
     closePreview = () => {
-        this.EditMode = true;
         this.disablePreview();
         this.preview.close();
         this.source.focus();
