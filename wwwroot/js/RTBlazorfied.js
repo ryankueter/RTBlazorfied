@@ -167,6 +167,37 @@ class RTBlazorfied {
             }
         });
 
+        this.content.addEventListener('input', (event) => {
+
+            /* Handles a bug in the contenteditable that automatically
+            inserts a span with styles */
+            const selection = this.Utilities.getSelection();
+            const range = selection.getRangeAt(0);
+            const startContainer = range.startContainer;
+
+            if (startContainer.nodeType === Node.TEXT_NODE && startContainer.parentNode.tagName === 'SPAN') {
+                const span = startContainer.parentNode;
+                const element = span.parentNode;
+
+                /* Currently this is only applied to format elements. */
+                if (this.NodeManager.isFormatElement(element)) {
+
+                    /* Unwrap the span */
+                    while (span.firstChild) {
+                        element.insertBefore(span.firstChild, span);
+                    }
+                    element.removeChild(span);
+
+                    /* Move the cursor to the beginning of the line */
+                    const newRange = document.createRange();
+                    newRange.setStart(element.firstChild, 0);
+                    newRange.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                }
+            }
+        });
+
         /* Shortcut keys */
         this.content.addEventListener('keydown', (event) => {
             this.keyEvents(event);

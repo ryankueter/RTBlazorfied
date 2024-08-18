@@ -13,9 +13,9 @@
 	  <PackageProjectUrl>https://github.com/ryankueter/RTBlazorfied</PackageProjectUrl>
 	  <PackageReleaseNotes>Small improvements to image and media resizing and other small improvements.</PackageReleaseNotes>
 	  <PackageTags>Rich Text Box;Html Editor;Editor;Blazor</PackageTags>
-	  <Version>1.0.250</Version>
-	  <AssemblyVersion>1.0.250</AssemblyVersion>
-	  <FileVersion>1.0.250</FileVersion>
+	  <Version>1.0.251</Version>
+	  <AssemblyVersion>1.0.251</AssemblyVersion>
+	  <FileVersion>1.0.251</FileVersion>
 	  <RepositoryType>Git</RepositoryType>
 	  <Product>$(AssemblyName)</Product>
 	  <NeutralLanguage>en</NeutralLanguage>
