@@ -1818,21 +1818,23 @@ class RTBlazorfiedNodeManager {
                 ul.classList.add("selected");
             }
 
-            if (el.nodeName == "DIV") {
-                const image = el.querySelector('img');
-                if (image) {
-                    if (image.src.startsWith('data')) {
-                        imgUpload.classList.add("selected");
-                    }
-                    else {
-                        img.classList.add("selected");
-                    }
+            /* Check for image */
+            const image = el.querySelector('img');
+            if (image) {
+                if (image.src.startsWith('data')) {
+                    imgUpload.classList.add("selected");
                 }
-                const object = el.querySelector('object');
-                if (object) {
-                    media.classList.add("selected");
+                else {
+                    img.classList.add("selected");
                 }
             }
+
+            /* Check for object */
+            const object = el.querySelector('object');
+            if (object) {
+                media.classList.add("selected");
+            }
+
             el = el.parentNode;
         }
         this.closeDropdowns();
@@ -3076,6 +3078,9 @@ class RTBlazorfiedUtilities {
                 }
             });
         }
+        else {
+            element.removeAttribute('class');
+        }
     }
 
     getSelection = () => {
@@ -3281,8 +3286,14 @@ class RTBlazorfiedTableDialog {
 
         /* Get the link selection or element */
         if (this.table !== null) {
-            if (width !== null) {
+            if (width.value.trim().length > 0) {
                 this.table.style.width = width.value;
+            }
+            else {
+                this.table.style.removeProperty('width');
+                if (this.table.style.cssText.trim().length === 0) {
+                    this.table.removeAttribute('style');
+                }
             }
             if (classes !== null) {
                 this.Utilities.addClasses(classes.value, this.table);
@@ -3293,7 +3304,7 @@ class RTBlazorfiedTableDialog {
             if (this.tableSelection != null) {
                 const range = this.tableSelection;
                 const table = this.createTable(rows.value, columns.value, width.value);
-                if (classes != null) {
+                if (classes !== null) {
                     this.Utilities.addClasses(classes.value, table);
                 }
                 range.deleteContents();
@@ -3409,8 +3420,7 @@ class RTBlazorfiedMediaDialog {
             this.resetMediaDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
-            if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
-
+            if (selection.anchorNode) {
                 this.embed = selection.anchorNode.querySelector('object');
 
                 if (this.embed !== null) {
@@ -3474,10 +3484,27 @@ class RTBlazorfiedMediaDialog {
 
         if (this.embed !== null) {
             this.embed.data = source.value;
-            this.embed.type = type.value;
-            this.embed.width = width.value;
-            this.embed.height = height.value;
-            this.Utilities.addClasses(classes.value, this.embed);
+            if (type.value.trim().length > 0) {
+                this.embed.type = type.value;
+            }
+            else {
+                this.embed.removeAttribute('type');
+            }
+            if (width.value.trim().length > 0) {
+                this.embed.width = width.value;
+            }
+            else {
+                this.embed.removeAttribute('width');
+            }
+            if (height.value.trim().length > 0) {
+                this.embed.height = height.value;
+            }
+            else {
+                this.embed.removeAttribute('height');
+            }
+            if (classes !== null) {
+                this.Utilities.addClasses(classes.value, this.embed);
+            }
         }
         else {
             if (this.embedSelection != null && source.value.length > 0) {
@@ -3489,10 +3516,25 @@ class RTBlazorfiedMediaDialog {
 
                 /* Set the content of the <code> element */
                 object.data = source.value;
-                object.type = type.value;
-                object.height = height.value;
-                object.width = width.value;
-                if (classes != null) {
+                if (type.value.trim().length > 0) {
+                    object.type = type.value;
+                }
+                else {
+                    object.removeAttribute('type');
+                }
+                if (width.value.trim().length > 0) {
+                    object.width = width.value;
+                }
+                else {
+                    object.removeAttribute('width');
+                }
+                if (height.value.trim().length > 0) {
+                    object.height = height.value;
+                }
+                else {
+                    object.removeAttribute('height');
+                }
+                if (classes !== null) {
                     this.Utilities.addClasses(classes.value, object);
                 }
 
@@ -3596,7 +3638,7 @@ class RTBlazorfiedCodeBlockDialog {
         if (this.code != null) {
             const element = this.code;
             element.textContent = codeText.value;
-            if (classes != null) {
+            if (classes !== null) {
                 this.Utilities.addClasses(classes.value, element);
             }
             this.Utilities.reselectNode(element);
@@ -3611,7 +3653,7 @@ class RTBlazorfiedCodeBlockDialog {
 
                 /* Create the <code> element */
                 const code = document.createElement('code');
-                if (classes != null) {
+                if (classes !== null) {
                     this.Utilities.addClasses(classes.value, code);
                 }
 
@@ -3677,7 +3719,6 @@ class RTBlazorfiedBlockQuoteDialog {
                 if (selection.anchorNode.parentNode.cite != null) {
                     cite.value = selection.anchorNode.parentNode.cite;
                 }
-
                 if (classes != null) {
                     const classList = selection.anchorNode.parentNode.classList;
                     classes.value = Array.from(classList).join(' ');
@@ -3730,7 +3771,7 @@ class RTBlazorfiedBlockQuoteDialog {
             else {
                 element.removeAttribute('cite');
             }
-            if (classes != null) {
+            if (classes !== null) {
                 this.Utilities.addClasses(classes.value, element);
             }
 
@@ -3746,7 +3787,10 @@ class RTBlazorfiedBlockQuoteDialog {
                 if (cite.value.trim().length > 0) {
                     blockquote.cite = cite.value;
                 }
-                if (classes != null) {
+                else {
+                    element.removeAttribute('cite');
+                }
+                if (classes !== null) {
                     this.Utilities.addClasses(classes.value, blockquote);
                 }
 
@@ -3816,8 +3860,7 @@ class RTBlazorfiedUploadImageDialog {
             this.resetUploadImageDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
-            if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
-
+            if (selection.anchorNode) {
                 this.currentImage = selection.anchorNode.querySelector('img');
                 if (this.currentImage !== null) {
                     const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
@@ -3882,13 +3925,24 @@ class RTBlazorfiedUploadImageDialog {
             if (width.value.trim().length > 0) {
                 this.currentImage.width = width.value;
             }
+            else {
+                this.currentImage.removeAttribute('width');
+            }
             if (height.value.trim().length > 0) {
                 this.currentImage.height = height.value;
+            }
+            else {
+                this.currentImage.removeAttribute('height');
             }
             if (alt.value.trim().length > 0) {
                 this.currentImage.alt = alt.value;
             }
-            this.Utilities.addClasses(classes.value, this.currentImage);
+            else {
+                this.currentImage.removeAttribute('alt');
+            }
+            if (classes !== null) {
+                this.Utilities.addClasses(classes.value, this.currentImage);
+            }
             this.Utilities.reselectNode(this.currentImage);
         }
         else {
@@ -3896,16 +3950,24 @@ class RTBlazorfiedUploadImageDialog {
                 if (width.value.length > 0) {
                     this.image.width = width.value;
                 }
+                else {
+                    this.image.removeAttribute('width');
+                }
                 if (height.value.length > 0) {
                     this.image.height = height.value;
+                }
+                else {
+                    this.image.removeAttribute('height');
                 }
                 if (alt.value.length > 0) {
                     this.image.alt = alt.value;
                 }
-                if (classes != null) {
+                else {
+                    this.image.removeAttribute('alt');
+                }
+                if (classes !== null) {
                     this.Utilities.addClasses(classes.value, this.image);
                 }
-
                 this.range.deleteContents();
                 this.range.insertNode(this.image);
 
@@ -3947,8 +4009,7 @@ class RTBlazorfiedImageDialog {
             this.resetImageDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
-            if (selection.anchorNode && selection.anchorNode.nodeName === "DIV") {
-
+            if (selection.anchorNode) {
                 this.image = selection.anchorNode.querySelector('img');
                 if (this.image !== null) {
                     const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
@@ -4008,7 +4069,7 @@ class RTBlazorfiedImageDialog {
         const height = this.shadowRoot.getElementById("rich-text-box-image-height");
         const alt = this.shadowRoot.getElementById("rich-text-box-image-alt-text");
         const classes = this.shadowRoot.getElementById("rich-text-box-image-css-classes");
-
+        
         if (this.imageSelection !== null) {
             const range = this.imageSelection.cloneRange();
 
@@ -4019,13 +4080,24 @@ class RTBlazorfiedImageDialog {
                 if (alt.value.trim().length > 0) {
                     this.image.alt = alt.value;
                 }
+                else {
+                    this.image.removeAttribute('alt');
+                }
                 if (width.value.trim().length > 0) {
                     this.image.width = width.value;
+                }
+                else {
+                    this.image.removeAttribute('width');
                 }
                 if (height.value.trim().length > 0) {
                     this.image.height = height.value;
                 }
-                this.Utilities.addClasses(classes.value, this.image);
+                else {
+                    this.image.removeAttribute('height');
+                }
+                if (classes !== null) {
+                    this.Utilities.addClasses(classes.value, this.image);
+                }
                 this.Utilities.reselectNode(this.image);
             }
             else {
@@ -4042,7 +4114,7 @@ class RTBlazorfiedImageDialog {
                     if (alt.value.trim().length > 0) {
                         img.alt = alt.value;
                     }
-                    if (classes != null) {
+                    if (classes !== null) {
                         this.Utilities.addClasses(classes.value, img);
                     }
 
@@ -4159,7 +4231,7 @@ class RTBlazorfiedLinkDialog {
             const element = this.linkNode;
             element.href = link.value;
             element.textContent = linktext.value;
-            if (classes != null) {
+            if (classes !== null) {
                 this.Utilities.addClasses(classes.value, element);
             }
             if (newtab.checked) {
@@ -4176,7 +4248,7 @@ class RTBlazorfiedLinkDialog {
                 const anchor = document.createElement("a");
                 anchor.href = link.value;
                 anchor.textContent = linktext.value;
-                if (classes != null) {
+                if (classes !== null) {
                     this.Utilities.addClasses(classes.value, anchor);
                 }
                 if (newtab.checked) {
