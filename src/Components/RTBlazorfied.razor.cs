@@ -115,7 +115,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-container {
             resize: both;
-            overflow: visible;
+            overflow: auto;
             border-style: {{EditorBorderStyle}};
             border-width: {{EditorBorderWidth}};
             border-color: {{EditorBorderColor}};
@@ -135,6 +135,7 @@ public partial class RTBlazorfied
             flex-direction: row;
             background-color: {{ContentBackgroundColor}};
             box-shadow: {{ContentBoxShadow}};
+            
         }
         .rich-text-box-content {
             color: {{ContentTextColor}} !important;

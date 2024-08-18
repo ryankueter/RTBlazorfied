@@ -75,7 +75,7 @@ class RTBlazorfied {
         this.contentContainer.classList.add('rich-text-box-content-container', 'rich-text-box-scroll');
 
         this.container = document.createElement('div');
-        this.container.setAttribute('class', 'rich-text-box-container');
+        this.container.classList.add('rich-text-box-container', 'rich-text-box-scroll');
 
         /* The main content that is referenced throughout */
         this.content = document.createElement('div');
@@ -1319,7 +1319,7 @@ class RTBlazorfiedNodeManager {
                 element = this.getElementByStyle(sel.anchorNode, type);
 
                 /* See if it's an image */
-                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.nodeType === Node.ELEMENT_NODE) {
+                if (element == null && sel.anchorNode != null && sel.anchorNode != this.content && this.content.contains(sel.anchorNode) && sel.anchorNode.querySelector) {
                     const image = sel.anchorNode.querySelector('img');
                     if (image != null) {
                         element = sel.anchorNode;
@@ -1614,7 +1614,7 @@ class RTBlazorfiedNodeManager {
     isExcluded = (selection) => {
         /* Make certain the user cannot select table
         cells from the left */
-        if (selection.anchorNode.nodeType === Node.ELEMENT_NODE) {
+        if (selection.anchorNode && selection.anchorNode.querySelector) {
             const table = selection.anchorNode.querySelector('table');
             if (table != null) {
                 if (selection.toString().trim() !== table.innerText.trim()) {
@@ -3465,7 +3465,7 @@ class RTBlazorfiedMediaDialog {
             this.resetMediaDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
-            if (selection.anchorNode) {
+            if (selection.anchorNode && selection.anchorNode.querySelector) {
                 this.embed = selection.anchorNode.querySelector('object');
 
                 if (this.embed !== null) {
@@ -3921,7 +3921,7 @@ class RTBlazorfiedUploadImageDialog {
             this.resetUploadImageDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
-            if (selection.anchorNode) {
+            if (selection.anchorNode && selection.anchorNode.querySelector) {
                 this.currentImage = selection.anchorNode.querySelector('img');
                 if (this.currentImage !== null) {
                     const width = this.shadowRoot.getElementById("rich-text-box-upload-image-width");
@@ -4082,7 +4082,7 @@ class RTBlazorfiedImageDialog {
             this.resetImageDialog();
             this.savedSelection = this.Utilities.saveSelection(selection);
 
-            if (selection.anchorNode) {
+            if (selection.anchorNode && selection.anchorNode.querySelector) {
                 this.image = selection.anchorNode.querySelector('img');
                 if (this.image !== null) {
                     const address = this.shadowRoot.getElementById("rich-text-box-image-webaddress");
