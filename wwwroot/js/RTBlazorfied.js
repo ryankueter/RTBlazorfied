@@ -1640,8 +1640,10 @@ class RTBlazorfiedNodeManager {
                     currentNode.style.marginLeft = '';
 
                     /* Remove the style attribute if no other styles exist */
-                    if (!currentNode.getAttribute('style')) {
-                        currentNode.removeAttribute('style');
+                    if (currentNode.hasAttribute('style')) {
+                        if (!currentNode.getAttribute('style')) {
+                            currentNode.removeAttribute('style');
+                        }
                     }
                 }
                 else {
@@ -2086,7 +2088,9 @@ class RTBlazorfiedNodeManager {
                     element.remove();
                 }
                 else {
-                    element.removeAttribute("style");
+                    if (element.hasAttribute('style')) {
+                        element.removeAttribute('style');
+                    }
                 }
             }
         }
@@ -2126,7 +2130,9 @@ class RTBlazorfiedNodeManager {
             else {
                 /* No more styles. Since, this element may be required */
                 /* for formating, remove the styles */
-                element.removeAttribute("style");
+                if (element.hasAttribute('style')) {
+                    element.removeAttribute('style');
+                }
             }
         }
     }
@@ -3083,7 +3089,9 @@ class RTBlazorfiedUtilities {
             });
         }
         else {
-            element.removeAttribute('class');
+            if (element.hasAttribute('class')) {
+                element.removeAttribute('class');
+            }
         }
     }
 
@@ -3296,7 +3304,9 @@ class RTBlazorfiedTableDialog {
             else {
                 this.table.style.removeProperty('width');
                 if (this.table.style.cssText.trim().length === 0) {
-                    this.table.removeAttribute('style');
+                    if (this.table.hasAttribute('style')) {
+                        this.table.removeAttribute('style');
+                    }
                 }
             }
             if (classes !== null) {
@@ -3492,19 +3502,25 @@ class RTBlazorfiedMediaDialog {
                 this.embed.type = type.value;
             }
             else {
-                this.embed.removeAttribute('type');
+                if (this.embed.hasAttribute('type')) {
+                    this.embed.removeAttribute('type');
+                }
             }
             if (width.value.trim().length > 0) {
                 this.embed.width = width.value;
             }
             else {
-                this.embed.removeAttribute('width');
+                if (this.embed.hasAttribute('width')) {
+                    this.embed.removeAttribute('width');
+                }
             }
             if (height.value.trim().length > 0) {
                 this.embed.height = height.value;
             }
             else {
-                this.embed.removeAttribute('height');
+                if (this.embed.hasAttribute('height')) {
+                    this.embed.removeAttribute('height');
+                }
             }
             if (classes !== null) {
                 this.Utilities.addClasses(classes.value, this.embed);
@@ -3524,19 +3540,25 @@ class RTBlazorfiedMediaDialog {
                     object.type = type.value;
                 }
                 else {
-                    object.removeAttribute('type');
+                    if (object.hasAttribute('type')) {
+                        object.removeAttribute('type');
+                    }
                 }
                 if (width.value.trim().length > 0) {
                     object.width = width.value;
                 }
                 else {
-                    object.removeAttribute('width');
+                    if (object.hasAttribute('width')) {
+                        object.removeAttribute('width');
+                    }
                 }
                 if (height.value.trim().length > 0) {
                     object.height = height.value;
                 }
                 else {
-                    object.removeAttribute('height');
+                    if (object.hasAttribute('height')) {
+                        object.removeAttribute('height');
+                    }
                 }
                 if (classes !== null) {
                     this.Utilities.addClasses(classes.value, object);
@@ -3773,7 +3795,9 @@ class RTBlazorfiedBlockQuoteDialog {
                 element.setAttribute('cite', cite.value);
             }
             else {
-                element.removeAttribute('cite');
+                if (element.hasAttribute('cite')) {
+                    element.removeAttribute('cite');
+                }
             }
             if (classes !== null) {
                 this.Utilities.addClasses(classes.value, element);
@@ -3792,7 +3816,9 @@ class RTBlazorfiedBlockQuoteDialog {
                     blockquote.cite = cite.value;
                 }
                 else {
-                    element.removeAttribute('cite');
+                    if (blockquote.hasAttribute('cite')) {
+                        blockquote.removeAttribute('cite');
+                    }
                 }
                 if (classes !== null) {
                     this.Utilities.addClasses(classes.value, blockquote);
@@ -3930,19 +3956,25 @@ class RTBlazorfiedUploadImageDialog {
                 this.currentImage.width = width.value;
             }
             else {
-                this.currentImage.removeAttribute('width');
+                if (this.currentImage.hasAttribute('width')) {
+                    this.currentImage.removeAttribute('width');
+                }
             }
             if (height.value.trim().length > 0) {
                 this.currentImage.height = height.value;
             }
             else {
-                this.currentImage.removeAttribute('height');
+                if (this.currentImage.hasAttribute('height')) {
+                    this.currentImage.removeAttribute('height');
+                }
             }
             if (alt.value.trim().length > 0) {
                 this.currentImage.alt = alt.value;
             }
             else {
-                this.currentImage.removeAttribute('alt');
+                if (this.currentImage.hasAttribute('alt')) {
+                    this.currentImage.removeAttribute('alt');
+                }
             }
             if (classes !== null) {
                 this.Utilities.addClasses(classes.value, this.currentImage);
@@ -3955,19 +3987,25 @@ class RTBlazorfiedUploadImageDialog {
                     this.image.width = width.value;
                 }
                 else {
-                    this.image.removeAttribute('width');
+                    if (this.image.hasAttribute('width')) {
+                        this.image.removeAttribute('width');
+                    }
                 }
                 if (height.value.length > 0) {
                     this.image.height = height.value;
                 }
                 else {
-                    this.image.removeAttribute('height');
+                    if (this.image.hasAttribute('height')) {
+                        this.image.removeAttribute('height');
+                    }
                 }
                 if (alt.value.length > 0) {
                     this.image.alt = alt.value;
                 }
                 else {
-                    this.image.removeAttribute('alt');
+                    if (this.image.hasAttribute('alt')) {
+                        this.image.removeAttribute('alt');
+                    }
                 }
                 if (classes !== null) {
                     this.Utilities.addClasses(classes.value, this.image);
@@ -4085,19 +4123,25 @@ class RTBlazorfiedImageDialog {
                     this.image.alt = alt.value;
                 }
                 else {
-                    this.image.removeAttribute('alt');
+                    if (this.image.hasAttribute('alt')) {
+                        this.image.removeAttribute('alt');
+                    }
                 }
                 if (width.value.trim().length > 0) {
                     this.image.width = width.value;
                 }
                 else {
-                    this.image.removeAttribute('width');
+                    if (this.image.hasAttribute('width')) {
+                        this.image.removeAttribute('width');
+                    }
                 }
                 if (height.value.trim().length > 0) {
                     this.image.height = height.value;
                 }
                 else {
-                    this.image.removeAttribute('height');
+                    if (this.image.hasAttribute('height')) {
+                        this.image.removeAttribute('height');
+                    }
                 }
                 if (classes !== null) {
                     this.Utilities.addClasses(classes.value, this.image);
@@ -4242,7 +4286,9 @@ class RTBlazorfiedLinkDialog {
                 element.target = "_blank";
             }
             else {
-                element.removeAttribute('target');
+                if (element.hasAttribute('target')) {
+                    element.removeAttribute('target');
+                }
             }
             this.Utilities.reselectNode(element);
         }
