@@ -6,7 +6,12 @@
 namespace RichTextBlazorfied;
 
 public class RichTextboxEditorOptions
-{    
+{
+    internal bool? _removeResizeHandle;
+    public void RemoveResizeHandle()
+    {
+        _removeResizeHandle = true;
+    }
     public string? Width { get; set; }
     public string? Height { get; set; }
     public string? BorderStyle { get; set; }

@@ -115,7 +115,7 @@ public partial class RTBlazorfied
 
         .rich-text-box-container {
             resize: both;
-            overflow: auto;
+            overflow: {{EditorResizeHandle}};
             border-style: {{EditorBorderStyle}};
             border-width: {{EditorBorderWidth}};
             border-color: {{EditorBorderColor}};
@@ -654,6 +654,7 @@ public partial class RTBlazorfied
     public string? EditorBorderWidth { get; set; } = "1px";
     public string? EditorBorderColor { get; set; } = "#EEE";
     public string? EditorBoxShadow { get; set; } = "none";
+    public string? EditorResizeHandle { get; set; } = "auto";
 
     // Scroll
     public string? ScrollWidth { get; set; } = "10px";
@@ -1236,6 +1237,17 @@ public partial class RTBlazorfied
             if (styleOptions.BoxShadow is not null)
             {
                 EditorBoxShadow = styleOptions.BoxShadow;
+            }
+            if (styleOptions._removeResizeHandle is not null)
+            {
+                if (styleOptions._removeResizeHandle == true)
+                {
+                    EditorResizeHandle = "visible";
+                }
+                else
+                {
+                    EditorResizeHandle = "auto";
+                }
             }
         }
         // Allow the inline styles to override the options

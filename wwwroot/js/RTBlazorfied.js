@@ -447,6 +447,8 @@ class RTBlazorfied {
             }
         }
 
+        /* Uncertain about this feature */
+        /*
         if (event.key === 'Enter') {
             const selection = this.Utilities.getSelection();
             if (selection !== null) {
@@ -461,6 +463,7 @@ class RTBlazorfied {
                 }
             }
         }
+        */
     }
 
     isBreakable = (node) => {

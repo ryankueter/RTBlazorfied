@@ -109,6 +109,7 @@ public Action<IRTBlazorfiedOptions> GetOptions() => (o =>
     });
     o.EditorStyles(o =>
     {
+        o.RemoveResizeHandle();
         o.Width = "500px";
         o.Height = "700px";
         o.BorderRadius = "10px";
