@@ -1818,22 +1818,26 @@ class RTBlazorfiedNodeManager {
                 ul.classList.add("selected");
             }
 
-            /* Check for image */
-            const image = el.querySelector('img');
-            if (image) {
-                if (image.src.startsWith('data')) {
-                    imgUpload.classList.add("selected");
-                }
-                else {
-                    img.classList.add("selected");
-                }
-            }
+            /* Check for querySelector */
+            if (el.querySelector) {
 
-            /* Check for object */
-            const object = el.querySelector('object');
-            if (object) {
-                media.classList.add("selected");
-            }
+                /* Check for image */
+                const image = el.querySelector('img');
+                if (image) {
+                    if (image.src.startsWith('data')) {
+                        imgUpload.classList.add("selected");
+                    }
+                    else {
+                        img.classList.add("selected");
+                    }
+                }
+
+                /* Check for object */
+                const object = el.querySelector('object');
+                if (object) {
+                    media.classList.add("selected");
+                }
+            }          
 
             el = el.parentNode;
         }
