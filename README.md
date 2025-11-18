@@ -1,14 +1,14 @@
 # RT Blazorfied
 
 Author: Ryan Kueter  
-Updated: December, 2024
+Updated: November, 2025
 
 ## About
 
 **RT Blazorfied HTML Editor** is a free .NET library available from the [NuGet Package Manager](https://www.nuget.org/packages/RTBlazorfied) that allows Blazor developers to easily add a rich text box / html editor to their Blazor application. The editor uses [Google's Font Icons](https://fonts.google.com/icons). It doesn't reference the icon library. However, it does embed .svg versions of those icons so they are customizable. It also uses the shadow DOM to isolate the HTML from inheriting the existing page styles. Because of that, it provides a preview window for the user to view the live page if the style sheets are applied to the host application. Users are also able to add CSS classes to many components allowing them to customize their appearance.
 
 ### Targets:
-- .NET 8 - .NET 9
+- .NET 8 - .NET 10
 
 ### Features:
 - Shortcut Keys
