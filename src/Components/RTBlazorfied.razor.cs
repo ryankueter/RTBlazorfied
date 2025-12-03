@@ -389,14 +389,13 @@ public partial class RTBlazorfied
           font-family: {{ModalTextFont}};
           transition: 0.3s;
           background-color: {{ButtonBackgroundColor}};
-          border-style: {{ButtonBorderStyle}};
-          border-width: {{ButtonBorderWidth}};
-          border-color: {{ButtonBorderColor}};
+          border: 1px solid {{ButtonBorderColor}};
           border-radius: {{ButtonBorderRadius}};
           color: {{ButtonTextColor}};
           outline: none;
           cursor: pointer;
           transition: 0.3s;
+          min-width: 100% !important;
           min-height: calc({{ButtonTextSize}} + 14px);
           font-family: {{ButtonTextFont}};
           margin: 4px 1px;
