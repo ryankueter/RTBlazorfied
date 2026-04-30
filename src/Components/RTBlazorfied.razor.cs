@@ -20,6 +20,14 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
     /// <summary>Raised whenever the user changes the editor content.</summary>
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
+    /// <summary>
+    /// One or more CSS class names applied to the <c>rt-native</c> host element.
+    /// Use this to activate a named theme — for example <c>Class="fluent"</c> applies
+    /// any <c>rt-native.fluent { --rtb-*: … }</c> rules you have defined in your
+    /// stylesheet.  Multiple classes are supported: <c>Class="fluent dark"</c>.
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+
     /// <summary>CSS length for the editor height (e.g. <c>"400px"</c>, <c>"60vh"</c>).</summary>
     [Parameter] public string Height { get; set; } = "300px";
 
@@ -154,6 +162,16 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
         var built = opts.Build();
         if (built is not null)
             await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.configure", _editorRef, built);
+    }
+
+    /// <summary>
+    /// Replaces the CSS class(es) on the editor host element at runtime, enabling
+    /// dynamic theme switching.  Pass <c>null</c> or an empty string to remove all
+    /// classes.  Example: <c>await editor.SetClassAsync("fluent dark");</c>
+    /// </summary>
+    public async Task SetClassAsync(string? cssClass)
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.setClass", _editorRef, cssClass ?? string.Empty);
     }
 
     // ── Cleanup ───────────────────────────────────────────────────────────────

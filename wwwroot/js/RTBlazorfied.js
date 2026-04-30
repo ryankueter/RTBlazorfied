@@ -107,6 +107,15 @@
         if (element && options) element.configure(options);
     }
 
+    /**
+     * Replaces the className on the rt-native host element, enabling runtime
+     * theme switching.  Pass an empty string to clear all classes.
+     */
+    function setClass(element, cssClass) {
+        if (!element) return;
+        element.className = cssClass ?? '';
+    }
+
     // ── Expose global ────────────────────────────────────────────────────────
 
     window.RTBlazorfiedInterop = {
@@ -118,5 +127,6 @@
         setPreviewCssFiles,
         setPreviewCss,
         configure,
+        setClass,
     };
 }());

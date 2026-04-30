@@ -126,17 +126,17 @@ rt-native {
 
 ### Theming with CSS Classes
 
-The cleanest way to create reusable, per-instance themes in a Blazor project is to wrap `<RTBlazorfied>` in a container `<div>` with a theme class, then target `rt-native` inside that class:
+The `Class` parameter passes one or more CSS class names directly to the `rt-native` host element. This is the cleanest way to apply per-instance themes in Blazor:
 
 ```razor
-<div class="editor-dark">
-    <RTBlazorfied @bind-Value="@_html" />
-</div>
+<RTBlazorfied @bind-Value="@_html" Class="editor-dark" />
 ```
+
+Define the theme in your stylesheet using `rt-native.editor-dark` (element + class — higher specificity than the injected `rt-native {}` defaults):
 
 ```css
 /* app.css or site.css */
-.editor-dark rt-native {
+rt-native.editor-dark {
     --rtb-toolbar-bg:          #1e1e1e;
     --rtb-toolbar-border-color:#333;
     --rtb-btn-text:            #ccc;
@@ -156,7 +156,27 @@ The cleanest way to create reusable, per-instance themes in a Blazor project is 
 }
 ```
 
-The descendant-combinator selector (`.editor-dark rt-native`) has higher specificity than the injected `rt-native {}` defaults, so it wins regardless of stylesheet order. This pattern also lets you apply different themes to different editor instances on the same page.
+Multiple classes are supported — separate them with a space: `Class="fluent dark"`.
+
+#### Switching themes at runtime
+
+Use `@ref` and `SetClassAsync` to swap the theme dynamically:
+
+```razor
+<RTBlazorfied @ref="_editor" @bind-Value="@_html" Class="@_theme" />
+
+<button @onclick='() => _editor.SetClassAsync("fluent")'>Light</button>
+<button @onclick='() => _editor.SetClassAsync("fluent-dark")'>Dark</button>
+<button @onclick='() => _editor.SetClassAsync(string.Empty)'>Default</button>
+
+@code {
+    private RTBlazorfied _editor = default!;
+    private string _html = string.Empty;
+    private string _theme = "fluent";
+}
+```
+
+> **Tip:** `SetClassAsync` completely replaces the element's class list, so you do not need to track which class was set previously.
 
 ### Fluent 2 Themes
 
@@ -165,14 +185,12 @@ Complete ready-to-use implementations of Microsoft's [Fluent 2 Design System](ht
 **Fluent 2 Light**
 
 ```razor
-<div class="fluent">
-    <RTBlazorfied @bind-Value="@_html" />
-</div>
+<RTBlazorfied @bind-Value="@_html" Class="fluent" />
 ```
 
 ```css
 /* app.css or site.css */
-.fluent rt-native {
+rt-native.fluent {
     /* Typography */
     --rtb-btn-font:              Arial, Helvetica, Verdana, sans-serif;
     --rtb-btn-size:              16px;
@@ -238,14 +256,12 @@ Complete ready-to-use implementations of Microsoft's [Fluent 2 Design System](ht
 **Fluent 2 Dark**
 
 ```razor
-<div class="fluent-dark">
-    <RTBlazorfied @bind-Value="@_html" />
-</div>
+<RTBlazorfied @bind-Value="@_html" Class="fluent-dark" />
 ```
 
 ```css
 /* app.css or site.css */
-.fluent-dark rt-native {
+rt-native.fluent-dark {
     /* Typography */
     --rtb-btn-font:              Arial, Helvetica, Verdana, sans-serif;
     --rtb-btn-size:              16px;
@@ -408,6 +424,7 @@ Complete ready-to-use implementations of Microsoft's [Fluent 2 Design System](ht
 |---|---|---|---|
 | `Value` | `string?` | `null` | HTML content of the editor. Use `@bind-Value` for two-way binding. |
 | `ValueChanged` | `EventCallback<string>` | — | Raised whenever the editor content changes. Wired automatically by `@bind-Value`. |
+| `Class` | `string?` | `null` | One or more CSS class names applied to the host element for theming. E.g. `Class="fluent"` or `Class="fluent dark"`. |
 | `Height` | `string` | `"300px"` | Editor height. Any valid CSS length (`px`, `vh`, etc.). |
 | `Width` | `string` | `"100%"` | Editor width. Any valid CSS length. |
 | `Placeholder` | `string?` | `null` | Placeholder text shown when the editor is empty. |
@@ -467,6 +484,7 @@ Use `@ref` to access the component's public methods at runtime:
 | `GetValueAsync()` | `Task<string>` | Returns the current editor HTML. |
 | `GetPlainTextAsync()` | `Task<string>` | Returns the editor content with all HTML tags stripped. |
 | `SetReadOnlyAsync(bool on)` | `Task` | Enables (`true`) or disables (`false`) read-only mode at runtime. |
+| `SetClassAsync(string? cssClass)` | `Task` | Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass `null` or `""` to clear. |
 | `SetPreviewCssFilesAsync(params string[] urls)` | `Task` | Loads CSS files into the preview window only. |
 | `SetPreviewCssAsync(string css)` | `Task` | Applies inline CSS to the preview window only. |
 | `ConfigureAsync(Action<IRTBlazorfiedOptions>)` | `Task` | Reapplies button visibility on an already-rendered editor. |
