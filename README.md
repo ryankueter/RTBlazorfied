@@ -158,6 +158,156 @@ The cleanest way to create reusable, per-instance themes in a Blazor project is 
 
 The descendant-combinator selector (`.editor-dark rt-native`) has higher specificity than the injected `rt-native {}` defaults, so it wins regardless of stylesheet order. This pattern also lets you apply different themes to different editor instances on the same page.
 
+### Fluent 2 Themes
+
+Complete ready-to-use implementations of Microsoft's [Fluent 2 Design System](https://fluent2.microsoft.design/). Copy the CSS block into your `app.css` or `site.css`, then wrap your `<RTBlazorfied>` component in the matching `<div>`.
+
+**Fluent 2 Light**
+
+```razor
+<div class="fluent">
+    <RTBlazorfied @bind-Value="@_html" />
+</div>
+```
+
+```css
+/* app.css or site.css */
+.fluent rt-native {
+    /* Typography */
+    --rtb-btn-font:              Arial, Helvetica, Verdana, sans-serif;
+    --rtb-btn-size:              16px;
+
+    /* Toolbar */
+    --rtb-toolbar-bg:            #ffffff;
+    --rtb-toolbar-border-style:  solid;
+    --rtb-toolbar-border-width:  1px;
+    --rtb-toolbar-border-color:  #d1d1d1;
+    --rtb-dropdown-bg:           #ffffff;
+    --rtb-dropdown-text:         #242424;
+    --rtb-dropdown-bg-hover:     #f5f5f5;
+    --rtb-dropdown-text-hover:   #242424;
+
+    /* Buttons */
+    --rtb-btn-text:              #242424;
+    --rtb-btn-bg:                transparent;
+    --rtb-btn-bg-hover:          #e8e8e8;
+    --rtb-btn-bg-selected:       #dcdcdc;
+    --rtb-btn-border-style:      none;
+    --rtb-btn-border-radius:     4px;
+
+    /* Content area */
+    --rtb-content-text:          #242424;
+    --rtb-content-size:          1rem;
+    --rtb-content-font:          Arial, Helvetica, Verdana, sans-serif;
+    --rtb-content-bg:            #ffffff;
+
+    /* Editor container */
+    --rtb-editor-border-style:   solid;
+    --rtb-editor-border-width:   1px;
+    --rtb-editor-border-color:   #d1d1d1;
+    --rtb-editor-border-radius:  4px;
+    --rtb-editor-shadow:         0 2px 4px rgba(0, 0, 0, 0.06);
+
+    /* Scrollbars */
+    --rtb-scroll-width:          6px;
+    --rtb-scroll-thumb-bg:       #c2c2c2;
+    --rtb-scroll-thumb-bg-hover: #8a8a8a;
+    --rtb-scroll-thumb-radius:   3px;
+
+    /* Modals & dialogs */
+    --rtb-modal-bg:              #ffffff;
+    --rtb-modal-text:            #242424;
+    --rtb-modal-text-size:       1rem;
+    --rtb-modal-text-font:       Arial, Helvetica, Verdana, sans-serif;
+    --rtb-modal-input-bg:        #ffffff;
+    --rtb-modal-input-text:      #242424;
+    --rtb-modal-input-border:    #d1d1d1;
+    --rtb-modal-checkbox:        #0078d4;
+
+    /* Blockquote */
+    --rtb-quote-bg:              #f0f7ff;
+    --rtb-quote-border-color:    #0078d4;
+    --rtb-quote-border-width:    4px;
+
+    /* Code blocks */
+    --rtb-code-bg:               #f5f5f5;
+    --rtb-code-border-radius:    4px;
+}
+```
+
+**Fluent 2 Dark**
+
+```razor
+<div class="fluent-dark">
+    <RTBlazorfied @bind-Value="@_html" />
+</div>
+```
+
+```css
+/* app.css or site.css */
+.fluent-dark rt-native {
+    /* Typography */
+    --rtb-btn-font:              Arial, Helvetica, Verdana, sans-serif;
+    --rtb-btn-size:              16px;
+
+    /* Toolbar */
+    --rtb-toolbar-bg:            #292929;
+    --rtb-toolbar-border-style:  solid;
+    --rtb-toolbar-border-width:  1px;
+    --rtb-toolbar-border-color:  #424242;
+    --rtb-dropdown-bg:           #292929;
+    --rtb-dropdown-text:         #ffffff;
+    --rtb-dropdown-bg-hover:     #2e2e2e;
+    --rtb-dropdown-text-hover:   #ffffff;
+
+    /* Buttons */
+    --rtb-btn-text:              #ffffff;
+    --rtb-btn-bg:                transparent;
+    --rtb-btn-bg-hover:          #404040;
+    --rtb-btn-bg-selected:       #4e4e4e;
+    --rtb-btn-border-style:      none;
+    --rtb-btn-border-radius:     4px;
+
+    /* Content area */
+    --rtb-content-text:          #ffffff;
+    --rtb-content-size:          1rem;
+    --rtb-content-font:          Arial, Helvetica, Verdana, sans-serif;
+    --rtb-content-bg:            #1f1f1f;
+
+    /* Editor container */
+    --rtb-editor-border-style:   solid;
+    --rtb-editor-border-width:   1px;
+    --rtb-editor-border-color:   #424242;
+    --rtb-editor-border-radius:  4px;
+    --rtb-editor-shadow:         0 2px 8px rgba(0, 0, 0, 0.32);
+
+    /* Scrollbars */
+    --rtb-scroll-width:          6px;
+    --rtb-scroll-thumb-bg:       #5c5c5c;
+    --rtb-scroll-thumb-bg-hover: #8a8a8a;
+    --rtb-scroll-thumb-radius:   3px;
+
+    /* Modals & dialogs */
+    --rtb-modal-bg:              #2e2e2e;
+    --rtb-modal-text:            #ffffff;
+    --rtb-modal-text-size:       1rem;
+    --rtb-modal-text-font:       Arial, Helvetica, Verdana, sans-serif;
+    --rtb-modal-input-bg:        #1f1f1f;
+    --rtb-modal-input-text:      #ffffff;
+    --rtb-modal-input-border:    #424242;
+    --rtb-modal-checkbox:        #479ef5;
+
+    /* Blockquote */
+    --rtb-quote-bg:              #00244a;
+    --rtb-quote-border-color:    #479ef5;
+    --rtb-quote-border-width:    4px;
+
+    /* Code blocks */
+    --rtb-code-bg:               #141414;
+    --rtb-code-border-radius:    4px;
+}
+```
+
 ### Toolbar
 
 | Variable | Default | Description |
