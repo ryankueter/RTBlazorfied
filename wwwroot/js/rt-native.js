@@ -5338,7 +5338,7 @@ const _RTB_SHADOW_CSS = `
     height: var(--rtb-editor-height, 300px);
     display: flex;
     flex-direction: column;
-    z-index: 1;
+    z-index: var(--rtb-z-index, 1);
 }
 .rich-text-box-content-container {
     width: 100%;
@@ -5596,6 +5596,12 @@ const _RTB_SHADOW_CSS = `
     resize: both;
     overflow: hidden;
     box-sizing: border-box;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    z-index: 9999;
 }
 .rtb-preview-dialog[open] {
     display: flex;
@@ -5891,6 +5897,9 @@ rt-native {
 
     /* Placeholder */
     --rtb-placeholder-color:     #9ca3af;
+
+    /* Stacking context — raise the entire editor above surrounding content */
+    --rtb-z-index:               1;
 
     /* Modals / dialogs */
     --rtb-modal-bg:              #ffffff;

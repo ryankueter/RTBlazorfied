@@ -376,6 +376,7 @@ rt-native.fluent-dark {
 | `--rtb-editor-border-radius` | `4px` | Outer corner radius |
 | `--rtb-editor-shadow` | `0 2px 4px rgba(0,0,0,0.06)` | Outer box shadow |
 | `--rtb-editor-resize` | `auto` | `auto` shows the resize handle; `hidden` removes it |
+| `--rtb-z-index` | `1` | Z-index of the editor container — raise this to stack the editor above surrounding page content |
 
 ### Scrollbars
 
