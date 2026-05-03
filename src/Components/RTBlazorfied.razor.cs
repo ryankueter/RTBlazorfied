@@ -12,20 +12,12 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
 {
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
-    // ── Parameters ───────────────────────────────────────────────────────────
-
     /// <summary>The HTML content displayed and edited inside the component.</summary>
     [Parameter] public string? Value { get; set; }
 
     /// <summary>Raised whenever the user changes the editor content.</summary>
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
-
-    /// <summary>
-    /// One or more CSS class names applied to the <c>rt-native</c> host element.
-    /// Use this to activate a named theme — for example <c>Class="fluent"</c> applies
-    /// any <c>rt-native.fluent { --rtb-*: … }</c> rules you have defined in your
-    /// stylesheet.  Multiple classes are supported: <c>Class="fluent dark"</c>.
-    /// </summary>
+    [Parameter] public string? Id { get; set; }
     [Parameter] public string? Class { get; set; }
 
     /// <summary>CSS length for the editor height (e.g. <c>"400px"</c>, <c>"60vh"</c>).</summary>

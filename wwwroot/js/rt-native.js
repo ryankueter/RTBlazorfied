@@ -528,6 +528,30 @@ class RTBlazorfied {
             event.preventDefault();
             this.toggleStatusBar();
         }
+        if (event.key === 'Backspace') {
+            const selection = this.Utilities.getSelection();
+            if (selection && selection.isCollapsed) {
+                const range = selection.getRangeAt(0);
+                const blockLevelElements = ['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL', 'SECTION', 'ARTICLE', 'HEADER', 'FOOTER'];
+                let block = selection.anchorNode;
+                while (block && block !== this.content) {
+                    if (block.nodeType === Node.ELEMENT_NODE && blockLevelElements.includes(block.nodeName)) break;
+                    block = block.parentNode;
+                }
+                if (block && block !== this.content) {
+                    const marginLeft = parseFloat(window.getComputedStyle(block).marginLeft) || 0;
+                    if (marginLeft > 0) {
+                        const testRange = document.createRange();
+                        testRange.setStart(block, 0);
+                        testRange.setEnd(range.startContainer, range.startOffset);
+                        if (testRange.toString().length === 0) {
+                            event.preventDefault();
+                            this.decreaseIndent();
+                        }
+                    }
+                }
+            }
+        }
         if (event.shiftKey && event.key === 'Tab') {
             event.preventDefault();
             this.decreaseIndent();
@@ -619,7 +643,7 @@ class RTBlazorfied {
         if (this.preview && previewWindow) {
             this.loadPreviewWindow(previewWindow);
             this.addPreviewEventListeners(this.preview);
-            this.preview.show();
+            this.preview.showModal();
             previewWindow.scrollTop = 0;
             previewWindow.scrollLeft = 0;
         }
@@ -728,9 +752,43 @@ class RTBlazorfied {
     }
     closePreview = () => {
         this.disablePreview();
+        this._resetPreviewMaximize();
         this.preview.close();
         this.source.focus();
         this.content.focus();
+    }
+    togglePreviewMaximize = () => {
+        const dialog = this.shadowRoot.getElementById(`${this.id}_Preview`);
+        const btn = this.shadowRoot.getElementById(`${this.id}_PreviewMaxBtn`);
+        if (!dialog || !btn) return;
+        const isMax = !dialog.hasAttribute('data-maximized');
+        const maximize_props = [
+            ['width', '100vw'], ['height', '100vh'],
+            ['max-width', '100vw'], ['max-height', '100vh'],
+            ['top', '0'], ['left', '0'],
+            ['transform', 'none'], ['border-radius', '0'], ['resize', 'none']
+        ];
+        if (isMax) {
+            dialog.setAttribute('data-maximized', '');
+            maximize_props.forEach(([p, v]) => dialog.style.setProperty(p, v));
+        } else {
+            dialog.removeAttribute('data-maximized');
+            maximize_props.forEach(([p]) => dialog.style.removeProperty(p));
+        }
+        btn.setAttribute('aria-label', isMax ? 'Restore preview' : 'Maximize preview');
+        btn.querySelector('svg').innerHTML = isMax
+            ? '<path d="M4.5 1.5V4.5H1.5M7.5 10.5V7.5H10.5M4.5 4.5L1.5 1.5M7.5 7.5L10.5 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+            : '<path d="M1.5 4.5V1.5H4.5M10.5 7.5V10.5H7.5M1.5 1.5L4.5 4.5M10.5 10.5L7.5 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
+    }
+    _resetPreviewMaximize = () => {
+        const dialog = this.shadowRoot.getElementById(`${this.id}_Preview`);
+        const btn = this.shadowRoot.getElementById(`${this.id}_PreviewMaxBtn`);
+        if (!dialog || !btn) return;
+        dialog.removeAttribute('data-maximized');
+        ['width','height','max-width','max-height','top','left','transform','border-radius','resize']
+            .forEach(p => dialog.style.removeProperty(p));
+        btn.setAttribute('aria-label', 'Maximize preview');
+        btn.querySelector('svg').innerHTML = '<path d="M1.5 4.5V1.5H4.5M10.5 7.5V10.5H7.5M1.5 1.5L4.5 4.5M10.5 10.5L7.5 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
     }
     // ---- Horizontal Rule -------------------------------------------------------
 
@@ -5606,6 +5664,9 @@ const _RTB_SHADOW_CSS = `
 .rtb-preview-dialog[open] {
     display: flex;
 }
+.rtb-preview-dialog::backdrop {
+    background: transparent;
+}
 .rtb-preview-dialog-body {
     display: flex;
     flex-direction: column;
@@ -6610,7 +6671,7 @@ rt-native {
   ${v.redo ? this._btn('blazing-rich-text-redo-button', 'Redo', 'Redo (Ctrl+Y)', 'goForward') : ''}
   ${historyDividerNeeded ? this._divider() : ''}
 
-  ${v.statusBarToggle? this._specialBtn('blazing-rich-text-statusbar-button',  'StatusBar', 'Toggle Status Bar (Ctrl+\\)', 'toggleStatusBar')   : ''}
+  ${v.statusBarToggle? this._btn('blazing-rich-text-statusbar-button',  'StatusBar', 'Toggle Status Bar (Ctrl+\\)', 'toggleStatusBar')   : ''}
   ${v.saveHtml       ? this._specialBtn('blazing-rich-text-save-button',       'SaveHtml',  'Save HTML (Ctrl+Shift+S)',     'saveHtml')          : ''}
   ${v.htmlView       ? this._specialBtn('blazing-rich-text-source',            'Code',      'HTML Source (Ctrl+Shift+A)',   'toggleView')        : ''}
   ${v.preview        ? this._specialBtn('blazing-rich-text-preview-button',    'Preview',   'Preview (Ctrl+Shift+P)',       'openPreview')       : ''}
@@ -6803,7 +6864,10 @@ rt-native {
 <dialog id="${id}_Preview" class="rich-text-box-modal rich-text-box-scroll rtb-preview-dialog" aria-modal="true" aria-labelledby="${id}_Preview-title">
   <div class="rtb-modal-header">
     <div id="${id}_Preview-title" class="rich-text-box-modal-title">Preview</div>
-    <button class="rich-text-box-modal-close" aria-label="Close preview" onclick="RTBlazorfied_Method('closePreview','${id}')"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false" width="8" height="8" style="display:block"><path d="M2 2L10 10M10 2L2 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></button>
+    <div style="display:flex;gap:2px;align-items:center;">
+      <button id="${id}_PreviewMaxBtn" class="rich-text-box-modal-close" aria-label="Maximize preview" onclick="RTBlazorfied_Method('togglePreviewMaximize','${id}')"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false" width="11" height="11" style="display:block"><path d="M1.5 4.5V1.5H4.5M10.5 7.5V10.5H7.5M1.5 1.5L4.5 4.5M10.5 10.5L7.5 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>
+      <button class="rich-text-box-modal-close" aria-label="Close preview" onclick="RTBlazorfied_Method('closePreview','${id}')"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false" width="8" height="8" style="display:block"><path d="M2 2L10 10M10 2L2 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></button>
+    </div>
   </div>
   <div class="rtb-preview-dialog-body">
     <div id="rich-text-box-preview" class="rtb-preview-window"></div>
