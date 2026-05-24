@@ -1,4 +1,4 @@
-# RTBlazorfied — Blazor Rich Text Editor Component
+# RTBlazorfied - Blazor Rich Text Editor Component
 
 **Author:** Ryan Kueter | **Updated:** May, 2026
 
@@ -11,7 +11,7 @@ RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessib
 1. [Installation](#installation)
 2. [Quick Start](#quick-start)
 3. [Styling with CSS Variables](#styling-with-css-variables)
-  - [Theming with CSS Classes](#theming-with-css-classes)
+   - [Theming with CSS Classes](#theming-with-css-classes)
 4. [Parameters](#parameters)
 5. [Two-Way Binding](#two-way-binding)
 6. [Component Reference (@ref)](#component-reference-ref)
