@@ -45,6 +45,9 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
     /// </summary>
     [Parameter] public Action<IRTBlazorfiedOptions>? Options { get; set; }
 
+    /// <summary>Raised when the user clicks a custom toolbar button. The argument is the button's id.</summary>
+    [Parameter] public EventCallback<string> CustomButtonClicked { get; set; }
+
     // ── Private state ─────────────────────────────────────────────────────────
 
     private ElementReference _editorRef;
@@ -90,7 +93,7 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
         }
     }
 
-    // ── JS → Blazor callback ─────────────────────────────────────────────────
+    // ── JS → Blazor callbacks ────────────────────────────────────────────────
 
     /// <summary>
     /// Called from JavaScript each time the editor content changes.
@@ -102,6 +105,14 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
         _lastKnownValue = value;
         if (ValueChanged.HasDelegate)
             await ValueChanged.InvokeAsync(value);
+    }
+
+    /// <summary>Called from JavaScript when a custom toolbar button is clicked.</summary>
+    [JSInvokable]
+    public async Task OnCustomButtonClick(string id)
+    {
+        if (CustomButtonClicked.HasDelegate)
+            await CustomButtonClicked.InvokeAsync(id);
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -164,6 +175,24 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
     public async Task SetClassAsync(string? cssClass)
     {
         await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.setClass", _editorRef, cssClass ?? string.Empty);
+    }
+
+    /// <summary>Adds a custom button to the toolbar. The <see cref="CustomButtonClicked"/> callback fires when the user clicks it.</summary>
+    public async Task AddCustomButtonAsync(string id, string title, string svg)
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.addCustomButton", _editorRef, id, title, svg);
+    }
+
+    /// <summary>Removes the custom button with the given id from the toolbar.</summary>
+    public async Task RemoveCustomButtonAsync(string id)
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.removeCustomButton", _editorRef, id);
+    }
+
+    /// <summary>Removes all custom buttons from the toolbar.</summary>
+    public async Task ClearCustomButtonsAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.clearCustomButtons", _editorRef);
     }
 
     // ── Cleanup ───────────────────────────────────────────────────────────────

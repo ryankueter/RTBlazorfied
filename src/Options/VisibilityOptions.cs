@@ -17,6 +17,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     private bool? _strikethrough;
     private bool? _subscript;
     private bool? _superscript;
+    private bool? _inlineCode;
     private bool? _formatDivider;
 
     // Color
@@ -83,6 +84,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     public IVisibilityOptions Strikethrough(bool value = true)  { _strikethrough    = value; return this; }
     public IVisibilityOptions Subscript(bool value = true)      { _subscript        = value; return this; }
     public IVisibilityOptions Superscript(bool value = true)    { _superscript      = value; return this; }
+    public IVisibilityOptions InlineCode(bool value = true)     { _inlineCode       = value; return this; }
     public IVisibilityOptions FormatDivider(bool value = true)  { _formatDivider    = value; return this; }
 
     public IVisibilityOptions TextColor(bool value = true)      { _textColor        = value; return this; }
@@ -146,6 +148,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
         Add("strikethrough",    _strikethrough);
         Add("subscript",        _subscript);
         Add("superscript",      _superscript);
+        Add("inlineCode",       _inlineCode);
         Add("formatDivider",    _formatDivider);
 
         Add("textColor",        _textColor);

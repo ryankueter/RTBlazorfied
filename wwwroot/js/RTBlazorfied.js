@@ -52,6 +52,10 @@
             dotNetRef.invokeMethodAsync('OnValueChanged', e.detail?.value ?? '');
         });
 
+        element.addEventListener('custom-button-click', function (e) {
+            dotNetRef.invokeMethodAsync('OnCustomButtonClick', e.detail?.id ?? '');
+        });
+
         // Patch _applyContentStyles to a no-op on this element instance so that
         // setPreviewCssFiles / setPreviewCss only affect the preview dialog iframe.
         // The preview dialog already receives the CSS through the cssLinks mechanism
@@ -116,6 +120,21 @@
         element.className = cssClass ?? '';
     }
 
+    async function addCustomButton(element, id, title, svg) {
+        await _ready;
+        if (element) element.addCustomButton({ id, title, svg });
+    }
+
+    async function removeCustomButton(element, id) {
+        await _ready;
+        element?.removeCustomButton(id);
+    }
+
+    async function clearCustomButtons(element) {
+        await _ready;
+        element?.clearCustomButtons();
+    }
+
     // ── Expose global ────────────────────────────────────────────────────────
 
     window.RTBlazorfiedInterop = {
@@ -128,5 +147,8 @@
         setPreviewCss,
         configure,
         setClass,
+        addCustomButton,
+        removeCustomButton,
+        clearCustomButtons,
     };
 }());

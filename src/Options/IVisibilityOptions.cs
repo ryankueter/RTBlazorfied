@@ -23,6 +23,7 @@ public interface IVisibilityOptions
     IVisibilityOptions Strikethrough(bool value = true);
     IVisibilityOptions Subscript(bool value = true);
     IVisibilityOptions Superscript(bool value = true);
+    IVisibilityOptions InlineCode(bool value = true);
     IVisibilityOptions FormatDivider(bool value = true);
 
     // ── Color ─────────────────────────────────────────────────────────────────

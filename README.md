@@ -1,9 +1,8 @@
 # RTBlazorfied — Blazor Rich Text Editor Component
 
-**Author:** Ryan Kueter  
-**Updated:** May, 2026
+**Author:** Ryan Kueter | **Updated:** May, 2026
 
-RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessibility features and a wide variety of elements and customizations that make it one of the most robust and flexible HTML editors available. It allows the programmer to apply custom .css files to the preview window, to see how the content will be displayed in production. The editor uses embedded .svg Google Font Icons and the shadow DOM to isolate the HTML from inheriting the existing page styles. While this component is a wrapper for the **rt-native.js** HTML editor native web component available on NPM, no additional setup beyond the steps below are required. 
+RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessibility features and a wide variety of elements and customizations that make it one of the most robust and flexible HTML editors available. It allows the programmer to apply custom .css files to the preview window, to see how the content will be displayed in production. The editor uses embedded .svg Google Font Icons and the shadow DOM to isolate the HTML from inheriting the existing page styles. While this component is a wrapper for the **rt-native.js** HTML editor native web component available on NPM, no additional setup beyond the steps below are required.
 
 ---
 
@@ -12,7 +11,7 @@ RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessib
 1. [Installation](#installation)
 2. [Quick Start](#quick-start)
 3. [Styling with CSS Variables](#styling-with-css-variables)
-   - [Theming with CSS Classes](#theming-with-css-classes)
+  - [Theming with CSS Classes](#theming-with-css-classes)
 4. [Parameters](#parameters)
 5. [Two-Way Binding](#two-way-binding)
 6. [Component Reference (@ref)](#component-reference-ref)
@@ -20,11 +19,12 @@ RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessib
 8. [ButtonVisibility Reference](#buttonvisibility-reference)
 9. [Preview Window Styling](#preview-window-styling)
 10. [Read-Only Mode](#read-only-mode)
-11. [Toolbar Buttons](#toolbar-buttons)
-12. [Keyboard Shortcuts](#keyboard-shortcuts)
-13. [Accessibility](#accessibility)
-14. [Multiple Instances](#multiple-instances)
-15. [Browser Support](#browser-support)
+11. [Custom Buttons](#custom-buttons)
+12. [Toolbar Buttons](#toolbar-buttons)
+13. [Keyboard Shortcuts](#keyboard-shortcuts)
+14. [Accessibility](#accessibility)
+15. [Multiple Instances](#multiple-instances)
+16. [Browser Support](#browser-support)
 
 ---
 
@@ -33,11 +33,13 @@ RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessib
 ### 1. Install the NuGet package
 
 **Package Manager Console**
+
 ```powershell
 Install-Package RTBlazorfied
 ```
 
 **.NET CLI**
+
 ```bash
 dotnet add package RTBlazorfied
 ```
@@ -46,7 +48,7 @@ dotnet add package RTBlazorfied
 
 ### 2. Add the script tag
 
-In your wwwroot/index.html (Blazor WebAssembly) or Pages/_Layout.cshtml / App.razor (Blazor Server), add the script **before** the closing \</body\> tag:
+In your wwwroot/index.html (Blazor WebAssembly) or Pages/\_Layout.cshtml / App.razor (Blazor Server), add the script **before** the closing \\</body> tag:
 
 ```html
 <script src="_content/RTBlazorfied/js/RTBlazorfied.js"></script>
@@ -54,7 +56,7 @@ In your wwwroot/index.html (Blazor WebAssembly) or Pages/_Layout.cshtml / App.ra
 
 ### 3. Add the using statement
 
-In your _Imports.razor:
+In your \_Imports.razor:
 
 ```razor
 @using RichTextBlazorfied
@@ -82,7 +84,7 @@ That's it — no additional CSS or JS imports are needed.
 
 ## Styling with CSS Variables
 
-All visual aspects of the editor are controlled through CSS custom properties on the **rt-native** host element. The defaults are injected as an rt-native { } rule in the document head, so any rule that targets **rt-native** with **equal or greater specificity** will override them.
+All visual aspects of the editor are controlled through CSS custom properties on the **rt-native** host element. The defaults are injected as an rt-native \{ \} rule in the document head, so any rule that targets **rt-native** with **equal or greater specificity** will override them.
 
 ```css
 /* Theme all editors on the page (same specificity as defaults —
@@ -122,7 +124,7 @@ rt-native {
 }
 ```
 
-> **Note:** Setting variables on :root or body will **not** work — CSS custom properties are inherited top-down in the DOM, but the component's injected defaults are set directly on **rt-native**, which has higher priority than inherited values. Target **rt-native** directly, or use a descendant-combinator rule that ends with **rt-native** (e.g. .my-wrapper rt-native { }).
+> **Note:** Setting variables on :root or body will **not** work — CSS custom properties are inherited top-down in the DOM, but the component's injected defaults are set directly on **rt-native**, which has higher priority than inherited values. Target **rt-native** directly, or use a descendant-combinator rule that ends with **rt-native** (e.g. .my-wrapper rt-native \{ \}).
 
 ### Theming with CSS Classes
 
@@ -132,7 +134,7 @@ The **Class** parameter passes one or more CSS class names directly to the **rt-
 <RTBlazorfied Id="editor1" @bind-Value="@_html" Class="editor-dark" />
 ```
 
-Define the theme in your stylesheet using rt-native.editor-dark (element + class — higher specificity than the injected rt-native {} defaults):
+Define the theme in your stylesheet using rt-native.editor-dark (element + class — higher specificity than the injected rt-native \{\} defaults):
 
 ```css
 /* app.css or site.css */
@@ -177,6 +179,7 @@ Use **@ref** and **SetClassAsync** to swap the theme dynamically:
 ```
 
 Setting the theme in JavaScript
+
 ```javascript
 var editor1 = document.getElementById("editor1");
 if (editor1) {
@@ -344,7 +347,7 @@ rt-native.fluent-dark {
 ### Toolbar
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-toolbar-bg | #ffffff | Toolbar background color |
 | --rtb-toolbar-border-style | solid | Toolbar bottom border style |
 | --rtb-toolbar-border-width | 1px | Toolbar bottom border width |
@@ -358,7 +361,7 @@ rt-native.fluent-dark {
 ### Buttons
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-btn-text | #242424 | Button icon color |
 | --rtb-btn-size | 16px | Icon size (also drives button height and divider height) |
 | --rtb-btn-font | "Segoe UI Variable", sans-serif | Font for dropdown buttons |
@@ -375,7 +378,7 @@ rt-native.fluent-dark {
 ### Content Area
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-content-text | #242424 | Editor text color |
 | --rtb-content-size | 14px | Editor font size |
 | --rtb-content-font | "Segoe UI Variable", sans-serif | Editor font family |
@@ -386,7 +389,7 @@ rt-native.fluent-dark {
 ### Editor Container
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-editor-border-style | solid | Outer border style |
 | --rtb-editor-border-width | 1px | Outer border width |
 | --rtb-editor-border-color | #d1d1d1 | Outer border color |
@@ -398,7 +401,7 @@ rt-native.fluent-dark {
 ### Scrollbars
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-scroll-width | 6px | Scrollbar track width |
 | --rtb-scroll-opacity | 1 | Scrollbar opacity |
 | --rtb-scroll-bg | transparent | Scrollbar track background |
@@ -409,7 +412,7 @@ rt-native.fluent-dark {
 ### Blockquotes
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-quote-bg | #f0f7ff | Blockquote background color |
 | --rtb-quote-border-color | #0078d4 | Blockquote left-border color |
 | --rtb-quote-border-width | 4px | Blockquote left-border width |
@@ -417,14 +420,14 @@ rt-native.fluent-dark {
 ### Code Blocks
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-code-bg | #f5f5f5 | Code block background color |
 | --rtb-code-border-radius | 4px | Code block corner radius |
 
 ### Modals & Dialogs
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | --rtb-modal-bg | #ffffff | Dialog background color |
 | --rtb-modal-text | #242424 | Dialog text color |
 | --rtb-modal-text-size | 14px | Dialog font size |
@@ -439,16 +442,17 @@ rt-native.fluent-dark {
 ## Parameters
 
 | Parameter | Type | Default | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Value | string? | null | HTML content of the editor. Use **@bind-Value** for two-way binding. |
-| ValueChanged | EventCallback\<string\> | — | Raised whenever the editor content changes. Wired automatically by **@bind-Value**. |
+| ValueChanged | EventCallback\\<string> | — | Raised whenever the editor content changes. Wired automatically by **@bind-Value**. |
 | Class | string? | null | One or more CSS class names applied to the host element for theming. E.g. Class="fluent" or Class="fluent dark". |
 | Height | string | 300px | Editor height. Any valid CSS length (px, vh, etc.). |
 | Width | string | 100% | Editor width. Any valid CSS length. |
 | Placeholder | string? | null | Placeholder text shown when the editor is empty. |
 | ReadOnly | bool | false | Puts the editor in read-only mode. Hides the toolbar. |
 | AriaLabel | string? | null | Accessible name for the editor region. Defaults to "Rich text editor". |
-| Options | Action\<IRTBlazorfiedOptions\>? | null | Controls toolbar button visibility. |
+| Options | Action\\<IRTBlazorfiedOptions>? | null | Controls toolbar button visibility. |
+| CustomButtonClicked | EventCallback\\<string> | — | Raised when a custom toolbar button is clicked. The argument is the button's id. |
 
 ---
 
@@ -464,7 +468,7 @@ Use standard Blazor **@bind-Value** syntax to keep your C# model in sync with th
 }
 ```
 
-The component raises **ValueChanged** each time the user changes the content. If you update _html from code, the component automatically pushes the new content into the editor.
+The component raises **ValueChanged** each time the user changes the content. If you update \_html from code, the component automatically pushes the new content into the editor.
 
 ---
 
@@ -498,14 +502,17 @@ Use **@ref** to access the component's public methods at runtime:
 ### Public Methods
 
 | Method | Returns | Description |
-|---|---|---|
-| GetValueAsync() | Task\<string\> | Returns the current editor HTML. |
-| GetPlainTextAsync() | Task\<string\> | Returns the editor content with all HTML tags stripped. |
+| --- | --- | --- |
+| GetValueAsync() | Task\\<string> | Returns the current editor HTML. |
+| GetPlainTextAsync() | Task\\<string> | Returns the editor content with all HTML tags stripped. |
 | SetReadOnlyAsync(bool on) | Task | Enables (true) or disables (false) read-only mode at runtime. |
 | SetClassAsync(string? cssClass) | Task | Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear. |
-| SetPreviewCssFilesAsync(params string[] urls) | Task | Loads CSS files into the preview window only. |
+| SetPreviewCssFilesAsync(params string\[\] urls) | Task | Loads CSS files into the preview window only. |
 | SetPreviewCssAsync(string css) | Task | Applies inline CSS to the preview window only. |
-| ConfigureAsync(Action\<IRTBlazorfiedOptions\>) | Task | Reapplies button visibility on an already-rendered editor. |
+| ConfigureAsync(Action\\<IRTBlazorfiedOptions>) | Task | Reapplies button visibility on an already-rendered editor. |
+| AddCustomButtonAsync(string id, string title, string svg) | Task | Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked. |
+| RemoveCustomButtonAsync(string id) | Task | Removes the custom button with the given id from the toolbar. |
+| ClearCustomButtonsAsync() | Task | Removes all custom buttons from the toolbar. |
 
 ---
 
@@ -592,7 +599,7 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
 ## ButtonVisibility Reference
 
 | Method | Controls |
-|---|---|
+| --- | --- |
 | ClearAll() | Sets all buttons to hidden before individual overrides are applied |
 | Font() | Font family dropdown |
 | Size() | Font size dropdown |
@@ -642,7 +649,7 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
 | WordCount() | Word / character count status bar (hidden by default) |
 
 > **Divider auto-hiding:** A divider is only rendered when at least one button in its group is visible *and* its own method returns true.
-
+>
 > **Default parameter:** Every method except **ClearAll()** accepts an optional bool (default true), so .Bold() and .Bold(true) are equivalent. Pass false to explicitly hide a button without calling **ClearAll()** first.
 
 ---
@@ -711,12 +718,71 @@ When read-only, the toolbar is hidden and the content area cannot be edited. The
 
 ---
 
+## Custom Buttons
+
+Add your own buttons to the editor toolbar. Custom buttons appear after the built-in buttons, separated by an automatic divider. Use the **CustomButtonClicked** parameter to handle clicks in C#.
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| CustomButtonClicked | EventCallback\\<string> | Raised when a custom toolbar button is clicked. The argument is the button's **id**. |
+
+### Adding a custom button
+
+```razor
+<RTBlazorfied @ref="_editor" @bind-Value="@_html"
+              CustomButtonClicked="@OnCustomButtonClicked" />
+
+<button @onclick="AddStampButton">Add Stamp Button</button>
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <p>@_message</p>
+}
+
+@code {
+    private RTBlazorfied _editor = default!;
+    private string _html = string.Empty;
+    private string _message = string.Empty;
+
+    private async Task AddStampButton()
+    {
+        await _editor.AddCustomButtonAsync(
+            id:    "my-stamp",
+            title: "Insert Stamp",
+            svg:   """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" style="width:18px;height:18px;fill:currentColor"><path d="M160-120v-80h640v80H160Zm160-160q-33 0-56.5-23.5T240-360v-120q0-66 47-113t113-47q66 0 113 47t47 113v120q0 33-23.5 56.5T480-280H320Zm40-160h240v-80q0-33-23.5-56.5T520-600q-33 0-56.5 23.5T440-520v80Zm-40 80h240v-80H320v80Zm160-280q-33 0-56.5-23.5T400-620q0-33 23.5-56.5T480-700q33 0 56.5 23.5T560-620q0 33-23.5 56.5T480-540Z"/></svg>"""
+        );
+    }
+
+    private void OnCustomButtonClicked(string id)
+    {
+        _message = $"Custom button '{id}' was clicked.";
+        Console.WriteLine(_message);
+    }
+}
+```
+
+### Managing custom buttons
+
+```csharp
+// Remove a specific button by id
+await _editor.RemoveCustomButtonAsync("my-stamp");
+
+// Remove all custom buttons
+await _editor.ClearCustomButtonsAsync();
+```
+
+> **SVG icons:** Pass any inline SVG string as the `svg` argument. Set `width`, `height`, and `fill:currentColor` on the root `<svg>` element so the icon inherits the toolbar button color and scales with `--rtb-btn-size`.
+
+---
+
 ## Toolbar Buttons
 
 Buttons appear left-to-right in the order listed. Dividers separate logical groups.
 
 | Button | Action | Shortcut |
-|---|---|---|
+| --- | --- | --- |
 | Font | Set font family | — |
 | Size | Set font size | Ctrl+Shift+< / Ctrl+Shift+> |
 | Format | Apply block format (paragraph, headings 1–6) | Ctrl+Shift+D / Ctrl+Shift+1–6 |
@@ -750,11 +816,11 @@ Buttons appear left-to-right in the order listed. Dividers separate logical grou
 | Embed Media | Open media embed dialog (audio, PDF, iframe) | Ctrl+Shift+M |
 | Video | Open video embed dialog | Ctrl+Shift+V |
 | Insert Table | Open table dialog | Ctrl+Shift+L |
-| Code Block | Open code block dialog | Ctrl+Shift+* |
-| Horizontal Rule | Insert \<hr\> at cursor position | Ctrl+Shift+H |
+| Code Block | Open code block dialog | Ctrl+Shift+\* |
+| Horizontal Rule | Insert \\<hr> at cursor position | Ctrl+Shift+H |
 | Undo | Undo last action | Ctrl+Z |
 | Redo | Redo last action | Ctrl+Y |
-| Toggle Status Bar | Show / hide the word and character count bar | Ctrl+\ |
+| Toggle Status Bar | Show / hide the word and character count bar | Ctrl+\\ |
 | Save HTML | Download editor content as an .html file | Ctrl+Shift+S |
 | HTML Source | Toggle raw HTML source view | Ctrl+Shift+A |
 | Preview | Open preview dialog | Ctrl+Shift+P |
@@ -766,46 +832,46 @@ Buttons appear left-to-right in the order listed. Dividers separate logical grou
 All shortcuts are active when the editor content area has focus.
 
 | Category | Action | Shortcut |
-|---|---|---|
+| --- | --- | --- |
 | **Formatting** | Bold | Ctrl+B |
-| | Italic | Ctrl+I |
-| | Underline | Ctrl+U |
-| | Strikethrough | Ctrl+D |
-| | Subscript | Ctrl+= |
-| | Superscript | Ctrl+Shift++ |
+|  | Italic | Ctrl+I |
+|  | Underline | Ctrl+U |
+|  | Strikethrough | Ctrl+D |
+|  | Subscript | Ctrl+= |
+|  | Superscript | Ctrl+Shift++ |
 | **Color** | Text color | Ctrl+Shift+C |
-| | Text background color | Ctrl+Shift+B |
+|  | Text background color | Ctrl+Shift+B |
 | **Alignment** | Align left | Ctrl+L |
-| | Align center | Ctrl+E |
-| | Align right | Ctrl+R |
-| | Justify | Ctrl+J |
+|  | Align center | Ctrl+E |
+|  | Align right | Ctrl+R |
+|  | Justify | Ctrl+J |
 | **Editing** | Cut | Ctrl+X |
-| | Copy | Ctrl+C |
-| | Paste | Ctrl+V |
-| | Select all | Ctrl+A |
-| | Undo | Ctrl+Z |
-| | Redo | Ctrl+Y |
+|  | Copy | Ctrl+C |
+|  | Paste | Ctrl+V |
+|  | Select all | Ctrl+A |
+|  | Undo | Ctrl+Z |
+|  | Redo | Ctrl+Y |
 | **Lists** | Ordered list | Ctrl+Shift+O |
-| | Unordered list | Ctrl+Shift+U |
-| | Increase indent | Tab |
-| | Decrease indent | Shift+Tab |
+|  | Unordered list | Ctrl+Shift+U |
+|  | Increase indent | Tab |
+|  | Decrease indent | Shift+Tab |
 | **Insert** | Insert link | Ctrl+Shift+K |
-| | Insert image | Ctrl+Shift+I |
-| | Upload image | Ctrl+Shift+& |
-| | Block quote | Ctrl+Shift+Q |
-| | Video | Ctrl+Shift+V |
-| | Embed media | Ctrl+Shift+M |
-| | Insert table | Ctrl+Shift+L |
-| | Code block | Ctrl+Shift+* |
-| | Horizontal rule | Ctrl+Shift+H |
+|  | Insert image | Ctrl+Shift+I |
+|  | Upload image | Ctrl+Shift+& |
+|  | Block quote | Ctrl+Shift+Q |
+|  | Video | Ctrl+Shift+V |
+|  | Embed media | Ctrl+Shift+M |
+|  | Insert table | Ctrl+Shift+L |
+|  | Code block | Ctrl+Shift+\* |
+|  | Horizontal rule | Ctrl+Shift+H |
 | **Format** | Paragraph | Ctrl+Shift+D |
-| | Heading 1–6 | Ctrl+Shift+1 – Ctrl+Shift+6 |
-| | Increase font size | Ctrl+Shift+> |
-| | Decrease font size | Ctrl+Shift+< |
-| **View** | Toggle status bar | Ctrl+\ |
-| | Toggle HTML source | Ctrl+Shift+A |
-| | Preview | Ctrl+Shift+P |
-| | Save HTML | Ctrl+Shift+S |
+|  | Heading 1–6 | Ctrl+Shift+1 – Ctrl+Shift+6 |
+|  | Increase font size | Ctrl+Shift+> |
+|  | Decrease font size | Ctrl+Shift+< |
+| **View** | Toggle status bar | Ctrl+\\ |
+|  | Toggle HTML source | Ctrl+Shift+A |
+|  | Preview | Ctrl+Shift+P |
+|  | Save HTML | Ctrl+Shift+S |
 
 ---
 
@@ -849,7 +915,7 @@ Each RTBlazorfied component is fully isolated. You can place as many on a page a
 Requires browsers with native Web Component support:
 
 | Browser | Minimum version |
-|---|---|
+| --- | --- |
 | Chrome | 67+ |
 | Firefox | 63+ |
 | Safari | 12.1+ |
