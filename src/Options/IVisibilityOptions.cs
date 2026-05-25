@@ -14,6 +14,7 @@ public interface IVisibilityOptions
     IVisibilityOptions Font(bool value = true);
     IVisibilityOptions Size(bool value = true);
     IVisibilityOptions Format(bool value = true);
+    IVisibilityOptions Insert(bool value = true);
     IVisibilityOptions TextStylesDivider(bool value = true);
 
     // ── Text formatting ───────────────────────────────────────────────────────
@@ -69,6 +70,7 @@ public interface IVisibilityOptions
     IVisibilityOptions HistoryDivider(bool value = true);
 
     // ── View ──────────────────────────────────────────────────────────────────
+    IVisibilityOptions FileMenu(bool value = true);
     IVisibilityOptions SaveHtml(bool value = true);
     IVisibilityOptions HtmlView(bool value = true);
     IVisibilityOptions Preview(bool value = true);

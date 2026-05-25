@@ -8,6 +8,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     private bool? _font;
     private bool? _size;
     private bool? _format;
+    private bool? _insert;
     private bool? _textStylesDivider;
 
     // Text formatting
@@ -63,6 +64,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     private bool? _historyDivider;
 
     // View
+    private bool? _fileMenu;
     private bool? _saveHtml;
     private bool? _htmlView;
     private bool? _preview;
@@ -76,6 +78,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     public IVisibilityOptions Font(bool value = true)           { _font             = value; return this; }
     public IVisibilityOptions Size(bool value = true)           { _size             = value; return this; }
     public IVisibilityOptions Format(bool value = true)         { _format           = value; return this; }
+    public IVisibilityOptions Insert(bool value = true)         { _insert           = value; return this; }
     public IVisibilityOptions TextStylesDivider(bool value = true) { _textStylesDivider = value; return this; }
 
     public IVisibilityOptions Bold(bool value = true)           { _bold             = value; return this; }
@@ -123,6 +126,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     public IVisibilityOptions Redo(bool value = true)           { _redo             = value; return this; }
     public IVisibilityOptions HistoryDivider(bool value = true) { _historyDivider   = value; return this; }
 
+    public IVisibilityOptions FileMenu(bool value = true)        { _fileMenu         = value; return this; }
     public IVisibilityOptions SaveHtml(bool value = true)       { _saveHtml         = value; return this; }
     public IVisibilityOptions HtmlView(bool value = true)       { _htmlView         = value; return this; }
     public IVisibilityOptions Preview(bool value = true)        { _preview          = value; return this; }
@@ -140,6 +144,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
         Add("font",             _font);
         Add("size",             _size);
         Add("format",           _format);
+        Add("insert",           _insert);
         Add("textStylesDivider",_textStylesDivider);
 
         Add("bold",             _bold);
@@ -187,6 +192,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
         Add("redo",             _redo);
         Add("historyDivider",   _historyDivider);
 
+        Add("fileMenu",         _fileMenu);
         Add("saveHtml",         _saveHtml);
         Add("htmlView",         _htmlView);
         Add("preview",          _preview);

@@ -604,6 +604,7 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
 | Font() | Font family dropdown |
 | Size() | Font size dropdown |
 | Format() | Paragraph / heading format dropdown |
+| Insert() | Insert items dropdown (toolbar) |
 | TextStylesDivider() | Divider after the three dropdowns |
 | Bold() | Bold button |
 | Italic() | Italic button |
@@ -642,6 +643,7 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
 | Undo() | Undo button |
 | Redo() | Redo button |
 | HistoryDivider() | Divider after undo / redo |
+| FileMenu() | File dropdown menu (Save HTML, Toggle Status Bar, etc.) |
 | StatusBarToggle() | Toggle Status Bar button |
 | SaveHtml() | Save HTML file button |
 | HtmlView() | Toggle HTML source view button |
@@ -783,9 +785,11 @@ Buttons appear left-to-right in the order listed. Dividers separate logical grou
 
 | Button | Action | Shortcut |
 | --- | --- | --- |
+| File | File operations dropdown (save HTML, toggle status bar) | — |
 | Font | Set font family | — |
 | Size | Set font size | Ctrl+Shift+< / Ctrl+Shift+> |
 | Format | Apply block format (paragraph, headings 1–6) | Ctrl+Shift+D / Ctrl+Shift+1–6 |
+| Insert | Insert items dropdown (emoji, symbols, etc.) | — |
 | Bold | Bold | Ctrl+B |
 | Italic | Italic | Ctrl+I |
 | Underline | Underline | Ctrl+U |
