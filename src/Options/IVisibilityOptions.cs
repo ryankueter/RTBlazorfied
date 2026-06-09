@@ -74,6 +74,7 @@ public interface IVisibilityOptions
     IVisibilityOptions SaveHtml(bool value = true);
     IVisibilityOptions HtmlView(bool value = true);
     IVisibilityOptions Preview(bool value = true);
+    IVisibilityOptions Fullscreen(bool value = true);
     IVisibilityOptions StatusBarToggle(bool value = true);
 
     // ── Status bar ────────────────────────────────────────────────────────────

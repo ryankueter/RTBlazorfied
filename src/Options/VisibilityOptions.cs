@@ -68,6 +68,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     private bool? _saveHtml;
     private bool? _htmlView;
     private bool? _preview;
+    private bool? _fullscreen;
     private bool? _statusBarToggle;
 
     // Status bar
@@ -130,6 +131,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     public IVisibilityOptions SaveHtml(bool value = true)       { _saveHtml         = value; return this; }
     public IVisibilityOptions HtmlView(bool value = true)       { _htmlView         = value; return this; }
     public IVisibilityOptions Preview(bool value = true)        { _preview          = value; return this; }
+    public IVisibilityOptions Fullscreen(bool value = true)     { _fullscreen       = value; return this; }
     public IVisibilityOptions StatusBarToggle(bool value = true){ _statusBarToggle  = value; return this; }
 
     public IVisibilityOptions WordCount(bool value = true)      { _wordCount        = value; return this; }
@@ -196,6 +198,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
         Add("saveHtml",         _saveHtml);
         Add("htmlView",         _htmlView);
         Add("preview",          _preview);
+        Add("fullscreen",       _fullscreen);
         Add("statusBarToggle",  _statusBarToggle);
 
         Add("wordCount",        _wordCount);

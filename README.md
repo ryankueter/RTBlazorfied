@@ -539,7 +539,7 @@ Call **ClearAll()** first to hide every button, then opt individual buttons back
             .AlignDivider()
             .Undo().Redo()
             .HistoryDivider()
-            .HtmlView().Preview());
+            .HtmlView().Preview().Fullscreen());
 }
 ```
 
@@ -592,6 +592,13 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
                 .Table(false)));
     }
 }
+```
+
+The maximize / restore editor button can be hidden or shown at runtime with **Fullscreen(false)** or **Fullscreen()**:
+
+```csharp
+await _editor.ConfigureAsync(options =>
+    options.ButtonVisibility(v => v.Fullscreen(false)));
 ```
 
 ---
@@ -649,6 +656,7 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
 |SaveHtml()         |Save HTML file button                                             |
 |HtmlView()         |Toggle HTML source view button                                    |
 |Preview()          |Preview button                                                    |
+|Fullscreen()       |Maximize / restore editor button                                  |
 |WordCount()        |Word / character count status bar (hidden by default)             |
 
 > **Divider auto-hiding:** A divider is only rendered when at least one button in its group is visible *and* its own method returns true.
