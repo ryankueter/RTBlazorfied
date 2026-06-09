@@ -2,7 +2,7 @@
 
 **Author:** Ryan Kueter | **Updated:** May, 2026
 
-RT Blazorfied HTML Editor is a free .NET Blazor component that provides accessibility features and a wide variety of elements and customizations that make it one of the most robust and flexible HTML editors available. It allows the programmer to apply custom .css files to the preview window, to see how the content will be displayed in production. The editor uses embedded .svg Google Font Icons and the shadow DOM to isolate the HTML from inheriting the existing page styles. While this component is a wrapper for the **rt-native.js** HTML editor native web component available on NPM, no additional setup beyond the steps below are required.
+RT Blazorfied HTML Editor is a free .NET Blazor component that provides a wide variety of elements, accessibility features, and customizations that make it one of the most robust and flexible HTML editors available. It allows the programmer to apply custom .css files to the preview window, to see how the content will be displayed in production. The editor uses embedded .svg Google Font Icons and the shadow DOM to isolate the HTML from inheriting the existing page styles. While this component is a wrapper for the **rt-native.js** HTML editor native web component available on NPM, no additional setup beyond the steps below are required.
 
 ---
 
@@ -346,113 +346,113 @@ rt-native.fluent-dark {
 
 ### Toolbar
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-toolbar-bg | #ffffff | Toolbar background color |
-| --rtb-toolbar-border-style | solid | Toolbar bottom border style |
-| --rtb-toolbar-border-width | 1px | Toolbar bottom border width |
-| --rtb-toolbar-border-color | #d1d1d1 | Toolbar bottom border color |
-| --rtb-toolbar-border-radius | 0px | Toolbar corner radius |
-| --rtb-dropdown-bg | #ffffff | Font / Size / Format dropdown background |
-| --rtb-dropdown-text | #242424 | Dropdown item text color |
-| --rtb-dropdown-bg-hover | #f5f5f5 | Dropdown item hover background |
-| --rtb-dropdown-text-hover | #242424 | Dropdown item hover text color |
+| Variable                  | Default | Description                            |
+|:--------------------------|:--------|:---------------------------------------|
+|--rtb-toolbar-bg           |#ffffff  |Toolbar background color                |
+|--rtb-toolbar-border-style |solid    |Toolbar bottom border style             |
+|--rtb-toolbar-border-width |1px      |Toolbar bottom border width             |
+|--rtb-toolbar-border-color |#d1d1d1  |Toolbar bottom border color             |
+|--rtb-toolbar-border-radius|0px      |Toolbar corner radius                   |
+|--rtb-dropdown-bg          |#ffffff  |Font / Size / Format dropdown background|
+|--rtb-dropdown-text        |#242424  |Dropdown item text color                |
+|--rtb-dropdown-bg-hover    |#f5f5f5  |Dropdown item hover background          |
+|--rtb-dropdown-text-hover  |#242424  |Dropdown item hover text color          |
 
 ### Buttons
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-btn-text | #242424 | Button icon color |
-| --rtb-btn-size | 16px | Icon size (also drives button height and divider height) |
-| --rtb-btn-font | "Segoe UI Variable", sans-serif | Font for dropdown buttons |
-| --rtb-btn-bg | transparent | Button background at rest |
-| --rtb-btn-bg-hover | #e8e8e8 | Button background on hover |
-| --rtb-btn-bg-selected | #dcdcdc | Button background when active / selected |
-| --rtb-btn-border-style | none | Button border style |
-| --rtb-btn-border-width | 0px | Button border width |
-| --rtb-btn-border-color | #d1d1d1 | Button border color at rest |
-| --rtb-btn-border-hover | inherit | Button border color on hover |
-| --rtb-btn-border-selected | inherit | Button border color when selected |
-| --rtb-btn-border-radius | 4px | Button corner radius |
+| Variable                | Default                       | Description                                            |
+|:------------------------|:------------------------------|:-------------------------------------------------------|
+|--rtb-btn-text           |#242424                        |Button icon color                                       |
+|--rtb-btn-size           |16px                           |Icon size (also drives button height and divider height)|
+|--rtb-btn-font           |"Segoe UI Variable", sans-serif|Font for dropdown buttons                               |
+|--rtb-btn-bg             |transparent                    |Button background at rest                               |
+|--rtb-btn-bg-hover       |#e8e8e8                        |Button background on hover                              |
+|--rtb-btn-bg-selected    |#dcdcdc                        |Button background when active / selected                |
+|--rtb-btn-border-style   |none                           |Button border style                                     |
+|--rtb-btn-border-width   |0px                            |Button border width                                     |
+|--rtb-btn-border-color   |#d1d1d1                        |Button border color at rest                             |
+|--rtb-btn-border-hover   |inherit                        |Button border color on hover                            |
+|--rtb-btn-border-selected|inherit                        |Button border color when selected                       |
+|--rtb-btn-border-radius  |4px                            |Button corner radius                                    |
 
 ### Content Area
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-content-text | #242424 | Editor text color |
-| --rtb-content-size | 14px | Editor font size |
-| --rtb-content-font | "Segoe UI Variable", sans-serif | Editor font family |
-| --rtb-content-bg | #ffffff | Editor content background |
-| --rtb-content-shadow | none | Inner box shadow on the content area |
-| --rtb-placeholder-color | #9ca3af | Placeholder text color |
+| Variable              | Default                       | Description                        |
+|:----------------------|:------------------------------|:-----------------------------------|
+|--rtb-content-text     |#242424                        |Editor text color                   |
+|--rtb-content-size     |14px                           |Editor font size                    |
+|--rtb-content-font     |"Segoe UI Variable", sans-serif|Editor font family                  |
+|--rtb-content-bg       |#ffffff                        |Editor content background           |
+|--rtb-content-shadow   |none                           |Inner box shadow on the content area|
+|--rtb-placeholder-color|#9ca3af                        |Placeholder text color              |
 
 ### Editor Container
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-editor-border-style | solid | Outer border style |
-| --rtb-editor-border-width | 1px | Outer border width |
-| --rtb-editor-border-color | #d1d1d1 | Outer border color |
-| --rtb-editor-border-radius | 4px | Outer corner radius |
-| --rtb-editor-shadow | 0 2px 4px rgba(0,0,0,0.06) | Outer box shadow |
-| --rtb-editor-resize | auto | auto shows the resize handle; hidden removes it |
-| --rtb-z-index | 1 | Z-index of the editor container — raise this to stack the editor above surrounding page content |
+| Variable                 | Default                  | Description                                                                                   |
+|:-------------------------|:-------------------------|:----------------------------------------------------------------------------------------------|
+|--rtb-editor-border-style |solid                     |Outer border style                                                                             |
+|--rtb-editor-border-width |1px                       |Outer border width                                                                             |
+|--rtb-editor-border-color |#d1d1d1                   |Outer border color                                                                             |
+|--rtb-editor-border-radius|4px                       |Outer corner radius                                                                            |
+|--rtb-editor-shadow       |0 2px 4px rgba(0,0,0,0.06)|Outer box shadow                                                                               |
+|--rtb-editor-resize       |auto                      |auto shows the resize handle; hidden removes it                                                |
+|--rtb-z-index             |1                         |Z-index of the editor container — raise this to stack the editor above surrounding page content|
 
 ### Scrollbars
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-scroll-width | 6px | Scrollbar track width |
-| --rtb-scroll-opacity | 1 | Scrollbar opacity |
-| --rtb-scroll-bg | transparent | Scrollbar track background |
-| --rtb-scroll-thumb-bg | #c2c2c2 | Scrollbar thumb color |
-| --rtb-scroll-thumb-bg-hover | #8a8a8a | Scrollbar thumb color on hover |
-| --rtb-scroll-thumb-radius | 3px | Scrollbar thumb corner radius |
+| Variable                  | Default   | Description                  |
+|:--------------------------|:----------|:-----------------------------|
+|--rtb-scroll-width         |6px        |Scrollbar track width         |
+|--rtb-scroll-opacity       |1          |Scrollbar opacity             |
+|--rtb-scroll-bg            |transparent|Scrollbar track background    |
+|--rtb-scroll-thumb-bg      |#c2c2c2    |Scrollbar thumb color         |
+|--rtb-scroll-thumb-bg-hover|#8a8a8a    |Scrollbar thumb color on hover|
+|--rtb-scroll-thumb-radius  |3px        |Scrollbar thumb corner radius |
 
 ### Blockquotes
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-quote-bg | #f0f7ff | Blockquote background color |
-| --rtb-quote-border-color | #0078d4 | Blockquote left-border color |
-| --rtb-quote-border-width | 4px | Blockquote left-border width |
+| Variable               | Default | Description                |
+|:-----------------------|:--------|:---------------------------|
+|--rtb-quote-bg          |#f0f7ff  |Blockquote background color |
+|--rtb-quote-border-color|#0078d4  |Blockquote left-border color|
+|--rtb-quote-border-width|4px      |Blockquote left-border width|
 
 ### Code Blocks
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-code-bg | #f5f5f5 | Code block background color |
-| --rtb-code-border-radius | 4px | Code block corner radius |
+| Variable               | Default | Description               |
+|:-----------------------|:--------|:--------------------------|
+|--rtb-code-bg           |#f5f5f5  |Code block background color|
+|--rtb-code-border-radius|4px      |Code block corner radius   |
 
 ### Modals & Dialogs
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| --rtb-modal-bg | #ffffff | Dialog background color |
-| --rtb-modal-text | #242424 | Dialog text color |
-| --rtb-modal-text-size | 14px | Dialog font size |
-| --rtb-modal-text-font | "Segoe UI Variable", sans-serif | Dialog font family |
-| --rtb-modal-input-bg | #ffffff | Input field background |
-| --rtb-modal-input-text | #242424 | Input field text color |
-| --rtb-modal-input-border | #d1d1d1 | Input field border color |
-| --rtb-modal-checkbox | #0078d4 | Checkbox accent color |
+| Variable               | Default                       | Description            |
+|:-----------------------|:------------------------------|:-----------------------|
+|--rtb-modal-bg          |#ffffff                        |Dialog background color |
+|--rtb-modal-text        |#242424                        |Dialog text color       |
+|--rtb-modal-text-size   |14px                           |Dialog font size        |
+|--rtb-modal-text-font   |"Segoe UI Variable", sans-serif|Dialog font family      |
+|--rtb-modal-input-bg    |#ffffff                        |Input field background  |
+|--rtb-modal-input-text  |#242424                        |Input field text color  |
+|--rtb-modal-input-border|#d1d1d1                        |Input field border color|
+|--rtb-modal-checkbox    |#0078d4                        |Checkbox accent color   |
 
 ---
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| Value | string? | null | HTML content of the editor. Use **@bind-Value** for two-way binding. |
-| ValueChanged | EventCallback\\<string> | — | Raised whenever the editor content changes. Wired automatically by **@bind-Value**. |
-| Class | string? | null | One or more CSS class names applied to the host element for theming. E.g. Class="fluent" or Class="fluent dark". |
-| Height | string | 300px | Editor height. Any valid CSS length (px, vh, etc.). |
-| Width | string | 100% | Editor width. Any valid CSS length. |
-| Placeholder | string? | null | Placeholder text shown when the editor is empty. |
-| ReadOnly | bool | false | Puts the editor in read-only mode. Hides the toolbar. |
-| AriaLabel | string? | null | Accessible name for the editor region. Defaults to "Rich text editor". |
-| Options | Action\\<IRTBlazorfiedOptions>? | null | Controls toolbar button visibility. |
-| CustomButtonClicked | EventCallback\\<string> | — | Raised when a custom toolbar button is clicked. The argument is the button's id. |
+| Parameter         | Type                          | Default | Description                                                                                                    |
+|:------------------|:------------------------------|:--------|:---------------------------------------------------------------------------------------------------------------|
+|Value              |string?                        |null     |HTML content of the editor. Use **@bind-Value** for two-way binding.                                            |
+|ValueChanged       |EventCallback\\<string>        |—        |Raised whenever the editor content changes. Wired automatically by **@bind-Value**.                             |
+|Class              |string?                        |null     |One or more CSS class names applied to the host element for theming. E.g. Class="fluent" or Class="fluent dark".|
+|Height             |string                         |300px    |Editor height. Any valid CSS length (px, vh, etc.).                                                             |
+|Width              |string                         |100%     |Editor width. Any valid CSS length.                                                                             |
+|Placeholder        |string?                        |null     |Placeholder text shown when the editor is empty.                                                                |
+|ReadOnly           |bool                           |false    |Puts the editor in read-only mode. Hides the toolbar.                                                           |
+|AriaLabel          |string?                        |null     |Accessible name for the editor region. Defaults to "Rich text editor".                                          |
+|Options            |Action\\<IRTBlazorfiedOptions>?|null     |Controls toolbar button visibility.                                                                             |
+|CustomButtonClicked|EventCallback\\<string>        |—        |Raised when a custom toolbar button is clicked. The argument is the button's id.                                |
 
 ---
 
@@ -501,18 +501,18 @@ Use **@ref** to access the component's public methods at runtime:
 
 ### Public Methods
 
-| Method | Returns | Description |
-| --- | --- | --- |
-| GetValueAsync() | Task\\<string> | Returns the current editor HTML. |
-| GetPlainTextAsync() | Task\\<string> | Returns the editor content with all HTML tags stripped. |
-| SetReadOnlyAsync(bool on) | Task | Enables (true) or disables (false) read-only mode at runtime. |
-| SetClassAsync(string? cssClass) | Task | Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear. |
-| SetPreviewCssFilesAsync(params string\[\] urls) | Task | Loads CSS files into the preview window only. |
-| SetPreviewCssAsync(string css) | Task | Applies inline CSS to the preview window only. |
-| ConfigureAsync(Action\\<IRTBlazorfiedOptions>) | Task | Reapplies button visibility on an already-rendered editor. |
-| AddCustomButtonAsync(string id, string title, string svg) | Task | Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked. |
-| RemoveCustomButtonAsync(string id) | Task | Removes the custom button with the given id from the toolbar. |
-| ClearCustomButtonsAsync() | Task | Removes all custom buttons from the toolbar. |
+| Method                                                  | Returns      | Description                                                                                               |
+|:--------------------------------------------------------|:-------------|:----------------------------------------------------------------------------------------------------------|
+|GetValueAsync()                                          |Task\\<string>|Returns the current editor HTML.                                                                           |
+|GetPlainTextAsync()                                      |Task\\<string>|Returns the editor content with all HTML tags stripped.                                                    |
+|SetReadOnlyAsync(bool on)                                |Task          |Enables (true) or disables (false) read-only mode at runtime.                                              |
+|SetClassAsync(string? cssClass)                          |Task          |Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear.|
+|SetPreviewCssFilesAsync(params string\[\] urls)          |Task          |Loads CSS files into the preview window only.                                                              |
+|SetPreviewCssAsync(string css)                           |Task          |Applies inline CSS to the preview window only.                                                             |
+|ConfigureAsync(Action\\<IRTBlazorfiedOptions>)           |Task          |Reapplies button visibility on an already-rendered editor.                                                 |
+|AddCustomButtonAsync(string id, string title, string svg)|Task          |Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked.                           |
+|RemoveCustomButtonAsync(string id)                       |Task          |Removes the custom button with the given id from the toolbar.                                              |
+|ClearCustomButtonsAsync()                                |Task          |Removes all custom buttons from the toolbar.                                                               |
 
 ---
 
@@ -598,57 +598,58 @@ Use **ConfigureAsync** via a **@ref** to reconfigure an already-rendered editor:
 
 ## ButtonVisibility Reference
 
-| Method | Controls |
-| --- | --- |
-| ClearAll() | Sets all buttons to hidden before individual overrides are applied |
-| Font() | Font family dropdown |
-| Size() | Font size dropdown |
-| Format() | Paragraph / heading format dropdown |
-| Insert() | Insert items dropdown (toolbar) |
-| TextStylesDivider() | Divider after the three dropdowns |
-| Bold() | Bold button |
-| Italic() | Italic button |
-| Underline() | Underline button |
-| Strikethrough() | Strikethrough button |
-| Subscript() | Subscript button |
-| Superscript() | Superscript button |
-| FormatDivider() | Divider after text-format buttons |
-| TextColor() | Text color, background color, and remove-color buttons |
-| TextColorDivider() | Divider after color buttons |
-| AlignLeft() | Align left button |
-| AlignCenter() | Align center button |
-| AlignRight() | Align right button |
-| AlignJustify() | Justify button |
-| AlignDivider() | Divider after alignment buttons |
-| Copy() | Copy button |
-| Cut() | Cut button |
-| Paste() | Paste button |
-| Delete() | Delete button |
-| SelectAll() | Select all button |
-| ActionDivider() | Divider after clipboard buttons |
-| OrderedList() | Ordered list button |
-| UnorderedList() | Unordered list button |
-| Indent() | Increase / decrease indent buttons |
-| ListDivider() | Divider after list buttons |
-| Link() | Insert link and remove link buttons |
-| Image() | Insert image button |
-| ImageUpload() | Upload / embed image button |
-| Quote() | Block quote button |
-| CodeBlock() | Code block button |
-| EmbedMedia() | Embed media (audio / PDF / iframe) button |
-| Video() | Video embed button |
-| Table() | Insert table button |
-| HorizontalRule() | Insert horizontal rule button |
-| MediaDivider() | Divider after insert buttons |
-| Undo() | Undo button |
-| Redo() | Redo button |
-| HistoryDivider() | Divider after undo / redo |
-| FileMenu() | File dropdown menu (Save HTML, Toggle Status Bar, etc.) |
-| StatusBarToggle() | Toggle Status Bar button |
-| SaveHtml() | Save HTML file button |
-| HtmlView() | Toggle HTML source view button |
-| Preview() | Preview button |
-| WordCount() | Word / character count status bar (hidden by default) |
+| Method            | Controls                                                         |
+|:------------------|:-----------------------------------------------------------------|
+|ClearAll()         |Sets all buttons to hidden before individual overrides are applied|
+|Font()             |Font family dropdown                                              |
+|Size()             |Font size dropdown                                                |
+|Format()           |Paragraph / heading format dropdown                               |
+|Insert()           |Insert items dropdown (toolbar)                                   |
+|TextStylesDivider()|Divider after the three dropdowns                                 |
+|Bold()             |Bold button                                                       |
+|Italic()           |Italic button                                                     |
+|Underline()        |Underline button                                                  |
+|Strikethrough()    |Strikethrough button                                              |
+|Subscript()        |Subscript button                                                  |
+|Superscript()      |Superscript button                                                |
+|InlineCode()       |Inline Code button                                                |
+|FormatDivider()    |Divider after text-format buttons                                 |
+|TextColor()        |Text color, background color, and remove-color buttons            |
+|TextColorDivider() |Divider after color buttons                                       |
+|AlignLeft()        |Align left button                                                 |
+|AlignCenter()      |Align center button                                               |
+|AlignRight()       |Align right button                                                |
+|AlignJustify()     |Justify button                                                    |
+|AlignDivider()     |Divider after alignment buttons                                   |
+|Copy()             |Copy button                                                       |
+|Cut()              |Cut button                                                        |
+|Paste()            |Paste button                                                      |
+|Delete()           |Delete button                                                     |
+|SelectAll()        |Select all button                                                 |
+|ActionDivider()    |Divider after clipboard buttons                                   |
+|OrderedList()      |Ordered list button                                               |
+|UnorderedList()    |Unordered list button                                             |
+|Indent()           |Increase / decrease indent buttons                                |
+|ListDivider()      |Divider after list buttons                                        |
+|Link()             |Insert link and remove link buttons                               |
+|Image()            |Insert image button                                               |
+|ImageUpload()      |Upload / embed image button                                       |
+|Quote()            |Block quote button                                                |
+|CodeBlock()        |Code block button                                                 |
+|EmbedMedia()       |Embed media (audio / PDF / iframe) button                         |
+|Video()            |Video embed button                                                |
+|Table()            |Insert table button                                               |
+|HorizontalRule()   |Insert horizontal rule button                                     |
+|MediaDivider()     |Divider after insert buttons                                      |
+|Undo()             |Undo button                                                       |
+|Redo()             |Redo button                                                       |
+|HistoryDivider()   |Divider after undo / redo                                         |
+|FileMenu()         |File dropdown menu (Save HTML, Toggle Status Bar, etc.)           |
+|StatusBarToggle()  |Toggle Status Bar button                                          |
+|SaveHtml()         |Save HTML file button                                             |
+|HtmlView()         |Toggle HTML source view button                                    |
+|Preview()          |Preview button                                                    |
+|WordCount()        |Word / character count status bar (hidden by default)             |
 
 > **Divider auto-hiding:** A divider is only rendered when at least one button in its group is visible *and* its own method returns true.
 >
@@ -726,9 +727,9 @@ Add your own buttons to the editor toolbar. Custom buttons appear after the buil
 
 ### Parameters
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| CustomButtonClicked | EventCallback\\<string> | Raised when a custom toolbar button is clicked. The argument is the button's **id**. |
+| Parameter         | Type                  | Description                                                                        |
+|:------------------|:----------------------|:-----------------------------------------------------------------------------------|
+|CustomButtonClicked|EventCallback\\<string>|Raised when a custom toolbar button is clicked. The argument is the button's **id**.|
 
 ### Adding a custom button
 
@@ -779,103 +780,52 @@ await _editor.ClearCustomButtonsAsync();
 
 ---
 
-## Toolbar Buttons
-
-Buttons appear left-to-right in the order listed. Dividers separate logical groups.
-
-| Button | Action | Shortcut |
-| --- | --- | --- |
-| File | File operations dropdown (save HTML, toggle status bar) | — |
-| Font | Set font family | — |
-| Size | Set font size | Ctrl+Shift+< / Ctrl+Shift+> |
-| Format | Apply block format (paragraph, headings 1–6) | Ctrl+Shift+D / Ctrl+Shift+1–6 |
-| Insert | Insert items dropdown (emoji, symbols, etc.) | — |
-| Bold | Bold | Ctrl+B |
-| Italic | Italic | Ctrl+I |
-| Underline | Underline | Ctrl+U |
-| Strikethrough | Strikethrough | Ctrl+D |
-| Subscript | Subscript | Ctrl+= |
-| Superscript | Superscript | Ctrl+Shift++ |
-| Text Color | Open text color picker | Ctrl+Shift+C |
-| Background Color | Open text background color picker | Ctrl+Shift+B |
-| Remove Color | Strip text and background color | — |
-| Align Left | Left-align | Ctrl+L |
-| Align Center | Center-align | Ctrl+E |
-| Align Right | Right-align | Ctrl+R |
-| Justify | Justify | Ctrl+J |
-| Cut | Cut selection | Ctrl+X |
-| Copy | Copy selection | Ctrl+C |
-| Paste | Paste from clipboard | Ctrl+V |
-| Delete | Delete selection | Delete |
-| Select All | Select all content | Ctrl+A |
-| Ordered List | Insert numbered list | Ctrl+Shift+O |
-| Unordered List | Insert bulleted list | Ctrl+Shift+U |
-| Increase Indent | Indent / promote list item | Tab |
-| Decrease Indent | Outdent / demote list item | Shift+Tab |
-| Insert Link | Open link dialog | Ctrl+Shift+K |
-| Remove Link | Remove hyperlink | — |
-| Insert Image | Open image URL dialog | Ctrl+Shift+I |
-| Upload Image | Open image upload / embed dialog | Ctrl+Shift+& |
-| Block Quote | Open block quote dialog | Ctrl+Shift+Q |
-| Embed Media | Open media embed dialog (audio, PDF, iframe) | Ctrl+Shift+M |
-| Video | Open video embed dialog | Ctrl+Shift+V |
-| Insert Table | Open table dialog | Ctrl+Shift+L |
-| Code Block | Open code block dialog | Ctrl+Shift+\* |
-| Horizontal Rule | Insert \\<hr> at cursor position | Ctrl+Shift+H |
-| Undo | Undo last action | Ctrl+Z |
-| Redo | Redo last action | Ctrl+Y |
-| Toggle Status Bar | Show / hide the word and character count bar | Ctrl+\\ |
-| Save HTML | Download editor content as an .html file | Ctrl+Shift+S |
-| HTML Source | Toggle raw HTML source view | Ctrl+Shift+A |
-| Preview | Open preview dialog | Ctrl+Shift+P |
-
----
-
 ## Keyboard Shortcuts
 
 All shortcuts are active when the editor content area has focus.
 
-| Category | Action | Shortcut |
-| --- | --- | --- |
-| **Formatting** | Bold | Ctrl+B |
-|  | Italic | Ctrl+I |
-|  | Underline | Ctrl+U |
-|  | Strikethrough | Ctrl+D |
-|  | Subscript | Ctrl+= |
-|  | Superscript | Ctrl+Shift++ |
-| **Color** | Text color | Ctrl+Shift+C |
-|  | Text background color | Ctrl+Shift+B |
-| **Alignment** | Align left | Ctrl+L |
-|  | Align center | Ctrl+E |
-|  | Align right | Ctrl+R |
-|  | Justify | Ctrl+J |
-| **Editing** | Cut | Ctrl+X |
-|  | Copy | Ctrl+C |
-|  | Paste | Ctrl+V |
-|  | Select all | Ctrl+A |
-|  | Undo | Ctrl+Z |
-|  | Redo | Ctrl+Y |
-| **Lists** | Ordered list | Ctrl+Shift+O |
-|  | Unordered list | Ctrl+Shift+U |
-|  | Increase indent | Tab |
-|  | Decrease indent | Shift+Tab |
-| **Insert** | Insert link | Ctrl+Shift+K |
-|  | Insert image | Ctrl+Shift+I |
-|  | Upload image | Ctrl+Shift+& |
-|  | Block quote | Ctrl+Shift+Q |
-|  | Video | Ctrl+Shift+V |
-|  | Embed media | Ctrl+Shift+M |
-|  | Insert table | Ctrl+Shift+L |
-|  | Code block | Ctrl+Shift+\* |
-|  | Horizontal rule | Ctrl+Shift+H |
-| **Format** | Paragraph | Ctrl+Shift+D |
-|  | Heading 1–6 | Ctrl+Shift+1 – Ctrl+Shift+6 |
-|  | Increase font size | Ctrl+Shift+> |
-|  | Decrease font size | Ctrl+Shift+< |
-| **View** | Toggle status bar | Ctrl+\\ |
-|  | Toggle HTML source | Ctrl+Shift+A |
-|  | Preview | Ctrl+Shift+P |
-|  | Save HTML | Ctrl+Shift+S |
+| Category     | Action              | Shortcut                  |
+|:-------------|:--------------------|:--------------------------|
+|**Formatting**|Bold                 |Ctrl+B                     |
+|              |Italic               |Ctrl+I                     |
+|              |Underline            |Ctrl+U                     |
+|              |Strikethrough        |Ctrl+D                     |
+|              |Subscript            |Ctrl+=                     |
+|              |Superscript          |Ctrl+Shift++               |
+|              |Inline Code          |Ctrl+Shift+E               |
+|**Color**     |Text color           |Ctrl+Shift+C               |
+|              |Text background color|Ctrl+Shift+B               |
+|**Alignment** |Align left           |Ctrl+L                     |
+|              |Align center         |Ctrl+E                     |
+|              |Align right          |Ctrl+R                     |
+|              |Justify              |Ctrl+J                     |
+|**Editing**   |Cut                  |Ctrl+X                     |
+|              |Copy                 |Ctrl+C                     |
+|              |Paste                |Ctrl+V                     |
+|              |Select all           |Ctrl+A                     |
+|              |Undo                 |Ctrl+Z                     |
+|              |Redo                 |Ctrl+Y                     |
+|**Lists**     |Ordered list         |Ctrl+Shift+O               |
+|              |Unordered list       |Ctrl+Shift+U               |
+|              |Increase indent      |Tab                        |
+|              |Decrease indent      |Shift+Tab                  |
+|**Insert**    |Insert link          |Ctrl+Shift+K               |
+|              |Insert image         |Ctrl+Shift+I               |
+|              |Upload image         |Ctrl+Shift+&               |
+|              |Block quote          |Ctrl+Shift+Q               |
+|              |Video                |Ctrl+Shift+V               |
+|              |Embed media          |Ctrl+Shift+M               |
+|              |Insert table         |Ctrl+Shift+L               |
+|              |Code block           |Ctrl+Shift+\*              |
+|              |Horizontal rule      |Ctrl+Shift+H               |
+|**Format**    |Paragraph            |Ctrl+Shift+D               |
+|              |Heading 1–6          |Ctrl+Shift+1 – Ctrl+Shift+6|
+|              |Increase font size   |Ctrl+Shift+>               |
+|              |Decrease font size   |Ctrl+Shift+<               |
+|**View**      |Toggle status bar    |Ctrl+\\                    |
+|              |Toggle HTML source   |Ctrl+Shift+A               |
+|              |Preview              |Ctrl+Shift+P               |
+|              |Save HTML            |Ctrl+Shift+S               |
 
 ---
 
@@ -919,10 +869,10 @@ Each RTBlazorfied component is fully isolated. You can place as many on a page a
 Requires browsers with native Web Component support:
 
 | Browser | Minimum version |
-| --- | --- |
-| Chrome | 67+ |
-| Firefox | 63+ |
-| Safari | 12.1+ |
-| Edge | 79+ |
+|:--------|:----------------|
+|Chrome   |67+              |
+|Firefox  |63+              |
+|Safari   |12.1+            |
+|Edge     |79+              |
 
 Internet Explorer is not supported.
