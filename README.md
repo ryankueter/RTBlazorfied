@@ -9,22 +9,40 @@ RT Blazorfied HTML Editor is a free .NET Blazor component that provides a wide v
 ## Table of Contents
 
 1. [Installation](#installation)
+   - [1. Install the NuGet package](#1-install-the-nuget-package)
+   - [2. Add the script tag](#2-add-the-script-tag)
+   - [3. Add the using statement](#3-add-the-using-statement)
 2. [Quick Start](#quick-start)
 3. [Styling with CSS Variables](#styling-with-css-variables)
    - [Theming with CSS Classes](#theming-with-css-classes)
+   - [Fluent 2 Themes](#fluent-2-themes)
+   - [Toolbar](#toolbar)
+   - [Buttons](#buttons)
+   - [Content Area](#content-area)
+   - [Editor Container](#editor-container)
+   - [Scrollbars](#scrollbars)
+   - [Blockquotes](#blockquotes)
+   - [Code Blocks](#code-blocks)
+   - [Modals &amp; Dialogs](#modals--dialogs)
 4. [Parameters](#parameters)
 5. [Two-Way Binding](#two-way-binding)
 6. [Component Reference (@ref)](#component-reference-ref)
+   - [Public Methods](#public-methods)
 7. [Options — Button Visibility](#options--button-visibility)
+   - [Changing visibility at runtime](#changing-visibility-at-runtime)
 8. [ButtonVisibility Reference](#buttonvisibility-reference)
 9. [Preview Window Styling](#preview-window-styling)
+   - [Load files via @ref](#load-files-via-ref)
+   - [Inline CSS via @ref](#inline-css-via-ref)
 10. [Read-Only Mode](#read-only-mode)
 11. [Custom Buttons](#custom-buttons)
-12. [Toolbar Buttons](#toolbar-buttons)
-13. [Keyboard Shortcuts](#keyboard-shortcuts)
-14. [Accessibility](#accessibility)
-15. [Multiple Instances](#multiple-instances)
-16. [Browser Support](#browser-support)
+    - [Parameters](#parameters)
+    - [Adding a custom button](#adding-a-custom-button)
+    - [Managing custom buttons](#managing-custom-buttons)
+12. [Keyboard Shortcuts](#keyboard-shortcuts)
+13. [Accessibility](#accessibility)
+14. [Multiple Instances](#multiple-instances)
+15. [Browser Support](#browser-support)
 
 ---
 
@@ -424,7 +442,7 @@ rt-native.fluent-dark {
 |--rtb-code-bg           |#f5f5f5  |Code block background color|
 |--rtb-code-border-radius|4px      |Code block corner radius   |
 
-### Modals & Dialogs
+### Modals &amp; Dialogs
 
 | Variable               | Default                       | Description            |
 |:-----------------------|:------------------------------|:-----------------------|
@@ -819,7 +837,7 @@ All shortcuts are active when the editor content area has focus.
 |              |Decrease indent      |Shift+Tab                  |
 |**Insert**    |Insert link          |Ctrl+Shift+K               |
 |              |Insert image         |Ctrl+Shift+I               |
-|              |Upload image         |Ctrl+Shift+&               |
+|              |Upload image         |Ctrl+Shift+&amp;           |
 |              |Block quote          |Ctrl+Shift+Q               |
 |              |Video                |Ctrl+Shift+V               |
 |              |Embed media          |Ctrl+Shift+M               |
