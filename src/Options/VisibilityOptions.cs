@@ -54,6 +54,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     private bool? _codeBlock;
     private bool? _embedMedia;
     private bool? _video;
+    private bool? _audio;
     private bool? _table;
     private bool? _horizontalRule;
     private bool? _mediaDivider;
@@ -119,6 +120,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
     public IVisibilityOptions CodeBlock(bool value = true)      { _codeBlock        = value; return this; }
     public IVisibilityOptions EmbedMedia(bool value = true)     { _embedMedia       = value; return this; }
     public IVisibilityOptions Video(bool value = true)          { _video            = value; return this; }
+    public IVisibilityOptions Audio(bool value = true)          { _audio            = value; return this; }
     public IVisibilityOptions Table(bool value = true)          { _table            = value; return this; }
     public IVisibilityOptions HorizontalRule(bool value = true) { _horizontalRule   = value; return this; }
     public IVisibilityOptions MediaDivider(bool value = true)   { _mediaDivider     = value; return this; }
@@ -186,6 +188,7 @@ internal sealed class VisibilityOptions : IVisibilityOptions
         Add("codeBlock",        _codeBlock);
         Add("embedMedia",       _embedMedia);
         Add("video",            _video);
+        Add("audio",            _audio);
         Add("table",            _table);
         Add("horizontalRule",   _horizontalRule);
         Add("mediaDivider",     _mediaDivider);

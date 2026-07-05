@@ -60,6 +60,7 @@ public interface IVisibilityOptions
     IVisibilityOptions CodeBlock(bool value = true);
     IVisibilityOptions EmbedMedia(bool value = true);
     IVisibilityOptions Video(bool value = true);
+    IVisibilityOptions Audio(bool value = true);
     IVisibilityOptions Table(bool value = true);
     IVisibilityOptions HorizontalRule(bool value = true);
     IVisibilityOptions MediaDivider(bool value = true);

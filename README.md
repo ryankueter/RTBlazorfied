@@ -663,6 +663,7 @@ await _editor.ConfigureAsync(options =>
 |CodeBlock()        |Code block button                                                 |
 |EmbedMedia()       |Embed media (audio / PDF / iframe) button                         |
 |Video()            |Video embed button                                                |
+|Audio()            |Audio embed button                                                |
 |Table()            |Insert table button                                               |
 |HorizontalRule()   |Insert horizontal rule button                                     |
 |MediaDivider()     |Divider after insert buttons                                      |
@@ -840,6 +841,7 @@ All shortcuts are active when the editor content area has focus.
 |              |Upload image         |Ctrl+Shift+&amp;           |
 |              |Block quote          |Ctrl+Shift+Q               |
 |              |Video                |Ctrl+Shift+V               |
+|              |Audio                |Ctrl+Shift+S               |
 |              |Embed media          |Ctrl+Shift+M               |
 |              |Insert table         |Ctrl+Shift+L               |
 |              |Code block           |Ctrl+Shift+\*              |
