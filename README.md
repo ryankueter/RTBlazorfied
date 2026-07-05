@@ -1,6 +1,6 @@
 # RTBlazorfied - Blazor Rich Text Editor Component
 
-**Author:** Ryan Kueter | **Updated:** June, 2026
+**Author:** Ryan Kueter | **Updated:** July, 2026
 
 RT Blazorfied HTML Editor is a free .NET Blazor component that provides a wide variety of elements, accessibility features, and customizations that make it one of the most robust and flexible HTML editors available. It allows the programmer to apply custom .css files to the preview window, to see how the content will be displayed in production. The editor uses embedded .svg Google Font Icons and the shadow DOM to isolate the HTML from inheriting the existing page styles. While this component is a wrapper for the **rt-native.js** HTML editor native web component available on NPM, no additional setup beyond the steps below are required.
 
@@ -459,18 +459,18 @@ rt-native.fluent-dark {
 
 ## Parameters
 
-| Parameter         | Type                          | Default | Description                                                                                                    |
-|:------------------|:------------------------------|:--------|:---------------------------------------------------------------------------------------------------------------|
-|Value              |string?                        |null     |HTML content of the editor. Use **@bind-Value** for two-way binding.                                            |
-|ValueChanged       |EventCallback\\<string>        |—        |Raised whenever the editor content changes. Wired automatically by **@bind-Value**.                             |
-|Class              |string?                        |null     |One or more CSS class names applied to the host element for theming. E.g. Class="fluent" or Class="fluent dark".|
-|Height             |string                         |300px    |Editor height. Any valid CSS length (px, vh, etc.).                                                             |
-|Width              |string                         |100%     |Editor width. Any valid CSS length.                                                                             |
-|Placeholder        |string?                        |null     |Placeholder text shown when the editor is empty.                                                                |
-|ReadOnly           |bool                           |false    |Puts the editor in read-only mode. Hides the toolbar.                                                           |
-|AriaLabel          |string?                        |null     |Accessible name for the editor region. Defaults to "Rich text editor".                                          |
-|Options            |Action\\<IRTBlazorfiedOptions>?|null     |Controls toolbar button visibility.                                                                             |
-|CustomButtonClicked|EventCallback\\<string>        |—        |Raised when a custom toolbar button is clicked. The argument is the button's id.                                |
+| Parameter         | Type          | Default | Description                                                                                                    |
+|:------------------|:--------------|:--------|:---------------------------------------------------------------------------------------------------------------|
+|Value              |string?        |null     |HTML content of the editor. Use **@bind-Value** for two-way binding.                                            |
+|ValueChanged       |EventCallback\\|—        |Raised whenever the editor content changes. Wired automatically by **@bind-Value**.                             |
+|Class              |string?        |null     |One or more CSS class names applied to the host element for theming. E.g. Class="fluent" or Class="fluent dark".|
+|Height             |string         |300px    |Editor height. Any valid CSS length (px, vh, etc.).                                                             |
+|Width              |string         |100%     |Editor width. Any valid CSS length.                                                                             |
+|Placeholder        |string?        |null     |Placeholder text shown when the editor is empty.                                                                |
+|ReadOnly           |bool           |false    |Puts the editor in read-only mode. Hides the toolbar.                                                           |
+|AriaLabel          |string?        |null     |Accessible name for the editor region. Defaults to "Rich text editor".                                          |
+|Options            |Action\\?      |null     |Controls toolbar button visibility.                                                                             |
+|CustomButtonClicked|EventCallback\\|—        |Raised when a custom toolbar button is clicked. The argument is the button's id.                                |
 
 ---
 
@@ -519,18 +519,18 @@ Use **@ref** to access the component's public methods at runtime:
 
 ### Public Methods
 
-| Method                                                  | Returns      | Description                                                                                               |
-|:--------------------------------------------------------|:-------------|:----------------------------------------------------------------------------------------------------------|
-|GetValueAsync()                                          |Task\\<string>|Returns the current editor HTML.                                                                           |
-|GetPlainTextAsync()                                      |Task\\<string>|Returns the editor content with all HTML tags stripped.                                                    |
-|SetReadOnlyAsync(bool on)                                |Task          |Enables (true) or disables (false) read-only mode at runtime.                                              |
-|SetClassAsync(string? cssClass)                          |Task          |Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear.|
-|SetPreviewCssFilesAsync(params string\[\] urls)          |Task          |Loads CSS files into the preview window only.                                                              |
-|SetPreviewCssAsync(string css)                           |Task          |Applies inline CSS to the preview window only.                                                             |
-|ConfigureAsync(Action\\<IRTBlazorfiedOptions>)           |Task          |Reapplies button visibility on an already-rendered editor.                                                 |
-|AddCustomButtonAsync(string id, string title, string svg)|Task          |Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked.                           |
-|RemoveCustomButtonAsync(string id)                       |Task          |Removes the custom button with the given id from the toolbar.                                              |
-|ClearCustomButtonsAsync()                                |Task          |Removes all custom buttons from the toolbar.                                                               |
+| Method                                                  | Returns | Description                                                                                               |
+|:--------------------------------------------------------|:--------|:----------------------------------------------------------------------------------------------------------|
+|GetValueAsync()                                          |Task\\   |Returns the current editor HTML.                                                                           |
+|GetPlainTextAsync()                                      |Task\\   |Returns the editor content with all HTML tags stripped.                                                    |
+|SetReadOnlyAsync(bool on)                                |Task     |Enables (true) or disables (false) read-only mode at runtime.                                              |
+|SetClassAsync(string? cssClass)                          |Task     |Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear.|
+|SetPreviewCssFilesAsync(params string\[\] urls)          |Task     |Loads CSS files into the preview window only.                                                              |
+|SetPreviewCssAsync(string css)                           |Task     |Applies inline CSS to the preview window only.                                                             |
+|ConfigureAsync(Action\\)                                 |Task     |Reapplies button visibility on an already-rendered editor.                                                 |
+|AddCustomButtonAsync(string id, string title, string svg)|Task     |Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked.                           |
+|RemoveCustomButtonAsync(string id)                       |Task     |Removes the custom button with the given id from the toolbar.                                              |
+|ClearCustomButtonsAsync()                                |Task     |Removes all custom buttons from the toolbar.                                                               |
 
 ---
 
@@ -754,9 +754,9 @@ Add your own buttons to the editor toolbar. Custom buttons appear after the buil
 
 ### Parameters
 
-| Parameter         | Type                  | Description                                                                        |
-|:------------------|:----------------------|:-----------------------------------------------------------------------------------|
-|CustomButtonClicked|EventCallback\\<string>|Raised when a custom toolbar button is clicked. The argument is the button's **id**.|
+| Parameter         | Type          | Description                                                                        |
+|:------------------|:--------------|:-----------------------------------------------------------------------------------|
+|CustomButtonClicked|EventCallback\\|Raised when a custom toolbar button is clicked. The argument is the button's **id**.|
 
 ### Adding a custom button
 
