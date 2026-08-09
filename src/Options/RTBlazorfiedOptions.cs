@@ -3,11 +3,27 @@ namespace RichTextBlazorfied;
 internal sealed class RTBlazorfiedOptions : IRTBlazorfiedOptions
 {
     private VisibilityOptions? _visibility;
+    private bool? _spellCheckEnabled;
+    private bool _useHunspell;
+    private string? _hunspellDictionaryKey;
 
     public IRTBlazorfiedOptions ButtonVisibility(Action<IVisibilityOptions> configure)
     {
         _visibility = new VisibilityOptions();
         configure(_visibility);
+        return this;
+    }
+
+    public IRTBlazorfiedOptions SpellCheckEnabled(bool enabled = true)
+    {
+        _spellCheckEnabled = enabled;
+        return this;
+    }
+
+    public IRTBlazorfiedOptions UseHunspellSpellChecker(string? dictionaryKey = null)
+    {
+        _useHunspell = true;
+        _hunspellDictionaryKey = dictionaryKey;
         return this;
     }
 
@@ -18,8 +34,17 @@ internal sealed class RTBlazorfiedOptions : IRTBlazorfiedOptions
     internal Dictionary<string, object?>? Build()
     {
         var visibility = _visibility?.Build();
-        if (visibility is null || visibility.Count == 0) return null;
+        var result = new Dictionary<string, object?>();
 
-        return new Dictionary<string, object?> { ["visibility"] = visibility };
+        if (visibility is not null && visibility.Count > 0)
+            result["visibility"] = visibility;
+
+        if (_spellCheckEnabled.HasValue)
+            result["spellCheckEnabled"] = _spellCheckEnabled.Value;
+
+        if (_useHunspell)
+            result["hunspell"] = new Dictionary<string, object?> { ["dictionaryKey"] = _hunspellDictionaryKey };
+
+        return result.Count > 0 ? result : null;
     }
 }

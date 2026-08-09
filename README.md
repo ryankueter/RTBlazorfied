@@ -1,6 +1,6 @@
 # RTBlazorfied - Blazor Rich Text Editor Component
 
-**Author:** Ryan Kueter | **Updated:** July, 2026
+**Author:** Ryan Kueter | **Updated:** August, 2026
 
 RT Blazorfied HTML Editor is a free .NET Blazor component that provides a wide variety of elements, accessibility features, and customizations that make it one of the most robust and flexible HTML editors available. It allows the programmer to apply custom .css files to the preview window, to see how the content will be displayed in production. The editor uses embedded .svg Google Font Icons and the shadow DOM to isolate the HTML from inheriting the existing page styles. While this component is a wrapper for the **rt-native.js** HTML editor native web component available on NPM, no additional setup beyond the steps below are required.
 
@@ -39,10 +39,15 @@ RT Blazorfied HTML Editor is a free .NET Blazor component that provides a wide v
     - [Parameters](#parameters)
     - [Adding a custom button](#adding-a-custom-button)
     - [Managing custom buttons](#managing-custom-buttons)
-12. [Keyboard Shortcuts](#keyboard-shortcuts)
-13. [Accessibility](#accessibility)
-14. [Multiple Instances](#multiple-instances)
-15. [Browser Support](#browser-support)
+12. [Spellcheck (Hunspell)](#spellcheck-hunspell)
+    - [Adding Hunspell as the dictionary provider](#adding-hunspell-as-the-dictionary-provider)
+    - [Turning spellcheck on and off](#turning-spellcheck-on-and-off)
+    - [Using a different dictionary](#using-a-different-dictionary)
+    - [Removing the spellchecker](#removing-the-spellchecker)
+13. [Keyboard Shortcuts](#keyboard-shortcuts)
+14. [Accessibility](#accessibility)
+15. [Multiple Instances](#multiple-instances)
+16. [Browser Support](#browser-support)
 
 ---
 
@@ -519,24 +524,27 @@ Use **@ref** to access the component's public methods at runtime:
 
 ### Public Methods
 
-| Method                                                  | Returns | Description                                                                                               |
-|:--------------------------------------------------------|:--------|:----------------------------------------------------------------------------------------------------------|
-|GetValueAsync()                                          |Task\\   |Returns the current editor HTML.                                                                           |
-|GetPlainTextAsync()                                      |Task\\   |Returns the editor content with all HTML tags stripped.                                                    |
-|SetReadOnlyAsync(bool on)                                |Task     |Enables (true) or disables (false) read-only mode at runtime.                                              |
-|SetClassAsync(string? cssClass)                          |Task     |Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear.|
-|SetPreviewCssFilesAsync(params string\[\] urls)          |Task     |Loads CSS files into the preview window only.                                                              |
-|SetPreviewCssAsync(string css)                           |Task     |Applies inline CSS to the preview window only.                                                             |
-|ConfigureAsync(Action\\)                                 |Task     |Reapplies button visibility on an already-rendered editor.                                                 |
-|AddCustomButtonAsync(string id, string title, string svg)|Task     |Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked.                           |
-|RemoveCustomButtonAsync(string id)                       |Task     |Removes the custom button with the given id from the toolbar.                                              |
-|ClearCustomButtonsAsync()                                |Task     |Removes all custom buttons from the toolbar.                                                               |
+| Method                                                   | Returns | Description                                                                                                                |
+|:---------------------------------------------------------|:--------|:---------------------------------------------------------------------------------------------------------------------------|
+|GetValueAsync()                                           |Task\\   |Returns the current editor HTML.                                                                                            |
+|GetPlainTextAsync()                                       |Task\\   |Returns the editor content with all HTML tags stripped.                                                                     |
+|SetReadOnlyAsync(bool on)                                 |Task     |Enables (true) or disables (false) read-only mode at runtime.                                                               |
+|SetClassAsync(string? cssClass)                           |Task     |Replaces the CSS class(es) on the host element — use for runtime theme switching. Pass null or "" to clear.                 |
+|SetPreviewCssFilesAsync(params string\[\] urls)           |Task     |Loads CSS files into the preview window only.                                                                               |
+|SetPreviewCssAsync(string css)                            |Task     |Applies inline CSS to the preview window only.                                                                              |
+|ConfigureAsync(Action\\)                                  |Task     |Reapplies button visibility on an already-rendered editor.                                                                  |
+|AddCustomButtonAsync(string id, string title, string svg) |Task     |Adds a custom button to the toolbar. Fires **CustomButtonClicked** when clicked.                                            |
+|RemoveCustomButtonAsync(string id)                        |Task     |Removes the custom button with the given id from the toolbar.                                                               |
+|ClearCustomButtonsAsync()                                 |Task     |Removes all custom buttons from the toolbar.                                                                                |
+|SetSpellCheckEnabledAsync(bool enabled)                   |Task     |Turns spellcheck marking on or off. No effect until a spellchecker has been configured.                                     |
+|UseHunspellSpellCheckerAsync(string? dictionaryKey = null)|Task     |Configures the Hunspell WebAssembly engine as the editor's spellchecker (see [Spellcheck (Hunspell)](#spellcheck-hunspell)).|
+|ClearSpellCheckerAsync()                                  |Task     |Removes the currently configured spellchecker, if any.                                                                      |
 
 ---
 
 ## Options — Button Visibility
 
-The **Options** parameter accepts a fluent delegate that controls which toolbar buttons are rendered. Visual styling (colors, fonts, borders, sizes) is handled through CSS variables — see [Styling with CSS Variables](#styling-with-css-variables).
+The **Options** parameter accepts a fluent delegate that primarily controls which toolbar buttons are rendered. It also configures spellcheck (see [Spellcheck (Hunspell)](#spellcheck-hunspell)). Visual styling (colors, fonts, borders, sizes) is handled through CSS variables — see [Styling with CSS Variables](#styling-with-css-variables).
 
 All buttons are **visible by default** except the word/character count status bar (WordCount), which is hidden by default and can be toggled by the user with the Toggle Status Bar button.
 
@@ -804,6 +812,344 @@ await _editor.ClearCustomButtonsAsync();
 ```
 
 > **SVG icons:** Pass any inline SVG string as the `svg` argument. Set `width`, `height`, and `fill:currentColor` on the root `<svg>` element so the icon inherits the toolbar button color and scales with `--rtb-btn-size`.
+
+---
+
+## Spellcheck (Hunspell)
+
+RTBlazorfied supports a pluggable spellchecker. When one is configured, misspelled words are underlined with a wavy squiggle and a "Spelling" section with suggestions is added to the right-click context menu — "Add to Dictionary" and "Ignore Word" are included automatically.
+
+**No spellchecker is configured by default**, so the "Spelling" context menu section stays hidden and no setup is required. To get real, offline, dictionary-backed spellchecking — showing the "Spelling" section automatically as soon as the editor loads — configure the real **Hunspell** engine compiled to WebAssembly, which runs entirely in the browser with no server calls.
+
+### Adding Hunspell as the dictionary provider
+
+Hunspell can be wired up entirely from online resources — no files to download or vendor in your app. The WASM engine comes from the [hunspell-asm](https://www.npmjs.com/package/hunspell-asm) npm package via the [jsDelivr](https://www.jsdelivr.com/) CDN, and the dictionary comes from [hunspell-dict-en-us](https://www.npmjs.com/package/hunspell-dict-en-us), also via jsDelivr. Two small adapter scripts (which implement rt-native's spellchecker interface on top of the WASM engine) are pasted directly into `wwwroot/index.html` — there's nothing to host separately.
+
+Add the WASM engine `<script>` tag, then the loader and adapter scripts inline, **before** the RTBlazorfied script tag:
+
+```html
+<!-- 1. The Hunspell WASM engine, from the hunspell-asm CDN build (defines window.Module) -->
+<script src="https://cdn.jsdelivr.net/npm/hunspell-asm@4.0.2/dist/cjs/lib/browser/hunspell.js"></script>
+
+<!-- 2. Dependency-free loader (defines window.HunspellAsm) -->
+<script>
+(function (global) {
+    'use strict';
+    const randomId = (length) => {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let out = '';
+        for (let i = 0; i < length; i++) out += chars[Math.floor(Math.random() * chars.length)];
+        return out;
+    };
+    const isMounted = (FS, path, type) => {
+        try {
+            const stat = FS.stat(path);
+            const check = type === 'dir' ? FS.isDir : FS.isFile;
+            return !!stat && check(stat.mode);
+        } catch (_) { return false; }
+    };
+    const constructModule = () => {
+        const ret = { __asmModuleInitialized__: false, onRuntimeInitialized: null };
+        ret.initializeRuntime = (timeout) => {
+            if (ret.__asmModuleInitialized__) return Promise.resolve(true);
+            return new Promise((resolve) => {
+                const timeoutId = timeout ? setTimeout(() => resolve(false), timeout) : null;
+                ret.onAbort = (reason) => {
+                    if (!ret.__asmModuleInitialized__) {
+                        if (timeoutId) clearTimeout(timeoutId);
+                        throw reason instanceof Error ? reason : new Error(reason);
+                    }
+                };
+                ret.onRuntimeInitialized = () => {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    ret.__asmModuleInitialized__ = true;
+                    resolve(true);
+                };
+            });
+        };
+        return ret;
+    };
+    const wrapHunspellInterface = (cwrap) => ({
+        create: cwrap('Hunspell_create', 'number', ['number', 'number']),
+        destroy: cwrap('Hunspell_destroy', null, ['number']),
+        spell: cwrap('Hunspell_spell', 'number', ['number', 'number']),
+        suggest: cwrap('Hunspell_suggest', 'number', ['number', 'number', 'number']),
+        free_list: cwrap('Hunspell_free_list', null, ['number', 'number', 'number']),
+        add_dic: cwrap('Hunspell_add_dic', 'number', ['number', 'number']),
+        add: cwrap('Hunspell_add', 'number', ['number', 'number']),
+        add_with_affix: cwrap('Hunspell_add_with_affix', 'number', ['number', 'number', 'number']),
+        remove: cwrap('Hunspell_remove', 'number', ['number', 'number'])
+    });
+    const hunspellLoader = (asmModule) => {
+        const { cwrap, FS, _free, allocateUTF8, _malloc, getValue, UTF8ToString } = asmModule;
+        const hunspellInterface = wrapHunspellInterface(cwrap);
+        const memPathId = `/${randomId(24)}`;
+        FS.mkdir(memPathId);
+        const usingParamPtr = (...args) => {
+            const params = [...args];
+            const fn = params.pop();
+            const paramsPtr = params.map((param) => allocateUTF8(param.normalize()));
+            const ret = fn(...paramsPtr);
+            paramsPtr.forEach((ptr) => _free(ptr));
+            return ret;
+        };
+        return {
+            mountBuffer: (contents, fileName) => {
+                const file = fileName || randomId(24);
+                const mountedFilePath = `${memPathId}/${file}`;
+                if (!isMounted(FS, mountedFilePath, 'file')) {
+                    FS.writeFile(mountedFilePath, contents, { encoding: 'binary' });
+                }
+                return mountedFilePath;
+            },
+            unmount: (mountedPath) => {
+                if (isMounted(FS, mountedPath, 'file') && mountedPath.indexOf(memPathId) > -1) {
+                    FS.unlink(mountedPath);
+                    return;
+                }
+                if (isMounted(FS, mountedPath, 'dir')) {
+                    FS.unmount(mountedPath);
+                    FS.rmdir(mountedPath);
+                }
+            },
+            create: (affPath, dictPath) => {
+                const affPathPtr = allocateUTF8(affPath);
+                const dictPathPtr = allocateUTF8(dictPath);
+                const hunspellPtr = hunspellInterface.create(affPathPtr, dictPathPtr);
+                return {
+                    dispose: () => {
+                        hunspellInterface.destroy(hunspellPtr);
+                        _free(affPathPtr);
+                        _free(dictPathPtr);
+                    },
+                    spell: (word) => !!usingParamPtr(word, (wordPtr) => hunspellInterface.spell(hunspellPtr, wordPtr)),
+                    suggest: (word) => {
+                        const suggestionListPtr = _malloc(4);
+                        const suggestionCount = usingParamPtr(word, (wordPtr) =>
+                            hunspellInterface.suggest(hunspellPtr, suggestionListPtr, wordPtr));
+                        const suggestionListValuePtr = getValue(suggestionListPtr, '*');
+                        const ret = suggestionCount > 0
+                            ? Array.from(Array(suggestionCount).keys()).map((idx) =>
+                                UTF8ToString(getValue(suggestionListValuePtr + idx * 4, '*')))
+                            : [];
+                        hunspellInterface.free_list(hunspellPtr, suggestionListPtr, suggestionCount);
+                        _free(suggestionListPtr);
+                        return ret;
+                    },
+                    addDictionary: (dictPath) => usingParamPtr(dictPath, (dictPathPtr) =>
+                        hunspellInterface.add_dic(hunspellPtr, dictPathPtr)) !== 1,
+                    addWord: (word) => usingParamPtr(word, (wordPtr) => hunspellInterface.add(hunspellPtr, wordPtr)),
+                    addWordWithAffix: (word, affix) => usingParamPtr(word, affix, (wordPtr, affixPtr) =>
+                        hunspellInterface.add_with_affix(hunspellPtr, wordPtr, affixPtr)),
+                    removeWord: (word) => usingParamPtr(word, (wordPtr) => hunspellInterface.remove(hunspellPtr, wordPtr))
+                };
+            }
+        };
+    };
+    const loadModule = async (initOptions) => {
+        const timeout = (initOptions && initOptions.timeout) || 20000;
+        if (typeof global.Module !== 'function') {
+            throw new Error('HunspellAsm.loadModule: window.Module was not found. Include the hunspell-asm <script> tag before this one.');
+        }
+        const constructedModule = constructModule();
+        const asmModule = global.Module(constructedModule);
+        const result = await asmModule.initializeRuntime(timeout);
+        if (!result) throw new Error('HunspellAsm.loadModule: timed out initializing the WebAssembly runtime.');
+        return hunspellLoader(asmModule);
+    };
+    global.HunspellAsm = { loadModule };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- 3. The adapter that wires Hunspell into rt-native's setSpellChecker() interface (defines window.HunspellSpellChecker) -->
+<script>
+(function (global) {
+    'use strict';
+    let sharedFactoryPromise = null;
+    const getFactory = () => {
+        if (!sharedFactoryPromise) {
+            if (!global.HunspellAsm || typeof global.HunspellAsm.loadModule !== 'function') {
+                return Promise.reject(new Error(
+                    'HunspellSpellChecker: window.HunspellAsm was not found. Include the hunspell-asm ' +
+                    '<script> tag and the loader script above before this one.'));
+            }
+            sharedFactoryPromise = global.HunspellAsm.loadModule();
+        }
+        return sharedFactoryPromise;
+    };
+    class HunspellSpellChecker {
+        constructor(options = {}) {
+            const dictionary = options.dictionary
+                || (global.HunspellDictionaries && global.HunspellDictionaries.en_US);
+            if (!dictionary || !dictionary.aff || !dictionary.dic) {
+                throw new Error(
+                    'HunspellSpellChecker: no dictionary supplied and window.HunspellDictionaries.en_US ' +
+                    'was not found. Fetch a dictionary from a CDN and set window.HunspellDictionaries.en_US ' +
+                    '(see the setup below) before the editor loads.');
+            }
+            this._hunspell = null;
+            this._ignored = new Set();
+            this._ready = this._load(dictionary).catch((error) => {
+                console.error('HunspellSpellChecker: failed to load the Hunspell WASM engine or dictionary.', error);
+                throw error;
+            });
+        }
+        async _load(dictionary) {
+            const factory = await getFactory();
+            const encoder = new TextEncoder();
+            const affPath = factory.mountBuffer(encoder.encode(dictionary.aff), 'index.aff');
+            const dicPath = factory.mountBuffer(encoder.encode(dictionary.dic), 'index.dic');
+            this._hunspell = factory.create(affPath, dicPath);
+        }
+        get ready() { return this._ready; }
+        async checkWord(word) {
+            await this._ready;
+            if (this._ignored.has(String(word).toLowerCase())) return true;
+            return this._hunspell.spell(word);
+        }
+        async suggest(word) { await this._ready; return this._hunspell.suggest(word); }
+        addWord(word) { if (word) this._ready.then(() => this._hunspell.addWord(word)).catch(() => {}); }
+        ignoreWord(word) { if (word) this._ignored.add(String(word).toLowerCase()); }
+    }
+    global.HunspellSpellChecker = HunspellSpellChecker;
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script src="_content/RTBlazorfied/js/RTBlazorfied.js"></script>
+```
+
+Finally, fetch the dictionary from its CDN and store it on `window.HunspellDictionaries.en_US` **before** Blazor starts, so it's ready the moment RTBlazorfied configures Hunspell on load. Defer Blazor's autostart with `autostart="false"` and call `Blazor.start()` yourself once the fetch resolves:
+
+```html
+<script src="_framework/blazor.webassembly.js" autostart="false"></script>
+<script>
+(async function () {
+    const dictBase = 'https://cdn.jsdelivr.net/npm/hunspell-dict-en-us@0.1.0';
+    const [aff, dic] = await Promise.all([
+        fetch(`${dictBase}/en-us.aff`).then(r => r.text()),
+        fetch(`${dictBase}/en-us.dic`).then(r => r.text()),
+    ]);
+    window.HunspellDictionaries = { en_US: { aff, dic } };
+    Blazor.start();
+})();
+</script>
+```
+
+With that in place, call **UseHunspellSpellChecker()** in **Options** to configure Hunspell as soon as the editor loads — the spellchecker is active immediately, with no extra step to turn it on:
+
+```razor
+<RTBlazorfied @bind-Value="@_html" Height="400px" Options="@GetOptions()" />
+
+@code {
+    private string _html = string.Empty;
+
+    private Action<IRTBlazorfiedOptions> GetOptions() => options =>
+        options.UseHunspellSpellChecker();
+}
+```
+
+Behind the scenes, this is equivalent to the following plain JavaScript (shown here for reference — RTBlazorfied handles this for you):
+
+```javascript
+const editor = document.querySelector('rt-native');
+editor.setSpellChecker(new HunspellSpellChecker());
+```
+
+The WASM engine takes ~1s to initialize the first time it's needed; every internal spellcheck call waits on that load automatically, so there's nothing else to await beyond the dictionary fetch shown above.
+
+To configure Hunspell later instead of on load (e.g. behind a user action), call **UseHunspellSpellCheckerAsync** via **@ref**:
+
+```razor
+<RTBlazorfied @ref="_editor" @bind-Value="@_html" Height="400px" />
+
+<button @onclick="() => _editor.UseHunspellSpellCheckerAsync()">Enable Spellcheck</button>
+
+@code {
+    private RTBlazorfied _editor = default!;
+    private string _html = string.Empty;
+}
+```
+
+### Turning spellcheck on and off
+
+Once Hunspell (or any spellchecker) is configured, **SetSpellCheckEnabledAsync** toggles the squiggly-underline marking and the "Spelling" context menu section on and off without discarding the configured spellchecker — useful for a user-facing "Spellcheck" toggle:
+
+```razor
+<RTBlazorfied @ref="_editor" @bind-Value="@_html" Height="400px" Options="@GetOptions()" />
+
+<button @onclick="() => _editor.SetSpellCheckEnabledAsync(true)">Spellcheck On</button>
+<button @onclick="() => _editor.SetSpellCheckEnabledAsync(false)">Spellcheck Off</button>
+
+@code {
+    private RTBlazorfied _editor = default!;
+    private string _html = string.Empty;
+
+    private Action<IRTBlazorfiedOptions> GetOptions() => options =>
+        options.UseHunspellSpellChecker();
+}
+```
+
+It can also be set on load via **Options** — e.g. to configure Hunspell but start with marking switched off until the user opts in:
+
+```razor
+<RTBlazorfied @bind-Value="@_html" Height="400px" Options="@GetOptions()" />
+
+@code {
+    private string _html = string.Empty;
+
+    private Action<IRTBlazorfiedOptions> GetOptions() => options =>
+        options.UseHunspellSpellChecker().SpellCheckEnabled(false);
+}
+```
+
+### Using a different dictionary
+
+The adapter script reads dictionaries from `window.HunspellDictionaries`, keyed by dictionary name. To add another language, fetch its `.aff`/`.dic` pair from a CDN dictionary package (jsDelivr hosts one per language, e.g. [hunspell-dict-fr-fr](https://www.npmjs.com/package/hunspell-dict-fr-fr)) and register it under a new key alongside `en_US` in the deferred-start script:
+
+```html
+<script src="_framework/blazor.webassembly.js" autostart="false"></script>
+<script>
+(async function () {
+    const [enUs, frFr] = await Promise.all([
+        Promise.all([
+            fetch('https://cdn.jsdelivr.net/npm/hunspell-dict-en-us@0.1.0/en-us.aff').then(r => r.text()),
+            fetch('https://cdn.jsdelivr.net/npm/hunspell-dict-en-us@0.1.0/en-us.dic').then(r => r.text()),
+        ]),
+        Promise.all([
+            fetch('https://cdn.jsdelivr.net/npm/hunspell-dict-fr-fr@0.1.0/fr-fr.aff').then(r => r.text()),
+            fetch('https://cdn.jsdelivr.net/npm/hunspell-dict-fr-fr@0.1.0/fr-fr.dic').then(r => r.text()),
+        ]),
+    ]);
+    window.HunspellDictionaries = {
+        en_US: { aff: enUs[0], dic: enUs[1] },
+        fr_FR: { aff: frFr[0], dic: frFr[1] },
+    };
+    Blazor.start();
+})();
+</script>
+```
+
+Then pass the key to **UseHunspellSpellChecker**:
+
+```csharp
+options.UseHunspellSpellChecker("fr_FR");
+```
+
+or, at runtime:
+
+```csharp
+await _editor.UseHunspellSpellCheckerAsync("fr_FR");
+```
+
+> Check each dictionary package's file names and latest version on [jsDelivr](https://www.jsdelivr.com/) before use — they vary slightly per language (e.g. `fr-fr.aff` vs `en-us.aff`).
+
+### Removing the spellchecker
+
+```csharp
+await _editor.ClearSpellCheckerAsync();
+```
+
+> **License note:** `hunspell-asm` (the WASM engine binding) is MIT licensed, but the underlying Hunspell engine itself carries its own MPL/GPL/LGPL tri-license, and each dictionary package has its own license that varies by language (e.g. the French dictionary is MPL-2.0). Review each package's license (available on its [jsDelivr](https://www.jsdelivr.com/) or npm page) before distributing your app.
 
 ---
 

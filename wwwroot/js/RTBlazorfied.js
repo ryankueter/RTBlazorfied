@@ -79,8 +79,22 @@
         // element and correctly calls _reinitialize() to rebuild the toolbar.
         if (options) {
             await new Promise(function (resolve) { requestAnimationFrame(resolve); });
-            element.configure(options);
+            await _applyConfigure(element, options);
         }
+    }
+
+    /**
+     * Applies options via element.configure(), first pulling out and handling
+     * the "hunspell" option (not a rt-native.js configure() key — it drives
+     * useHunspellSpellChecker so that RTBlazorfiedOptions.UseHunspellSpellChecker()
+     * enables the real spellchecker, and the "Spelling" context menu section,
+     * as soon as the editor loads.
+     */
+    async function _applyConfigure(element, options) {
+        var hunspell = options.hunspell;
+        if (hunspell) delete options.hunspell;
+        if (Object.keys(options).length > 0) element.configure(options);
+        if (hunspell) await useHunspellSpellChecker(element, hunspell.dictionaryKey);
     }
 
     function getValue(element)   { return element?.getValue()   ?? ''; }
@@ -108,7 +122,7 @@
 
     async function configure(element, options) {
         await _ready;
-        if (element && options) element.configure(options);
+        if (element && options) await _applyConfigure(element, options);
     }
 
     /**
@@ -135,6 +149,49 @@
         element?.clearCustomButtons();
     }
 
+    /**
+     * Enables or disables spellcheck marking without clearing whichever
+     * spellchecker is currently configured (see useHunspellSpellChecker /
+     * setSpellChecker). No effect until a spellchecker has been supplied.
+     */
+    async function setSpellCheckEnabled(element, enabled) {
+        await _ready;
+        element?.setSpellCheckEnabled(enabled);
+    }
+
+    /**
+     * Configures the real Hunspell engine (compiled to WebAssembly, running
+     * fully offline) as the editor's spellchecker. Requires the host page to
+     * have already loaded, via plain <script> tags, in this order:
+     *   hunspell/hunspell.js
+     *   hunspell/hunspell-loader.js
+     *   hunspell/dictionaries/<dictionary>-data.js  (defines window.HunspellDictionaries)
+     *   hunspell/hunspell-spellchecker.js           (defines window.HunspellSpellChecker)
+     * See the RTBlazorfied README for the full setup.
+     */
+    async function useHunspellSpellChecker(element, dictionaryKey) {
+        await _ready;
+        if (!element) return;
+        if (typeof window.HunspellSpellChecker !== 'function') {
+            throw new Error(
+                'RTBlazorfied: window.HunspellSpellChecker was not found. Add the ' +
+                'hunspell/*.js <script> tags to your host page before enabling Hunspell ' +
+                '(see the RTBlazorfied README\'s "Spellcheck (Hunspell)" section).'
+            );
+        }
+        var options = {};
+        if (dictionaryKey && window.HunspellDictionaries) {
+            options.dictionary = window.HunspellDictionaries[dictionaryKey];
+        }
+        element.setSpellChecker(new window.HunspellSpellChecker(options));
+    }
+
+    /** Removes the currently configured spellchecker, if any. */
+    async function clearSpellChecker(element) {
+        await _ready;
+        element?.setSpellChecker(null);
+    }
+
     // ── Expose global ────────────────────────────────────────────────────────
 
     window.RTBlazorfiedInterop = {
@@ -150,5 +207,8 @@
         addCustomButton,
         removeCustomButton,
         clearCustomButtons,
+        setSpellCheckEnabled,
+        useHunspellSpellChecker,
+        clearSpellChecker,
     };
 }());

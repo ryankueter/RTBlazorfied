@@ -195,6 +195,43 @@ public partial class RTBlazorfied : ComponentBase, IDisposable
         await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.clearCustomButtons", _editorRef);
     }
 
+    /// <summary>
+    /// Enables or disables spellcheck marking without clearing whichever
+    /// spellchecker is currently configured. Has no effect until a
+    /// spellchecker has been supplied via <see cref="UseHunspellSpellCheckerAsync"/>.
+    /// </summary>
+    public async Task SetSpellCheckEnabledAsync(bool enabled)
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.setSpellCheckEnabled", _editorRef, enabled);
+    }
+
+    /// <summary>
+    /// Configures the real Hunspell engine (compiled to WebAssembly, running fully
+    /// offline) as the editor's spellchecker. Misspelled words are underlined with
+    /// a wavy squiggle and a "Spelling" section with suggestions is added to the
+    /// right-click context menu.
+    /// <para>
+    /// Requires the host page to have already loaded the Hunspell script assets
+    /// (see the RTBlazorfied README's "Spellcheck (Hunspell)" section for the
+    /// exact &lt;script&gt; tags).
+    /// </para>
+    /// </summary>
+    /// <param name="dictionaryKey">
+    /// The key of the dictionary to use, matching a property on
+    /// <c>window.HunspellDictionaries</c> (e.g. <c>"en_US"</c>). Defaults to the
+    /// vendored en_US dictionary when omitted.
+    /// </param>
+    public async Task UseHunspellSpellCheckerAsync(string? dictionaryKey = null)
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.useHunspellSpellChecker", _editorRef, dictionaryKey);
+    }
+
+    /// <summary>Removes the currently configured spellchecker, if any.</summary>
+    public async Task ClearSpellCheckerAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("RTBlazorfiedInterop.clearSpellChecker", _editorRef);
+    }
+
     // ── Cleanup ───────────────────────────────────────────────────────────────
 
     public void Dispose()
